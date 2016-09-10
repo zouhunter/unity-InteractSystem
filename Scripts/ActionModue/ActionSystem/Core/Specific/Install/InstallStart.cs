@@ -118,6 +118,7 @@ namespace WorldActionSystem
                 pos = posList[i];
                 pickedUpObj = GetUnInstalledObj(pos.name);
                 pickedUpObj.NormalInstall(pos);
+                pos.Attach(pickedUpObj);
             }
         }
         /// <summary>
@@ -132,6 +133,7 @@ namespace WorldActionSystem
                 pos = posList[i];
                 pickedUpObj = GetUnInstalledObj(pos.name);
                 pickedUpObj.QuickInstall(pos);
+                pos.Attach(pickedUpObj);
             }
         }
         /// <summary>

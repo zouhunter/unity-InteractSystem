@@ -41,6 +41,7 @@ namespace WorldActionSystem
         }
 
         public Button accept;
+        public Button start;
         public Button backAstap;
         public Button backMutiStap;
         public Button toTargetStap;
@@ -55,6 +56,7 @@ namespace WorldActionSystem
         void Awake()
         {
             accept.onClick.AddListener(OnAcceptButtonCilcked);
+            start.onClick.AddListener(OnToStartButtonClicked);
             backAstap.onClick.AddListener(OnBackAStapButtonClicked);
             backMutiStap.onClick.AddListener(OnBackMutiButtonClicked);
             toTargetStap.onClick.AddListener(OnToGargetButtonClicked);
@@ -63,6 +65,7 @@ namespace WorldActionSystem
             toEnd.onClick.AddListener(ToEndButtonClicked);
 
             //accept.onClick.AddListener(OnSelected);
+            start.onClick.AddListener(OnStapChange);
             backAstap.onClick.AddListener(OnStapChange);
             backMutiStap.onClick.AddListener(OnStapChange);
             toTargetStap.onClick.AddListener(OnStapChange);
@@ -73,8 +76,23 @@ namespace WorldActionSystem
 
         void OnAcceptButtonCilcked()
         {
-            remoteController.StartExecuteCommand(OnEndExecute);
-            textShow.text = remoteController.CurrCommand.StapName;
+            if (remoteController.CurrCommand !=null)
+            {
+                remoteController.StartExecuteCommand(OnEndExecute);
+                textShow.text = remoteController.CurrCommand.StapName;
+            }
+            else
+            {
+                textShow.text = "结束";
+            }
+        }
+        void OnToStartButtonClicked()
+        {
+            remoteController.ToAllCommandStart();
+            if (autoNext.isOn)
+            {
+                OnAcceptButtonCilcked();
+            }
         }
         void OnBackAStapButtonClicked()
         {
@@ -129,27 +147,20 @@ namespace WorldActionSystem
         {
             if (autoNext.isOn)
             {
-                textShow.text = remoteController.CurrCommand.StapName;
+                textShow.text = remoteController.CurrCommand != null ? remoteController.CurrCommand.StapName:"结束";
             }
             else
             {
                 textShow.text = "点击接收任务";
             }
         }
-        void OnEndExecute(bool haveNext)
+        void OnEndExecute()
         {
-            if (haveNext)
-            {
+   
                 if (autoNext.isOn)
                 {
                     OnAcceptButtonCilcked();
                 }
-            }
-            else
-            {
-                textShow.text = "执行完成";
-            }
-
 
         }
         public Text textShow;

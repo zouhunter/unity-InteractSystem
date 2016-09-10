@@ -7,38 +7,39 @@ using System.Collections.Generic;
 using System;
 namespace WorldActionSystem
 {
-		
-public abstract class ActionCommand
-{
-    public event UnityAction<bool> executeAction;
-    public event UnityAction endExecuteAction;
-    public string StapName { get; set; }
-    public ActionCommand(string stapName)
+
+    public abstract class ActionCommand
     {
-        this.StapName = stapName;
-    }
-    public virtual void StartExecute()
-    {
-        if (executeAction != null)
+        public event UnityAction<bool> executeAction;
+        public event UnityAction endExecuteAction;
+        public string StapName { get; set; }
+        public ActionCommand(string stapName)
         {
-            executeAction(true);
+            this.StapName = stapName;
+        }
+        public virtual void StartExecute()
+        {
+            if (executeAction != null)
+            {
+                executeAction(true);
+            }
+        }
+        public virtual void EndExecute()
+        {
+            if (endExecuteAction != null)
+            {
+                endExecuteAction();
+            }
+        }
+
+        public virtual void UnDoCommand()
+        {
+            if (executeAction != null)
+            {
+                executeAction(false);
+            }
         }
     }
-    public virtual void EndExecute()
-    {
-        if (endExecuteAction != null)
-        {
-            endExecuteAction();
-        }
-    }
-    public virtual void UnDoCommand()
-    {
-        if (executeAction != null)
-        {
-            executeAction(false);
-        }
-    }
+
+
 }
-
-
-	}
