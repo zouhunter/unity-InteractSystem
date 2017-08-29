@@ -7,12 +7,17 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
     /// <summary>
     /// 注册所有动画命令
-    /// </summary>
+    /// </summary>=
     public class AnimationObjectsHolder : ActionHolder
     {
+        public override bool Registed{
+            get{
+                return registed;
+            }
+        }
+        private bool registed;
         private List<AnimObj> animObjects = new List<AnimObj>();
 
         void Start()
@@ -23,6 +28,7 @@ namespace WorldActionSystem
                 ActionCommand cmd = new AnimCommand(anim.stapName, anim, true);
                 registFunc(cmd);
             }
+            registed = true;
         }
 
         public override void SetHighLight(bool on)

@@ -10,23 +10,32 @@ namespace WorldActionSystem
     public class ActionSystem:MonoBehaviour
     {
         public static ActionSystem Instance;
-        public IRemoteController RemoteController { get; private set; }
-        public event UnityAction<string,string> onStepErr;//步骤操作错误
+        public event UserError onUserError;//步骤操作错误
+        public IRemoteController RemoteController { get { return remoteController; } }
+        public IActionStap[] ActiveStaps { get { return staps; } }
+        public ActionHolder[] ActionHolders { get { return actionHolders.ToArray(); } }
 
-        private List<ActionHolder> actionHolders = new List<ActionHolder>();
-        private UnityAction<List<IActionStap>> onStapsActive;
+        private IRemoteController remoteController;
         private IActionStap[] staps;
+        private List<ActionHolder> actionHolders = new List<ActionHolder>();
         private Dictionary<string, ActionCommand> commandDic = new Dictionary<string, ActionCommand>();
-        private List<ActionCommand> actionCommandList = new List<ActionCommand>();
 
         void Awake(){
             Instance = this;
-            foreach (Transform item in transform){
+
+            foreach (Transform item in transform)
+            {
                 ActionHolder holder = item.GetComponent<ActionHolder>();
-                if (holder!= null)
+                if (holder != null)
                 {
-                    holder.registFunc = AddActionCommand;
-                    holder.onUserErr = OnUserErr;
+                    holder.registFunc = (cmd) => {
+                        commandDic.Add(cmd.StapName, cmd);
+                    };
+                    holder.onUserErr = (x, y) =>
+                     {
+                         if (onUserError != null)
+                             onUserError(x, y);
+                     };
                     actionHolders.Add(holder);
                 }
             }
@@ -34,74 +43,45 @@ namespace WorldActionSystem
 
         #region Public Functions
         /// <summary>
-        /// 获取控制器
+        /// 设置安装顺序并生成最终步骤
         /// </summary>
-        /// <returns></returns>
-        public void GetRemoteController(UnityAction<IRemoteController> onCtrlCreate)
+        public static IEnumerator LunchActionSystem(IActionStap[] staps)
         {
-            if (RemoteController != null)
-            {
-                onCtrlCreate(RemoteController);
-            }
-            else if (staps != null && staps.Length == commandDic.Count)
-            {
-                GetActionCommandList();
-                RemoteController = new RemoteController(actionCommandList);
-                onCtrlCreate(RemoteController);
+            Debug.Assert(staps != null);
+
+            yield return new WaitUntil(()=>Instance != null);
+
+            if (Instance.remoteController != null){
+                yield break;
             }
             else
             {
-                StartCoroutine(WaitToCreateRemoteCtrl(onCtrlCreate));
+                for (int i = 0; i < Instance.actionHolders.Count; i++){
+                    yield return new WaitUntil(()=>Instance.actionHolders[i].Registed);
+                }
+
+                if (staps.Length != Instance.commandDic.Count){
+                    staps = ConfigSteps(Instance.commandDic, staps);
+                }
+
+                var actionCommandList = GetActionCommandList(Instance.commandDic, staps);
+                Instance.remoteController = new RemoteController(actionCommandList);
             }
+
+            Instance.staps = staps;
         }
 
-        /// <summary>
-        /// 设置安装顺序并生成最终步骤
-        /// </summary>
-        public void SetActionStaps(IActionStap[] staps, UnityAction<List<IActionStap>> onStapsActive)
-        {
-            this.staps = staps;
-            this.onStapsActive = onStapsActive;
-        }
-        
-        /// <summary>
-        /// 设置高亮显示
-        /// </summary>
-        /// <param name="on"></param>
-        public void SetHighLight(bool on)
-        {
-            for (int i = 0; i < actionHolders.Count; i++)
-            {
-                actionHolders[i].SetHighLight(on);
-            }
-        }
-
-        /// <summary>
-        /// 设置文字提示
-        /// </summary>
-        /// <param name="isOn"></param>
-        public void InsertScript<T>(bool isOn) where T:MonoBehaviour
-        {
-            for (int i = 0; i < actionHolders.Count; i++)
-            {
-                actionHolders[i].InsertScript<T>(isOn);
-            }
-        }
         #endregion
 
         #region private Funtions
-        IEnumerator WaitToCreateRemoteCtrl(UnityAction<IRemoteController> onCtrlCreate)
+        /// <summary>
+        /// 重置步骤
+        /// </summary>
+        /// <param name="commandDic"></param>
+        /// <param name="staps"></param>
+        /// <returns></returns>
+        private static IActionStap[] ConfigSteps(Dictionary<string, ActionCommand> commandDic, IActionStap[] staps)
         {
-            yield return WaitReConfig();
-            GetActionCommandList();
-            RemoteController = new RemoteController(actionCommandList);
-            onCtrlCreate(RemoteController);
-        }
-
-        IEnumerator WaitReConfig()
-        {
-            yield return new WaitUntil(() => staps != null);
-
             if (string.Compare(commandDic.Count.ToString(), staps.Length.ToString()) != 0)
             {
                 Debug.Log("count" + commandDic.Count + staps.Length.ToString());
@@ -118,41 +98,16 @@ namespace WorldActionSystem
                     Debug.Log("Ignore + stap" + staps[i].StapName);
                 }
             }
-            if (onStapsActive != null)
-            {
-                onStapsActive(activeStaps);
-            }
+            return activeStaps.ToArray();
         }
-        
-        /// <summary>
-        /// 添加命令
-        /// </summary>
-        private void AddActionCommand(ActionCommand cmd)
-        {
-            commandDic.Add(cmd.StapName, cmd);
-        }
-        
-        /// <summary>
-        /// 用户操作错误触发
-        /// </summary>
-        /// <param name="step"></param>
-        /// <param name="err"></param>
-        private void OnUserErr(string step,string err)
-        {
-            if (onStepErr != null)
-            {
-                onStepErr.Invoke(step,err);
-            }
-        }
-
         /// <summary>
         /// 得到排序后的命令列表
         /// </summary>
         /// <returns></returns>
-        private List<ActionCommand> GetActionCommandList()
+        private static List<ActionCommand> GetActionCommandList(Dictionary<string, ActionCommand> commandDic, IActionStap[] staps)
         {
             ActionCommand cmd;
-            actionCommandList.Clear();
+            var actionCommandList = new List<ActionCommand>();
             foreach (var item in staps)
             {
                 if (commandDic.TryGetValue(item.StapName, out cmd))

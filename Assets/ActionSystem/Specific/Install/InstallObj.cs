@@ -5,8 +5,9 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if !NoFunction
 using DG.Tweening;
-
+#endif
 namespace WorldActionSystem
 {
     /// <summary>
@@ -16,57 +17,65 @@ namespace WorldActionSystem
     {
         [Range(1, 10)]
         public int animTime;
-        public MidlePosRot midPosRot;
-        public bool Installed { get { return target != null; } }
-        public Renderer Render { get { return m_render; } }
 
+        public bool Installed { get { return target != null; } }
         private InstallPos target;
-        private Vector3 startPos;
-        private Vector3 startRotation;
-        public UnityAction onInstallOkEvent;
+        public Renderer Render { get { return m_render; } }
+        
+        public UnityAction onInstallOkEvent { get; set; }
         public UnityAction onUnInstallOkEvent;
         [SerializeField]
         private Renderer m_render;
+#if !NoFunction
+        private Vector3 startRotation;
+        private Vector3 startPos;
         private Tweener move;
+        private int smooth = 50;
+#endif
 
+
+#if !NoFunction
         void Start()
         {
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             if (m_render == null) m_render = GetComponentInChildren<Renderer>();
         }
-
-        private void DoPath(Vector3 end, Vector3 endRot, TweenCallback onComplete)
+        private void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
         {
-            List<Vector3> path = new List<Vector3>();
-            path.Add(transform.position);
-            if(midPosRot.pos != null && midPosRot.pos.Count > 0) path.AddRange(midPosRot.pos);
-            path.Add(end);
-
-            move = transform.DOPath(path.ToArray(), animTime).OnComplete(onComplete).SetAutoKill(true);
-            if (midPosRot.rot.Count == 0)
+            posList = new List<Vector3>();
+            rotList = new List<Vector3>();
+            var player = FindObjectOfType<Camera>().transform;
+            var midPos = player.transform.position + player.transform.forward * 4f;
+            var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
+            for (int i = 0; i < smooth; i++)
             {
-                transform.eulerAngles = endRot;
-            }
-            else
-            {
-                move.OnWaypointChange((x) =>
-                {
-                    MidlePosRot.Rot rot = midPosRot.rot.Find(i => i.id == x);
-                    if (rot != null)
-                    {
-                        transform.eulerAngles = rot.rot;
-                    }
-                });
+                float curr = (i + 0f) / (smooth - 1);
+                posList.Add(Bezier.CalculateBezierPoint(curr, transform.position, midPos, end));
+                rotList.Add(Bezier.CalculateBezierPoint(curr, transform.eulerAngles, midRot, endRot));
             }
         }
 
+        private void DoPath(Vector3 end, Vector3 endRot, TweenCallback onComplete)
+        {
+            List<Vector3> poss;
+            List<Vector3> rots;
+            CreatePosList(end, endRot, out poss, out rots);
+            move = transform.DOPath(poss.ToArray(), animTime).OnComplete(onComplete).SetAutoKill(true);
+            move.OnWaypointChange((x) =>
+            {
+                transform.eulerAngles = rots[x];
+            });
+        }
+#endif
         /// <summary>
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
         public void NormalInstall(InstallPos target)
         {
+#if !NoFunction
+
             if (!Installed)
             {
                 //transform.rotation = target.transform.rotation;
@@ -77,6 +86,7 @@ namespace WorldActionSystem
                 });
                 this.target = target;
             }
+#endif
         }
         /// <summary>
         /// 定位安装
@@ -89,12 +99,16 @@ namespace WorldActionSystem
             {
                 transform.position = target.transform.position;
                 transform.rotation = target.transform.rotation;
+                if (onInstallOkEvent != null)
+                    onInstallOkEvent();
                 this.target = target;
             }
         }
 
         public void NormalUnInstall()
         {
+#if !NoFunction
+
             if (Installed)
             {
                 //transform.rotation = startRotation;
@@ -105,9 +119,12 @@ namespace WorldActionSystem
                 });
                 target = null;
             }
+#endif
         }
         public void QuickUnInstall()
         {
+#if !NoFunction
+
             StopTween();
             if (Installed)
             {
@@ -116,31 +133,39 @@ namespace WorldActionSystem
                 transform.position = startPos;
                 target.Detach();
                 target = null;
+                if (onUnInstallOkEvent != null)
+                    onUnInstallOkEvent();
             }
+#endif
         }
 
         public void OnPickUp()
         {
             //pickUpPos = transform.position;
+            StopTween();
         }
 
         public void OnPickDown()
         {
-            transform.DOMove(startPos, animTime).SetAutoKill(true);
+#if !NoFunction
+
+            move = transform.DOMove(startPos, animTime).SetAutoKill(true);
+#endif
         }
 
         private void StopTween()
         {
-            move.Rewind();
-            move.Pause();
-            onUnInstallOkEvent = null;
-            onInstallOkEvent = null;
-        }
+#if !NoFunction
 
+            move.Pause();
+            move.Kill(true);
+#endif
+        }
+        
         public void RegisterRenderer(Renderer renderer)
         {
-            if(renderer != null)
-            m_render = renderer;
+            if (renderer != null)
+                m_render = renderer;
         }
     }
 

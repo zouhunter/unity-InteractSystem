@@ -14,9 +14,8 @@ namespace WorldActionSystem
         private AnimationState state;
         private float animTime;
         private AnimationEvent even;
-        private float speed;
 
-        public static AnimCore Init(Animation anim, float speed, UnityEvent onPlayEnd)
+        public static AnimCore Init(Animation anim, UnityEvent onPlayEnd)
         {
             AnimCore core = null;
             if (anim != null)
@@ -24,7 +23,7 @@ namespace WorldActionSystem
                 core = anim.gameObject.AddComponent<AnimCore>();
                 core.anim = anim;
                 core.anim.playAutomatically = false;
-                core.speed = speed;
+                core.anim.wrapMode = WrapMode.Once;
                 core.onPlayEnd = onPlayEnd;
                 core.RegisterEvent();
             }
@@ -38,7 +37,6 @@ namespace WorldActionSystem
             animName = anim.clip.name;
             state = anim[animName];
             animTime = state.length;
-            state.speed = speed;
             anim.cullingType = AnimationCullingType.BasedOnRenderers;
 
             clip = anim.GetClip(animName);
@@ -55,7 +53,7 @@ namespace WorldActionSystem
         {
             onPlayEnd.Invoke();
         }
-        public void Play()
+        public void Play(float speed)
         {
             state.normalizedTime = 0f;
             state.speed = speed;

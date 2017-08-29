@@ -5,8 +5,9 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if !NoFunction
 using DG.Tweening;
-
+#endif
 namespace WorldActionSystem
 {
     /// <summary>

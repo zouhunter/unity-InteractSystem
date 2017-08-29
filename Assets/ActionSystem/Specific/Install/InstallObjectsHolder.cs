@@ -12,10 +12,17 @@ namespace WorldActionSystem
     /// </summary>
     public class InstallObjectsHolder : ActionHolder
     {
+        public override bool Registed
+        {
+            get
+            {
+                return registed;
+            }
+        }
         private IInstallStart startParent;
         private IInstallEnd endParent;
         private IInstallCtrl intallController;
-
+        private bool registed;
         // Use this for initialization
         void Awake()
         {
@@ -42,18 +49,18 @@ namespace WorldActionSystem
             startParent.InsertScript<T>(on);
         }
 
-        private void OnInstallErr(string err){
-            onUserErr("安装错误", err);
+        private void OnInstallErr(string stepName,string err){
+           if(onUserErr != null) onUserErr(stepName, err);
         }
         
         private void OnAllInstallPosInit(Dictionary<string, List<InstallPos>> dic)
         {
             ActionCommand cmd;
-            foreach (var item in dic)
-            {
+            foreach (var item in dic){
                 cmd = new InstallCommand(item.Key, intallController, item.Value);
                 if(registFunc != null) registFunc(cmd);
             }
+            registed = true;
         }
 
     }

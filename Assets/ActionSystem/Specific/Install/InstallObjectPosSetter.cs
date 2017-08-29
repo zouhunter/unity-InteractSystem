@@ -23,10 +23,9 @@ public class InstallObjectPosSetter : MonoBehaviour
 
     public List<Transform> objectList = new List<Transform>();
     public List<PosTemp> switchList = new List<PosTemp>();
+    public static string key { get; set; }
     void Start()
     {
-        string key = "defult";
-
         PosTemp data = switchList.Find(x => x.key == key);
         Transform titem;
         if (data != null)
@@ -40,5 +39,38 @@ public class InstallObjectPosSetter : MonoBehaviour
                 titem.localScale = item.size;
             }
         }
+    }
+
+    public void RegisterTransform(string key, Transform target, Vector3 pos, Vector3 rot, Vector3 size)
+    {
+        ///更新坐标数
+        if (!objectList.Contains(target))
+        {
+            objectList.Add(target);
+            for (int i = 0; i < switchList.Count; i++)
+            {
+                switchList[i].objTransforms.Add(new PosTemp.TransformTemp());
+            }
+        }
+
+        ///添加状态数
+        var oldPosTemp = switchList.Find(x => x.key == key);
+        if (oldPosTemp == null)
+        {
+            oldPosTemp = new PosTemp();
+            oldPosTemp.key = key;
+            for (int i = 0; i < objectList.Count; i++)
+            {
+                oldPosTemp.objTransforms.Add(new PosTemp.TransformTemp());
+            }
+            switchList.Add(oldPosTemp);
+        }
+        
+
+        ///记录坐标等信息
+        var index = objectList.IndexOf(target);
+        oldPosTemp.objTransforms[index].position = pos;
+        oldPosTemp.objTransforms[index].eular = rot;
+        oldPosTemp.objTransforms[index].size = size;
     }
 }

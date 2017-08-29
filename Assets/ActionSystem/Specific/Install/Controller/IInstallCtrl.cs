@@ -12,7 +12,7 @@ namespace WorldActionSystem
     {
         //刷新状态
         void Reflesh();
-        event UnityAction<string> InstallErr;
+        event UserError InstallErr;
         void SwitchHighLight(bool ison);
         bool CurrStapComplete();
         void SetStapActive(string stapName);

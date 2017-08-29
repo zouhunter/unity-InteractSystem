@@ -48,7 +48,6 @@ namespace WorldActionSystem
         public Button skipAStap;
         public Button skipMutiStap;
         public Button toEnd;
-        public Button insertscipt;
 
         public Toggle autoNext;
         /// <summary>
@@ -64,7 +63,6 @@ namespace WorldActionSystem
             skipAStap.onClick.AddListener(OnSkipAstapButtonClicekd);
             skipMutiStap.onClick.AddListener(OnSkipMutiButtonClicked);
             toEnd.onClick.AddListener(ToEndButtonClicked);
-            insertscipt.onClick.AddListener(OnInsertTextInfo);
 
             //accept.onClick.AddListener(OnSelected);
             start.onClick.AddListener(OnStapChange);
@@ -74,11 +72,6 @@ namespace WorldActionSystem
             skipAStap.onClick.AddListener(OnStapChange);
             skipMutiStap.onClick.AddListener(OnStapChange);
             toEnd.onClick.AddListener(OnStapChange);
-        }
-
-        private void OnInsertTextInfo()
-        {
-            ActionSystem.Instance.InsertScript<InfoTextShow>(true);
         }
 
         void OnAcceptButtonCilcked()
@@ -180,15 +173,11 @@ namespace WorldActionSystem
         IEnumerator Start()
         {
             panel.SetActive(false);
-            yield return new WaitUntil(()=>  ActionSystem.Instance != null);
-            ActionSystem.Instance.SetActionStaps(steps, null);
-            ActionSystem.Instance.GetRemoteController(OnControllerCreated);
-        }
-
-        void OnControllerCreated(IRemoteController controller)
-        {
-            remoteController = controller;
+            yield return ActionSystem.LunchActionSystem(steps);
+            remoteController = ActionSystem.Instance.RemoteController;
             panel.SetActive(true);
+
+            ActionSystem.Instance.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
         }
     }
 
@@ -196,11 +185,20 @@ namespace WorldActionSystem
     public class Step : IActionStap
     {
         public string stap;
+        public string type;
         public string StapName
         {
             get
             {
                 return stap;
+            }
+        }
+
+        public string StapType
+        {
+            get
+            {
+                return type;
             }
         }
     }

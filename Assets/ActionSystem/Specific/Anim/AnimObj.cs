@@ -12,7 +12,11 @@ namespace WorldActionSystem
         public string stapName;
         public bool endActive;
         public bool startActive;
+
         public Animation anim;
+        private AnimCore core;
+
+        public InstallAnim installAnim;
 
         [Range(0.1f, 10f)]
         public float speed = 1;
@@ -21,7 +25,6 @@ namespace WorldActionSystem
         public UnityEvent unDo;
         public UnityEvent onPlayEnd;
 
-        private AnimCore core;
 
         public IRemoteController RemoteCtrl
         {
@@ -34,21 +37,34 @@ namespace WorldActionSystem
         void Awake()
         {
             if (anim == null) anim = GetComponentInChildren<Animation>();
-            if (anim != null) core = AnimCore.Init(anim, speed, onPlayEnd);
+            if (anim != null) core = AnimCore.Init(anim, onPlayEnd);
+            if (installAnim == null) installAnim = GetComponentInChildren<InstallAnim>();
+            if (installAnim != null) installAnim.Init(onPlayEnd);
             RegisterInsideEvents();
         }
 
         void Start()
         {
+            if(anim != null|| installAnim != null)
             gameObject.SetActive(startActive);
         }
 
         public void RegisterOutSideAnim(Animation anim)
         {
-            if (this.anim == null && anim != null)
+            if (anim != null)
             {
                 this.anim = anim;
-                core = AnimCore.Init(anim, speed, onPlayEnd);
+                core = AnimCore.Init(anim, onPlayEnd);
+                gameObject.SetActive(startActive);
+            }
+        }
+
+        public void RegisterOutSideAnim(InstallAnim installAnim)
+        {
+            if (installAnim != null) {
+                this.installAnim = installAnim;
+                installAnim.Init(onPlayEnd);
+                gameObject.SetActive(startActive);
             }
         }
 
@@ -77,19 +93,22 @@ namespace WorldActionSystem
         public void PlayAnim()
         {
             onPlay.Invoke();
-            if (core != null) core.Play();
+            if (core != null) core.Play(speed);
+            if (installAnim != null) installAnim.Play(1f/speed);
         }
 
         public void EndPlay()
         {
             onPlayEnd.Invoke();
             if (core != null) core.EndPlay();
+            if (installAnim != null) installAnim.EndPlay();
         }
 
         public void UnDoPlay()
         {
             unDo.Invoke();
             if (core != null) core.UnDoPlay();
+            if (installAnim != null) installAnim.UnDoPlay();
         }
     }
 }

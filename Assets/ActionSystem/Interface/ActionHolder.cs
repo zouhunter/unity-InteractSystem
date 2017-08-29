@@ -10,6 +10,7 @@ namespace WorldActionSystem
 
     public abstract class ActionHolder : MonoBehaviour
     {
+        public abstract bool Registed { get; }
         /// <summary>
         /// 注册安装命令
         /// </summary>
@@ -18,7 +19,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 用户操作错误
         /// </summary>
-        public UnityAction<string, string> onUserErr;
+        public UserError onUserErr;
 
         /// <summary>
         /// 设置高亮显示

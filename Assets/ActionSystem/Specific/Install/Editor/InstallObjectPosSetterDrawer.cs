@@ -11,6 +11,7 @@ public class InstallObjectPosSetterDrawer : Editor
 {
     public SerializedProperty switchList;
     public SerializedProperty objectList;
+    public SerializedProperty scriptProp;
     string activeName;
     int _sremoveindex;
     int _oremoveindex;
@@ -18,6 +19,7 @@ public class InstallObjectPosSetterDrawer : Editor
     {
         switchList = serializedObject.FindProperty("switchList");
         objectList = serializedObject.FindProperty("objectList");
+        scriptProp = serializedObject.FindProperty("m_Script");
     }
     protected override void OnHeaderGUI()
     {
@@ -26,6 +28,7 @@ public class InstallObjectPosSetterDrawer : Editor
 
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
         DrawSwithAbleHeader();
         DrawSwitchAbleKeys();
         DrawGameObjectsHeader();
@@ -36,12 +39,12 @@ public class InstallObjectPosSetterDrawer : Editor
     private void DrawGameObjectsHeader()
     {
         EditorGUILayout.BeginHorizontal();
-        GUI.backgroundColor = Color.blue;
+        GUI.backgroundColor = Color.green;
         EditorGUILayout.SelectableLabel("2.坐标受控制的对象");
         EditorGUILayout.SelectableLabel("-->当前连接：-->");
         GUI.backgroundColor = Color.red;
         EditorGUILayout.SelectableLabel(activeName);
-        GUI.backgroundColor = Color.blue;
+        GUI.backgroundColor = Color.green;
         if (GUILayout.Button("+", GUILayout.Width(20)))
         {
             int idex = objectList.arraySize - 1;
@@ -110,8 +113,10 @@ public class InstallObjectPosSetterDrawer : Editor
 
     void DrawSwithAbleHeader()
     {
+        EditorGUILayout.PropertyField(scriptProp);
+
         EditorGUILayout.BeginHorizontal();
-        GUI.backgroundColor = Color.blue;
+        GUI.backgroundColor = Color.green;
         EditorGUILayout.SelectableLabel("1.实验关键字列表");
 
         if (GUILayout.Button("Record", GUILayout.Width(60)))

@@ -22,15 +22,15 @@ namespace WorldActionSystem
         private float distence { get { return startParent.Distence; }set { startParent.Distence = value; } }
         private InstallPos installPos;
 
-        private const string elementLayer = "installStart";
-        private const string elementInstallLayer = "installEnd";
+        public const string elementLayer = "installStart";
+        public const string elementInstallLayer = "installEnd";
         private Ray ray;
         private RaycastHit hit;
-        private RaycastHit[] hits;
+        private RaycastHit hits;
         private bool installAble;
         private string resonwhy;
-
-        public event UnityAction<string> InstallErr;
+        private string currStepName;
+        public event UserError InstallErr;
         public InstallController(IInstallStart startParent, IInstallEnd endParent)
         {
             this.startParent = startParent;
@@ -114,47 +114,57 @@ namespace WorldActionSystem
         public void UpdateInstallState()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(elementInstallLayer)) && hit.collider.name == pickedUpObj.name)
+            var hits = Physics.RaycastAll(ray, 100, LayerMask.GetMask(elementInstallLayer));
+            if (hits != null || hits.Length > 0)
             {
-                installPos = hit.collider.GetComponent<InstallPos>();
-                if (installPos == null)
+                bool hited = false;
+                for (int i = 0; i < hits.Length; i++)
                 {
-                    Debug.LogError("零件未挂InstallPos脚本");
+                    if (hits[i].collider.name == pickedUpObj.name)
+                    {
+                        hited = true;
+                        installPos = hits[i].collider.GetComponent<InstallPos>();
+                        if (installPos == null)
+                        {
+                            Debug.LogError("零件未挂InstallPos脚本");
+                        }
+                        else if (!endParent.IsInstallStep(installPos))
+                        {
+                            installAble = false;
+                            resonwhy = "当前安装步骤并非" + installPos.stapName;
+                        }
+                        else if (endParent.HaveInstallPosInstalled(installPos))
+                        {
+                            installAble = false;
+                            resonwhy = "安装点已经安装了其他零件";
+                        }
+                        else if (!startParent.CanInstallToPos(installPos))
+                        {
+                            installAble = false;
+                            resonwhy = "拿起零件和安装点不对应";
+                        }
+                        else
+                        {
+                            installAble = true;
+                        }
+                    }
                 }
-                else if(!endParent.IsInstallStep(installPos))
+                if(!hited)
                 {
                     installAble = false;
-                    resonwhy = "当前安装步骤并非" + installPos.stapName;
+                    resonwhy = "不要乱放零件";
                 }
-                else if (endParent.HaveInstallPosInstalled(installPos))
-                {
-                    installAble = false;
-                    resonwhy = "安装点已经安装了其他零件";
-                }
-                else if (!startParent.CanInstallToPos(installPos))
-                {
-                    installAble = false;
-                    resonwhy = "拿起零件和安装点不对应";
-                }
-                else
-                {
-                    installAble = true;
-                }
+            }
 
-                if (installAble)
-                {
-                    //可安装显示绿色
-                    if (HighLight != null) HighLight.HighLightTarget(pickedUpObj.Render, Color.green);
-                }
-                else {
-                    //不可安装红色
-                    if (HighLight != null) HighLight.HighLightTarget(pickedUpObj.Render, Color.red);
-                }
+            if (installAble)
+            {
+                //可安装显示绿色
+                if (HighLight != null) HighLight.HighLightTarget(pickedUpObj.Render, Color.green);
             }
             else
             {
-                installAble = false;
-                resonwhy = "未点击到对应的安装点";
+                //不可安装红色
+                if (HighLight != null) HighLight.HighLightTarget(pickedUpObj.Render, Color.red);
             }
         }
 
@@ -222,6 +232,7 @@ namespace WorldActionSystem
 
         public void SetStapActive(string stapName)
         {
+            currStepName = stapName;
             endParent.SetStapActive(stapName);
         }
 
@@ -256,7 +267,7 @@ namespace WorldActionSystem
         {
             if (InstallErr != null)
             {
-                InstallErr.Invoke(err);
+                InstallErr.Invoke(currStepName, err);
             }
         }
     }

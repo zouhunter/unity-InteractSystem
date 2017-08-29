@@ -101,17 +101,8 @@ namespace WorldActionSystem
         /// <param name="pos"></param>
         public void InstallPickedUpObject(InstallPos pos)
         {
-            pickedUpObj.NormalInstall(pos);
             pos.Attach(pickedUpObj);
-        }
-        /// <summary>
-        /// 快速安装元素到指定坐标
-        /// </summary>
-        /// <param name="pos"></param>
-        public void QuickInstallPickedUpObject(InstallPos pos)
-        {
             pickedUpObj.QuickInstall(pos);
-            pos.Attach(pickedUpObj);
         }
 
         /// <summary>
@@ -125,8 +116,8 @@ namespace WorldActionSystem
             {
                 pos = posList[i];
                 InstallObj obj = GetUnInstalledObj(pos.name);
-                obj.NormalInstall(pos);
                 pos.Attach(obj);
+                obj.NormalInstall(pos);
             }
         }
         /// <summary>
