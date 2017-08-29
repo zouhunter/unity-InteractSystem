@@ -54,13 +54,13 @@ namespace WorldActionSystem
         /// <summary>
         /// 开启一个命令,并返回正常执行与否
         /// </summary>
-        public bool StartExecuteCommand(UnityAction onEndExecute, bool modfy = false)
+        public bool StartExecuteCommand(UnityAction onEndExecute)
         {
             if (!started && HaveCommand(index))
             {
                 started = true;
                 this.onEndExecute = onEndExecute;
-                CurrCommand.StartExecute(modfy);
+                CurrCommand.StartExecute();
                 return true;
             }
             else

@@ -1,29 +1,36 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
-    /// <summary>
-    /// 提供拿起安装和快速安装等功能
-    /// </summary>
-    public class InstallController : IInstallCtrl
+    public class DragAnimController 
     {
-        IInstallStart startParent;
-        IInstallEnd endParent;
+        private DragTarget endParent;
+        private DragStart startParent;
+        private DragShow animParent;
         IHighLightItems HighLight;
 
-        private InstallObj pickedUpObj;
-        private bool pickedUp;
-        private float distence { get { return startParent.Distence; }set { startParent.Distence = value; } }
-        private InstallPos installPos;
+        public DragAnimController(DragStart startParent, DragTarget endParent, DragShow animParent)
+        {
+            this.startParent = startParent;
+            this.endParent = endParent;
+            this.animParent = animParent;
+            HighLight = new ShaderHighLight();
 
-        public const string elementLayer = "installStart";
-        public const string elementInstallLayer = "installEnd";
+            startParent.onInstallOk = PlayAnim;
+        }
+
+
+        private DragObj pickedUpObj;
+        private bool pickedUp;
+        private float distence { get { return startParent.Distence; } set { startParent.Distence = value; } }
+        private DragPos installPos;
+
+        public const string elementLayer = "dragStart";
+        public const string elementInstallLayer = "dragEnd";
         private Ray ray;
         private RaycastHit hit;
         private RaycastHit[] hits;
@@ -31,12 +38,10 @@ namespace WorldActionSystem
         private string resonwhy;
         private string currStepName;
         public event UserError InstallErr;
-        public InstallController(IInstallStart startParent, IInstallEnd endParent)
-        {
-            this.startParent = startParent;
-            this.endParent = endParent;
-            HighLight = new ShaderHighLight();
-        }
+
+        private Ray disRay;
+        private RaycastHit disHit;
+        private string obstacle = "Obstacle";
 
         public void SwitchHighLight(bool open)
         {
@@ -56,7 +61,7 @@ namespace WorldActionSystem
                 UpdateInstallState();
                 MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
             }
-            
+
         }
 
         public void OnLeftMouseClicked()
@@ -79,14 +84,14 @@ namespace WorldActionSystem
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(elementLayer)))
             {
-                pickedUpObj = hit.collider.GetComponent<InstallObj>();
+                pickedUpObj = hit.collider.GetComponent<DragObj>();
                 if (pickedUpObj != null && startParent.PickUpObject(pickedUpObj))
                 {
                     pickedUp = true;
 
                     if (!PickUpedCanInstall())
                     {
-                       if(HighLight != null)  HighLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
+                        if (HighLight != null) HighLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
                     }
                     else
                     {
@@ -99,10 +104,10 @@ namespace WorldActionSystem
         private bool PickUpedCanInstall()
         {
             bool canInstall = false;
-            List<InstallPos> poss = endParent.GetNotInstalledPosList();
+            List<DragPos> poss = endParent.GetNotInstalledPosList();
             for (int i = 0; i < poss.Count; i++)
             {
-                if (!endParent.HaveInstallPosInstalled(poss[i])&&endParent.IsInstallStep(poss[i]) && startParent.CanInstallToPos(poss[i]))
+                if (!endParent.HaveInstallPosInstalled(poss[i]) && endParent.IsInstallStep(poss[i]) && startParent.CanInstallToPos(poss[i]))
                 {
                     canInstall = true;
                 }
@@ -123,7 +128,7 @@ namespace WorldActionSystem
                     if (hits[i].collider.name == pickedUpObj.name)
                     {
                         hited = true;
-                        installPos = hits[i].collider.GetComponent<InstallPos>();
+                        installPos = hits[i].collider.GetComponent<DragPos>();
                         if (installPos == null)
                         {
                             Debug.LogError("零件未挂InstallPos脚本");
@@ -149,7 +154,7 @@ namespace WorldActionSystem
                         }
                     }
                 }
-                if(!hited)
+                if (!hited)
                 {
                     installAble = false;
                     resonwhy = "不要乱放零件";
@@ -169,7 +174,7 @@ namespace WorldActionSystem
         }
 
 
-        
+
         /// <summary>
         /// 尝试安装元素
         /// </summary>
@@ -191,16 +196,13 @@ namespace WorldActionSystem
             if (HighLight != null) HighLight.UnHighLightTarget(pickedUpObj.Render);
         }
 
-        private Ray disRay;
-        private RaycastHit disHit;
-        private string obstacle = "Obstacle";
         /// <summary>
         /// 跟随鼠标
         /// </summary>
         void MoveWithMouse(float dis)
         {
             disRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(disRay, out disHit,dis,LayerMask.GetMask(obstacle)))
+            if (Physics.Raycast(disRay, out disHit, dis, LayerMask.GetMask(obstacle)))
             {
                 pickedUpObj.transform.position = disHit.point;
             }
@@ -218,9 +220,9 @@ namespace WorldActionSystem
         public void EndInstall(string stapName)
         {
             SetStapActive(stapName);
-            List<InstallPos> installed = endParent.GetInstalledPosList();
+            List<DragPos> installed = endParent.GetInstalledPosList();
             startParent.QuickUnInstallPosListObjects(installed);
-            List<InstallPos> posList = endParent.GetNotInstalledPosList();
+            List<DragPos> posList = endParent.GetNotInstalledPosList();
             startParent.QuickInstallPosListObjects(posList);
 
         }
@@ -242,24 +244,24 @@ namespace WorldActionSystem
         /// <param name="stapName"></param>
         public void AutoInstallWhenNeed(string stapName)
         {
-            List<InstallPos> posList = endParent.GetNeedAutoInstallPosList();
+            List<DragPos> posList = endParent.GetNeedAutoInstallPosList();
 
             startParent.InstallPosListObjects(posList);
-			
+
             pickedUp = false;
         }
 
         public void UnInstall(string stapName)
         {
             SetStapActive(stapName);
-            List<InstallPos> posList = endParent.GetInstalledPosList();
+            List<DragPos> posList = endParent.GetInstalledPosList();
             startParent.UnInstallPosListObjects(posList);
         }
 
         public void QuickUnInstall(string stapName)
         {
             SetStapActive(stapName);
-            List<InstallPos> posList = endParent.GetInstalledPosList();
+            List<DragPos> posList = endParent.GetInstalledPosList();
             startParent.QuickUnInstallPosListObjects(posList);
         }
 
@@ -270,6 +272,22 @@ namespace WorldActionSystem
                 InstallErr.Invoke(currStepName, err);
             }
         }
+        private void PlayAnim()
+        {
+            if (CurrStapComplete())
+            {
+                List<DragPos> posList = endParent.GetInstalledPosList();
+                startParent.TryHidePosListObjects(posList);
+                animParent.PlayAnim(currStepName);
+            }
+        }
+        public void UnDoAnim(string currStepName)
+        {
+            animParent.UnDoAnim(currStepName);
+        }
+        public void EndPlayAnim(string currStepName)
+        {
+            animParent.EndPlayAnim(currStepName);
+        }
     }
-
 }

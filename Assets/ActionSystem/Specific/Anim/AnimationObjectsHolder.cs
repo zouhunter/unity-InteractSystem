@@ -36,10 +36,10 @@ namespace WorldActionSystem
             //throw new NotImplementedException();
         }
 
-        public override void InsertScript<T>(bool on)
-        {
+        public override void InsertScript<T>(bool on) { 
             //throw new NotImplementedException();
         }
+
     }
 
 }

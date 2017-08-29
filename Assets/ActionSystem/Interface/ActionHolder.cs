@@ -31,7 +31,7 @@ namespace WorldActionSystem
         /// 添加功能脚本
         /// </summary>
         /// <param name="on"></param>
-        public abstract void InsertScript<T>(bool on) where T:MonoBehaviour;
+        public abstract void InsertScript<T>(bool on) where T : InsertBehaiver;
     }
 
 }

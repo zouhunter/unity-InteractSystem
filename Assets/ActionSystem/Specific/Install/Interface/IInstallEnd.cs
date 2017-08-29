@@ -14,7 +14,7 @@ namespace WorldActionSystem
         bool IsInstallStep(InstallPos installObj);
         bool HaveInstallPosInstalled(InstallPos installObj);
         List<InstallPos> GetNotInstalledPosList();
-        List<InstallPos> GetNeedAutoInstallPosList(bool fauseAuto);
+        List<InstallPos> GetNeedAutoInstallPosList();
         bool AllElementInstalled();
         List<InstallPos> GetInstalledPosList();
     }

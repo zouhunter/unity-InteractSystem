@@ -1,42 +1,43 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System;
 using System.Collections;
 using System.Collections.Generic;
+
 namespace WorldActionSystem
 {
-
-    /// <summary>
-    /// 记录安装对象,并操作对象
-    /// </summary>
-    public class InstallStart : MonoBehaviour, IInstallStart
+    public class DragStart : MonoBehaviour
     {
         [Range(1, 10)]
         public float distence = 1;
         public float Distence { get { return distence; } set { distence = value; } }
 
-        private InstallObj pickedUpObj;
+        private DragObj pickedUpObj;
+        public UnityAction onInstallOk;
+
         /// <summary>
         /// 按名称将元素进行记录
         /// </summary>
-        Dictionary<string, List<InstallObj>> objectList = new Dictionary<string, List<InstallObj>>();
+        Dictionary<string, List<DragObj>> objectList = new Dictionary<string, List<DragObj>>();
 
         void Start()
         {
             foreach (Transform item in transform)
             {
-                InstallObj obj = item.GetComponent<InstallObj>();
+                DragObj obj = item.GetComponent<DragObj>();
                 if (objectList.ContainsKey(obj.name))
                 {
                     objectList[obj.name].Add(obj);
                 }
                 else
                 {
-                    objectList[obj.name] = new List<InstallObj>() { obj };
+                    objectList[obj.name] = new List<DragObj>() { obj };
                 }
-
+                obj.onInstallOkEvent = () =>
+                {
+                    if (onInstallOk != null) onInstallOk();
+                };
             }
         }
 
@@ -64,7 +65,7 @@ namespace WorldActionSystem
         /// 拿起元素
         /// </summary>
         /// <param name="pickedUpObj"></param>
-        public bool PickUpObject(InstallObj pickedUpObj)
+        public bool PickUpObject(DragObj pickedUpObj)
         {
             if (!pickedUpObj.Installed)
             {
@@ -91,7 +92,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public bool CanInstallToPos(InstallPos pos)
+        public bool CanInstallToPos(DragPos pos)
         {
             return pickedUpObj.name == pos.name;
         }
@@ -100,7 +101,7 @@ namespace WorldActionSystem
         /// 安装元素到指定坐标
         /// </summary>
         /// <param name="pos"></param>
-        public void InstallPickedUpObject(InstallPos pos)
+        public void InstallPickedUpObject(DragPos pos)
         {
             pos.Attach(pickedUpObj);
             pickedUpObj.QuickInstall(pos);
@@ -110,13 +111,13 @@ namespace WorldActionSystem
         /// 将未安装的元素安装到指定的坐标
         /// </summary>
         /// <param name="posList"></param>
-        public void InstallPosListObjects(List<InstallPos> posList)
+        public void InstallPosListObjects(List<DragPos> posList)
         {
-            InstallPos pos;
+            DragPos pos;
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                InstallObj obj = GetUnInstalledObj(pos.name);
+                DragObj obj = GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalInstall(pos);
             }
@@ -125,15 +126,15 @@ namespace WorldActionSystem
         /// 快速安装 列表 
         /// </summary>
         /// <param name="posList"></param>
-        public void QuickInstallPosListObjects(List<InstallPos> posList)
+        public void QuickInstallPosListObjects(List<DragPos> posList)
         {
-            InstallPos pos;
+            DragPos pos;
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
                 if (pos != null)
                 {
-                    InstallObj obj = GetUnInstalledObj(pos.name);
+                    DragObj obj = GetUnInstalledObj(pos.name);
                     obj.QuickInstall(pos);
                     pos.Attach(obj);
                 }
@@ -143,13 +144,13 @@ namespace WorldActionSystem
         /// uninstll
         /// </summary>
         /// <param name="posList"></param>
-        public void UnInstallPosListObjects(List<InstallPos> posList)
+        public void UnInstallPosListObjects(List<DragPos> posList)
         {
-            InstallPos pos;
+            DragPos pos;
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                InstallObj obj = pos.Detach();
+                DragObj obj = pos.Detach();
                 obj.NormalUnInstall();
             }
         }
@@ -157,13 +158,13 @@ namespace WorldActionSystem
         /// QuickUnInstall
         /// </summary>
         /// <param name="posList"></param>
-        public void QuickUnInstallPosListObjects(List<InstallPos> posList)
+        public void QuickUnInstallPosListObjects(List<DragPos> posList)
         {
-            InstallPos pos;
+            DragPos pos;
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                InstallObj obj = pos.Detach();
+                DragObj obj = pos.Detach();
                 obj.QuickUnInstall();
             }
         }
@@ -173,9 +174,9 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        InstallObj GetUnInstalledObj(string elementName)
+        DragObj GetUnInstalledObj(string elementName)
         {
-            List<InstallObj> listObj;
+            List<DragObj> listObj;
 
             if (objectList.TryGetValue(elementName, out listObj))
             {
@@ -189,6 +190,14 @@ namespace WorldActionSystem
             }
             return null;
         }
-    }
 
+        internal void TryHidePosListObjects(List<DragPos> posList)
+        {
+            for (int i = 0; i < posList.Count; i++)
+            {
+                DragObj obj = posList[i].obj;
+                obj.TryHide();
+            }
+        }
+    }
 }

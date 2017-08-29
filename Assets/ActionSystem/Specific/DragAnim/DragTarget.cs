@@ -1,23 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
-    /// <summary>
-    /// 安装过程中控制解锁
-    /// </summary>
-    public class InstallTarget : MonoBehaviour, IInstallEnd
+    public class DragTarget :MonoBehaviour
     {
         /// <summary>
         /// 按步骤将子目标点进行记录
         /// </summary>
-        Dictionary<string, List<InstallPos>> installDic = new Dictionary<string, List<InstallPos>>();
-        List<InstallPos> currInstallPoss = new List<InstallPos>();
+        Dictionary<string, List<DragPos>> installDic = new Dictionary<string, List<DragPos>>();
+        List<DragPos> currInstallPoss = new List<DragPos>();
         bool allChildRecord;
         void Start()
         {
@@ -28,10 +23,10 @@ namespace WorldActionSystem
         /// </summary>
         void SaveTargetObjects()
         {
-            InstallPos installPos;
+            DragPos installPos;
             foreach (Transform item in transform)
             {
-                installPos = item.GetComponent<InstallPos>();
+                installPos = item.GetComponent<DragPos>();
                 //记录步骤对象
                 if (installDic.ContainsKey(installPos.stapName))
                 {
@@ -39,7 +34,7 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    installDic[installPos.stapName] = new List<InstallPos>() { (installPos) };
+                    installDic[installPos.stapName] = new List<DragPos>() { (installPos) };
                 }
             }
             allChildRecord = true;
@@ -48,7 +43,7 @@ namespace WorldActionSystem
         /// 获取坐标字典
         /// </summary>
         /// <param name="onDicCrateed"></param>
-        public void GetInstallDicAsync(UnityAction<Dictionary<string, List<InstallPos>>> onDicCrateed)
+        public void GetInstallDicAsync(UnityAction<Dictionary<string, List<DragPos>>> onDicCrateed)
         {
             if (allChildRecord)
             {
@@ -59,7 +54,7 @@ namespace WorldActionSystem
                 StartCoroutine(WaitToEnd(onDicCrateed));
             }
         }
-        IEnumerator WaitToEnd(UnityAction<Dictionary<string, List<InstallPos>>> onDicCrateed)
+        IEnumerator WaitToEnd(UnityAction<Dictionary<string, List<DragPos>>> onDicCrateed)
         {
             yield return new WaitWhile(() => allChildRecord == false);
             onDicCrateed(installDic);
@@ -86,7 +81,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="installObj"></param>
         /// <returns></returns>
-        public bool IsInstallStep(InstallPos installObj)
+        public bool IsInstallStep(DragPos installObj)
         {
             return currInstallPoss.Contains(installObj);
         }
@@ -96,7 +91,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="installObj"></param>
         /// <returns></returns>
-        public bool HaveInstallPosInstalled(InstallPos installObj)
+        public bool HaveInstallPosInstalled(DragPos installObj)
         {
             return installObj.Installed;
         }
@@ -105,11 +100,11 @@ namespace WorldActionSystem
         /// 获取当前未安装完成的坐标
         /// </summary>
         /// <returns></returns>
-        public List<InstallPos> GetNotInstalledPosList()
+        public List<DragPos> GetNotInstalledPosList()
         {
             {
-                List<InstallPos> installPoss = new List<InstallPos>();
-                InstallPos item;
+                List<DragPos> installPoss = new List<DragPos>();
+                DragPos item;
                 for (int i = 0; i < currInstallPoss.Count; i++)
                 {
                     item = currInstallPoss[i];
@@ -125,10 +120,10 @@ namespace WorldActionSystem
         /// 获取当前步骤需要自动安装的坐标
         /// </summary>
         /// <returns></returns>
-        public List<InstallPos> GetNeedAutoInstallPosList()
+        public List<DragPos> GetNeedAutoInstallPosList()
         {
-            List<InstallPos> installPoss = new List<InstallPos>();
-            InstallPos item;
+            List<DragPos> installPoss = new List<DragPos>();
+            DragPos item;
             for (int i = 0; i < currInstallPoss.Count; i++)
             {
                 item = currInstallPoss[i];
@@ -153,10 +148,10 @@ namespace WorldActionSystem
             return allInstall;
         }
 
-        public List<InstallPos> GetInstalledPosList()
+        public List<DragPos> GetInstalledPosList()
         {
-            List<InstallPos> installPoss = new List<InstallPos>();
-            InstallPos item;
+            List<DragPos> installPoss = new List<DragPos>();
+            DragPos item;
             for (int i = 0; i < currInstallPoss.Count; i++)
             {
                 item = currInstallPoss[i];

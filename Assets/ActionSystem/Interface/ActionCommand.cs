@@ -17,7 +17,7 @@ namespace WorldActionSystem
         {
             this.StapName = stapName;
         }
-        public virtual void StartExecute(bool modfy = false)
+        public virtual void StartExecute()
         {
             if (executeAction != null)
             {

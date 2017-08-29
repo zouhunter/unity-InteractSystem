@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ActionSystem:MonoBehaviour
+    public class ActionSystem : MonoBehaviour
     {
         public static ActionSystem Instance;
         public event UserError onUserError;//步骤操作错误
@@ -20,15 +20,18 @@ namespace WorldActionSystem
         private List<ActionHolder> actionHolders = new List<ActionHolder>();
         private Dictionary<string, ActionCommand> commandDic = new Dictionary<string, ActionCommand>();
 
-        void Awake(){
+        void Awake()
+        {
             Instance = this;
 
             foreach (Transform item in transform)
             {
+                if (!item.gameObject.activeSelf) continue;
                 ActionHolder holder = item.GetComponent<ActionHolder>();
                 if (holder != null)
                 {
-                    holder.registFunc = (cmd) => {
+                    holder.registFunc = (cmd) =>
+                    {
                         commandDic.Add(cmd.StapName, cmd);
                     };
                     holder.onUserErr = (x, y) =>
@@ -49,18 +52,21 @@ namespace WorldActionSystem
         {
             Debug.Assert(staps != null);
 
-            yield return new WaitUntil(()=>Instance != null);
+            yield return new WaitUntil(() => Instance != null);
 
-            if (Instance.remoteController != null){
+            if (Instance.remoteController != null)
+            {
                 yield break;
             }
             else
             {
-                for (int i = 0; i < Instance.actionHolders.Count; i++){
-                    yield return new WaitUntil(()=>Instance.actionHolders[i].Registed);
+                for (int i = 0; i < Instance.actionHolders.Count; i++)
+                {
+                    yield return new WaitUntil(() => Instance.actionHolders[i].Registed);
                 }
 
-                if (staps.Length != Instance.commandDic.Count){
+                if (staps.Length != Instance.commandDic.Count)
+                {
                     staps = ConfigSteps(Instance.commandDic, staps);
                 }
 
@@ -70,7 +76,31 @@ namespace WorldActionSystem
 
             Instance.staps = staps;
         }
+        
+        /// <summary>
+        /// 开启或关闭高亮提示
+        /// </summary>
+        /// <param name="isOn"></param>
+        public void SwitchHighLight(bool isOn)
+        {
+            foreach (var item in actionHolders)
+            {
+                item.SetHighLight(isOn);
+            }
+        }
 
+        /// <summary>
+        /// 打开或关闭动态脚本
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="isOn"></param>
+        public void InsertScript<T>(bool isOn) where T : InsertBehaiver
+        {
+            foreach (var item in actionHolders)
+            {
+                item.InsertScript<T>(isOn);
+            }
+        }
         #endregion
 
         #region private Funtions
@@ -95,7 +125,7 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    Debug.Log("Ignore + stap" + staps[i].StapName);
+                    Debug.Log("[Ignored stap:]" + staps[i].StapName);
                 }
             }
             return activeStaps.ToArray();

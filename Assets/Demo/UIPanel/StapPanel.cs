@@ -185,7 +185,6 @@ namespace WorldActionSystem
     public class Step : IActionStap
     {
         public string stap;
-        public string type;
         public string StapName
         {
             get
@@ -194,12 +193,5 @@ namespace WorldActionSystem
             }
         }
 
-        public string StapType
-        {
-            get
-            {
-                return type;
-            }
-        }
     }
 }

@@ -16,17 +16,16 @@ namespace WorldActionSystem
         {
             this.installers = installers;
             this.installCtrl = installCtrl;
-            this.StapName = stapName;
             for (int i = 0; i < installers.Count; i++)
             {
                 installers[i].installCtrl = installCtrl;
             }
         }
-        public override void StartExecute(bool modfy = false)
+        public override void StartExecute()
         {
             installCtrl.SetStapActive(StapName);
-            installCtrl.AutoInstallWhenNeed(StapName,modfy);
-            base.StartExecute(modfy);
+            installCtrl.AutoInstallWhenNeed(StapName);
+            base.StartExecute();
         }
         public override void EndExecute()
         {

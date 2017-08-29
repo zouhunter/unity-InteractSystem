@@ -20,7 +20,7 @@ namespace WorldActionSystem
             this.endactive = endactive;
             this.undoActive = anim.gameObject.activeSelf;
         }
-        public override void StartExecute(bool modfy = false)
+        public override void StartExecute()
         {
             anim.PlayAnim();
             base.StartExecute();

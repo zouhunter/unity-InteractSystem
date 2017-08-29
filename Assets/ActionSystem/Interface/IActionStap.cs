@@ -8,5 +8,4 @@ using System.Collections.Generic;
 
 public interface IActionStap {
     string StapName { get; }
-    string StapType { get; }
 }

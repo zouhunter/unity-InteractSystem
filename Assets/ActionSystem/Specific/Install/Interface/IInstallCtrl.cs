@@ -13,10 +13,10 @@ namespace WorldActionSystem
         //刷新状态
         void Reflesh();
         event UserError InstallErr;
-        void SwitchHighLight(bool ison);
+        void SwitchHighLight(bool isOn);
         bool CurrStapComplete();
         void SetStapActive(string stapName);
-        void AutoInstallWhenNeed(string stapName, bool fauseAuto = false);
+        void AutoInstallWhenNeed(string stapName);
         void EndInstall(string stapName);
         void UnInstall(string stapName);
         void QuickUnInstall(string stapName);

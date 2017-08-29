@@ -44,7 +44,7 @@ namespace WorldActionSystem
             intallController.SwitchHighLight(on);
         }
 
-        public override void InsertScript<T>(bool on)
+        public override void InsertScript<T>(bool on) 
         {
             startParent.InsertScript<T>(on);
         }
