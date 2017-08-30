@@ -9,8 +9,8 @@ using WorldActionSystem;
 namespace WorldActionSystem
 {
 
-    public interface ActionObj
-    {
-        IRemoteController RemoteCtrl { get; }
-    }
+    //public interface ActionObj
+    //{
+    //    IRemoteController RemoteCtrl { get; }
+    //}
 }

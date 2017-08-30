@@ -14,8 +14,13 @@ namespace WorldActionSystem
         /// <summary>
         /// 注册安装命令
         /// </summary>
-        public UnityAction<ActionCommand> registFunc;
-        
+        public UnityAction<ActionCommand> OnRegistCommand;
+
+        /// <summary>
+        /// 步骤结束事件
+        /// </summary>
+        public StepComplete OnStepEnd;
+
         /// <summary>
         /// 用户操作错误
         /// </summary>
@@ -26,12 +31,6 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="on"></param>
         public abstract void SetHighLight(bool on);
-
-        /// <summary>
-        /// 添加功能脚本
-        /// </summary>
-        /// <param name="on"></param>
-        public abstract void InsertScript<T>(bool on) where T : InsertBehaiver;
     }
 
 }

@@ -48,6 +48,7 @@ namespace WorldActionSystem
         public Button skipAStap;
         public Button skipMutiStap;
         public Button toEnd;
+        public Button insert;
 
         public Toggle autoNext;
         /// <summary>
@@ -63,6 +64,7 @@ namespace WorldActionSystem
             skipAStap.onClick.AddListener(OnSkipAstapButtonClicekd);
             skipMutiStap.onClick.AddListener(OnSkipMutiButtonClicked);
             toEnd.onClick.AddListener(ToEndButtonClicked);
+            insert.onClick.AddListener(OnInsertScript);
 
             //accept.onClick.AddListener(OnSelected);
             start.onClick.AddListener(OnStapChange);
@@ -76,7 +78,7 @@ namespace WorldActionSystem
 
         void OnAcceptButtonCilcked()
         {
-            if (remoteController.CurrCommand !=null)
+            if (remoteController.CurrCommand != null)
             {
                 remoteController.StartExecuteCommand(OnEndExecute);
                 textShow.text = remoteController.CurrCommand.StapName;
@@ -147,7 +149,7 @@ namespace WorldActionSystem
         {
             if (autoNext.isOn)
             {
-                textShow.text = remoteController.CurrCommand != null ? remoteController.CurrCommand.StapName:"结束";
+                textShow.text = remoteController.CurrCommand != null ? remoteController.CurrCommand.StapName : "结束";
             }
             else
             {
@@ -156,12 +158,15 @@ namespace WorldActionSystem
         }
         void OnEndExecute()
         {
-   
-                if (autoNext.isOn)
-                {
-                    OnAcceptButtonCilcked();
-                }
+            if (autoNext.isOn)
+            {
+                OnAcceptButtonCilcked();
+            }
 
+        }
+        void OnInsertScript()
+        {
+            ActionSystem.Instance.InsertScript<InstallObj, InfoTextShow>(true);
         }
         public Text textShow;
     }

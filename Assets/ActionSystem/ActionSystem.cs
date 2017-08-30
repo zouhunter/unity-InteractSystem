@@ -18,7 +18,7 @@ namespace WorldActionSystem
         private IRemoteController remoteController;
         private IActionStap[] staps;
         private List<ActionHolder> actionHolders = new List<ActionHolder>();
-        private Dictionary<string, ActionCommand> commandDic = new Dictionary<string, ActionCommand>();
+        private List<ActionCommand> commandDic = new List<ActionCommand>();
 
         void Awake()
         {
@@ -30,19 +30,15 @@ namespace WorldActionSystem
                 ActionHolder holder = item.GetComponent<ActionHolder>();
                 if (holder != null)
                 {
-                    holder.registFunc = (cmd) =>
-                    {
-                        commandDic.Add(cmd.StapName, cmd);
-                    };
-                    holder.onUserErr = (x, y) =>
-                     {
-                         if (onUserError != null)
-                             onUserError(x, y);
-                     };
+                    holder.OnStepEnd = OnStepComplete;
+                    holder.OnRegistCommand = OnRegistCommand;
+                    holder.onUserErr = OnUserError;
                     actionHolders.Add(holder);
                 }
             }
         }
+
+
 
         #region Public Functions
         /// <summary>
@@ -76,7 +72,7 @@ namespace WorldActionSystem
 
             Instance.staps = staps;
         }
-        
+
         /// <summary>
         /// 开启或关闭高亮提示
         /// </summary>
@@ -90,27 +86,60 @@ namespace WorldActionSystem
         }
 
         /// <summary>
-        /// 打开或关闭动态脚本
+        /// 打开或关闭绑定脚本
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="isOn"></param>
-        public void InsertScript<T>(bool isOn) where T : InsertBehaiver
+        public void InsertScript<S, T>(bool isOn) where T : MonoBehaviour where S : MonoBehaviour
         {
-            foreach (var item in actionHolders)
+            var items = TransUtil.FindComponentsInChild<S>(transform);
+            foreach (var item in items)
             {
-                item.InsertScript<T>(isOn);
+                T titem = item.gameObject.GetComponent<T>();
+                if (isOn && titem == null)
+                {
+                    item.gameObject.AddComponent<T>();
+                }
+                else if (!isOn && titem != null)
+                {
+                    Destroy(titem);
+                }
             }
         }
         #endregion
 
         #region private Funtions
         /// <summary>
+        /// 结束命令
+        /// </summary>
+        /// <param name="stepName"></param>
+        private void OnStepComplete(string stepName)
+        {
+            remoteController.EndExecuteCommand();
+        }
+        /// <summary>
+        /// 注册命令
+        /// </summary>
+        /// <param name="arg0"></param>
+        private void OnRegistCommand(ActionCommand arg0)
+        {
+            commandDic.Add(arg0);
+        }
+        /// <summary>
+        /// 用户操作不对
+        /// </summary>
+        private void OnUserError(string stepName, string errInfo)
+        {
+            if (onUserError != null)
+                onUserError(stepName, errInfo);
+        }
+        /// <summary>
         /// 重置步骤
         /// </summary>
         /// <param name="commandDic"></param>
         /// <param name="staps"></param>
         /// <returns></returns>
-        private static IActionStap[] ConfigSteps(Dictionary<string, ActionCommand> commandDic, IActionStap[] staps)
+        private static IActionStap[] ConfigSteps(List<ActionCommand> commandDic, IActionStap[] staps)
         {
             if (string.Compare(commandDic.Count.ToString(), staps.Length.ToString()) != 0)
             {
@@ -119,7 +148,8 @@ namespace WorldActionSystem
             List<IActionStap> activeStaps = new List<IActionStap>();
             for (int i = 0; i < staps.Length; i++)
             {
-                if (commandDic.ContainsKey(staps[i].StapName))
+                var old = commandDic.Find(x => x.StapName == staps[i].StapName);
+                if (old != null)
                 {
                     activeStaps.Add(staps[i]);
                 }
@@ -134,15 +164,19 @@ namespace WorldActionSystem
         /// 得到排序后的命令列表
         /// </summary>
         /// <returns></returns>
-        private static List<ActionCommand> GetActionCommandList(Dictionary<string, ActionCommand> commandDic, IActionStap[] staps)
+        private static List<ActionCommand> GetActionCommandList(List<ActionCommand> commandDic, IActionStap[] staps)
         {
-            ActionCommand cmd;
             var actionCommandList = new List<ActionCommand>();
             foreach (var item in staps)
             {
-                if (commandDic.TryGetValue(item.StapName, out cmd))
+                var old = commandDic.Find(x => x.StapName == item.StapName);
+                if (old != null)
                 {
-                    actionCommandList.Add(cmd);
+                    actionCommandList.Add(old);
+                }
+                else
+                {
+                    Debug.LogWarning(item + "已经存在");
                 }
             }
             return actionCommandList;
