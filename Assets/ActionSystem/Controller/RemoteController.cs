@@ -267,7 +267,7 @@ namespace WorldActionSystem
         public bool ToTargetCommand(string stapName)
         {
             bool haveNext = true;
-            ActionCommand cmd = commandList.Find((x) => stapName == x.StapName);
+            ActionCommand cmd = commandList.Find((x) => stapName == x.StepName);
             if (cmd != null)
             {
                 int indexofCmd = commandList.IndexOf(cmd);

@@ -83,7 +83,7 @@ namespace WorldActionSystem
             if (remoteController.CurrCommand != null)
             {
                 remoteController.StartExecuteCommand(OnEndExecute, autoPlay.isOn);
-                textShow.text = remoteController.CurrCommand.StapName;
+                textShow.text = remoteController.CurrCommand.StepName;
             }
             else
             {
@@ -151,7 +151,7 @@ namespace WorldActionSystem
         {
             if (autoNext.isOn)
             {
-                textShow.text = remoteController.CurrCommand != null ? remoteController.CurrCommand.StapName : "结束";
+                textShow.text = remoteController.CurrCommand != null ? remoteController.CurrCommand.StepName : "结束";
             }
             else
             {

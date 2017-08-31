@@ -6,10 +6,10 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ClickAnimObjectsHolder : ActionHolder
+    public class RotateObjectsHolder : ActionHolder
     {
+        private RotGroup rotParent;
         private AnimGroup animParent;
-        private BtnGroup btnParent;
         private bool _registed;
         private string currStepName;
         public override bool Registed
@@ -23,25 +23,24 @@ namespace WorldActionSystem
         private void Awake()
         {
             animParent = GetComponentInChildren<AnimGroup>();
-            btnParent = GetComponentInChildren<BtnGroup>();
-            btnParent.onAllButtonClicked = PlayAnim;
-            animParent.onAllElementInit = OnAllInstallPosInit;
+            rotParent = GetComponentInChildren<RotGroup>();
+            rotParent.onAllRotateOK = PlayAnim;
+            animParent.onAllElementInit = OnAllAnimInit;
         }
 
         public override void SetHighLight(bool on)
         {
-            btnParent.SetHighLightState(on);
+            rotParent.SetHighLightState(on);
         }
 
-        private void OnAllInstallPosInit(Dictionary<string, List<AnimObj>> dic)
+        private void OnAllAnimInit(Dictionary<string, List<AnimObj>> dic)
         {
             foreach (var list in dic)
             {
-                var cmd = new ClickAnimCommand(list.Key, btnParent, animParent);
+                var cmd = new RotateCommand(list.Key, rotParent, animParent);
                 cmd.onExecuteAction += ActiveStep;
                 if (OnRegistCommand != null) OnRegistCommand(cmd);
-                foreach (var obj in list.Value)
-                {
+                foreach (var obj in list.Value){
                     obj.onEndPlay = OnEndPlay;
                 }
             }
@@ -63,8 +62,8 @@ namespace WorldActionSystem
         private void ActiveStep(string StepName)
         {
             currStepName = StepName;
-            btnParent.ActiveStep(currStepName);
         }
+
         public bool CurrStapComplete()
         {
             bool complete = true;
@@ -78,4 +77,3 @@ namespace WorldActionSystem
 
     }
 }
-

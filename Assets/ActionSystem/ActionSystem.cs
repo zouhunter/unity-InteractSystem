@@ -148,7 +148,7 @@ namespace WorldActionSystem
             List<IActionStap> activeStaps = new List<IActionStap>();
             for (int i = 0; i < staps.Length; i++)
             {
-                var old = commandDic.Find(x => x.StapName == staps[i].StapName);
+                var old = commandDic.Find(x => x.StepName == staps[i].StapName);
                 if (old != null)
                 {
                     activeStaps.Add(staps[i]);
@@ -169,7 +169,7 @@ namespace WorldActionSystem
             var actionCommandList = new List<ActionCommand>();
             foreach (var item in staps)
             {
-                var old = commandDic.Find(x => x.StapName == item.StapName);
+                var old = commandDic.Find(x => x.StepName == item.StapName);
                 if (old != null)
                 {
                     actionCommandList.Add(old);

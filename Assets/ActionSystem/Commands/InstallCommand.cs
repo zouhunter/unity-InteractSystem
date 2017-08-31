@@ -17,18 +17,18 @@ namespace WorldActionSystem
         }
         public override void StartExecute(bool forceAuto)
         {
-            installCtrl.SetStapActive(StapName);
-            installCtrl.AutoInstallWhenNeed(StapName, forceAuto);
+            installCtrl.SetStapActive(StepName);
+            installCtrl.AutoInstallWhenNeed(StepName, forceAuto);
             base.StartExecute(forceAuto);
         }
         public override void EndExecute()
         {
-            installCtrl.EndInstall(StapName);
+            installCtrl.EndInstall(StepName);
             base.EndExecute();
         }
         public override void UnDoCommand()
         {
-            installCtrl.QuickUnInstall(StapName);
+            installCtrl.QuickUnInstall(StepName);
             base.UnDoCommand();
         }
     }

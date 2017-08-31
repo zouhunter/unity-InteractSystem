@@ -18,19 +18,19 @@ namespace WorldActionSystem
         }
         public override void StartExecute(bool forceAuto)
         {
-            dragAnimCtrl.SetStapActive(StapName);
-            dragAnimCtrl.AutoInstallWhenNeed(StapName, forceAuto);
+            dragAnimCtrl.SetStapActive(StepName);
+            dragAnimCtrl.AutoInstallWhenNeed(StepName, forceAuto);
             base.StartExecute(forceAuto);
         }
         public override void UnDoCommand()
         {
-            dragAnimCtrl.QuickUnInstall(StapName);
-            dragAnimCtrl.UnDoAnim(StapName);
+            dragAnimCtrl.QuickUnInstall(StepName);
+            dragAnimCtrl.UnDoAnim(StepName);
             base.UnDoCommand();
         }
         public override void EndExecute()
         {
-            dragAnimCtrl.EndPlayAnim(StapName);
+            dragAnimCtrl.EndPlayAnim(StepName);
             base.EndExecute();
         }
     }

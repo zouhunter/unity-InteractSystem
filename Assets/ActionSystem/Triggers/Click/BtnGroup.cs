@@ -35,16 +35,15 @@ namespace WorldActionSystem
         void InitBtnObjs()
         {
             var btns = GetComponentsInChildren<BtnObj>();
-            foreach (BtnObj anim in btns)
+            foreach (BtnObj obj in btns)
             {
-                var obj = anim;
-                if (objDic.ContainsKey(obj.stapName))
+                if (objDic.ContainsKey((string)obj.stapName))
                 {
-                    objDic[obj.stapName].Add(obj);
+                    objDic[(string)obj.stapName].Add((BtnObj)obj);
                 }
                 else
                 {
-                    objDic[obj.stapName] = new List<BtnObj>() { obj };
+                    objDic[(string)obj.stapName] = new System.Collections.Generic.List<BtnObj>() { obj };
                 }
             }
         }
@@ -122,13 +121,14 @@ namespace WorldActionSystem
         }
 
 
-        internal void SetButtonClicked(string stapName)
+        internal void SetAllButtonClicked(string stapName,bool playAnim)
         {
             var btns = objDic[stapName];
             foreach (var item in btns)
             {
-                OnBtnClicked(item);
+                item.SetClicked();
             }
+            if(playAnim) onAllButtonClicked.Invoke();
         }
 
         internal void ActiveStep(string stapName)
@@ -144,17 +144,6 @@ namespace WorldActionSystem
                 item.SetUnClicked();
                 item.clickAble = false;
             }
-        }
-
-        private bool AllCurrentButtonClicked()
-        {
-            bool clicked = true;
-            var btns = objDic[currStepName];
-            foreach (var item in btns)
-            {
-                clicked &= item.Clicked;
-            }
-            return clicked;
         }
     }
 
