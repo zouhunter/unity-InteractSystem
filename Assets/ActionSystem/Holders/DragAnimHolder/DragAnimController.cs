@@ -10,14 +10,14 @@ namespace WorldActionSystem
     {
         private InstallTarget endParent;
         private InstallStart startParent;
-        private List<AnimObj> animParent;
+        private AnimView animParent;
         IHighLightItems HighLight;
 
-        public DragAnimController(InstallStart startParent, InstallTarget endParent, AnimObj[] animParent)
+        public DragAnimController(InstallStart startParent, InstallTarget endParent, AnimView animParent)
         {
             this.startParent = startParent;
             this.endParent = endParent;
-            this.animParent = new List<AnimObj>(animParent);
+            this.animParent = animParent;
             HighLight = new ShaderHighLight();
             startParent.onInstall = TryPlayAnim;
         }
@@ -28,8 +28,6 @@ namespace WorldActionSystem
         private float distence { get { return startParent.Distence; } set { startParent.Distence = value; } }
         private InstallPos installPos;
 
-        public const string elementLayer = "dragStart";
-        public const string elementInstallLayer = "dragEnd";
         private Ray ray;
         private RaycastHit hit;
         private RaycastHit[] hits;
@@ -81,7 +79,7 @@ namespace WorldActionSystem
         void SelectAnElement()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(elementLayer)))
+            if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(Setting.installObjLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<InstallObj>();
                 if (pickedUpObj != null && startParent.PickUpObject(pickedUpObj))
@@ -118,7 +116,7 @@ namespace WorldActionSystem
         public void UpdateInstallState()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, 100, LayerMask.GetMask(elementInstallLayer));
+            hits = Physics.RaycastAll(ray, 100, LayerMask.GetMask(Setting.installPosLayer));
             if (hits != null || hits.Length > 0)
             {
                 bool hited = false;
@@ -225,10 +223,19 @@ namespace WorldActionSystem
             startParent.QuickInstallPosListObjects(posList);
 
         }
-
-        public bool CurrStapComplete()
+        private bool InstallComplete()
         {
             return endParent.AllElementInstalled();
+        }
+        public bool CurrStapComplete()
+        {
+            bool complete = true;
+            var list = animParent.GetCurrAnims(currStepName);
+            foreach (var item in list)
+            {
+                complete &= item.Complete;
+            }
+            return complete;
         }
 
         public void SetStapActive(string stapName)
@@ -243,11 +250,19 @@ namespace WorldActionSystem
         /// 自动安装部分需要进行自动安装的零件
         /// </summary>
         /// <param name="stapName"></param>
-        public void AutoInstallWhenNeed(string stapName)
+        public void AutoInstallWhenNeed(string stapName, bool autoInstall)
         {
-            List<InstallPos> posList = endParent.GetNeedAutoInstallPosList();
+            List<InstallPos> posList = null;
+            if (autoInstall)
+            {
+                posList = endParent.GetNotInstalledPosList();
+            }
+            else
+            {
+                posList = endParent.GetNeedAutoInstallPosList();
+            }
 
-            startParent.InstallPosListObjects(posList);
+            if (posList != null) startParent.InstallPosListObjects(posList);
 
             pickedUp = false;
         }
@@ -275,32 +290,22 @@ namespace WorldActionSystem
         }
         private void TryPlayAnim(InstallObj obj)
         {
-            if (CurrStapComplete())
+            if (InstallComplete())
             {
                 List<InstallPos> posList = endParent.GetInstalledPosList();
                 startParent.SetCompleteNotify(posList);
-                var anim = animParent.Find(x => x.stapName == currStepName);
-                if(anim != null)
-                {
-                    anim.PlayAnim();
-                }
+                animParent.PlayAnim(currStepName);
             }
         }
+
         public void UnDoAnim(string currStepName)
         {
-            var anim = animParent.Find(x => x.stapName == currStepName);
-            if (anim != null)
-            {
-                anim.UnDoPlay();
-            }
+            animParent.UnDoPlay(currStepName);
         }
+
         public void EndPlayAnim(string currStepName)
         {
-            var anim = animParent.Find(x => x.stapName == currStepName);
-            if (anim != null)
-            {
-                anim.EndPlay();
-            }
+            animParent.EndPlayAnim(currStepName);
         }
     }
 }

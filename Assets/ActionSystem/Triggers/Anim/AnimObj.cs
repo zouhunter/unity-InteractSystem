@@ -27,14 +27,13 @@ namespace WorldActionSystem
         [SerializeField] private UnityEvent onPlayEnd;
 
         public UnityAction<AnimObj> onEndPlay;
-
+        private Coroutine delyPlay;
         void Awake()
         {
             if (anim == null) anim = GetComponentInChildren<Animation>();
-            if (anim != null) core = AnimCore.Init(anim, onPlayEnd);
+            if (anim != null) core = AnimCore.Init(anim, OnAutoEndPlay);
             if (installAnim == null) installAnim = GetComponentInChildren<InstallAnim>();
-            if (installAnim != null) installAnim.Init(onPlayEnd);
-            RegisterInsideEvents();
+            if (installAnim != null) installAnim.Init(OnAutoEndPlay);
         }
 
         void Start()
@@ -48,7 +47,7 @@ namespace WorldActionSystem
             if (anim != null)
             {
                 this.anim = anim;
-                core = AnimCore.Init(anim, onPlayEnd);
+                core = AnimCore.Init(anim, OnAutoEndPlay);
                 gameObject.SetActive(startActive);
             }
         }
@@ -57,31 +56,9 @@ namespace WorldActionSystem
         {
             if (installAnim != null) {
                 this.installAnim = installAnim;
-                installAnim.Init(onPlayEnd);
+                installAnim.Init(OnAutoEndPlay);
                 gameObject.SetActive(startActive);
             }
-        }
-
-        void RegisterInsideEvents()
-        {
-            onPlayEnd.AddListener(() =>
-            {
-                _complete = true;
-                if (onEndPlay != null) onEndPlay.Invoke(this);
-                gameObject.SetActive(endActive);
-            });
-
-            onPlay.AddListener(() =>
-            {
-                _complete = false;
-                gameObject.SetActive(true);
-            });
-
-            unDo.AddListener(() =>
-            {
-                _complete = false;
-                gameObject.SetActive(startActive);
-            });
         }
 
         /// <summary>
@@ -90,7 +67,9 @@ namespace WorldActionSystem
         public void PlayAnim()
         {
             onPlay.Invoke();
-            StartCoroutine(DelyPlay());
+            _complete = false;
+            gameObject.SetActive(true);
+            delyPlay = StartCoroutine(DelyPlay());
         }
 
         private IEnumerator DelyPlay()
@@ -99,20 +78,30 @@ namespace WorldActionSystem
             if (core != null) core.Play(speed);
             if (installAnim != null) installAnim.Play(1f / speed);
         }
+        private void OnAutoEndPlay()
+        {
+            _complete = true;
+            if (onEndPlay != null) onEndPlay.Invoke(this);
+            onPlayEnd.Invoke();
+            gameObject.SetActive(endActive);
+        }
 
         public void EndPlay()
         {
-            onPlayEnd.Invoke();
             if (core != null) core.EndPlay();
             if (installAnim != null) installAnim.EndPlay();
+            if (delyPlay != null) StopCoroutine(delyPlay);
+            OnAutoEndPlay();
         }
 
         public void UnDoPlay()
         {
             _complete = false;
             unDo.Invoke();
+            gameObject.SetActive(startActive);
             if (core != null) core.UnDoPlay();
             if (installAnim != null) installAnim.UnDoPlay();
+            if (delyPlay != null) StopCoroutine(delyPlay);
         }
     }
 }

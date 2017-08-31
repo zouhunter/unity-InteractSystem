@@ -16,11 +16,11 @@ namespace WorldActionSystem
         {
             this.dragAnimCtrl = dragAnimCtrl;
         }
-        public override void StartExecute()
+        public override void StartExecute(bool forceAuto)
         {
             dragAnimCtrl.SetStapActive(StapName);
-            dragAnimCtrl.AutoInstallWhenNeed(StapName);
-            base.StartExecute();
+            dragAnimCtrl.AutoInstallWhenNeed(StapName, forceAuto);
+            base.StartExecute(forceAuto);
         }
         public override void UnDoCommand()
         {

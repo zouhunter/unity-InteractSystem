@@ -15,29 +15,28 @@ namespace WorldActionSystem
                 return registed;
             }
         }
-        private DragAnimController intallController;
+        private DragAnimController dragAnimCtrl;
         private bool registed;
         // Use this for initialization
         void Awake()
         {
            var startParent = GetComponentInChildren<InstallStart>();
             var endParent = GetComponentInChildren<InstallTarget>();
-            var animParent = GetComponentsInChildren<AnimObj>(true);
+            var animParent = GetComponentInChildren<AnimView>();
 
-            intallController = new DragAnimController(startParent, endParent, animParent);
-            intallController.InstallErr += OnInstallErr;
-
-            OnAllInstallPosInit(animParent);
+            dragAnimCtrl = new DragAnimController(startParent, endParent, animParent);
+            dragAnimCtrl.InstallErr += OnInstallErr;
+            animParent.onAllElementInit = OnAllInstallPosInit;
         }
 
         private void Update()
         {
-            intallController.Reflesh();
+            dragAnimCtrl.Reflesh();
         }
 
         public override void SetHighLight(bool on)
         {
-            intallController.SwitchHighLight(on);
+            dragAnimCtrl.SwitchHighLight(on);
         }
 
         private void OnInstallErr(string stepName, string err)
@@ -45,17 +44,29 @@ namespace WorldActionSystem
             if (onUserErr != null) onUserErr(stepName, err);
         }
 
-        private void OnAllInstallPosInit(AnimObj[] objs)
+        private void OnAllInstallPosInit(Dictionary<string, List<AnimObj>> dic)
         {
-            ActionCommand cmd;
-            foreach (var item in objs)
+            foreach (var list in dic)
             {
-                cmd = new DragAnimCommand(item.stapName, intallController);
+                var cmd = new DragAnimCommand(list.Key, dragAnimCtrl);
                 if (OnRegistCommand != null) OnRegistCommand(cmd);
+                foreach (var obj in list.Value)
+                {
+                    obj.onEndPlay = OnEndPlay;
+                }
             }
             registed = true;
         }
+        private void OnEndPlay(AnimObj obj)
+        {
+            if (dragAnimCtrl.CurrStapComplete())
+            {
+                if (OnStepEnd != null)
+                    OnStepEnd.Invoke(obj.stapName);
+            }
+        }
 
+       
     }
 
 }

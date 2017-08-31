@@ -14,12 +14,11 @@ namespace WorldActionSystem
         bool started = false;
         public UnityAction onEndExecute;
         List<ActionCommand> commandList;
-        public ActionCommand CurrCommand
-        {
+
+        public ActionCommand CurrCommand{
             get { return HaveCommand(index) ? commandList[index] : null; }
         }
-        public RemoteController(IEnumerable<ActionCommand> commandList)
-        {
+        public RemoteController(IEnumerable<ActionCommand> commandList){
             this.commandList = new List<ActionCommand>(commandList);
         }
 
@@ -54,13 +53,13 @@ namespace WorldActionSystem
         /// <summary>
         /// 开启一个命令,并返回正常执行与否
         /// </summary>
-        public bool StartExecuteCommand(UnityAction onEndExecute)
+        public bool StartExecuteCommand(UnityAction onEndExecute,bool forceAuto)
         {
             if (!started && HaveCommand(index))
             {
                 started = true;
                 this.onEndExecute = onEndExecute;
-                CurrCommand.StartExecute();
+                CurrCommand.StartExecute(forceAuto);
                 return true;
             }
             else
@@ -134,7 +133,7 @@ namespace WorldActionSystem
                     {
                         for (int i = 0; i < stap - 1; i++)
                         {
-                            StartExecuteCommand(null);
+                            StartExecuteCommand(null,false);
                             EndExecuteCommand();
                         }
                     }
@@ -146,7 +145,7 @@ namespace WorldActionSystem
                     {
                         for (int i = 0; i < stap; i++)
                         {
-                            StartExecuteCommand(null);
+                            StartExecuteCommand(null, false);
                             EndExecuteCommand();
                         }
                         return true;

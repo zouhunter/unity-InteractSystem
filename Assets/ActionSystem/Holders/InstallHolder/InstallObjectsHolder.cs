@@ -59,7 +59,7 @@ namespace WorldActionSystem
             ActionCommand cmd;
             foreach (var item in dic)
             {
-                cmd = new InstallCommand(item.Key, intallController, item.Value);
+                cmd = new InstallCommand(item.Key, intallController);
                 if (OnRegistCommand != null) OnRegistCommand(cmd);
             }
             registed = true;

@@ -40,7 +40,8 @@ namespace WorldActionSystem
             }
             foreach (var item in animDic)
             {
-                ActionCommand cmd = new AnimCommand(item.Key,item.Value.ToArray(), true);
+                ActionCommand cmd = new AnimCommand(item.Key,item.Value.ToArray());
+                cmd.executeAction += (step) => { CurrentStep = step; };
                 OnRegistCommand(cmd);
             }
             registed = true;
@@ -64,7 +65,6 @@ namespace WorldActionSystem
             }
             return complete;
         }
-
         public override void SetHighLight(bool on)
         {
             //throw new NotImplementedException();

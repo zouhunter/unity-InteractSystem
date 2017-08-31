@@ -22,8 +22,6 @@ namespace WorldActionSystem
         private float distence { get { return startParent.Distence; } set { startParent.Distence = value; } }
         private InstallPos installPos;
 
-        public const string elementLayer = "installStart";
-        public const string elementInstallLayer = "installEnd";
         private Ray ray;
         private RaycastHit hit;
         private RaycastHit[] hits;
@@ -32,7 +30,7 @@ namespace WorldActionSystem
         private string currStepName;
         public UserError InstallErr;
         public StepComplete onStepComplete;
-        public InstallController(InstallStart startParent, InstallTarget endParent,StepComplete onStepComplete)
+        public InstallController(InstallStart startParent, InstallTarget endParent, StepComplete onStepComplete)
         {
             this.startParent = startParent;
             this.endParent = endParent;
@@ -80,7 +78,7 @@ namespace WorldActionSystem
         void SelectAnElement()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(elementLayer)))
+            if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(Setting.installObjLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<InstallObj>();
                 if (pickedUpObj != null && startParent.PickUpObject(pickedUpObj))
@@ -117,7 +115,7 @@ namespace WorldActionSystem
         public void UpdateInstallState()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, 100, LayerMask.GetMask(elementInstallLayer));
+            hits = Physics.RaycastAll(ray, 100, LayerMask.GetMask(Setting.installPosLayer));
             if (hits != null || hits.Length > 0)
             {
                 bool hited = false;
@@ -260,11 +258,19 @@ namespace WorldActionSystem
         /// 自动安装部分需要进行自动安装的零件
         /// </summary>
         /// <param name="stapName"></param>
-        public void AutoInstallWhenNeed(string stapName)
+        public void AutoInstallWhenNeed(string stapName, bool autoInstall)
         {
-            List<InstallPos> posList = endParent.GetNeedAutoInstallPosList();
+            List<InstallPos> posList = null;
+            if (autoInstall)
+            {
+                posList = endParent.GetNotInstalledPosList();
+            }
+            else
+            {
+                posList = endParent.GetNeedAutoInstallPosList();
+            }
 
-            startParent.InstallPosListObjects(posList);
+            if (posList != null) startParent.InstallPosListObjects(posList);
 
             pickedUp = false;
         }

@@ -4,16 +4,72 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+namespace WorldActionSystem
+{
+    public class AnimView : MonoBehaviour
+    {
+        public UnityAction<Dictionary<string, List<AnimObj>>> onAllElementInit;
+        private Dictionary<string, List<AnimObj>> animDic = new Dictionary<string, List<AnimObj>>();
+        private void Start()
+        {
+            var animObjects = GetComponentsInChildren<AnimObj>(true);
 
-public class AnimView : MonoBehaviour {
+            foreach (AnimObj anim in animObjects)
+            {
+                var obj = anim;
+                if (animDic.ContainsKey(obj.stapName))
+                {
+                    animDic[obj.stapName].Add(obj);
+                }
+                else
+                {
+                    animDic[obj.stapName] = new List<AnimObj>() { obj };
+                }
+            }
+            if (onAllElementInit != null) onAllElementInit.Invoke(animDic);
+        }
+        public List<AnimObj> GetCurrAnims(string currStepName)
+        {
+            return animDic[currStepName];
+        }
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+        public void PlayAnim(string currStepName)
+        {
+            var anims = animDic[currStepName];
+            if (anims != null)
+            {
+                foreach (var anim in anims)
+                {
+                    anim.PlayAnim();
+                }
+            }
+        }
+
+        internal void UnDoPlay(string currStepName)
+        {
+            var anims = animDic[currStepName];
+
+            if (anims != null)
+            {
+                foreach (var anim in anims)
+                {
+                    anim.UnDoPlay();
+                }
+            }
+        }
+
+        internal void EndPlayAnim(string currStepName)
+        {
+            var anims = animDic[currStepName];
+
+            if (anims != null)
+            {
+                foreach (var anim in anims)
+                {
+                    anim.EndPlay();
+                }
+            }
+        }
+    }
+
 }

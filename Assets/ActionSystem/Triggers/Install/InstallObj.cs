@@ -15,8 +15,7 @@ namespace WorldActionSystem
     /// </summary>
     public class InstallObj : MonoBehaviour, IHightLightItem, IOutSideRegisterRender
     {
-        [Range(1, 10)]
-        public int animTime;
+        public int animTime { get { return Setting.installTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool endActive = true;//如果是false,则完成后将进行隐藏
         public bool Installed { get { return target != null; } }
@@ -38,6 +37,7 @@ namespace WorldActionSystem
 #if !NoFunction
         void Start()
         {
+            gameObject.layer = LayerMask.NameToLayer(Setting.installObjLayer);
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             if (m_render == null) m_render = GetComponentInChildren<Renderer>();

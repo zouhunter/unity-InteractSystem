@@ -10,33 +10,35 @@ namespace WorldActionSystem
 
     public abstract class ActionCommand
     {
-        public event UnityAction<bool> executeAction;
-        public event UnityAction endExecuteAction;
+        public event CommandExecute executeAction;
+        public event CommandExecute undoAction;
+        public event CommandExecute endExecuteAction;
+
         public string StapName { get; set; }
         public ActionCommand(string stapName)
         {
             this.StapName = stapName;
         }
-        public virtual void StartExecute()
+        public virtual void StartExecute(bool forceAuto)
         {
             if (executeAction != null)
             {
-                executeAction(true);
+                executeAction(StapName);
             }
         }
         public virtual void EndExecute()
         {
             if (endExecuteAction != null)
             {
-                endExecuteAction();
+                endExecuteAction(StapName);
             }
         }
 
         public virtual void UnDoCommand()
         {
-            if (executeAction != null)
+            if (undoAction != null)
             {
-                executeAction(false);
+                undoAction(StapName);
             }
         }
     }

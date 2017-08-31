@@ -10,18 +10,16 @@ namespace WorldActionSystem
     [Serializable]
     public class InstallCommand : ActionCommand
     {
-        public IList<InstallPos> installers;
         public InstallController installCtrl;
-        public InstallCommand(string stapName, InstallController installCtrl, IList<InstallPos> installers) : base(stapName)
+        public InstallCommand(string stapName, InstallController installCtrl) : base(stapName)
         {
-            this.installers = installers;
             this.installCtrl = installCtrl;
         }
-        public override void StartExecute()
+        public override void StartExecute(bool forceAuto)
         {
             installCtrl.SetStapActive(StapName);
-            installCtrl.AutoInstallWhenNeed(StapName);
-            base.StartExecute();
+            installCtrl.AutoInstallWhenNeed(StapName, forceAuto);
+            base.StartExecute(forceAuto);
         }
         public override void EndExecute()
         {

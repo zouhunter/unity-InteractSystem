@@ -51,6 +51,8 @@ namespace WorldActionSystem
         public Button insert;
 
         public Toggle autoNext;
+        public Toggle autoPlay;
+
         /// <summary>
         /// 注册按扭事件
         /// </summary>
@@ -80,7 +82,7 @@ namespace WorldActionSystem
         {
             if (remoteController.CurrCommand != null)
             {
-                remoteController.StartExecuteCommand(OnEndExecute);
+                remoteController.StartExecuteCommand(OnEndExecute, autoPlay.isOn);
                 textShow.text = remoteController.CurrCommand.StapName;
             }
             else

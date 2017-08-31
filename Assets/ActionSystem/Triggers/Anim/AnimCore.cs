@@ -7,7 +7,7 @@ namespace WorldActionSystem
 
     public class AnimCore : MonoBehaviour
     {
-        private UnityEvent onPlayEnd;
+        private UnityAction onPlayEnd;
         private Animation anim;
         private string animName;
         private AnimationClip clip;
@@ -15,7 +15,7 @@ namespace WorldActionSystem
         private float animTime;
         private AnimationEvent even;
 
-        public static AnimCore Init(Animation anim, UnityEvent onPlayEnd)
+        public static AnimCore Init(Animation anim, UnityAction onPlayEnd)
         {
             AnimCore core = null;
             if (anim != null)

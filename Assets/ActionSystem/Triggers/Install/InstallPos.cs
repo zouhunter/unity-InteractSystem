@@ -21,6 +21,10 @@ namespace WorldActionSystem
         public bool Installed { get { return obj != null; } }
         public InstallObj obj { get; private set; }
 
+        private void Start()
+        {
+            gameObject.layer = LayerMask.NameToLayer(Setting.installPosLayer);
+        }
         //public IInstallCtrl installCtrl { private get; set; }
 
         public void Attach(InstallObj obj)

@@ -13,17 +13,17 @@ namespace WorldActionSystem
         public AnimObj[] anims;
         
 
-        public AnimCommand(string stapName, AnimObj[] anims, bool endactive = true) : base(stapName)
+        public AnimCommand(string stapName, AnimObj[] anims) : base(stapName)
         {
             this.anims = anims;
         }
-        public override void StartExecute()
+
+        public override void StartExecute(bool forceAuto)
         {
-            foreach (var anim in anims)
-            {
+            foreach (var anim in anims){
                 anim.PlayAnim();
             }
-            base.StartExecute();
+            base.StartExecute(forceAuto);
         }
         public override void EndExecute()
         {

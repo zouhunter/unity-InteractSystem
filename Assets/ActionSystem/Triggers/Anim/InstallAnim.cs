@@ -14,7 +14,7 @@ public class InstallAnim : MonoBehaviour
 #if !NoFunction
     public Tweener tween;
 #endif
-    internal void Init(UnityEvent onPlayEnd)
+    internal void Init(UnityAction onPlayEnd)
     {
 #if !NoFunction
 
