@@ -10,7 +10,11 @@ namespace WorldActionSystem
     {
         internal const string installObjLayer = "installObj";
         internal const string installPosLayer = "installPos";
+        internal const string rotateItemLayer = "rotateItem";
+        internal const string clickItemLayer = "clickItem";
+        internal const string connectItemLayer = "connectItem";
         internal static int installTime = 4;
+        internal static bool highLightOpen = true;
     }
 }
 

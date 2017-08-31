@@ -22,7 +22,7 @@ namespace WorldActionSystem
         {
            var startParent = GetComponentInChildren<InstallStart>();
             var endParent = GetComponentInChildren<InstallTarget>();
-            var animParent = GetComponentInChildren<AnimView>();
+            var animParent = GetComponentInChildren<AnimGroup>();
 
             dragAnimCtrl = new DragAnimController(startParent, endParent, animParent);
             dragAnimCtrl.InstallErr += OnInstallErr;

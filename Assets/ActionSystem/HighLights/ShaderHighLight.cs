@@ -12,6 +12,7 @@ using WorldActionSystem;
 public class ShaderHighLight : IHighLightItems
 {
 #if !NoFunction
+    private bool isOn;
     private float freq = 1;
     public Dictionary<Renderer, Highlighter> highlightDic = new Dictionary<Renderer, Highlighter>();
 #endif
@@ -39,5 +40,10 @@ public class ShaderHighLight : IHighLightItems
             highlighter.Off();
         }
 #endif
+    }
+
+    public void SetState(bool isOpen)
+    {
+        this.isOn = isOpen;
     }
 }

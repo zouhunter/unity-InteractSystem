@@ -18,6 +18,16 @@ namespace WorldActionSystem
             }
         }
 
+        public void SetState(bool isOpen)
+        {
+            
+        }
+
+        public void UnHighLightAll()
+        {
+
+        }
+
         public void UnHighLightTarget(Renderer renderer)
         {
             Color oldColor;

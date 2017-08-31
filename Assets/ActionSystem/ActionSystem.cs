@@ -69,7 +69,7 @@ namespace WorldActionSystem
                 var actionCommandList = GetActionCommandList(Instance.commandDic, staps);
                 Instance.remoteController = new RemoteController(actionCommandList);
             }
-
+            Instance.SwitchHighLight(Setting.highLightOpen);
             Instance.staps = staps;
         }
 

@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class AnimView : MonoBehaviour
+    public class AnimGroup : MonoBehaviour
     {
         public UnityAction<Dictionary<string, List<AnimObj>>> onAllElementInit;
         private Dictionary<string, List<AnimObj>> animDic = new Dictionary<string, List<AnimObj>>();
@@ -28,6 +28,8 @@ namespace WorldActionSystem
             }
             if (onAllElementInit != null) onAllElementInit.Invoke(animDic);
         }
+
+       
         public List<AnimObj> GetCurrAnims(string currStepName)
         {
             return animDic[currStepName];
@@ -44,10 +46,22 @@ namespace WorldActionSystem
                 }
             }
         }
-
-        internal void UnDoPlay(string currStepName)
+        internal void SetAnimEnd(string stepName)
         {
-            var anims = animDic[currStepName];
+            var anims = animDic[stepName];
+
+            if (anims != null)
+            {
+                foreach (var anim in anims)
+                {
+                    anim.EndPlay();
+                }
+            }
+        }
+
+        internal void SetAnimUnPlayed(string stepName)
+        {
+            var anims = animDic[stepName];
 
             if (anims != null)
             {
@@ -58,18 +72,6 @@ namespace WorldActionSystem
             }
         }
 
-        internal void EndPlayAnim(string currStepName)
-        {
-            var anims = animDic[currStepName];
-
-            if (anims != null)
-            {
-                foreach (var anim in anims)
-                {
-                    anim.EndPlay();
-                }
-            }
-        }
     }
 
 }

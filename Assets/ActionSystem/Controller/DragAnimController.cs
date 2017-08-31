@@ -10,10 +10,10 @@ namespace WorldActionSystem
     {
         private InstallTarget endParent;
         private InstallStart startParent;
-        private AnimView animParent;
+        private AnimGroup animParent;
         IHighLightItems HighLight;
 
-        public DragAnimController(InstallStart startParent, InstallTarget endParent, AnimView animParent)
+        public DragAnimController(InstallStart startParent, InstallTarget endParent, AnimGroup animParent)
         {
             this.startParent = startParent;
             this.endParent = endParent;
@@ -300,12 +300,12 @@ namespace WorldActionSystem
 
         public void UnDoAnim(string currStepName)
         {
-            animParent.UnDoPlay(currStepName);
+            animParent.SetAnimUnPlayed(currStepName);
         }
 
         public void EndPlayAnim(string currStepName)
         {
-            animParent.EndPlayAnim(currStepName);
+            animParent.SetAnimEnd(currStepName);
         }
     }
 }
