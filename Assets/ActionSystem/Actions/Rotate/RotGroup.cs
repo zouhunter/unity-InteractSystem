@@ -18,6 +18,7 @@ namespace WorldActionSystem
         {
             InitObjects();
             rotAnimCtrl = new WorldActionSystem.RotateAnimController();
+            rotAnimCtrl.onHover = OnHover;
             rotAnimCtrl.OnRotateOk = OnRoateOK;
             rotAnimCtrl.onStartRot = OnStartRot;
             rotAnimCtrl.onEndRot = OnEndRot;
@@ -30,26 +31,38 @@ namespace WorldActionSystem
             objs = gameObject.GetComponentsInChildren<RotObj>(true);
             foreach (var obj in objs)
             {
-                if (objDic.ContainsKey(obj.stapName))
+                if (objDic.ContainsKey(obj.StepName))
                 {
-                    objDic[obj.stapName].Add(obj);
+                    objDic[obj.StepName].Add(obj);
                 }
                 else
                 {
-                    objDic[obj.stapName] = new List<RotObj>() { obj };
+                    objDic[obj.StepName] = new List<RotObj>() { obj };
                 }
             }
         }
+
+        internal void SetStepUnDo(string stepName)
+        {
+            var list = objDic[currStepName];
+            foreach (var item in list)
+            {
+                item.UnDoExecute();
+            }
+        }
+        private void OnHover(RotObj arg0)
+        {
+            Debug.Log("hover");
+        }
+
         private void OnEndRot(RotObj arg0)
         {
-            //throw new NotImplementedException();
-            //Debug.Log("结束旋转：" + arg0.name);
+            Debug.Log("OnEndRot");
         }
 
         private void OnStartRot(RotObj arg0)
         {
-            //throw new NotImplementedException();
-            //Debug.Log("开始旋转：" + arg0.name);
+            Debug.Log("OnStartRot");
         }
 
         void OnRoateOK(RotObj obj)
@@ -71,7 +84,7 @@ namespace WorldActionSystem
         {
             var list = objDic[currStepName];
             foreach (var item in list) {
-                item.SetRotateEndState();
+                item.EndExecute();
             }
             if (playAnim)
             {
@@ -105,7 +118,8 @@ namespace WorldActionSystem
                 var items = objDic[currStepName];
                 var neetActive = items.FindAll(x => x.queueID == id);
                 foreach (var item in neetActive) {
-                    item.SetActiveStep();
+                    item.StartExecute();
+                    rotAnimCtrl.SetViewCamera(item.ViewCamera);
                 }
                 return true;
             }
@@ -122,7 +136,7 @@ namespace WorldActionSystem
             var list = objDic[stepName];
             foreach (var item in list)
             {
-                item.SetRotateStartState();
+                item.StartExecute();
             }
         }
 

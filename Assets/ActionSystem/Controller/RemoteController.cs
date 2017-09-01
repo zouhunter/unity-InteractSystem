@@ -13,13 +13,13 @@ namespace WorldActionSystem
         int index = 0;
         bool started = false;
         public UnityAction onEndExecute;
-        List<ActionCommand> commandList;
+        List<IActionCommand> commandList;
 
-        public ActionCommand CurrCommand{
+        public IActionCommand CurrCommand{
             get { return HaveCommand(index) ? commandList[index] : null; }
         }
-        public RemoteController(IEnumerable<ActionCommand> commandList){
-            this.commandList = new List<ActionCommand>(commandList);
+        public RemoteController(IEnumerable<IActionCommand> commandList){
+            this.commandList = new List<IActionCommand>(commandList);
         }
 
 
@@ -101,7 +101,7 @@ namespace WorldActionSystem
             {
                 started = false;
                 onEndExecute = null;
-                CurrCommand.UnDoCommand();
+                CurrCommand.UnDoExecute();
                 return true;
             }
             else
@@ -109,7 +109,7 @@ namespace WorldActionSystem
                 if (HaveLast())
                 {
                     index--;
-                    CurrCommand.UnDoCommand();
+                    CurrCommand.UnDoExecute();
                     return true;
                 }
             }
@@ -119,19 +119,19 @@ namespace WorldActionSystem
         /// <summary>
         /// 执行多个步骤
         /// </summary>
-        /// <param name="stap"></param>
-        public bool ExecuteMutliCommand(int stap)
+        /// <param name="step"></param>
+        public bool ExecuteMutliCommand(int step)
         {
-            int newIndex = stap + index;
+            int newIndex = step + index;
 
-            if (stap > 0)
+            if (step > 0)
             {
                 if (started)
                 {
                     EndExecuteCommand();
                     if (HaveCommand(newIndex))
                     {
-                        for (int i = 0; i < stap - 1; i++)
+                        for (int i = 0; i < step - 1; i++)
                         {
                             StartExecuteCommand(null,false);
                             EndExecuteCommand();
@@ -143,7 +143,7 @@ namespace WorldActionSystem
                 {
                     if (HaveCommand(newIndex - 1))
                     {
-                        for (int i = 0; i < stap; i++)
+                        for (int i = 0; i < step; i++)
                         {
                             StartExecuteCommand(null, false);
                             EndExecuteCommand();
@@ -153,14 +153,14 @@ namespace WorldActionSystem
                 }
             }
 
-            else if (stap < 0)
+            else if (step < 0)
             {
                 if (started)
                 {
                     UnDoCommand();
                     if (HaveCommand(newIndex))
                     {
-                        for (int i = 0; i < -stap; i++)
+                        for (int i = 0; i < -step; i++)
                         {
                             UnDoCommand();
                         }
@@ -171,7 +171,7 @@ namespace WorldActionSystem
                 {
                     if (HaveCommand(newIndex))
                     {
-                        for (int i = 0; i < -stap; i++)
+                        for (int i = 0; i < -step; i++)
                         {
                             UnDoCommand();
                         }
@@ -181,11 +181,11 @@ namespace WorldActionSystem
             }
             return false;
             /*
-            int newIndex = stap + index;
+            int newIndex = step + index;
 
             if (started)
             {
-                if (stap > 0)
+                if (step > 0)
                 {
                     EndExecuteCommand();
 
@@ -195,13 +195,13 @@ namespace WorldActionSystem
                     UnDoCommand();
                 }
 
-                if (stap != 0)
+                if (step != 0)
                 {
                     if (HaveCommand(newIndex))
                     {
-                        if (stap > 0)
+                        if (step > 0)
                         {
-                            for (int i = 0; i < stap - 1; i++)
+                            for (int i = 0; i < step - 1; i++)
                             {
                                 StartExecuteCommand(null);
                                 EndExecuteCommand();
@@ -209,7 +209,7 @@ namespace WorldActionSystem
                         }
                         else
                         {
-                            for (int i = 0; i < - stap; i++)
+                            for (int i = 0; i < - step; i++)
                             {
                                 UnDoCommand();
                             }
@@ -220,19 +220,19 @@ namespace WorldActionSystem
             }
             else
             {
-                if (stap != 0)
+                if (step != 0)
                 {
-                    if (stap > 0 && HaveCommand(newIndex - 1))
+                    if (step > 0 && HaveCommand(newIndex - 1))
                     {
-                        for (int i = 0; i < stap; i++)
+                        for (int i = 0; i < step; i++)
                         {
                             StartExecuteCommand(null);
                             EndExecuteCommand();
                         }
                     }
-                    else if(stap < 0 && HaveCommand(newIndex))
+                    else if(step < 0 && HaveCommand(newIndex))
                     {
-                        for (int i = 0; i < -stap; i++)
+                        for (int i = 0; i < -step; i++)
                         {
                             UnDoCommand();
                         }
@@ -263,11 +263,11 @@ namespace WorldActionSystem
         /// <summary>
         /// 执行到指定的步骤
         /// </summary>
-        /// <param name="stapName"></param>
-        public bool ToTargetCommand(string stapName)
+        /// <param name="stepName"></param>
+        public bool ToTargetCommand(string stepName)
         {
             bool haveNext = true;
-            ActionCommand cmd = commandList.Find((x) => stapName == x.StepName);
+            IActionCommand cmd = commandList.Find((x) => stepName == x.StepName);
             if (cmd != null)
             {
                 int indexofCmd = commandList.IndexOf(cmd);

@@ -12,13 +12,13 @@ namespace WorldActionSystem
         public static ActionSystem Instance;
         public event UserError onUserError;//步骤操作错误
         public IRemoteController RemoteController { get { return remoteController; } }
-        public IActionStap[] ActiveStaps { get { return staps; } }
+        public IActionStap[] ActiveStaps { get { return steps; } }
         public ActionHolder[] ActionHolders { get { return actionHolders.ToArray(); } }
 
         private IRemoteController remoteController;
-        private IActionStap[] staps;
+        private IActionStap[] steps;
         private List<ActionHolder> actionHolders = new List<ActionHolder>();
-        private List<ActionCommand> commandDic = new List<ActionCommand>();
+        private List<IActionCommand> commandDic = new List<IActionCommand>();
 
         void Awake()
         {
@@ -44,9 +44,9 @@ namespace WorldActionSystem
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
-        public static IEnumerator LunchActionSystem(IActionStap[] staps)
+        public static IEnumerator LunchActionSystem(IActionStap[] steps)
         {
-            Debug.Assert(staps != null);
+            Debug.Assert(steps != null);
 
             yield return new WaitUntil(() => Instance != null);
 
@@ -61,16 +61,16 @@ namespace WorldActionSystem
                     yield return new WaitUntil(() => Instance.actionHolders[i].Registed);
                 }
 
-                if (staps.Length != Instance.commandDic.Count)
+                if (steps.Length != Instance.commandDic.Count)
                 {
-                    staps = ConfigSteps(Instance.commandDic, staps);
+                    steps = ConfigSteps(Instance.commandDic, steps);
                 }
 
-                var actionCommandList = GetActionCommandList(Instance.commandDic, staps);
+                var actionCommandList = GetIActionCommandList(Instance.commandDic, steps);
                 Instance.remoteController = new RemoteController(actionCommandList);
             }
             Instance.SwitchHighLight(Setting.highLightOpen);
-            Instance.staps = staps;
+            Instance.steps = steps;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace WorldActionSystem
         /// 注册命令
         /// </summary>
         /// <param name="arg0"></param>
-        private void OnRegistCommand(ActionCommand arg0)
+        private void OnRegistCommand(IActionCommand arg0)
         {
             commandDic.Add(arg0);
         }
@@ -137,25 +137,25 @@ namespace WorldActionSystem
         /// 重置步骤
         /// </summary>
         /// <param name="commandDic"></param>
-        /// <param name="staps"></param>
+        /// <param name="steps"></param>
         /// <returns></returns>
-        private static IActionStap[] ConfigSteps(List<ActionCommand> commandDic, IActionStap[] staps)
+        private static IActionStap[] ConfigSteps(List<IActionCommand> commandDic, IActionStap[] steps)
         {
-            if (string.Compare(commandDic.Count.ToString(), staps.Length.ToString()) != 0)
+            if (string.Compare(commandDic.Count.ToString(), steps.Length.ToString()) != 0)
             {
-                Debug.Log("count" + commandDic.Count + staps.Length.ToString());
+                Debug.Log("count" + commandDic.Count + steps.Length.ToString());
             }
             List<IActionStap> activeStaps = new List<IActionStap>();
-            for (int i = 0; i < staps.Length; i++)
+            for (int i = 0; i < steps.Length; i++)
             {
-                var old = commandDic.Find(x => x.StepName == staps[i].StapName);
+                var old = commandDic.Find(x => x.StepName == steps[i].StapName);
                 if (old != null)
                 {
-                    activeStaps.Add(staps[i]);
+                    activeStaps.Add(steps[i]);
                 }
                 else
                 {
-                    Debug.Log("[Ignored stap:]" + staps[i].StapName);
+                    Debug.Log("[Ignored step:]" + steps[i].StapName);
                 }
             }
             return activeStaps.ToArray();
@@ -164,10 +164,10 @@ namespace WorldActionSystem
         /// 得到排序后的命令列表
         /// </summary>
         /// <returns></returns>
-        private static List<ActionCommand> GetActionCommandList(List<ActionCommand> commandDic, IActionStap[] staps)
+        private static List<IActionCommand> GetIActionCommandList(List<IActionCommand> commandDic, IActionStap[] steps)
         {
-            var actionCommandList = new List<ActionCommand>();
-            foreach (var item in staps)
+            var actionCommandList = new List<IActionCommand>();
+            foreach (var item in steps)
             {
                 var old = commandDic.Find(x => x.StepName == item.StapName);
                 if (old != null)

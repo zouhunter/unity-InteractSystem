@@ -25,7 +25,7 @@ namespace WorldActionSystem
             animParent = GetComponentInChildren<AnimGroup>();
             btnParent = GetComponentInChildren<BtnGroup>();
             btnParent.onAllButtonClicked = PlayAnim;
-            animParent.onAllElementInit = OnAllInstallPosInit;
+            animParent.onAllElementInit = OnAllInstallObjInit;
         }
 
         public override void SetHighLight(bool on)
@@ -33,12 +33,12 @@ namespace WorldActionSystem
             btnParent.SetHighLightState(on);
         }
 
-        private void OnAllInstallPosInit(Dictionary<string, List<AnimObj>> dic)
+        private void OnAllInstallObjInit(Dictionary<string, List<AnimObj>> dic)
         {
             foreach (var list in dic)
             {
                 var cmd = new ClickAnimCommand(list.Key, btnParent, animParent);
-                cmd.onExecuteAction += ActiveStep;
+                cmd.onBeforeExecute = ActiveStep;
                 if (OnRegistCommand != null) OnRegistCommand(cmd);
                 foreach (var obj in list.Value)
                 {
@@ -57,7 +57,7 @@ namespace WorldActionSystem
             if (CurrStapComplete())
             {
                 if (OnStepEnd != null)
-                    OnStepEnd.Invoke(obj.stapName);
+                    OnStepEnd.Invoke(obj.StepName);
             }
         }
         private void ActiveStep(string StepName)

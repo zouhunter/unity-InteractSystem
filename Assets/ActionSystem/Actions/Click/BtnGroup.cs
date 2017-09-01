@@ -34,25 +34,25 @@ namespace WorldActionSystem
 
         void InitBtnObjs()
         {
-            var btns = GetComponentsInChildren<BtnObj>();
+            var btns = GetComponentsInChildren<BtnObj>(true);
             foreach (BtnObj obj in btns)
             {
-                if (objDic.ContainsKey((string)obj.stapName))
+                if (objDic.ContainsKey((string)obj.StepName))
                 {
-                    objDic[(string)obj.stapName].Add((BtnObj)obj);
+                    objDic[(string)obj.StepName].Add((BtnObj)obj);
                 }
                 else
                 {
-                    objDic[(string)obj.stapName] = new System.Collections.Generic.List<BtnObj>() { obj };
+                    objDic[(string)obj.StepName] = new System.Collections.Generic.List<BtnObj>() { obj };
                 }
             }
         }
 
         void OnBtnClicked(BtnObj obj)
         {
-            if (obj.clickAble)
+            if (obj.Started)
             {
-                obj.SetClicked();
+                obj.EndExecute();
                 if (!SetNextButtonsClickAble())
                 {
                     Debug.Log(onAllButtonClicked);
@@ -65,7 +65,7 @@ namespace WorldActionSystem
             if (obj == null) return;
             if (lastSelected == obj.render) return;
             OnHoverNothing();
-            highter.HighLightTarget(obj.render, obj.clickAble ? Color.green : Color.red);
+            highter.HighLightTarget(obj.render, obj.Started ? Color.green : Color.red);
             lastSelected = obj.render;
         }
 
@@ -78,11 +78,11 @@ namespace WorldActionSystem
             }
         }
 
-        internal void SetButtonClickAbleQueue(string stapName)
+        internal void SetButtonClickAbleQueue(string stepName)
         {
-            this.currStepName = stapName;
+            this.currStepName = stepName;
             queueID.Clear();
-            var btns = objDic[stapName];
+            var btns = objDic[stepName];
             foreach (var item in btns)
             {
                 if (!queueID.Contains(item.queueID))
@@ -104,45 +104,44 @@ namespace WorldActionSystem
                 var neetActive = items.FindAll(x => x.queueID == id);
                 foreach (var item in neetActive)
                 {
-                    item.clickAble = true;
+                    item.StartExecute();
                 }
                 return true;
             }
             return false;
         }
 
-        internal void SetAllButtonUnClickAble(string stapName)
+        internal void SetAllButtonUnClickAble(string stepName)
         {
-            var btns = objDic[stapName];
+            var btns = objDic[stepName];
             foreach (var item in btns)
             {
-                item.clickAble = false;
+                item.UnDoExecute();
             }
         }
 
 
-        internal void SetAllButtonClicked(string stapName,bool playAnim)
+        internal void SetAllButtonClicked(string stepName,bool playAnim)
         {
-            var btns = objDic[stapName];
+            var btns = objDic[stepName];
             foreach (var item in btns)
             {
-                item.SetClicked();
+                item.EndExecute();
             }
             if(playAnim) onAllButtonClicked.Invoke();
         }
 
-        internal void ActiveStep(string stapName)
+        internal void ActiveStep(string stepName)
         {
-            this.currStepName = stapName;
+            this.currStepName = stepName;
         }
 
-        internal void SetButtonNotClicked(string stapName)
+        internal void SetButtonNotClicked(string stepName)
         {
-            var btns = objDic[stapName];
+            var btns = objDic[stepName];
             foreach (var item in btns)
             {
-                item.SetUnClicked();
-                item.clickAble = false;
+                item.UnDoExecute();
             }
         }
     }

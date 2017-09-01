@@ -8,36 +8,36 @@ using System;
 namespace WorldActionSystem
 {
 
-    public class AnimCommand : ActionCommand
+    public class AnimCommand : IActionCommand
     {
         public AnimObj[] anims;
-        
-
-        public AnimCommand(string stapName, AnimObj[] anims) : base(stapName)
+        public string StepName { get; private set; }
+        public CommandExecute onBeforeExecute;
+        public AnimCommand(string stepName, AnimObj[] anims) 
         {
+            this.StepName = stepName;
             this.anims = anims;
         }
 
-        public override void StartExecute(bool forceAuto)
+        public void StartExecute(bool forceAuto)
+        {
+            if (onBeforeExecute != null) onBeforeExecute.Invoke(StepName);
+
+            foreach (var anim in anims){
+                anim.StartExecute();
+            }
+        }
+        public void EndExecute()
         {
             foreach (var anim in anims){
-                anim.PlayAnim();
+                anim.EndExecute();
             }
-            base.StartExecute(forceAuto);
         }
-        public override void EndExecute()
-        {
-            foreach (var anim in anims){
-                anim.EndPlay();
-            }
-            base.EndExecute();
-        }
-        public override void UnDoCommand()
+        public void UnDoExecute()
         {
             foreach (var anim in anims) {
-                anim.UnDoPlay();
+                anim.UnDoExecute();
             }
-            base.UnDoCommand();
         }
     }
 

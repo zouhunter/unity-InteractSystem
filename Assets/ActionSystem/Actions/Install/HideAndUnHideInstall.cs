@@ -8,7 +8,7 @@ using WorldActionSystem;
 public class HideAndUnHideInstall : MonoBehaviour {
 
     [SerializeField]
-    private List<InstallPos> m_Objs;
+    private List<InstallObj> m_Objs;
 
     public void HideGameObjects()
     {

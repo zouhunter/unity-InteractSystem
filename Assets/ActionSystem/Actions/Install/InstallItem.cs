@@ -13,13 +13,13 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class InstallObj : MonoBehaviour, IHightLightItem, IOutSideRegisterRender
+    public class InstallItem : MonoBehaviour, IHightLightItem, IOutSideRegisterRender
     {
         public int animTime { get { return Setting.installTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool endActive = true;//如果是false,则完成后将进行隐藏
         public bool Installed { get { return target != null; } }
-        private InstallPos target;
+        private InstallObj target;
         public Renderer Render { get { return m_render; } }
         
         public UnityAction onInstallOkEvent { get; set; }
@@ -37,7 +37,7 @@ namespace WorldActionSystem
 #if !NoFunction
         void Start()
         {
-            gameObject.layer = LayerMask.NameToLayer(Setting.installObjLayer);
+            gameObject.layer = Setting.installObjLayer;
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             if (m_render == null) m_render = GetComponentInChildren<Renderer>();
@@ -74,7 +74,7 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public void NormalInstall(InstallPos target)
+        public void NormalInstall(InstallObj target)
         {
 #if !NoFunction
 
@@ -94,7 +94,7 @@ namespace WorldActionSystem
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public void QuickInstall(InstallPos target)
+        public void QuickInstall(InstallObj target)
         {
             StopTween();
             if (!Installed)

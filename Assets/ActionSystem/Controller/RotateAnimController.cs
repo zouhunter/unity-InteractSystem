@@ -14,21 +14,16 @@ namespace WorldActionSystem
         private Ray ray;
         private float distence = 10;
 
+        public UnityAction<RotObj> onHover;
         public UnityAction<RotObj> OnRotateOk;
         public UnityAction<RotObj> onStartRot;
         public UnityAction<RotObj> onEndRot;
-
+        private Camera objCamera;
         public IEnumerator StartRotateAnimContrl()
         {
-            Vector3 worldPos = new Vector3();
             while (true)
             {
                 yield return new WaitForFixedUpdate();
-
-                worldPos.x = Input.mousePosition.x;
-                worldPos.y = Input.mousePosition.y;
-                worldPos.z = 10;
-                ray = Camera.main.ScreenPointToRay(worldPos);
 
                 if (TrySelectRotateObj())
                 {
@@ -39,13 +34,20 @@ namespace WorldActionSystem
                 }
             }
         }
-
-
+        public void SetViewCamera(Camera objCamera)
+        {
+            this.objCamera = objCamera;
+        }
         private bool TrySelectRotateObj()
         {
-            if (Physics.Raycast(ray, out hit, distence, LayerMask.GetMask(Setting.rotateItemLayer)))
+            if (objCamera == null) return false;
+
+            ray = objCamera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, distence, (1 << Setting.rotateItemLayer)))
             {
                 selectedObj = hit.collider.GetComponent<RotObj>();
+               if(onHover != null) onHover.Invoke(selectedObj);
             }
 
             return selectedObj != null;
@@ -57,12 +59,10 @@ namespace WorldActionSystem
             Vector3 axis = selectedObj.Direction;
             Vector3 previousMousePosition = Vector3.zero;
             if (onStartRot != null) onStartRot.Invoke(selectedObj);
-            GameObject cube = new GameObject();
-            while (!Input.GetMouseButtonUp(0) && selectedObj.RotateAble)
+            while (!Input.GetMouseButtonUp(0) && selectedObj.Started)
             {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                ray = objCamera.ScreenPointToRay(Input.mousePosition);
                 Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, originalTargetPosition, axis);
-                cube.transform.position = mousePosition;
                 if (previousMousePosition != Vector3.zero && mousePosition != Vector3.zero && IsInCercle(mousePosition))
                 {
                     var vec1 = previousMousePosition - selectedObj.transform.position;

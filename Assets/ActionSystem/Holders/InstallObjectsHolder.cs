@@ -25,9 +25,9 @@ namespace WorldActionSystem
         // Use this for initialization
         void Awake()
         {
-            var startParent = GetComponentInChildren<InstallStart>();
+            var startParent = GetComponentInChildren<InstallElements>();
             var endParent = GetComponentInChildren<InstallTarget>();
-            endParent.GetInstallDicAsync(OnAllInstallPosInit);
+            endParent.GetInstallDicAsync(OnAllInstallObjInit);
 
             intallController = new InstallController(startParent, endParent, OnInstallComplete);
             intallController.InstallErr += OnInstallErr;
@@ -47,16 +47,15 @@ namespace WorldActionSystem
         {
             if (OnStepEnd != null) OnStepEnd.Invoke(stepName);
         }
-        //startParent.InsertScript<T>(on);
 
         private void OnInstallErr(string stepName, string err)
         {
             if (onUserErr != null) onUserErr(stepName, err);
         }
 
-        private void OnAllInstallPosInit(Dictionary<string, List<InstallPos>> dic)
+        private void OnAllInstallObjInit(Dictionary<string, List<InstallObj>> dic)
         {
-            ActionCommand cmd;
+            IActionCommand cmd;
             foreach (var item in dic)
             {
                 cmd = new InstallCommand(item.Key, intallController);

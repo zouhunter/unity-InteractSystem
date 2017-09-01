@@ -11,25 +11,25 @@ namespace WorldActionSystem
     /// <summary>
     /// 记录安装对象,并操作对象
     /// </summary>
-    public class InstallStart : MonoBehaviour
+    public class InstallElements : MonoBehaviour
     {
         [Range(1, 10)]
         public float distence = 1;
         public float Distence { get { return distence; } set { distence = value; } }
-        public InstallObj[] InstallObjs { get { return _installObjs; } }
-        public UnityAction<InstallObj> onInstall;
+        public InstallItem[] InstallObjs { get { return _installObjs; } }
+        public UnityAction<InstallItem> onInstall;
 
 
-        private InstallObj pickedUpObj;
-        private InstallObj[] _installObjs;
+        private InstallItem pickedUpObj;
+        private InstallItem[] _installObjs;
         /// <summary>
         /// 按名称将元素进行记录
         /// </summary>
-        Dictionary<string, List<InstallObj>> objectList = new Dictionary<string, List<InstallObj>>();
+        Dictionary<string, List<InstallItem>> objectList = new Dictionary<string, List<InstallItem>>();
 
         void Start()
         {
-            _installObjs = GetComponentsInChildren<InstallObj>(true);
+            _installObjs = GetComponentsInChildren<InstallItem>(true);
 
             foreach (var item in _installObjs)
             {
@@ -40,7 +40,7 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    objectList[obj.name] = new List<InstallObj>() { obj };
+                    objectList[obj.name] = new List<InstallItem>() { obj };
                 }
 
                 obj.onInstallOkEvent = () => { onInstall(obj); };
@@ -51,7 +51,7 @@ namespace WorldActionSystem
         /// 拿起元素
         /// </summary>
         /// <param name="pickedUpObj"></param>
-        public bool PickUpObject(InstallObj pickedUpObj)
+        public bool PickUpObject(InstallItem pickedUpObj)
         {
             if (!pickedUpObj.Installed)
             {
@@ -78,7 +78,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public bool CanInstallToPos(InstallPos pos)
+        public bool CanInstallToPos(InstallObj pos)
         {
             return pickedUpObj.name == pos.name;
         }
@@ -87,7 +87,7 @@ namespace WorldActionSystem
         /// 安装元素到指定坐标
         /// </summary>
         /// <param name="pos"></param>
-        public void InstallPickedUpObject(InstallPos pos)
+        public void InstallPickedUpObject(InstallObj pos)
         {
             pos.Attach(pickedUpObj);
             pickedUpObj.QuickInstall(pos);
@@ -97,13 +97,13 @@ namespace WorldActionSystem
         /// 将未安装的元素安装到指定的坐标
         /// </summary>
         /// <param name="posList"></param>
-        public void InstallPosListObjects(List<InstallPos> posList)
+        public void InstallObjListObjects(List<InstallObj> posList)
         {
-            InstallPos pos;
+            InstallObj pos;
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                InstallObj obj = GetUnInstalledObj(pos.name);
+                InstallItem obj = GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalInstall(pos);
             }
@@ -112,15 +112,15 @@ namespace WorldActionSystem
         /// 快速安装 列表 
         /// </summary>
         /// <param name="posList"></param>
-        public void QuickInstallPosListObjects(List<InstallPos> posList)
+        public void QuickInstallObjListObjects(List<InstallObj> posList)
         {
-            InstallPos pos;
+            InstallObj pos;
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
                 if (pos != null)
                 {
-                    InstallObj obj = GetUnInstalledObj(pos.name);
+                    InstallItem obj = GetUnInstalledObj(pos.name);
                     obj.QuickInstall(pos);
                     pos.Attach(obj);
                 }
@@ -130,13 +130,13 @@ namespace WorldActionSystem
         /// uninstll
         /// </summary>
         /// <param name="posList"></param>
-        public void UnInstallPosListObjects(List<InstallPos> posList)
+        public void UnInstallObjListObjects(List<InstallObj> posList)
         {
-            InstallPos pos;
+            InstallObj pos;
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                InstallObj obj = pos.Detach();
+                InstallItem obj = pos.Detach();
                 obj.NormalUnInstall();
             }
         }
@@ -144,11 +144,11 @@ namespace WorldActionSystem
         /// QuickUnInstall
         /// </summary>
         /// <param name="posList"></param>
-        public void QuickUnInstallPosListObjects(List<InstallPos> posList)
+        public void QuickUnInstallObjListObjects(List<InstallObj> posList)
         {
             foreach (var item in posList)
             {
-                InstallObj obj = item.Detach();
+                InstallItem obj = item.Detach();
                 obj.QuickUnInstall();
             }
         }
@@ -156,12 +156,12 @@ namespace WorldActionSystem
         /// 激活步骤 
         /// </summary>
         /// <param name="poss"></param>
-        public void SetStartNotify(List<InstallPos> posList)
+        public void SetStartNotify(List<InstallObj> posList)
         {
-            List<InstallObj> temp = new List<InstallObj>();
+            List<InstallItem> temp = new List<InstallItem>();
             foreach (var pos in posList)
             {
-                List<InstallObj> listObjs;
+                List<InstallItem> listObjs;
                 if (objectList.TryGetValue(pos.name, out listObjs))
                 {
                     for (int j = 0; j < listObjs.Count; j++)
@@ -180,7 +180,7 @@ namespace WorldActionSystem
         /// 结束指定步骤
         /// </summary>
         /// <param name="poss"></param>
-        public void SetCompleteNotify(List<InstallPos> poss)
+        public void SetCompleteNotify(List<InstallObj> poss)
         {
             //当前步骤结束
             foreach (var item in poss)
@@ -194,9 +194,9 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        InstallObj GetUnInstalledObj(string elementName)
+        InstallItem GetUnInstalledObj(string elementName)
         {
-            List<InstallObj> listObj;
+            List<InstallItem> listObj;
 
             if (objectList.TryGetValue(elementName, out listObj))
             {

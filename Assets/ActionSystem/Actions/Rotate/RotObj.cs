@@ -8,14 +8,13 @@ using UnityEngine.Assertions.Comparers;
 namespace WorldActionSystem
 {
     [RequireComponent(typeof(LineRenderer))]
-    public class RotObj : MonoBehaviour
+    public class RotObj : ActionObj
     {
         public enum DirType
         {
             x, y, z
         }
 
-        public string stapName;
         public Color color = Color.green;
         public float triggerRadius = 1;
         public float minAngle = 0;
@@ -24,9 +23,12 @@ namespace WorldActionSystem
         public float circleDetail = 40;
         public float deviation = 1;
         public float rotSpeed = 40;
+        private float flashSpeed = 1f;
         public DirType dirType;
-        public bool startActive;
-        public bool endActive;
+
+        [SerializeField]
+        private Camera _viewCamera;
+        public Camera ViewCamera { get { return _viewCamera ?? Camera.main; } }
         public Vector3 Direction
         {
             get
@@ -43,42 +45,71 @@ namespace WorldActionSystem
                 return Vector3.zero;
             }
         }
-        public bool RotateAble
-        {
-            get
-            {
-                return rotAble;
-            }
-        }
-
         private float currAngle;
         private List<Vector3> _lines = new List<Vector3>();
         private LineRenderer lineRender;
         private bool highLight;
         public int queueID;
-        private bool rotAble;
         private Quaternion startRot;
         private FloatComparer comparer;
-
-
-        private void Start()
+        internal Renderer render;
+        private float flash = 0;
+        private float rangleCercle = .1f;
+        private bool right;
+        protected override void Start()
         {
+            base.Start();
             startRot = transform.rotation;
             lineRender = gameObject.AddComponent<LineRenderer>();
             lineRender.material = new Material(Shader.Find("Sprites/Default"));
             lineRender.SetWidth(.1f, .01f);
-            gameObject.layer = LayerMask.NameToLayer("rotateItem");
+            gameObject.layer = Setting.rotateItemLayer;
             comparer = new FloatComparer(deviation);
-            gameObject.SetActive(startActive);
+            if (render == null) render = GetComponent<Renderer>();
         }
 
+        private bool Flash()
+        {
+            if (Started && !Complete)
+            {
+                if (right)
+                {
+                    flash += Time.deltaTime * flashSpeed;
+                    if (flash > rangleCercle)
+                    {
+                        right = false;
+                    }
+                }
+                else
+                {
+                    flash -= Time.deltaTime * flashSpeed;
+                    if (flash < -rangleCercle)
+                    {
+                        right = true;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                flash = 0;
+                return false;
+            }
+        }
         private void Update()
         {
-            _lines.Clear();
-            AddCircle(transform.position, Direction, triggerRadius, _lines);
-            if (highLight)
+            if (Flash())
             {
-                DrawCircles(_lines, color);
+                _lines.Clear();
+                AddCircle(transform.position, Direction, triggerRadius + flash, _lines);
+                if (highLight)
+                {
+                    DrawCircle(_lines, color);
+                }
+            }
+            else
+            {
+                ClearCircle();
             }
         }
 
@@ -87,7 +118,7 @@ namespace WorldActionSystem
             Vector3 up = axisDirection.normalized * size;
             Vector3 forward = Vector3.Slerp(up, -up, .5f);
             Vector3 right = Vector3.Cross(up, forward).normalized * size;
-            Camera myCamera = Camera.main;
+            //Camera myCamera = Camera.main;
 
             Matrix4x4 matrix = new Matrix4x4();
 
@@ -107,7 +138,7 @@ namespace WorldActionSystem
             Vector3 nextPoint = Vector3.zero;
             float multiplier = 360f / circleDetail;
 
-            Plane plane = new Plane((myCamera.transform.position - transform.position).normalized, transform.position);
+            //Plane plane = new Plane((myCamera.transform.position - transform.position).normalized, transform.position);
 
             for (var i = 0; i < circleDetail + 1; i++)
             {
@@ -124,27 +155,40 @@ namespace WorldActionSystem
             }
         }
 
-        internal void SetRotateStartState()
+        public override void StartExecute(bool forceAuto = false)
         {
-            rotAble = false;
+            base.StartExecute(forceAuto);
+            if (_viewCamera) _viewCamera.gameObject.SetActive(true);
             transform.rotation = startRot;
-            gameObject.SetActive(startActive);
         }
-        internal void SetActiveStep()
+        public override void EndExecute()
         {
-            rotAble = true;
-            gameObject.SetActive(true);
+            base.EndExecute();
+            if (_viewCamera) _viewCamera.gameObject.SetActive(false);
         }
+        public override void UnDoExecute()
+        {
+            base.UnDoExecute();
+            transform.rotation = startRot;
+            currAngle = 0;
+            if (_viewCamera) _viewCamera.gameObject.SetActive(false);
+        }
+
         internal void SetHighLight(bool on)
         {
             this.highLight = on;
         }
 
-        void DrawCircles(List<Vector3> lines, Color color)
+        void DrawCircle(List<Vector3> lines, Color color)
         {
             lineRender.SetColors(color, color);
             lineRender.SetVertexCount(lines.Count);
             lineRender.SetPositions(lines.ToArray());
+        }
+
+        void ClearCircle()
+        {
+            lineRender.SetVertexCount(0);
         }
 
         internal bool TryMarchRot()
@@ -165,7 +209,6 @@ namespace WorldActionSystem
                     transform.rotation = Quaternion.Lerp(start, target, timer);
                 }
             }
-            Debug.Log(currAngle);
         }
 
         public void Rotate(float amount)
@@ -174,10 +217,6 @@ namespace WorldActionSystem
             transform.Rotate(Direction, amount, Space.World);
         }
 
-        public void SetRotateEndState()
-        {
-            gameObject.SetActive(endActive);
-        }
     }
 }
 

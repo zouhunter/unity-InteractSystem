@@ -16,8 +16,8 @@ namespace WorldActionSystem
         /// <summary>
         /// 按步骤将子目标点进行记录
         /// </summary>
-        Dictionary<string, List<InstallPos>> installDic = new Dictionary<string, List<InstallPos>>();
-        List<InstallPos> currInstallPoss = new List<InstallPos>();
+        Dictionary<string, List<InstallObj>> installDic = new Dictionary<string, List<InstallObj>>();
+        List<InstallObj> currInstallObjs = new List<InstallObj>();
         bool allChildRecord;
         void Start()
         {
@@ -28,18 +28,18 @@ namespace WorldActionSystem
         /// </summary>
         void SaveTargetObjects()
         {
-            InstallPos installPos;
+            InstallObj installPos;
             foreach (Transform item in transform)
             {
-                installPos = item.GetComponent<InstallPos>();
+                installPos = item.GetComponent<InstallObj>();
                 //记录步骤对象
-                if (installDic.ContainsKey(installPos.stapName))
+                if (installDic.ContainsKey(installPos.StepName))
                 {
-                    installDic[installPos.stapName].Add(installPos);
+                    installDic[installPos.StepName].Add(installPos);
                 }
                 else
                 {
-                    installDic[installPos.stapName] = new List<InstallPos>() { (installPos) };
+                    installDic[installPos.StepName] = new List<InstallObj>() { (installPos) };
                 }
             }
             allChildRecord = true;
@@ -48,7 +48,7 @@ namespace WorldActionSystem
         /// 获取坐标字典
         /// </summary>
         /// <param name="onDicCrateed"></param>
-        public void GetInstallDicAsync(UnityAction<Dictionary<string, List<InstallPos>>> onDicCrateed)
+        public void GetInstallDicAsync(UnityAction<Dictionary<string, List<InstallObj>>> onDicCrateed)
         {
             if (allChildRecord)
             {
@@ -59,7 +59,7 @@ namespace WorldActionSystem
                 StartCoroutine(WaitToEnd(onDicCrateed));
             }
         }
-        IEnumerator WaitToEnd(UnityAction<Dictionary<string, List<InstallPos>>> onDicCrateed)
+        IEnumerator WaitToEnd(UnityAction<Dictionary<string, List<InstallObj>>> onDicCrateed)
         {
             yield return new WaitWhile(() => allChildRecord == false);
             onDicCrateed(installDic);
@@ -68,11 +68,15 @@ namespace WorldActionSystem
         /// <summary>
         /// 激活当前步骤所有安装坐标
         /// </summary>
-        /// <param name="stap"></param>
-        public bool SetStapActive(string stap)
+        /// <param name="step"></param>
+        public bool SetStapActive(string step)
         {
-            if (installDic.TryGetValue(stap, out currInstallPoss))
+            if (installDic.TryGetValue(step, out currInstallObjs))
             {
+                foreach (var item in currInstallObjs)
+                {
+                    item.StartExecute();
+                }
                 return true;
             }
             else
@@ -86,9 +90,9 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="installObj"></param>
         /// <returns></returns>
-        public bool IsInstallStep(InstallPos installObj)
+        public bool IsInstallStep(InstallObj installObj)
         {
-            return currInstallPoss.Contains(installObj);
+            return currInstallObjs.Contains(installObj);
         }
 
         /// <summary>
@@ -96,7 +100,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="installObj"></param>
         /// <returns></returns>
-        public bool HaveInstallPosInstalled(InstallPos installObj)
+        public bool HaveInstallObjInstalled(InstallObj installObj)
         {
             return installObj.Installed;
         }
@@ -105,15 +109,15 @@ namespace WorldActionSystem
         /// 获取当前未安装完成的坐标
         /// </summary>
         /// <returns></returns>
-        public List<InstallPos> GetNotInstalledPosList()
+        public List<InstallObj> GetNotInstalledPosList()
         {
             {
-                List<InstallPos> installPoss = new List<InstallPos>();
-                InstallPos item;
-                for (int i = 0; i < currInstallPoss.Count; i++)
+                List<InstallObj> installPoss = new List<InstallObj>();
+                InstallObj item;
+                for (int i = 0; i < currInstallObjs.Count; i++)
                 {
-                    item = currInstallPoss[i];
-                    if (!currInstallPoss[i].Installed)
+                    item = currInstallObjs[i];
+                    if (!currInstallObjs[i].Installed)
                     {
                         installPoss.Add(item);
                     }
@@ -125,14 +129,14 @@ namespace WorldActionSystem
         /// 获取当前步骤需要自动安装的坐标
         /// </summary>
         /// <returns></returns>
-        public List<InstallPos> GetNeedAutoInstallPosList()
+        public List<InstallObj> GetNeedAutoInstallObjList()
         {
-            List<InstallPos> installPoss = new List<InstallPos>();
-            InstallPos item;
-            for (int i = 0; i < currInstallPoss.Count; i++)
+            List<InstallObj> installPoss = new List<InstallObj>();
+            InstallObj item;
+            for (int i = 0; i < currInstallObjs.Count; i++)
             {
-                item = currInstallPoss[i];
-                if (currInstallPoss[i].autoInstall)
+                item = currInstallObjs[i];
+                if (currInstallObjs[i].autoInstall)
                 {
                     installPoss.Add(item);
                 }
@@ -146,26 +150,48 @@ namespace WorldActionSystem
         public bool AllElementInstalled()
         {
             bool allInstall = true;
-            for (int i = 0; i < currInstallPoss.Count; i++)
+            for (int i = 0; i < currInstallObjs.Count; i++)
             {
-                allInstall &= currInstallPoss[i].Installed;
+                allInstall &= currInstallObjs[i].Installed;
             }
             return allInstall;
         }
 
-        public List<InstallPos> GetInstalledPosList()
+        public List<InstallObj> GetInstalledPosList()
         {
-            List<InstallPos> installPoss = new List<InstallPos>();
-            InstallPos item;
-            for (int i = 0; i < currInstallPoss.Count; i++)
+            List<InstallObj> installPoss = new List<InstallObj>();
+            InstallObj item;
+            for (int i = 0; i < currInstallObjs.Count; i++)
             {
-                item = currInstallPoss[i];
-                if (currInstallPoss[i].Installed)
+                item = currInstallObjs[i];
+                if (currInstallObjs[i].Installed)
                 {
                     installPoss.Add(item);
                 }
             }
             return installPoss;
+        }
+
+        internal void SetSepComplete(string step)
+        {
+            if (installDic.TryGetValue(step, out currInstallObjs))
+            {
+                foreach (var item in currInstallObjs)
+                {
+                    item.EndExecute();
+                }
+            }
+        }
+
+        internal void SetSepUnDo(string step)
+        {
+            if (installDic.TryGetValue(step, out currInstallObjs))
+            {
+                foreach (var item in currInstallObjs)
+                {
+                    item.UnDoExecute();
+                }
+            }
         }
     }
 

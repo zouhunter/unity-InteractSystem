@@ -7,38 +7,39 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class ClickAnimCommand : ActionCommand
+    public class ClickAnimCommand : IActionCommand
     {
         private AnimGroup animParent;
         private BtnGroup btnParent;
+        public string StepName { get; private set; }
+        public CommandExecute onBeforeExecute;
 
-        public ClickAnimCommand(string stapName, BtnGroup btnParent, AnimGroup animParent) : base(stapName)
+        public ClickAnimCommand(string stepName, BtnGroup btnParent, AnimGroup animParent)
         {
+            this.StepName = stepName;
             this.btnParent = btnParent;
             this.animParent = animParent;
             btnParent.onAllButtonClicked = () => animParent.PlayAnim(StepName);
         }
-        public override void StartExecute(bool forceAuto)
+        public  void StartExecute(bool forceAuto)
         {
+            if (onBeforeExecute != null) onBeforeExecute.Invoke(StepName);
             if (forceAuto) btnParent.SetAllButtonClicked(StepName,true);
             else
             {
                 btnParent.SetButtonClickAbleQueue(StepName);
             }
-            base.StartExecute(forceAuto);
         }
-        public override void EndExecute()
+        public  void EndExecute()
         {
             btnParent.SetAllButtonClicked(StepName,false);
             animParent.SetAnimEnd(StepName);
-            base.EndExecute();
         }
-        public override void UnDoCommand()
+        public  void UnDoExecute()
         {
             btnParent.SetAllButtonUnClickAble(StepName);
             btnParent.SetButtonNotClicked(StepName);
             animParent.SetAnimUnPlayed(StepName);
-            base.UnDoCommand();
         }
     }
 

@@ -6,12 +6,12 @@ namespace WorldActionSystem
     /// </summary>
     public interface IRemoteController
     {
-        ActionCommand CurrCommand { get; }
+        IActionCommand CurrCommand { get; }
         bool StartExecuteCommand(UnityAction onEndExecute,bool forceAuto);//返回操作成功与否
         bool EndExecuteCommand();
         bool UnDoCommand();
-        bool ToTargetCommand(string stap);
-        bool ExecuteMutliCommand(int stap);
+        bool ToTargetCommand(string step);
+        bool ExecuteMutliCommand(int step);
         void ToAllCommandStart();
         void ToAllCommandEnd();
     }

@@ -18,6 +18,7 @@ public class ShaderHighLight : IHighLightItems
 #endif
     public void HighLightTarget(Renderer go, Color color)
     {
+        if (!isOn) return;
 #if !NoFunction
         Highlighter highlighter;
         if (!highlightDic.ContainsKey(go))

@@ -13,28 +13,24 @@ namespace WorldActionSystem
     /// <summary>
     /// 模拟安装坐标功能
     /// </summary>
-    public class InstallPos :MonoBehaviour
+    public class InstallObj :ActionObj
     {
-        public string stapName;
         public bool autoInstall;
-
         public bool Installed { get { return obj != null; } }
-        public InstallObj obj { get; private set; }
+        public InstallItem obj { get; private set; }
 
-        private void Start()
-        {
-            gameObject.layer = LayerMask.NameToLayer(Setting.installPosLayer);
+        void Awake(){
+            gameObject.layer = Setting.installPosLayer;
         }
-        //public IInstallCtrl installCtrl { private get; set; }
 
-        public void Attach(InstallObj obj)
+        public void Attach(InstallItem obj)
         {
             this.obj = obj;
         }
 
-        public InstallObj Detach()
+        public InstallItem Detach()
         {
-            InstallObj old = obj;
+            InstallItem old = obj;
             obj = null;
             return old;
         }

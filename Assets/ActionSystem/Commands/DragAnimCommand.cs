@@ -8,30 +8,29 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class DragAnimCommand : ActionCommand
+    public class DragAnimCommand : IActionCommand
     {
         private DragAnimController dragAnimCtrl;
+        public string StepName { get; private set; }
 
-        public DragAnimCommand(string stapName, DragAnimController dragAnimCtrl) : base(stapName)
+        public DragAnimCommand(string stepName, DragAnimController dragAnimCtrl)
         {
             this.dragAnimCtrl = dragAnimCtrl;
+            this.StepName = stepName;
         }
-        public override void StartExecute(bool forceAuto)
+        public  void StartExecute(bool forceAuto)
         {
             dragAnimCtrl.SetStapActive(StepName);
             dragAnimCtrl.AutoInstallWhenNeed(StepName, forceAuto);
-            base.StartExecute(forceAuto);
         }
-        public override void UnDoCommand()
+        public  void UnDoExecute()
         {
             dragAnimCtrl.QuickUnInstall(StepName);
             dragAnimCtrl.UnDoAnim(StepName);
-            base.UnDoCommand();
         }
-        public override void EndExecute()
+        public  void EndExecute()
         {
             dragAnimCtrl.EndPlayAnim(StepName);
-            base.EndExecute();
         }
     }
 

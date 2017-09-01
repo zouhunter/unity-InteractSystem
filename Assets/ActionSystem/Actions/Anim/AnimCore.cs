@@ -2,10 +2,12 @@
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.Collections;
+using System;
+
 namespace WorldActionSystem
 {
-
-    public class AnimCore : MonoBehaviour
+    [RequireComponent(typeof(Animation))]
+    public class AnimCore : MonoBehaviour, AnimPlayer
     {
         private UnityAction onPlayEnd;
         private Animation anim;
@@ -14,23 +16,17 @@ namespace WorldActionSystem
         private AnimationState state;
         private float animTime;
         private AnimationEvent even;
-
-        public static AnimCore Init(Animation anim, UnityAction onPlayEnd)
+        private void Awake()
         {
-            AnimCore core = null;
-            if (anim != null)
-            {
-                core = anim.gameObject.AddComponent<AnimCore>();
-                core.anim = anim;
-                core.anim.playAutomatically = false;
-                core.anim.wrapMode = WrapMode.Once;
-                core.onPlayEnd = onPlayEnd;
-                core.RegisterEvent();
-            }
-         
-            return core;
+            anim = GetComponent<Animation>();
         }
-
+        public void Init(UnityAction onPlayEnd)
+        {
+            anim.playAutomatically = false;
+            anim.wrapMode = WrapMode.Once;
+            this.onPlayEnd = onPlayEnd;
+            RegisterEvent();
+        }
 
         void RegisterEvent()
         {
@@ -72,5 +68,7 @@ namespace WorldActionSystem
             state.normalizedTime = 0f;
             state.speed = 0;
         }
+
+     
     }
 }

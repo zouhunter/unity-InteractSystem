@@ -6,19 +6,23 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class RotateCommand : ActionCommand
+    public class RotateCommand : IActionCommand
     {
         private AnimGroup animParent;
         private RotGroup rotParent;
+        public string StepName { get; private set; }
+        public CommandExecute onBeforeExecute;
 
 
-        public RotateCommand(string stapName, RotGroup rotParent, AnimGroup animParent) : base(stapName)
+        public RotateCommand(string stepName, RotGroup rotParent, AnimGroup animParent) 
         {
+            this.StepName = stepName;
             this.rotParent = rotParent;
             this.animParent = animParent;
         }
-        public override void StartExecute(bool forceAuto)
+        public  void StartExecute(bool forceAuto)
         {
+            if (onBeforeExecute != null) onBeforeExecute.Invoke(StepName);
             rotParent.ActiveStep(StepName);
             if (forceAuto) {
                 rotParent.SetRotateComplete(true);
@@ -26,19 +30,16 @@ namespace WorldActionSystem
             else{
                 rotParent.SetRotateQueue(StepName);
             }
-            base.StartExecute(forceAuto);
         }
-        public override void EndExecute()
+        public  void EndExecute()
         {
             rotParent.SetRotateComplete();
             animParent.SetAnimEnd(StepName);
-            base.EndExecute();
         }
-        public override void UnDoCommand()
+        public  void UnDoExecute()
         {
-            rotParent.SetRotateStart(StepName);
+            rotParent.SetStepUnDo(StepName);
             animParent.SetAnimUnPlayed(StepName);
-            base.UnDoCommand();
         }
     }
 

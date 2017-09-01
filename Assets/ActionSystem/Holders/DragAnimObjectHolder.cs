@@ -20,13 +20,13 @@ namespace WorldActionSystem
         // Use this for initialization
         void Awake()
         {
-           var startParent = GetComponentInChildren<InstallStart>();
+           var startParent = GetComponentInChildren<InstallElements>();
             var endParent = GetComponentInChildren<InstallTarget>();
             var animParent = GetComponentInChildren<AnimGroup>();
 
             dragAnimCtrl = new DragAnimController(startParent, endParent, animParent);
             dragAnimCtrl.InstallErr += OnInstallErr;
-            animParent.onAllElementInit = OnAllInstallPosInit;
+            animParent.onAllElementInit = OnAllInstallObjInit;
         }
 
         private void Update()
@@ -44,7 +44,7 @@ namespace WorldActionSystem
             if (onUserErr != null) onUserErr(stepName, err);
         }
 
-        private void OnAllInstallPosInit(Dictionary<string, List<AnimObj>> dic)
+        private void OnAllInstallObjInit(Dictionary<string, List<AnimObj>> dic)
         {
             foreach (var list in dic)
             {
@@ -62,7 +62,7 @@ namespace WorldActionSystem
             if (dragAnimCtrl.CurrStapComplete())
             {
                 if (OnStepEnd != null)
-                    OnStepEnd.Invoke(obj.stapName);
+                    OnStepEnd.Invoke(obj.StepName);
             }
         }
 

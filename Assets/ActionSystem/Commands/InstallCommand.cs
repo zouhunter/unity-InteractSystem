@@ -8,28 +8,27 @@ using System;
 namespace WorldActionSystem
 {
     [Serializable]
-    public class InstallCommand : ActionCommand
+    public class InstallCommand : IActionCommand
     {
+        public string StepName { get; private set; }
         public InstallController installCtrl;
-        public InstallCommand(string stapName, InstallController installCtrl) : base(stapName)
+        public InstallCommand(string stepName, InstallController installCtrl) 
         {
+            this.StepName = stepName;
             this.installCtrl = installCtrl;
         }
-        public override void StartExecute(bool forceAuto)
+        public  void StartExecute(bool forceAuto)
         {
             installCtrl.SetStapActive(StepName);
             installCtrl.AutoInstallWhenNeed(StepName, forceAuto);
-            base.StartExecute(forceAuto);
         }
-        public override void EndExecute()
+        public  void EndExecute()
         {
             installCtrl.EndInstall(StepName);
-            base.EndExecute();
         }
-        public override void UnDoCommand()
+        public  void UnDoExecute()
         {
             installCtrl.QuickUnInstall(StepName);
-            base.UnDoCommand();
         }
     }
 }

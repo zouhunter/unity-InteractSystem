@@ -17,19 +17,17 @@ namespace WorldActionSystem
             foreach (AnimObj anim in animObjects)
             {
                 var obj = anim;
-                if (animDic.ContainsKey(obj.stapName))
+                if (animDic.ContainsKey(obj.StepName))
                 {
-                    animDic[obj.stapName].Add(obj);
+                    animDic[obj.StepName].Add(obj);
                 }
                 else
                 {
-                    animDic[obj.stapName] = new List<AnimObj>() { obj };
+                    animDic[obj.StepName] = new List<AnimObj>() { obj };
                 }
             }
             if (onAllElementInit != null) onAllElementInit.Invoke(animDic);
         }
-
-       
         public List<AnimObj> GetCurrAnims(string currStepName)
         {
             return animDic[currStepName];
@@ -37,12 +35,13 @@ namespace WorldActionSystem
 
         public void PlayAnim(string currStepName)
         {
+            Debug.Log(currStepName);
             var anims = animDic[currStepName];
             if (anims != null)
             {
                 foreach (var anim in anims)
                 {
-                    anim.PlayAnim();
+                    anim.StartExecute();
                 }
             }
         }
@@ -54,7 +53,7 @@ namespace WorldActionSystem
             {
                 foreach (var anim in anims)
                 {
-                    anim.EndPlay();
+                    anim.EndExecute();
                 }
             }
         }
@@ -67,7 +66,7 @@ namespace WorldActionSystem
             {
                 foreach (var anim in anims)
                 {
-                    anim.UnDoPlay();
+                    anim.UnDoExecute();
                 }
             }
         }

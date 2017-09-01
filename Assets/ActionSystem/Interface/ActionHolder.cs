@@ -14,7 +14,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 注册安装命令
         /// </summary>
-        public UnityAction<ActionCommand> OnRegistCommand;
+        public UnityAction<IActionCommand> OnRegistCommand;
 
         /// <summary>
         /// 步骤结束事件

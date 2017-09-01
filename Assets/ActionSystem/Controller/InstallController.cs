@@ -13,14 +13,14 @@ namespace WorldActionSystem
     /// </summary>
     public class InstallController /*: IInstallCtrl*/
     {
-        InstallStart startParent;
+        InstallElements startParent;
         InstallTarget endParent;
         IHighLightItems HighLight;
 
-        private InstallObj pickedUpObj;
+        private InstallItem pickedUpObj;
         private bool pickedUp;
         private float distence { get { return startParent.Distence; } set { startParent.Distence = value; } }
-        private InstallPos installPos;
+        private InstallObj installPos;
 
         private Ray ray;
         private RaycastHit hit;
@@ -30,7 +30,7 @@ namespace WorldActionSystem
         private string currStepName;
         public UserError InstallErr;
         public StepComplete onStepComplete;
-        public InstallController(InstallStart startParent, InstallTarget endParent, StepComplete onStepComplete)
+        public InstallController(InstallElements startParent, InstallTarget endParent, StepComplete onStepComplete)
         {
             this.startParent = startParent;
             this.endParent = endParent;
@@ -41,8 +41,7 @@ namespace WorldActionSystem
 
         public void SwitchHighLight(bool open)
         {
-            if (open) HighLight = new ShaderHighLight();
-            else HighLight = null;
+            HighLight.SetState(open);
         }
 
         #region 鼠标操作事件
@@ -78,9 +77,9 @@ namespace WorldActionSystem
         void SelectAnElement()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(Setting.installObjLayer)))
+            if (Physics.Raycast(ray, out hit, 100, (1 << Setting.installObjLayer)))
             {
-                pickedUpObj = hit.collider.GetComponent<InstallObj>();
+                pickedUpObj = hit.collider.GetComponent<InstallItem>();
                 if (pickedUpObj != null && startParent.PickUpObject(pickedUpObj))
                 {
                     pickedUp = true;
@@ -100,10 +99,10 @@ namespace WorldActionSystem
         private bool PickUpedCanInstall()
         {
             bool canInstall = false;
-            List<InstallPos> poss = endParent.GetNotInstalledPosList();
+            List<InstallObj> poss = endParent.GetNotInstalledPosList();
             for (int i = 0; i < poss.Count; i++)
             {
-                if (!endParent.HaveInstallPosInstalled(poss[i]) && endParent.IsInstallStep(poss[i]) && startParent.CanInstallToPos(poss[i]))
+                if (!endParent.HaveInstallObjInstalled(poss[i]) && endParent.IsInstallStep(poss[i]) && startParent.CanInstallToPos(poss[i]))
                 {
                     canInstall = true;
                 }
@@ -115,7 +114,7 @@ namespace WorldActionSystem
         public void UpdateInstallState()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, 100, LayerMask.GetMask(Setting.installPosLayer));
+            hits = Physics.RaycastAll(ray, 100, (1 << Setting.installPosLayer));
             if (hits != null || hits.Length > 0)
             {
                 bool hited = false;
@@ -124,17 +123,17 @@ namespace WorldActionSystem
                     if (hits[i].collider.name == pickedUpObj.name)
                     {
                         hited = true;
-                        installPos = hits[i].collider.GetComponent<InstallPos>();
+                        installPos = hits[i].collider.GetComponent<InstallObj>();
                         if (installPos == null)
                         {
-                            Debug.LogError("零件未挂InstallPos脚本");
+                            Debug.LogError("零件未挂InstallObj脚本");
                         }
                         else if (!endParent.IsInstallStep(installPos))
                         {
                             installAble = false;
-                            resonwhy = "当前安装步骤并非" + installPos.stapName;
+                            resonwhy = "当前安装步骤并非" + installPos.StepName;
                         }
-                        else if (endParent.HaveInstallPosInstalled(installPos))
+                        else if (endParent.HaveInstallObjInstalled(installPos))
                         {
                             installAble = false;
                             resonwhy = "安装点已经安装了其他零件";
@@ -210,11 +209,11 @@ namespace WorldActionSystem
         }
         #endregion
 
-        private void OnEndInstall(InstallObj obj)
+        private void OnEndInstall(InstallItem obj)
         {
             if (CurrStapComplete())
             {
-                List<InstallPos> posList = endParent.GetInstalledPosList();
+                List<InstallObj> posList = endParent.GetInstalledPosList();
                 startParent.SetCompleteNotify(posList);
                 if (onStepComplete != null)
                     onStepComplete.Invoke(currStepName);
@@ -224,15 +223,14 @@ namespace WorldActionSystem
         /// <summary>
         /// 结束当前步骤安装
         /// </summary>
-        /// <param name="stapName"></param>
-        public void EndInstall(string stapName)
+        /// <param name="stepName"></param>
+        public void EndInstall(string stepName)
         {
-            //SetStapActive(stapName);
-            List<InstallPos> installed = endParent.GetInstalledPosList();
-            startParent.QuickUnInstallPosListObjects(installed);
-            List<InstallPos> posList = endParent.GetNotInstalledPosList();
-            startParent.QuickInstallPosListObjects(posList);
-
+            List<InstallObj> installed = endParent.GetInstalledPosList();
+            startParent.QuickUnInstallObjListObjects(installed);
+            List<InstallObj> posList = endParent.GetNotInstalledPosList();
+            startParent.QuickInstallObjListObjects(posList);
+            endParent.SetSepComplete(stepName);
         }
 
         public bool CurrStapComplete()
@@ -240,12 +238,12 @@ namespace WorldActionSystem
             return endParent.AllElementInstalled();
         }
 
-        public void SetStapActive(string stapName)
+        public void SetStapActive(string stepName)
         {
-            currStepName = stapName;
-            if (endParent.SetStapActive(stapName))
+            currStepName = stepName;
+            if (endParent.SetStapActive(stepName))
             {
-                List<InstallPos> posList = endParent.GetNotInstalledPosList();
+                List<InstallObj> posList = endParent.GetNotInstalledPosList();
                 startParent.SetStartNotify(posList);
             }
             else
@@ -257,36 +255,38 @@ namespace WorldActionSystem
         /// <summary>
         /// 自动安装部分需要进行自动安装的零件
         /// </summary>
-        /// <param name="stapName"></param>
-        public void AutoInstallWhenNeed(string stapName, bool autoInstall)
+        /// <param name="stepName"></param>
+        public void AutoInstallWhenNeed(string stepName, bool autoInstall)
         {
-            List<InstallPos> posList = null;
+            List<InstallObj> posList = null;
             if (autoInstall)
             {
                 posList = endParent.GetNotInstalledPosList();
             }
             else
             {
-                posList = endParent.GetNeedAutoInstallPosList();
+                posList = endParent.GetNeedAutoInstallObjList();
             }
 
-            if (posList != null) startParent.InstallPosListObjects(posList);
+            if (posList != null) startParent.InstallObjListObjects(posList);
 
             pickedUp = false;
         }
 
-        public void UnInstall(string stapName)
+        public void UnInstall(string stepName)
         {
-            SetStapActive(stapName);
-            List<InstallPos> posList = endParent.GetInstalledPosList();
-            startParent.UnInstallPosListObjects(posList);
+            SetStapActive(stepName);
+            List<InstallObj> posList = endParent.GetInstalledPosList();
+            startParent.UnInstallObjListObjects(posList);
+            endParent.SetSepUnDo(stepName);
         }
 
-        public void QuickUnInstall(string stapName)
+        public void QuickUnInstall(string stepName)
         {
-            SetStapActive(stapName);
-            List<InstallPos> posList = endParent.GetInstalledPosList();
-            startParent.QuickUnInstallPosListObjects(posList);
+            SetStapActive(stepName);
+            List<InstallObj> posList = endParent.GetInstalledPosList();
+            startParent.QuickUnInstallObjListObjects(posList);
+            endParent.SetSepUnDo(stepName);
         }
 
         private void OnInstallErr(string err)

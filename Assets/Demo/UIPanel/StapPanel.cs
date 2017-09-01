@@ -42,7 +42,7 @@ namespace WorldActionSystem
 
         public Button accept;
         public Button start;
-        public Button backAstap;
+        public Button backAstep;
         public Button backMutiStap;
         public Button toTargetStap;
         public Button skipAStap;
@@ -60,17 +60,17 @@ namespace WorldActionSystem
         {
             accept.onClick.AddListener(OnAcceptButtonCilcked);
             start.onClick.AddListener(OnToStartButtonClicked);
-            backAstap.onClick.AddListener(OnBackAStapButtonClicked);
+            backAstep.onClick.AddListener(OnBackAStapButtonClicked);
             backMutiStap.onClick.AddListener(OnBackMutiButtonClicked);
             toTargetStap.onClick.AddListener(OnToGargetButtonClicked);
-            skipAStap.onClick.AddListener(OnSkipAstapButtonClicekd);
+            skipAStap.onClick.AddListener(OnSkipAstepButtonClicekd);
             skipMutiStap.onClick.AddListener(OnSkipMutiButtonClicked);
             toEnd.onClick.AddListener(ToEndButtonClicked);
             insert.onClick.AddListener(OnInsertScript);
 
             //accept.onClick.AddListener(OnSelected);
             start.onClick.AddListener(OnStapChange);
-            backAstap.onClick.AddListener(OnStapChange);
+            backAstep.onClick.AddListener(OnStapChange);
             backMutiStap.onClick.AddListener(OnStapChange);
             toTargetStap.onClick.AddListener(OnStapChange);
             skipAStap.onClick.AddListener(OnStapChange);
@@ -123,7 +123,7 @@ namespace WorldActionSystem
                 OnAcceptButtonCilcked();
             }
         }
-        void OnSkipAstapButtonClicekd()
+        void OnSkipAstepButtonClicekd()
         {
             remoteController.ExecuteMutliCommand(1);
             if (autoNext.isOn)
@@ -168,7 +168,7 @@ namespace WorldActionSystem
         }
         void OnInsertScript()
         {
-            ActionSystem.Instance.InsertScript<InstallObj, InfoTextShow>(true);
+            ActionSystem.Instance.InsertScript<InstallItem, InfoTextShow>(true);
         }
         public Text textShow;
     }
@@ -191,12 +191,12 @@ namespace WorldActionSystem
     [Serializable]
     public class Step : IActionStap
     {
-        public string stap;
+        public string step;
         public string StapName
         {
             get
             {
-                return stap;
+                return step;
             }
         }
 

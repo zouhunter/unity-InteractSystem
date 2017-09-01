@@ -3,7 +3,6 @@ namespace WorldActionSystem
 {
     internal interface IOutSideRegister
     {
-        void RegisterOutSideAnim(Animation anim);
-        void RegisterOutSideAnim(InstallAnim anim);
+        void RegisterOutSideAnim(AnimPlayer anim);
     }
 }
