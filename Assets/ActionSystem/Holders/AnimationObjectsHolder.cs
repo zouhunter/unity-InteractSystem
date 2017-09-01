@@ -28,7 +28,7 @@ namespace WorldActionSystem
             animObjects = GetComponentsInChildren<AnimObj>(true);
 
             foreach (AnimObj anim in animObjects){
-                anim.onEndPlay = OnEndPlayAnim;
+                anim.RegistEndPlayEvent(OnEndPlayAnim);
                 var obj = anim;
                 if (animDic.ContainsKey(obj.StepName))
                 {
@@ -48,12 +48,12 @@ namespace WorldActionSystem
             registed = true;
         }
 
-        private void OnEndPlayAnim(AnimObj obj)
+        private void OnEndPlayAnim(string StepName)
         {
             if (CurrentStepComplete())
             {
                 if (OnStepEnd != null)
-                    OnStepEnd.Invoke(obj.StepName);
+                    OnStepEnd.Invoke(StepName);
             }
         }
 

@@ -42,7 +42,7 @@ namespace WorldActionSystem
                 if (OnRegistCommand != null) OnRegistCommand(cmd);
                 foreach (var obj in list.Value)
                 {
-                    obj.onEndPlay = OnEndPlay;
+                    obj.RegistEndPlayEvent( OnEndPlay);
                 }
             }
             _registed = true;
@@ -52,12 +52,12 @@ namespace WorldActionSystem
             animParent.PlayAnim(currStepName);
         }
 
-        private void OnEndPlay(AnimObj obj)
+        private void OnEndPlay(string stepName)
         {
             if (CurrStapComplete())
             {
                 if (OnStepEnd != null)
-                    OnStepEnd.Invoke(obj.StepName);
+                    OnStepEnd.Invoke(stepName);
             }
         }
         private void ActiveStep(string StepName)

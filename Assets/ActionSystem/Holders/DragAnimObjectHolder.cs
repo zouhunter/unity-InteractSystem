@@ -52,17 +52,17 @@ namespace WorldActionSystem
                 if (OnRegistCommand != null) OnRegistCommand(cmd);
                 foreach (var obj in list.Value)
                 {
-                    obj.onEndPlay = OnEndPlay;
+                    obj.RegistEndPlayEvent( OnEndPlay);
                 }
             }
             registed = true;
         }
-        private void OnEndPlay(AnimObj obj)
+        private void OnEndPlay(string StepName)
         {
             if (dragAnimCtrl.CurrStapComplete())
             {
                 if (OnStepEnd != null)
-                    OnStepEnd.Invoke(obj.StepName);
+                    OnStepEnd.Invoke(StepName);
             }
         }
 

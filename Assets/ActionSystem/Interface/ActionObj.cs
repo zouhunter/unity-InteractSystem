@@ -15,11 +15,11 @@ namespace WorldActionSystem
         public bool startActive;
         public bool endActive;
         [SerializeField]
-        protected UnityEvent onBeforeActive;
+        protected StepEvent onBeforeActive;
         [SerializeField]
-        protected UnityEvent onBeforeUnDo;
+        protected StepEvent onBeforeUnDo;
         [SerializeField]
-        protected UnityEvent onBeforePlayEnd;
+        protected StepEvent onBeforePlayEnd;
         protected bool _complete;
         public bool Complete { get { return _complete; } }
         protected bool _started;
@@ -31,19 +31,19 @@ namespace WorldActionSystem
         }
         public virtual void StartExecute(bool forceAuto = false)
         {
-            onBeforeActive.Invoke();
+            onBeforeActive.Invoke(StepName);
             _started = true;
             gameObject.SetActive(true);
         }
         public virtual void EndExecute()
         {
-            onBeforePlayEnd.Invoke();
+            onBeforePlayEnd.Invoke(StepName);
             _complete = true;
             gameObject.SetActive(endActive);
         }
         public virtual void UnDoExecute()
         {
-            onBeforeUnDo.Invoke();
+            onBeforeUnDo.Invoke(StepName);
             _started = false;
             _complete = false;
             gameObject.SetActive(startActive);
