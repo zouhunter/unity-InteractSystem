@@ -7,19 +7,22 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class AnimResponce : ActionResponce
+    public class AnimTrigger : ActionTrigger
     {
         private AnimObj[] animObjs;
 
         private void Awake()
         {
             animObjs = GetComponentsInChildren<AnimObj>(true);
+            foreach (var item in animObjs)
+            {
+                item.StepName = StepName;
+            }
         }
 
         public override IActionCommand CreateCommand()
         {
-            foreach (var anim in animObjs)
-            {
+            foreach (var anim in animObjs){
                 anim.RegistEndPlayEvent(OnEndPlayAnim);
             }
             AnimCommand cmd = new AnimCommand(StepName, animObjs);
@@ -30,8 +33,12 @@ namespace WorldActionSystem
         {
             if (CurrentStepComplete())
             {
-                if (OnStepEnd != null)
-                    OnStepEnd.Invoke(StepName);
+                if (onStepComplete != null)
+                    onStepComplete.Invoke(StepName);
+            }
+            else
+            {
+                Debug.Log("wait");
             }
         }
         private bool CurrentStepComplete()

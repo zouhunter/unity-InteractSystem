@@ -23,7 +23,10 @@ public class ShaderHighLight : IHighLightItems
         Highlighter highlighter;
         if (!highlightDic.ContainsKey(go))
         {
-            highlighter = go.gameObject.AddComponent<Highlighter>();
+            highlighter = go.gameObject.GetComponent<Highlighter>();
+            if(highlighter == null){
+                highlighter = go.gameObject.AddComponent<Highlighter>();
+            }
             highlighter.On();
             highlighter.SeeThroughOn();
             highlightDic.Add(go, highlighter);

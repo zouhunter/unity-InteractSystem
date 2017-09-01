@@ -13,26 +13,14 @@ namespace WorldActionSystem
         public UserError onUserErr;
         public RegistCmds onRegisted;
         private List<IActionCommand> commandList = new List<IActionCommand>();
-        private bool allAnimRegisted;
         private bool allInstallElementRegisted;
         private bool allActionRegisted;
-        private bool allRegisted { get { return allAnimRegisted && allInstallElementRegisted && allActionRegisted; } }
-        private List<ActionResponce> responceList;//步骤名、列表
-        private List<ActionTrigger> actionList;//触发器
+        private bool allRegisted { get { return allInstallElementRegisted && allActionRegisted; } }
+        private Dictionary<string,List<ActionTrigger>> actionDic;//触发器
         private ElementGroup elementGroup;//元素名、列表
         private string currentStep;
+        private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
 
-        public void RegistAnimGroup(ActionResponces responce)
-        {
-            if (responce == null)
-            {
-                allAnimRegisted = true;
-            }
-            else
-            {
-                responce.onAllElementInit = OnRegistAnimElements;
-            }
-        }
         public void RegistInstallElement(ElementGroup elements)
         {
             elementGroup = elements;
@@ -51,30 +39,24 @@ namespace WorldActionSystem
                 actionTriggers.onAllElementInit = OnRegistTriggers;
             }
         }
-        /// <summary>
-        /// 如果没有其他触发器注册动画，则注册
-        /// </summary>
-        /// <param name="list"></param>
-        private void OnRegistAnimElements(List<ActionResponce> list)
-        {
-            responceList = list;
-            allAnimRegisted = true;
-            TryCreateCommandList();
-        }
-        
+
         /// <summary>
         /// 如果动画被注册为命令，则替换
         /// </summary>
-        /// <param name="list"></param>
-        private void OnRegistTriggers(List<ActionTrigger> list)
+        /// <param name="dic"></param>
+        private void OnRegistTriggers(Dictionary<string,List<ActionTrigger>> dic)
         {
-            actionList = list;
-            if (actionList != null)
+            actionDic = dic;
+            if (actionDic != null)
             {
-                foreach (var trigger in list)
+                foreach (var item in dic)
                 {
-                    trigger.onStepComplete = (x)=> { onStepComplete(x); };
-                    trigger.onUserErr =(x,y)=> { onUserErr(x, y); };
+                    var stepName = item.Key;
+                    foreach (var trigger in item.Value)
+                    {
+                        trigger.onStepComplete = OnOneCommandComplete;
+                        trigger.onUserErr = (x, y) => { onUserErr(x, y); };
+                    }
                 }
             }
             allActionRegisted = true;
@@ -87,52 +69,56 @@ namespace WorldActionSystem
         {
             if (allRegisted)
             {
-                RegistAutoAnimCommand();
                 RegistTriggerCommand();
                 if(onRegisted != null) onRegisted(commandList);
             }
         }
 
-        /// <summary>
-        /// 自动执行动画的步骤
-        /// </summary>
-        /// <returns></returns>
-        private void RegistAutoAnimCommand()
+        private void OnOneCommandComplete(string stepName)
         {
-            if (responceList != null)
+            if(seqDic.ContainsKey(stepName))
             {
-                foreach (var item in responceList)
+                var cmd = seqDic[stepName];
+                if (!cmd.ContinueExecute())
                 {
-                    if (actionList == null || !actionList.Find(x => x.StepName == item.StepName))
-                    {
-                        commandList.Add(item.CreateCommand());
-                    }
+                    onStepComplete.Invoke(stepName);
                 }
             }
-           
+            else
+            {
+                onStepComplete.Invoke(stepName);
+            }
         }
+
 
         private void RegistTriggerCommand()
         {
-            if (actionList != null)
+            if (actionDic != null)
             {
-                foreach (var item in actionList)
+                foreach (var item in actionDic)
                 {
-                    item.Responce = () => { return GetResponce(item.StepName); };
-                    item.ElementGroup = () => { return elementGroup; };
-                    commandList.Add(item.CreateCommand());
+                    var stepName = item.Key;
+                    if (item.Value.Count > 1)
+                    {
+                        item.Value.Sort();
+                        var list = new List<IActionCommand>();
+                        for (int i = 0; i < item.Value.Count; i++)
+                        {
+                            item.Value[i].ElementGroup = () => { return elementGroup; };
+                            list.Add(item.Value[i].CreateCommand());
+                        }
+                        var cmd = new SequencesCommand(stepName, list);
+                        seqDic.Add(stepName, cmd) ;
+                        commandList.Add(cmd);
+                    }
+                    else
+                    {
+                        item.Value[0].ElementGroup = () => { return elementGroup; };
+                        commandList.Add(item.Value[0].CreateCommand());
+                    }
+                   
                 }
             }
-        }
-
-        private ActionResponce GetResponce(string stepName)
-        {
-            ActionResponce value = null;
-            if(responceList != null)
-            {
-                value = responceList.Find(x=>x.StepName == stepName);
-            }
-            return value;
         }
     }
 }

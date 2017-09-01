@@ -26,7 +26,6 @@ namespace WorldActionSystem
             registController.onUserErr = OnUserError;
             registController.onStepComplete = OnStepComplete;
             registController.RegistActionTriggers(GetComponentInChildren<ActionTriggers>());
-            registController.RegistAnimGroup(GetComponentInChildren<ActionResponces>());
             registController.RegistInstallElement(GetComponentInChildren<ElementGroup>());
             registController.onRegisted = (cmdList) => { activeCommand = cmdList; };
         }

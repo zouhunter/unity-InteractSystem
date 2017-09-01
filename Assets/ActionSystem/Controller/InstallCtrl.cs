@@ -33,16 +33,15 @@ namespace WorldActionSystem
             this.elementGroup = trigger.ElementGroup();
             highLight = new ShaderHighLight();
             highLight.SetState(trigger.highLight);
-            elementGroup.onInstall += OnEndInstall;
         }
 
         #region 鼠标操作事件
         IEnumerator Update()
         {
+            elementGroup.onInstall += OnEndInstall;
+
             while (true)
             {
-                yield return new WaitForFixedUpdate();
-
                 if (Input.GetMouseButtonDown(0))
                 {
                     Debug.Log("OnLeftMouseClicked");
@@ -53,6 +52,7 @@ namespace WorldActionSystem
                     UpdateInstallState();
                     MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
                 }
+                yield return new WaitForFixedUpdate();
             }
         }
 
@@ -309,7 +309,10 @@ namespace WorldActionSystem
         }
         private void SetSepComplete()
         {
-            if (coroutine != null) trigger.StopCoroutine(coroutine);
+            if (coroutine != null)
+                trigger.StopCoroutine(coroutine);
+            coroutine = null;
+            elementGroup.onInstall -= OnEndInstall;
         }
         private bool AllElementInstalled()
         {

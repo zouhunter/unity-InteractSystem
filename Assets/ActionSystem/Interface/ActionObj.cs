@@ -10,8 +10,6 @@ namespace WorldActionSystem
 {
     public abstract class ActionObj:MonoBehaviour,IActionCommand
     {
-        [SerializeField]
-        private string _stepName;
         public bool startActive;
         public bool endActive;
         [SerializeField]
@@ -24,7 +22,7 @@ namespace WorldActionSystem
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
-        public string StepName { get { return _stepName; } }
+        public string StepName { get; set; }
         protected virtual void Start()
         {
             gameObject.SetActive(startActive);

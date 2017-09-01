@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class AnimObj : ResponceObj, IOutSideRegister
+    public class AnimObj : ActionObj, IOutSideRegister
     {
         public float delyTime = 0f;
         public AnimPlayer animPlayer;

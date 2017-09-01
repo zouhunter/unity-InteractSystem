@@ -14,7 +14,12 @@ namespace WorldActionSystem
         private List<InstallObj> _installObjs = new List<InstallObj>();
         private InstallCtrl installCtrl;
         private void Awake(){
+            
             _installObjs.AddRange(GetComponentsInChildren<InstallObj>(true));
+            foreach (var item in _installObjs)
+            {
+                item.StepName = StepName;
+            }
         }
         public override IActionCommand CreateCommand()
         {
@@ -22,6 +27,7 @@ namespace WorldActionSystem
         }
         private InstallCtrl CreateInstallCtrl()
         {
+            Debug.Log("创建ctrl:" + StepName);
             installCtrl = new InstallCtrl(this);
             installCtrl.onStepComplete = OnStepComplete;
             installCtrl.InstallErr = OnUserError;
@@ -30,6 +36,8 @@ namespace WorldActionSystem
 
         private void OnStepComplete(string stepName)
         {
+            Debug.Log("StepComplete:" + StepName);
+            installCtrl = null;
             if (onStepComplete != null) onStepComplete.Invoke(stepName);
         }
         private void OnUserError(string x,string y)
