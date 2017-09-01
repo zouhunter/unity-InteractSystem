@@ -6,16 +6,17 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class RotGroup : MonoBehaviour
+    public class RotateTrigger : ActionTrigger
     {
-        internal UnityAction onAllRotateOK;
-        private RotObj[] objs;
+        public bool highlight;
         private Dictionary<string, List<RotObj>> objDic = new Dictionary<string, List<RotObj>>();
         private RotateAnimController rotAnimCtrl;
         private List<int> queueID = new List<int>();
         private string currStepName;
-        private void Start()
+
+        protected override void Awake()
         {
+            base.Awake();
             InitObjects();
             rotAnimCtrl = new WorldActionSystem.RotateAnimController();
             rotAnimCtrl.onHover = OnHover;
@@ -25,11 +26,14 @@ namespace WorldActionSystem
             StartCoroutine(rotAnimCtrl.StartRotateAnimContrl());
         }
 
-      
+        public override IActionCommand CreateCommand()
+        {
+            return new RotateCommand(StepName,this);
+        }
+
         void InitObjects()
         {
-            objs = gameObject.GetComponentsInChildren<RotObj>(true);
-            foreach (var obj in objs)
+            foreach (RotObj obj in actionObjs)
             {
                 if (objDic.ContainsKey(obj.StepName))
                 {
@@ -39,6 +43,7 @@ namespace WorldActionSystem
                 {
                     objDic[obj.StepName] = new List<RotObj>() { obj };
                 }
+                obj.SetHighLight(highlight);
             }
         }
 
@@ -68,29 +73,21 @@ namespace WorldActionSystem
         void OnRoateOK(RotObj obj)
         {
             if (!SetNextRotateAble()) {
-                onAllRotateOK.Invoke();
+                onStepComplete.Invoke(StepName);
             }
         }
 
-        internal void SetHighLightState(bool on)
-        {
-            foreach (var obj in objs)
-            {
-                obj.SetHighLight(on);
-            }
-        }
-
-        internal void SetRotateComplete(bool playAnim = false)
+        internal void SetRotateComplete(bool forceAuto = false)
         {
             var list = objDic[currStepName];
             foreach (var item in list) {
                 item.EndExecute();
             }
-            if (playAnim)
+            if (forceAuto)
             {
-                onAllRotateOK.Invoke();
+                onStepComplete.Invoke(StepName);
             }
-           
+
         }
 
         internal void SetRotateQueue(string stepName)
