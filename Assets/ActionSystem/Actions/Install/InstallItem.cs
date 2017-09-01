@@ -126,7 +126,6 @@ namespace WorldActionSystem
         public void QuickUnInstall()
         {
 #if !NoFunction
-
             StopTween();
             if (Installed)
             {

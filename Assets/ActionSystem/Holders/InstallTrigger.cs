@@ -13,13 +13,10 @@ namespace WorldActionSystem
         public List<InstallObj> InstallObjs { get { return _installObjs; } }
         private List<InstallObj> _installObjs = new List<InstallObj>();
         private InstallCtrl installCtrl;
-        private void Awake(){
-            
-            _installObjs.AddRange(GetComponentsInChildren<InstallObj>(true));
-            foreach (var item in _installObjs)
-            {
-                item.StepName = StepName;
-            }
+        protected override void Awake()
+        {
+            base.Awake();
+            _installObjs.AddRange(Array.ConvertAll<ActionObj, InstallObj>(actionObjs, x => (InstallObj)x));
         }
         public override IActionCommand CreateCommand()
         {
@@ -40,9 +37,9 @@ namespace WorldActionSystem
             installCtrl = null;
             if (onStepComplete != null) onStepComplete.Invoke(stepName);
         }
-        private void OnUserError(string x,string y)
+        private void OnUserError(string x, string y)
         {
-            if (onUserErr != null) onUserErr(x,y);
+            if (onUserErr != null) onUserErr(x, y);
         }
     }
 

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
+    
     public class ClickContrller
     {
         public UnityAction<BtnObj> onBtnClicked;
@@ -27,7 +28,6 @@ namespace WorldActionSystem
                 screenPoint.z = 10;
                 ray = Camera.main.ScreenPointToRay(screenPoint);
 
-                yield return new WaitForFixedUpdate();
                 if (TryHitBtnObj(out hitObj))
                 {
                     if (TryClickBtnObj()){
@@ -39,6 +39,7 @@ namespace WorldActionSystem
                 {
                     if (OnHoverNothing != null) OnHoverNothing.Invoke();
                 }
+                yield return null;
             }
         }
 

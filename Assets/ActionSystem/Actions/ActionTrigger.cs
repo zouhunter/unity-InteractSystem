@@ -15,11 +15,18 @@ namespace WorldActionSystem
         public int executeIndex;
         public bool Complete { get { return _complete; } }
         private bool _complete;
+        protected ActionObj[] actionObjs;
         public StepComplete onStepComplete;
         public UserError onUserErr;
         public Func<ElementGroup> ElementGroup;
         public abstract IActionCommand CreateCommand();
-
+        protected virtual void Awake()
+        {
+            actionObjs = GetComponentsInChildren<ActionObj>(true);
+            foreach (var item in actionObjs){
+                item.StepName = _stepName;
+            }
+        }
         public int CompareTo(ActionTrigger other)
         {
             if (other.executeIndex > executeIndex)

@@ -74,10 +74,11 @@ namespace WorldActionSystem
         /// 安装元素到指定坐标
         /// </summary>
         /// <param name="pos"></param>
-        public void InstallPickedUpObject(InstallObj pos)
+        public bool InstallPickedUpObject(InstallObj pos)
         {
-            pos.Attach(pickedUpObj);
-            pickedUpObj.QuickInstall(pos);
+            var status = pos.Attach(pickedUpObj);
+            if (status) pickedUpObj.QuickInstall(pos);
+            return status;
         }
 
         /// <summary>

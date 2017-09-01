@@ -9,23 +9,13 @@ namespace WorldActionSystem
 
     public class AnimTrigger : ActionTrigger
     {
-        private AnimObj[] animObjs;
-
-        private void Awake()
-        {
-            animObjs = GetComponentsInChildren<AnimObj>(true);
-            foreach (var item in animObjs)
-            {
-                item.StepName = StepName;
-            }
-        }
-
         public override IActionCommand CreateCommand()
         {
-            foreach (var anim in animObjs){
+            foreach (AnimObj anim in actionObjs)
+            {
                 anim.RegistEndPlayEvent(OnEndPlayAnim);
             }
-            AnimCommand cmd = new AnimCommand(StepName, animObjs);
+            AnimCommand cmd = new AnimCommand(StepName,Array.ConvertAll<ActionObj,AnimObj>(actionObjs,x=>(AnimObj)x));
             return cmd;
         }
 
@@ -44,7 +34,7 @@ namespace WorldActionSystem
         private bool CurrentStepComplete()
         {
             bool complete = true;
-            foreach (var item in animObjs)
+            foreach (AnimObj item in actionObjs)
             {
                 complete &= item.Complete;
             }

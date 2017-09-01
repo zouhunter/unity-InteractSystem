@@ -7,24 +7,33 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class BtnGroup : MonoBehaviour
+    public class ClickTrigger : ActionTrigger
     {
+        public bool hightButton;
         private Dictionary<string, List<BtnObj>> objDic = new Dictionary<string, List<BtnObj>>();
-        public UnityAction onAllButtonClicked;
         private ClickContrller clickCtrl;
         private IHighLightItems highter;
         private string currStepName;
         private Renderer lastSelected;
         private List<int> queueID = new List<int>();
-        void Start()
+       protected override void Awake()
         {
+            base.Awake();
             highter = new ShaderHighLight();
+            if (hightButton) highter.SetState(hightButton);
+
             clickCtrl = new ClickContrller();
             clickCtrl.onBtnClicked = OnBtnClicked;
             clickCtrl.onHoverBtn = OnHoverBtn;
             clickCtrl.OnHoverNothing = OnHoverNothing;
+
             InitBtnObjs();
             StartCoroutine(clickCtrl.StartController());
+        }
+
+        public override IActionCommand CreateCommand()
+        {
+            return new ClickCommand(StepName, this);
         }
 
         internal void SetHighLightState(bool on)
@@ -34,8 +43,7 @@ namespace WorldActionSystem
 
         void InitBtnObjs()
         {
-            var btns = GetComponentsInChildren<BtnObj>(true);
-            foreach (BtnObj obj in btns)
+            foreach (BtnObj obj in actionObjs)
             {
                 if (objDic.ContainsKey((string)obj.StepName))
                 {
@@ -50,13 +58,12 @@ namespace WorldActionSystem
 
         void OnBtnClicked(BtnObj obj)
         {
-            if (obj.Started)
+            if (obj.Started && !obj.Complete)
             {
                 obj.EndExecute();
                 if (!SetNextButtonsClickAble())
                 {
-                    Debug.Log(onAllButtonClicked);
-                    onAllButtonClicked.Invoke();
+                    onStepComplete.Invoke(StepName);
                 }
             }
         }
@@ -65,7 +72,7 @@ namespace WorldActionSystem
             if (obj == null) return;
             if (lastSelected == obj.render) return;
             OnHoverNothing();
-            highter.HighLightTarget(obj.render, obj.Started ? Color.green : Color.red);
+            highter.HighLightTarget(obj.render, obj.Started&&!obj.Complete ? Color.green : Color.red);
             lastSelected = obj.render;
         }
 
@@ -124,16 +131,10 @@ namespace WorldActionSystem
         internal void SetAllButtonClicked(string stepName,bool playAnim)
         {
             var btns = objDic[stepName];
-            foreach (var item in btns)
-            {
+            foreach (var item in btns){
                 item.EndExecute();
             }
-            if(playAnim) onAllButtonClicked.Invoke();
-        }
-
-        internal void ActiveStep(string stepName)
-        {
-            this.currStepName = stepName;
+            if(playAnim) onStepComplete.Invoke(StepName);
         }
 
         internal void SetButtonNotClicked(string stepName)
@@ -144,6 +145,8 @@ namespace WorldActionSystem
                 item.UnDoExecute();
             }
         }
+
+       
     }
 
 }

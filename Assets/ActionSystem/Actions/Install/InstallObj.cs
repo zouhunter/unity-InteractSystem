@@ -23,9 +23,17 @@ namespace WorldActionSystem
             gameObject.layer = Setting.installPosLayer;
         }
 
-        public void Attach(InstallItem obj)
+        public bool Attach(InstallItem obj)
         {
-            this.obj = obj;
+            if(this.obj != null)
+            {
+                return false;
+            }
+            else
+            {
+                this.obj = obj;
+                return true;
+            }
         }
 
         public InstallItem Detach()

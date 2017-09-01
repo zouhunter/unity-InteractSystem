@@ -27,6 +27,7 @@ namespace WorldActionSystem
         private List<InstallObj> installObjs { get { return trigger.InstallObjs; } }
         public UserError InstallErr;
         private Coroutine coroutine;
+
         public InstallCtrl(InstallTrigger trigger)
         {
             this.trigger = trigger;
@@ -52,7 +53,7 @@ namespace WorldActionSystem
                     UpdateInstallState();
                     MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
                 }
-                yield return new WaitForFixedUpdate();
+                yield return null;
             }
         }
 
@@ -224,8 +225,6 @@ namespace WorldActionSystem
         /// <param name="stepName"></param>
         public void EndInstall()
         {
-            List<InstallObj> installed = GetInstalledPosList();
-            elementGroup.QuickUnInstallObjListObjects(installed);
             List<InstallObj> posList = GetNotInstalledPosList();
             elementGroup.QuickInstallObjListObjects(posList);
             SetSepComplete();
