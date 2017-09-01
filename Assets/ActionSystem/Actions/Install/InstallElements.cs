@@ -18,10 +18,10 @@ namespace WorldActionSystem
         public float Distence { get { return distence; } set { distence = value; } }
         public InstallItem[] InstallObjs { get { return _installObjs; } }
         public UnityAction<InstallItem> onInstall;
-
-
+        public UnityAction<Dictionary<string, List<InstallItem>>> onAllElementInit;
         private InstallItem pickedUpObj;
         private InstallItem[] _installObjs;
+        private InstallController installCtrl;
         /// <summary>
         /// 按名称将元素进行记录
         /// </summary>
@@ -45,6 +45,9 @@ namespace WorldActionSystem
 
                 obj.onInstallOkEvent = () => { onInstall(obj); };
             }
+            onAllElementInit.Invoke(objectList);
+
+            //installCtrl = new WorldActionSystem.InstallController();
         }
 
         /// <summary>
@@ -166,7 +169,7 @@ namespace WorldActionSystem
                 {
                     for (int j = 0; j < listObjs.Count; j++)
                     {
-                        if(!listObjs[j].Installed &&!temp.Contains(listObjs[j]))
+                        if (!listObjs[j].Installed && !temp.Contains(listObjs[j]))
                         {
                             temp.Add(listObjs[j]);
                             listObjs[j].StepActive();

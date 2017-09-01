@@ -6,9 +6,5 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    [Serializable]
-    public class StepEvent : UnityEvent<string>
-    {
-    }
-
+    public delegate void RegistCmds(List<IActionCommand> cmds);
 }

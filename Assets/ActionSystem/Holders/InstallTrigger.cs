@@ -6,9 +6,12 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    [Serializable]
-    public class StepEvent : UnityEvent<string>
+    public class InstallTrigger : ActionTrigger
     {
+        public override IActionCommand CreateCommand()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

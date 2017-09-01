@@ -10,6 +10,7 @@ namespace WorldActionSystem
     {
         public UnityAction<Dictionary<string, List<AnimObj>>> onAllElementInit;
         private Dictionary<string, List<AnimObj>> animDic = new Dictionary<string, List<AnimObj>>();
+
         private void Start()
         {
             var animObjects = GetComponentsInChildren<AnimObj>(true);
@@ -32,7 +33,6 @@ namespace WorldActionSystem
         {
             return animDic[currStepName];
         }
-
         public void PlayAnim(string currStepName)
         {
             Debug.Log(currStepName);
@@ -57,7 +57,6 @@ namespace WorldActionSystem
                 }
             }
         }
-
         internal void SetAnimUnPlayed(string stepName)
         {
             var anims = animDic[stepName];
@@ -70,7 +69,6 @@ namespace WorldActionSystem
                 }
             }
         }
-
     }
 
 }
