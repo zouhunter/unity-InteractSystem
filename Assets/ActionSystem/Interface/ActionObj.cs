@@ -29,7 +29,7 @@ namespace WorldActionSystem
         {
             gameObject.SetActive(startActive);
         }
-        public virtual void StartExecute(bool forceAuto = false)
+        public virtual void StartExecute(bool forceAuto = true)
         {
             onBeforeActive.Invoke(StepName);
             _started = true;

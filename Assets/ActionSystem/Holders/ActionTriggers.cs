@@ -11,10 +11,10 @@ namespace WorldActionSystem
         public UnityAction<List<ActionTrigger>> onAllElementInit;
         private List<ActionTrigger> objectList = new List<ActionTrigger>();
         public bool AllRegisted { get; private set; }
-
+     
         private void Start()
         {
-            objectList.AddRange(GetComponentsInChildren<ActionTrigger>(true));
+            objectList.AddRange(GetComponentsInChildren<ActionTrigger>());
             onAllElementInit.Invoke(objectList);
         }
     }

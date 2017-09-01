@@ -13,6 +13,7 @@ namespace WorldActionSystem
         internal const int rotateItemLayer = 10;
         internal const int clickItemLayer = 11;
         internal const int connectItemLayer = 12;
+        internal static int obstacleLayer = 13;
         internal static int installTime = 4;
         internal static bool highLightOpen = true;
     }

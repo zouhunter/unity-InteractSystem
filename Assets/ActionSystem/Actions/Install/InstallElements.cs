@@ -43,7 +43,7 @@ namespace WorldActionSystem
                     objectList[obj.name] = new List<InstallItem>() { obj };
                 }
 
-                obj.onInstallOkEvent = () => { onInstall(obj); };
+                //obj.onInstallOkEvent = () => { onInstall(obj); };
             }
             onAllElementInit.Invoke(objectList);
 

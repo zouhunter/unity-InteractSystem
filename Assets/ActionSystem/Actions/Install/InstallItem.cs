@@ -21,8 +21,8 @@ namespace WorldActionSystem
         public bool Installed { get { return target != null; } }
         private InstallObj target;
         public Renderer Render { get { return m_render; } }
-        
-        public UnityAction onInstallOkEvent { get; set; }
+
+        public UnityAction onInstallOkEvent;
         public UnityAction onUnInstallOkEvent;
         [SerializeField]
         private Renderer m_render;

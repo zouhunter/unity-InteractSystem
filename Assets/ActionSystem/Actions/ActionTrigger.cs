@@ -12,7 +12,9 @@ namespace WorldActionSystem
         [SerializeField]
         private string _stepName;
         public string StepName { get { return _stepName; } }
-        public Func<List<InstallItem>> InstallItems;
+        public StepComplete onStepComplete;
+        public UserError onUserErr;
+        public Func<ElementGroup> ElementGroup;
         public Func<ActionResponce> Responce;
         public abstract IActionCommand CreateCommand();
     }

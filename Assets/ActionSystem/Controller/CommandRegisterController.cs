@@ -19,7 +19,7 @@ namespace WorldActionSystem
         private bool allRegisted { get { return allAnimRegisted && allInstallElementRegisted && allActionRegisted; } }
         private List<ActionResponce> responceList;//步骤名、列表
         private List<ActionTrigger> actionList;//触发器
-        private Dictionary<string, List<InstallItem>> itemDic;//元素名、列表
+        private ElementGroup elementGroup;//元素名、列表
         private string currentStep;
 
         public void RegistAnimGroup(ActionResponces responce)
@@ -35,14 +35,9 @@ namespace WorldActionSystem
         }
         public void RegistInstallElement(ElementGroup elements)
         {
-            if (elements == null)
-            {
-                allInstallElementRegisted = true;
-            }
-            else
-            {
-                elements.onAllElementInit = OnRegistInstallElement;
-            }
+            elementGroup = elements;
+            allInstallElementRegisted = true;
+            TryCreateCommandList();
         }
 
         public void RegistActionTriggers(ActionTriggers actionTriggers)
@@ -66,13 +61,7 @@ namespace WorldActionSystem
             allAnimRegisted = true;
             TryCreateCommandList();
         }
-
-        private void OnRegistInstallElement(Dictionary<string, List<InstallItem>> dic)
-        {
-            itemDic = dic;
-            allInstallElementRegisted = true;
-            TryCreateCommandList();
-        }
+        
         /// <summary>
         /// 如果动画被注册为命令，则替换
         /// </summary>
@@ -80,6 +69,14 @@ namespace WorldActionSystem
         private void OnRegistTriggers(List<ActionTrigger> list)
         {
             actionList = list;
+            if (actionList != null)
+            {
+                foreach (var trigger in list)
+                {
+                    trigger.onStepComplete = (x)=> { onStepComplete(x); };
+                    trigger.onUserErr =(x,y)=> { onUserErr(x, y); };
+                }
+            }
             allActionRegisted = true;
             TryCreateCommandList();
         }
@@ -122,7 +119,7 @@ namespace WorldActionSystem
                 foreach (var item in actionList)
                 {
                     item.Responce = () => { return GetResponce(item.StepName); };
-                    item.InstallItems = () => { return GetInstallItems(item.name); };
+                    item.ElementGroup = () => { return elementGroup; };
                     commandList.Add(item.CreateCommand());
                 }
             }
@@ -134,16 +131,6 @@ namespace WorldActionSystem
             if(responceList != null)
             {
                 value = responceList.Find(x=>x.StepName == stepName);
-            }
-            return value;
-        }
-
-        private List<InstallItem> GetInstallItems(string elementName)
-        {
-            List<InstallItem> value = null;
-            if (itemDic != null)
-            {
-                itemDic.TryGetValue(elementName, out value);
             }
             return value;
         }
