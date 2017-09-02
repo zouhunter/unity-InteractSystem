@@ -4,30 +4,33 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-
-public static class TransUtil
+namespace WorldActionSystem
 {
-    public static S[] FindComponentsInChild<S>(Transform root) where S : MonoBehaviour
+    public static class TransUtil
     {
-        var list = new List<S>();
-        FindChild(root, list);
-        return list.ToArray();
-    }
-    private static void FindChild<S>(Transform parent, List<S> finded)
-    {
-        var s = parent.GetComponent<S>();
-        if (s != null) finded.Add(s);
-
-        if (parent.childCount == 0)
+        public static S[] FindComponentsInChild<S>(Transform root) where S : MonoBehaviour
         {
-            return;
+            var list = new List<S>();
+            FindChild(root, list);
+            return list.ToArray();
         }
-        else
+        private static void FindChild<S>(Transform parent, List<S> finded)
         {
-            foreach (Transform item in parent)
+            var s = parent.GetComponent<S>();
+            if (s != null) finded.Add(s);
+
+            if (parent.childCount == 0)
             {
-                FindChild<S>(item, finded);
+                return;
+            }
+            else
+            {
+                foreach (Transform item in parent)
+                {
+                    FindChild<S>(item, finded);
+                }
             }
         }
     }
+
 }

@@ -37,7 +37,7 @@ namespace WorldActionSystem
         {
             highter.SetState(on);
         }
-        void OnBtnClicked(BtnObj obj)
+        void OnBtnClicked(ClickObj obj)
         {
             if (obj.Started && !obj.Complete)
             {
@@ -48,7 +48,7 @@ namespace WorldActionSystem
                 }
             }
         }
-        void OnHoverBtn(BtnObj obj)
+        void OnHoverBtn(ClickObj obj)
         {
             if (obj == null) return;
             if (lastSelected == obj.render) return;
@@ -69,7 +69,7 @@ namespace WorldActionSystem
         internal void SetButtonClickAbleQueue(string stepName)
         {
             queueID.Clear();
-            foreach (BtnObj item in actionObjs)
+            foreach (ClickObj item in actionObjs)
             {
                 if (!queueID.Contains(item.queueID))
                 {
@@ -86,7 +86,7 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as BtnObj).queueID == id);
+                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as ClickObj).queueID == id);
                 foreach (var item in neetActive)
                 {
                     item.StartExecute();
@@ -98,7 +98,7 @@ namespace WorldActionSystem
 
         internal void SetAllButtonUnClickAble(string stepName)
         {
-            foreach (BtnObj item in actionObjs)
+            foreach (ClickObj item in actionObjs)
             {
                 item.UnDoExecute();
             }
@@ -107,7 +107,7 @@ namespace WorldActionSystem
 
         internal void SetAllButtonClicked(string stepName, bool @continue)
         {
-            foreach (BtnObj item in actionObjs)
+            foreach (ClickObj item in actionObjs)
             {
                 item.EndExecute();
             }
@@ -116,7 +116,7 @@ namespace WorldActionSystem
 
         internal void SetButtonNotClicked(string stepName)
         {
-            foreach (BtnObj item in actionObjs)
+            foreach (ClickObj item in actionObjs)
             {
                 item.UnDoExecute();
             }

@@ -4,34 +4,39 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-
 namespace WorldActionSystem
 {
-    public class CommandTrigger : ActionTrigger, IActionCommand
+    public class QueueIDCommand:IActionCommand
     {
-        private List<int> queueID = new List<int>();
-        public override IActionCommand CreateCommand()
+        public string StepName { get; private set; }
+        protected QueueIDObj[] actionObjs;
+        protected List<int> queueID = new List<int>();
+        protected StepComplete onStepComplete;
+
+        public QueueIDCommand(string stepName, QueueIDObj[] actionObjs, StepComplete onStepComplete)
         {
-            return this;
+            this.StepName = stepName;
+            this.actionObjs = actionObjs;
+            this.onStepComplete = onStepComplete;
         }
 
-        public void EndExecute()
+        public virtual void EndExecute()
         {
-            foreach (CommandObj item in actionObjs)
+            foreach (QueueIDObj item in actionObjs)
             {
                 item.EndExecute();
             }
         }
 
-        public void StartExecute(bool forceAuto)
+        public virtual void StartExecute(bool forceAuto)
         {
             Debug.Log("StartExecute");
             InitObjectQueue();
         }
 
-        public void UnDoExecute()
+        public virtual void UnDoExecute()
         {
-            foreach (CommandObj item in actionObjs)
+            foreach (QueueIDObj item in actionObjs)
             {
                 item.UnDoExecute();
             }
@@ -40,10 +45,11 @@ namespace WorldActionSystem
         void InitObjectQueue()
         {
             queueID.Clear();
-            foreach (CommandObj item in actionObjs)
+            foreach (QueueIDObj item in actionObjs)
             {
-                if (!queueID.Contains(item.queueID)){
-                    queueID.Add(item.queueID);
+                if (!queueID.Contains(item.QueueID))
+                {
+                    queueID.Add(item.QueueID);
                 }
             }
             queueID.Sort();
@@ -56,16 +62,16 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as CommandObj).queueID == id);
+                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as QueueIDObj).QueueID == id);
                 if (neetActive.Length > 0)
                 {
-                    foreach (CommandObj item in neetActive)
+                    foreach (QueueIDObj item in neetActive)
                     {
                         item.StartExecute();
                         item.onEndExecute = OnCommandObjComplete;
                     }
                 }
-              
+
                 return true;
             }
             return false;
@@ -73,7 +79,7 @@ namespace WorldActionSystem
 
         void OnCommandObjComplete(int id)
         {
-            var notComplete = Array.FindAll<ActionObj>(actionObjs, x => (x as CommandObj).queueID == id && !x.Complete);
+            var notComplete = Array.FindAll<ActionObj>(actionObjs, x => (x as QueueIDObj).QueueID == id && !x.Complete);
             if (notComplete.Length == 0)
             {
                 if (!ExecuteAStep())
@@ -83,5 +89,4 @@ namespace WorldActionSystem
             }
         }
     }
-
 }

@@ -4,8 +4,11 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-
 namespace WorldActionSystem
 {
-    public delegate void CommandExecute(string stepName);
+    [Serializable]
+    public class StepEvent : UnityEvent<string>
+    {
+
+    }
 }

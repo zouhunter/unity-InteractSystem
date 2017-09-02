@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class BtnObj : ActionObj
+    public class ClickObj : ActionObj
     {
         public Renderer render;
         public int queueID;

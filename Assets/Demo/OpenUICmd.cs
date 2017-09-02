@@ -6,7 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem;
 
-public class OpenUICmd : CommandObj {
+public class OpenUICmd : QueueIDObj
+{
     public override void StartExecute(bool forceAuto = true)
     {
         base.StartExecute(forceAuto);
@@ -16,6 +17,7 @@ public class OpenUICmd : CommandObj {
     void OnReceiveBack(object data)
     {
         Debug.Log(data);
+        FindObjectOfType<OpenUICmdResponce>().onComplete = null;
         EndExecute();
     }
 }
