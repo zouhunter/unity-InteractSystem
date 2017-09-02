@@ -18,8 +18,8 @@ public class ShaderHighLight : IHighLightItems
 #endif
     public void HighLightTarget(Renderer go, Color color)
     {
-        if (!isOn) return;
 #if !NoFunction
+        if (!isOn) return;
         Highlighter highlighter;
         if (!highlightDic.ContainsKey(go))
         {
@@ -48,6 +48,9 @@ public class ShaderHighLight : IHighLightItems
 
     public void SetState(bool isOpen)
     {
+#if !NoFunction
         this.isOn = isOpen;
+#endif
     }
+
 }
