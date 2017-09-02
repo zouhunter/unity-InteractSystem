@@ -20,7 +20,7 @@ namespace WorldActionSystem
         }
         public override IActionCommand CreateCommand()
         {
-            return new InstallCommand1(StepName, CreateInstallCtrl);
+            return new InstallCommand(StepName, CreateInstallCtrl);
         }
         private InstallCtrl CreateInstallCtrl()
         {

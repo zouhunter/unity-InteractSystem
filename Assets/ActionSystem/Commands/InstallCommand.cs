@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCommand1 : IActionCommand
+    public class InstallCommand : IActionCommand
     {
         public string StepName { get; private set; }
         private Func<InstallCtrl> createFunc;
@@ -24,7 +24,7 @@ namespace WorldActionSystem
             }
         }
 
-        public InstallCommand1(string stepName,Func<InstallCtrl> createFunc)
+        public InstallCommand(string stepName,Func<InstallCtrl> createFunc)
         {
             this.StepName = stepName;
             Debug.Log(stepName);
