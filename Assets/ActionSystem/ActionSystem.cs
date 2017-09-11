@@ -104,6 +104,7 @@ namespace WorldActionSystem
                 Debug.Log("count" + commandList.Count + steps.Length.ToString());
             }
             List<IActionStap> activeStaps = new List<IActionStap>();
+            List<string> ignored = new List<string>();
             for (int i = 0; i < steps.Length; i++)
             {
                 var old = commandList.Find(x => x.StepName == steps[i].StapName);
@@ -113,9 +114,10 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    Debug.Log("[Ignored step:]" + steps[i].StapName);
+                    ignored.Add(steps[i].StapName);
                 }
             }
+            Debug.Log("[Ignored steps:]" + String.Join("|",ignored.ToArray()));
             return activeStaps.ToArray();
         }
         /// <summary>

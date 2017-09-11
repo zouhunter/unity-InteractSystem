@@ -12,7 +12,7 @@ namespace WorldActionSystem
         public override IActionCommand CreateCommand()
         {
             foreach (AnimObj anim in actionObjs){
-                anim.RegistEndPlayEvent(OnEndPlayAnim);
+                anim.RegistAutoEndPlayEvent(OnEndPlayAnim);
             }
             AnimCommand cmd = new AnimCommand(StepName,Array.ConvertAll<ActionObj,AnimObj>(actionObjs,x=>(AnimObj)x));
             return cmd;

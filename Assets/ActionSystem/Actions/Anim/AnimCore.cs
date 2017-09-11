@@ -9,7 +9,7 @@ namespace WorldActionSystem
     [RequireComponent(typeof(Animation))]
     public class AnimCore : MonoBehaviour, AnimPlayer
     {
-        private UnityAction onPlayEnd;
+        private UnityAction onAutoPlayEnd;
         private Animation anim;
         private string animName;
         private AnimationClip clip;
@@ -20,11 +20,11 @@ namespace WorldActionSystem
         {
             anim = GetComponent<Animation>();
         }
-        public void Init(UnityAction onPlayEnd)
+        public void Init(UnityAction onAutoPlayEnd)
         {
             anim.playAutomatically = false;
             anim.wrapMode = WrapMode.Once;
-            this.onPlayEnd = onPlayEnd;
+            this.onAutoPlayEnd = onAutoPlayEnd;
             RegisterEvent();
         }
 
@@ -36,10 +36,15 @@ namespace WorldActionSystem
             anim.cullingType = AnimationCullingType.BasedOnRenderers;
 
             clip = anim.GetClip(animName);
-            even = new AnimationEvent();
-            even.time = animTime;
-            even.functionName = "OnPlayToEnd";
-            clip.AddEvent(even);
+            var even = Array.Find(clip.events, x => x.time == animTime); 
+            if (even == null)
+            {
+                even = new AnimationEvent();
+                even.time = animTime;
+                even.functionName = "OnPlayToEnd";
+                clip.AddEvent(even);
+            }
+
         }
 
         /// <summary>
@@ -47,7 +52,9 @@ namespace WorldActionSystem
         /// </summary>
         void OnPlayToEnd()
         {
-            onPlayEnd.Invoke();
+            Debug.Log("onAutoPlayEnd:" + transform.parent.name);
+
+            onAutoPlayEnd.Invoke();
         }
         public void Play(float speed)
         {
@@ -69,6 +76,6 @@ namespace WorldActionSystem
             state.speed = 0;
         }
 
-     
+
     }
 }

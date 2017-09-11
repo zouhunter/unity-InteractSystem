@@ -16,7 +16,7 @@ namespace WorldActionSystem
 #if !NoFunction
         public Tweener tween;
 #endif
-        public void Init(UnityAction onPlayEnd)
+        public void Init(UnityAction onAutoPlayEnd)
         {
 #if !NoFunction
 
@@ -24,7 +24,7 @@ namespace WorldActionSystem
             transform.position += startPos;
             tween = transform.DOMove(initPos, 1).OnComplete(() =>
             {
-                onPlayEnd.Invoke();
+                onAutoPlayEnd.Invoke();
                 transform.position = initPos;
             }).SetAutoKill(false).Pause();
 #endif
