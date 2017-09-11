@@ -27,7 +27,6 @@ namespace WorldActionSystem
         public InstallCommand(string stepName,Func<InstallCtrl> createFunc)
         {
             this.StepName = stepName;
-            Debug.Log(stepName);
             this.createFunc = createFunc;
         }
         public void StartExecute(bool forceAuto)

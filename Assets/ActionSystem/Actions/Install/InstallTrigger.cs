@@ -24,7 +24,6 @@ namespace WorldActionSystem
         }
         private InstallCtrl CreateInstallCtrl()
         {
-            Debug.Log("创建ctrl:" + StepName);
             installCtrl = new InstallCtrl(this);
             installCtrl.onStepComplete = OnStepComplete;
             installCtrl.InstallErr = OnUserError;
@@ -33,7 +32,6 @@ namespace WorldActionSystem
 
         private void OnStepComplete(string stepName)
         {
-            Debug.Log("StepComplete:" + StepName);
             installCtrl = null;
             if (onStepComplete != null) onStepComplete.Invoke(stepName);
         }

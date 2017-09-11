@@ -23,7 +23,8 @@ namespace WorldActionSystem
             clickCtrl = new ClickContrller();
             clickCtrl.onBtnClicked = OnBtnClicked;
             clickCtrl.onHoverBtn = OnHoverBtn;
-            clickCtrl.OnHoverNothing = OnHoverNothing;
+            clickCtrl.onHoverNothing = OnHoverNothing;
+            clickCtrl.onClickEmpty = OnClickEmpty;
 
             StartCoroutine(clickCtrl.StartController());
         }
@@ -39,6 +40,14 @@ namespace WorldActionSystem
         }
         void OnBtnClicked(ClickObj obj)
         {
+            if (!obj.Started)
+            {
+                if (onUserErr != null) onUserErr.Invoke(StepName, "不可点击" + obj.name);
+            }
+            else if(obj.Complete)
+            {
+                if (onUserErr != null) onUserErr.Invoke(StepName, "已经结束点击" + obj.name);
+            }
             if (obj.Started && !obj.Complete)
             {
                 obj.EndExecute();
@@ -47,6 +56,7 @@ namespace WorldActionSystem
                     onStepComplete.Invoke(StepName);
                 }
             }
+
         }
         void OnHoverBtn(ClickObj obj)
         {
@@ -64,6 +74,11 @@ namespace WorldActionSystem
                 highter.UnHighLightTarget(lastSelected);
                 lastSelected = null;
             }
+        }
+
+        void OnClickEmpty()
+        {
+            if (onUserErr != null) onUserErr.Invoke(StepName, "点击位置不正确");
         }
 
         internal void SetButtonClickAbleQueue(string stepName)

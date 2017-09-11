@@ -99,10 +99,6 @@ namespace WorldActionSystem
         /// <returns></returns>
         private static IActionStap[] ConfigSteps(List<IActionCommand> commandList, IActionStap[] steps)
         {
-            if (string.Compare(commandList.Count.ToString(), steps.Length.ToString()) != 0)
-            {
-                Debug.Log("count" + commandList.Count + steps.Length.ToString());
-            }
             List<IActionStap> activeStaps = new List<IActionStap>();
             List<string> ignored = new List<string>();
             for (int i = 0; i < steps.Length; i++)

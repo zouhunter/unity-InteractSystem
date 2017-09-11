@@ -27,7 +27,7 @@ namespace WorldActionSystem
             }
             else
             {
-                Debug.Log("wait");
+                //Debug.Log("wait");
             }
         }
         private bool CurrentStepComplete()

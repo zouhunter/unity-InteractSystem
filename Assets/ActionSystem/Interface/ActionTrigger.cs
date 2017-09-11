@@ -13,8 +13,6 @@ namespace WorldActionSystem
         private string _stepName;
         public string StepName { get { return _stepName; } }
         public int executeIndex;
-        public bool Complete { get { return _complete; } }
-        private bool _complete;
         protected ActionObj[] actionObjs;
         public StepComplete onStepComplete;
         public UserError onUserErr;

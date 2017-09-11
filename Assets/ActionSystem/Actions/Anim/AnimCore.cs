@@ -52,8 +52,7 @@ namespace WorldActionSystem
         /// </summary>
         void OnPlayToEnd()
         {
-            Debug.Log("onAutoPlayEnd:" + transform.parent.name);
-
+            //Debug.Log("onAutoPlayEnd:" + transform.parent.name);
             onAutoPlayEnd.Invoke();
         }
         public void Play(float speed)

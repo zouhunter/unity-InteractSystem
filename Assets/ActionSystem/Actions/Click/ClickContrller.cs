@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+
 namespace WorldActionSystem
 {
     
@@ -11,7 +13,8 @@ namespace WorldActionSystem
     {
         public UnityAction<ClickObj> onBtnClicked;
         public UnityAction<ClickObj> onHoverBtn;
-        public UnityAction OnHoverNothing;
+        public UnityAction onHoverNothing;
+        public UnityAction onClickEmpty;
 
         private RaycastHit hit;
         private Ray ray;
@@ -30,14 +33,18 @@ namespace WorldActionSystem
 
                 if (TryHitBtnObj(out hitObj))
                 {
-                    if (TryClickBtnObj()){
+                    if (Input.GetMouseButtonDown(0)){
                         if (onBtnClicked != null) onBtnClicked.Invoke(hitObj);
                     }
                     if (onHoverBtn != null) onHoverBtn.Invoke(hitObj);
                 }
                 else
                 {
-                    if (OnHoverNothing != null) OnHoverNothing.Invoke();
+                    if (onHoverNothing != null) onHoverNothing.Invoke();
+                    if (Input.GetMouseButtonDown(0) && EventSystem.current != null &&!EventSystem.current.IsPointerOverGameObject())
+                    {
+                        if(onClickEmpty != null) onClickEmpty.Invoke();
+                    }
                 }
                 yield return null;
             }
@@ -51,14 +58,6 @@ namespace WorldActionSystem
                 return true;
             }
             obj = null;
-            return false;
-        }
-        private bool TryClickBtnObj()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                return true;
-            }
             return false;
         }
     }

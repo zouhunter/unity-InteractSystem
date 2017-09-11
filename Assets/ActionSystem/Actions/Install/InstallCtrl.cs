@@ -45,7 +45,6 @@ namespace WorldActionSystem
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("OnLeftMouseClicked");
                     OnLeftMouseClicked();
                 }
                 else if (pickedUp)
@@ -124,22 +123,22 @@ namespace WorldActionSystem
                         installPos = hits[i].collider.GetComponent<InstallObj>();
                         if (installPos == null)
                         {
-                            Debug.LogError("零件未挂InstallObj脚本");
+                            Debug.LogError("【配制错误】:零件未挂InstallObj脚本");
                         }
                         else if (!IsInstallStep(installPos))
                         {
                             installAble = false;
-                            resonwhy = "当前安装步骤并非" + installPos.StepName;
+                            resonwhy = "当前安装步骤为" + currStepName;
                         }
                         else if (HaveInstallObjInstalled(installPos))
                         {
                             installAble = false;
-                            resonwhy = "安装点已经安装了其他零件";
+                            resonwhy = "已经安装";
                         }
                         else if (!elementGroup.CanInstallToPos(installPos))
                         {
                             installAble = false;
-                            resonwhy = "拿起零件和安装点不对应";
+                            resonwhy = "零件不匹配";
                         }
                         else
                         {
@@ -150,7 +149,7 @@ namespace WorldActionSystem
                 if (!hited)
                 {
                     installAble = false;
-                    resonwhy = "不要乱放零件";
+                    resonwhy = "零件放置位置不正确";
                 }
             }
 
