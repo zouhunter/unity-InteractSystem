@@ -62,7 +62,12 @@ namespace WorldActionSystem
             startRot = transform.rotation;
             lineRender = gameObject.AddComponent<LineRenderer>();
             lineRender.material = new Material(Shader.Find("Sprites/Default"));
+#if UNITY_5_6_OR_NEWER
+            lineRender.startWidth = 0.1f;
+            lineRender.endWidth = 0.01f;
+#else
             lineRender.SetWidth(.1f, .01f);
+#endif
             gameObject.layer = Setting.rotateItemLayer;
             comparer = new FloatComparer(deviation);
             if (render == null) render = GetComponent<Renderer>();
@@ -181,14 +186,24 @@ namespace WorldActionSystem
 
         void DrawCircle(List<Vector3> lines, Color color)
         {
+#if UNITY_5_6_OR_NEWER
+            lineRender.startColor = color;
+            lineRender.endColor = color;
+            lineRender.positionCount = lines.Count;
+#else
             lineRender.SetColors(color, color);
             lineRender.SetVertexCount(lines.Count);
+#endif
             lineRender.SetPositions(lines.ToArray());
         }
 
         void ClearCircle()
         {
+#if UNITY_5_6_OR_NEWER
+            lineRender.positionCount = 0;
+#else
             lineRender.SetVertexCount(0);
+#endif
         }
 
         internal bool TryMarchRot()

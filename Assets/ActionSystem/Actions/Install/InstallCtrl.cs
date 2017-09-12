@@ -189,7 +189,6 @@ namespace WorldActionSystem
 
         private Ray disRay;
         private RaycastHit disHit;
-        private string obstacle = "Obstacle";
 
         /// <summary>
         /// 跟随鼠标

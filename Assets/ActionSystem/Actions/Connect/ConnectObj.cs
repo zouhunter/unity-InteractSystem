@@ -120,7 +120,11 @@ namespace WorldActionSystem
                     positionList.Add(pos);
                 }
             }
+#if UNITY_5_6_OR_NEWER
+            lineRender.positionCount = positionList.Count;
+#else
             lineRender.SetVertexCount(positionList.Count);
+#endif
             lineRender.SetPositions(positionList.ToArray());
         }
         private bool CanConnect(int min,int max)

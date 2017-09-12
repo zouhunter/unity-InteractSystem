@@ -26,7 +26,7 @@ namespace WorldActionSystem
         {
             this.holder = holder;
             this.objs = objs;
-            this.objCamera = camera??Camera.main;
+            this.objCamera = camera ?? Camera.main;
             this.pointDistence = pointDistence;
             InitConnectObj(lineMaterial, lineWight);
         }
@@ -35,14 +35,20 @@ namespace WorldActionSystem
         {
             line = holder.GetComponent<LineRenderer>();
             if (line == null) line = holder.gameObject.AddComponent<LineRenderer>();
+#if UNITY_5_6_OR_NEWER
+            line.positionCount = 1;
+            line.startWidth = lineWight;
+            line.endWidth = lineWight * 0.8f;
+#else
             line.SetVertexCount(1);
             line.SetWidth(lineWight,lineWight*0.8f);
+#endif
             line.material = lineMaterial;
         }
 
         internal void StartConnecter()
         {
-            if(coroutine != null) coroutine = holder.StartCoroutine(ConnectLoop());
+            if (coroutine != null) coroutine = holder.StartCoroutine(ConnectLoop());
         }
 
         IEnumerator ConnectLoop()
@@ -73,19 +79,19 @@ namespace WorldActionSystem
                     }
                 }
                 yield return null;
-            }    
+            }
         }
 
         private bool TryHitNode(out Collider collider)
         {
             ray = objCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray,out hit,10,1<<Setting.connectItemLayer))
+            if (Physics.Raycast(ray, out hit, 10, 1 << Setting.connectItemLayer))
             {
                 if (onHoverItem != null) onHoverItem(hit.collider);
                 if (Input.GetMouseButtonDown(0))
                 {
                     collider = hit.collider;
-                   if(onSelectItem != null) onSelectItem(collider);
+                    if (onSelectItem != null) onSelectItem(collider);
                     return true;
                 }
             }
@@ -98,10 +104,15 @@ namespace WorldActionSystem
             Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, firstCollider.transform.position, firstCollider.transform.forward);
             if (positons.Count > 0)
             {
-                if (Vector3.Distance(positons[positons.Count - 1],mousePosition) > pointDistence)
+                if (Vector3.Distance(positons[positons.Count - 1], mousePosition) > pointDistence)
                 {
                     positons.Add(mousePosition);
+#if UNITY_5_6_OR_NEWER
+                    line.positionCount = positons.Count;
+
+#else
                     line.SetVertexCount(positons.Count);
+#endif
                     line.SetPositions(positons.ToArray());
                 }
             }
@@ -119,9 +130,15 @@ namespace WorldActionSystem
                 {
                     firstCollider = null;
                     positons.Clear();
+#if UNITY_5_6_OR_NEWER
+                    line.positionCount = 1;
+
+#else
                     line.SetVertexCount(1);
+
+#endif
                     break;
-                } 
+                }
             }
         }
 
