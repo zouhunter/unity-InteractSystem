@@ -17,10 +17,14 @@ namespace WorldActionSystem
             base.Awake();
             objs = Array.ConvertAll<ActionObj, ConnectObj>(actionObjs, (x) => x as ConnectObj);
         }
-        public override IActionCommand CreateCommand()
+        public override IList<IActionCommand> CreateCommands()
         {
-            var cmd = new ConnectCommand(StepName, objs, OnTriggerComplete, GetCtrl);
-            return cmd;
+            var cmds = new List<IActionCommand>();
+            for (int i = 0; i < repeat; i++)
+            {
+                cmds.Add(new ConnectCommand(StepName,repeat, objs, OnTriggerComplete, GetCtrl));
+            }
+            return cmds;
         }
 
         private ConnectCtrl GetCtrl()
@@ -29,9 +33,9 @@ namespace WorldActionSystem
             return ctrl;
         }
 
-        private void OnTriggerComplete(string stepName)
+        private void OnTriggerComplete()
         {
-            if (onStepComplete != null) onStepComplete.Invoke(StepName);
+            OnComplete();
         }
     }
 }

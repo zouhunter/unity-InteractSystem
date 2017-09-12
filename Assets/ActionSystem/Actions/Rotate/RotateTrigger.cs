@@ -26,9 +26,14 @@ namespace WorldActionSystem
             StartCoroutine(rotAnimCtrl.StartRotateAnimContrl());
         }
 
-        public override IActionCommand CreateCommand()
+        public override IList<IActionCommand> CreateCommands()
         {
-            return new RotateCommand(StepName,this);
+            var cmds = new List<IActionCommand>();
+            for (int i = 0; i < repeat; i++)
+            {
+                cmds.Add(new RotateCommand(StepName, repeat, this));
+            }
+            return cmds;
         }
 
         void InitObjects()
@@ -73,7 +78,7 @@ namespace WorldActionSystem
         void OnRoateOK(RotObj obj)
         {
             if (!SetNextRotateAble()) {
-                onStepComplete.Invoke(StepName);
+                OnComplete();
             }
         }
 
@@ -85,7 +90,7 @@ namespace WorldActionSystem
             }
             if (forceAuto)
             {
-                onStepComplete.Invoke(StepName);
+                OnComplete();
             }
 
         }

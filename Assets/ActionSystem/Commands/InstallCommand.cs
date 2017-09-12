@@ -23,11 +23,12 @@ namespace WorldActionSystem
                 return _installCtrl;
             }
         }
-
-        public InstallCommand(string stepName,Func<InstallCtrl> createFunc)
+        public int Count { get; private set; }
+        public InstallCommand(string stepName,int count,Func<InstallCtrl> createFunc)
         {
             this.StepName = stepName;
             this.createFunc = createFunc;
+            this.Count = count;
         }
         public void StartExecute(bool forceAuto)
         {

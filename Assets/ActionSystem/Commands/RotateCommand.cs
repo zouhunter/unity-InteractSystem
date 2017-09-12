@@ -10,10 +10,13 @@ namespace WorldActionSystem
     {
         private RotateTrigger rotParent;
         public string StepName { get; private set; }
-        public RotateCommand(string stepName, RotateTrigger rotParent) 
+        public int Count { get; private set; }
+
+        public RotateCommand(string stepName,int count, RotateTrigger rotParent) 
         {
             this.StepName = stepName;
             this.rotParent = rotParent;
+            this.Count = count;
         }
         public  void StartExecute(bool forceAuto)
         {

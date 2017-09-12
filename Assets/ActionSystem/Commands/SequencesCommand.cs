@@ -14,11 +14,13 @@ namespace WorldActionSystem
         public string StepName { get; private set; }
         private List<IActionCommand> commandList;
         private bool forceAuto;
+        public int Count { get; private set; }
 
-        public SequencesCommand(string stepName, List<IActionCommand> commandList)
+        public SequencesCommand(string stepName,int count, List<IActionCommand> commandList)
         {
             StepName = stepName;
             this.commandList = commandList;
+            this.Count = count;
         }
 
         public void StartExecute(bool forceAuto)

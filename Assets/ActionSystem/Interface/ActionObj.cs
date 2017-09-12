@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-    public abstract class ActionObj:MonoBehaviour,IActionCommand
+    public abstract class ActionObj:MonoBehaviour
     {
         public bool startActive;
         public bool endActive;
@@ -27,15 +27,17 @@ namespace WorldActionSystem
         {
             gameObject.SetActive(startActive);
         }
-        public virtual void StartExecute(bool forceAuto = false)
+        public virtual void StartExecute()
         {
             onBeforeActive.Invoke(StepName);
             _started = true;
+            _complete = false;
             gameObject.SetActive(true);
         }
         public virtual void EndExecute()
         {
             onBeforePlayEnd.Invoke(StepName);
+            _started = true;
             _complete = true;
             gameObject.SetActive(endActive);
         }

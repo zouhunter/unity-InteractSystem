@@ -42,7 +42,7 @@ namespace WorldActionSystem
 
         internal void StartConnecter()
         {
-            coroutine = holder.StartCoroutine(ConnectLoop());
+            if(coroutine != null) coroutine = holder.StartCoroutine(ConnectLoop());
         }
 
         IEnumerator ConnectLoop()
@@ -127,6 +127,7 @@ namespace WorldActionSystem
 
         internal void StopConnecter()
         {
+            holder.StopCoroutine(coroutine);
             //throw new NotImplementedException();
         }
 

@@ -9,13 +9,18 @@ namespace WorldActionSystem
 {
     public class UserTrigger : ActionTrigger
     {
-        public override IActionCommand CreateCommand()
+        public override IList<IActionCommand> CreateCommands()
         {
-            return new QueueIDCommand(StepName,Array.ConvertAll<ActionObj,QueueIDObj>(actionObjs,x=>x as QueueIDObj), OnStepComplete);
+            var cmds = new List<IActionCommand>();
+            for (int i = 0; i < repeat; i++)
+            {
+                cmds.Add(new QueueIDCommand(StepName, repeat, Array.ConvertAll<ActionObj, QueueIDObj>(actionObjs, x => x as QueueIDObj), OnStepComplete));
+            }
+            return cmds;
         }
-        private void OnStepComplete(string stepName)
+        private void OnStepComplete()
         {
-            if (onStepComplete != null) onStepComplete(StepName);
+            OnComplete();
         }
     }
 

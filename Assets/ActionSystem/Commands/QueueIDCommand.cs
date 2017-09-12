@@ -11,13 +11,15 @@ namespace WorldActionSystem
         public string StepName { get; private set; }
         protected QueueIDObj[] actionObjs;
         protected List<int> queueID = new List<int>();
-        protected StepComplete onStepComplete;
+        protected UnityAction onComplete;
+        public int Count { get; private set; }
 
-        public QueueIDCommand(string stepName, QueueIDObj[] actionObjs, StepComplete onStepComplete)
+        public QueueIDCommand(string stepName,int count, QueueIDObj[] actionObjs, UnityAction onStepComplete)
         {
             this.StepName = stepName;
             this.actionObjs = actionObjs;
-            this.onStepComplete = onStepComplete;
+            this.onComplete = onStepComplete;
+            this.Count = count;
         }
 
         public virtual void EndExecute()
@@ -84,7 +86,7 @@ namespace WorldActionSystem
             {
                 if (!ExecuteAStep())
                 {
-                    if (onStepComplete != null) onStepComplete.Invoke(StepName);
+                    if (onComplete != null) onComplete.Invoke();
                 }
             }
         }

@@ -18,26 +18,28 @@ namespace WorldActionSystem
             base.Awake();
             _installObjs.AddRange(Array.ConvertAll<ActionObj, InstallObj>(actionObjs, x => (InstallObj)x));
         }
-        public override IActionCommand CreateCommand()
+        public override IList<IActionCommand> CreateCommands()
         {
-            return new InstallCommand(StepName, CreateInstallCtrl);
+            var cmds = new List<IActionCommand>();
+            for (int i = 0; i < repeat; i++)
+            {
+                cmds.Add(new InstallCommand(StepName, repeat, CreateInstallCtrl));
+            }
+            return cmds;
         }
         private InstallCtrl CreateInstallCtrl()
         {
-            installCtrl = new InstallCtrl(this);
-            installCtrl.onStepComplete = OnStepComplete;
-            installCtrl.InstallErr = OnUserError;
+            installCtrl = new InstallCtrl(this,distence,highLight,InstallObjs);
+            installCtrl.onComplete = OnStepComplete;
+            installCtrl.onInstallError = base.OnUserError;
+            installCtrl.elementGroup = ElementGroup();
             return installCtrl;
         }
 
-        private void OnStepComplete(string stepName)
+        private void OnStepComplete()
         {
             installCtrl = null;
-            if (onStepComplete != null) onStepComplete.Invoke(stepName);
-        }
-        private void OnUserError(string x, string y)
-        {
-            if (onUserErr != null) onUserErr(x, y);
+            OnComplete();
         }
     }
 

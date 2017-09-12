@@ -155,9 +155,9 @@ namespace WorldActionSystem
             }
         }
 
-        public override void StartExecute(bool forceAuto = false)
+        public override void StartExecute()
         {
-            base.StartExecute(forceAuto);
+            base.StartExecute();
             if (_viewCamera) _viewCamera.gameObject.SetActive(true);
             transform.rotation = startRot;
         }

@@ -25,23 +25,23 @@ namespace WorldActionSystem
             lineRender = GetComponent<LineRenderer>();
         }
 
-        public override void StartExecute(bool forceAuto = false)
+        public override void StartExecute()
         {
-            base.StartExecute(forceAuto);
-            if (forceAuto)
-            {
-                foreach (var item in connectGroup)
-                {
-                    var id1 = item.p1;
-                    var id2 = item.p2;
-                    Vector3[] positions = new Vector3[2];
-                    positions[0] = nodes[id1].transform.position;
-                    positions[1] = nodes[id2].transform.position;
-                    if (id1 > id2) Array.Reverse(positions);
-                    positionDic[1 << id1 | 1 << id2] = positions;
-                }
-                RefeshState();
-            }
+            base.StartExecute();
+            //if (forceAuto)
+            //{
+            //    foreach (var item in connectGroup)
+            //    {
+            //        var id1 = item.p1;
+            //        var id2 = item.p2;
+            //        Vector3[] positions = new Vector3[2];
+            //        positions[0] = nodes[id1].transform.position;
+            //        positions[1] = nodes[id2].transform.position;
+            //        if (id1 > id2) Array.Reverse(positions);
+            //        positionDic[1 << id1 | 1 << id2] = positions;
+            //    }
+            //    RefeshState();
+            //}
         }
 
         public override void UnDoExecute()

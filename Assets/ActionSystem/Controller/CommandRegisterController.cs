@@ -19,6 +19,7 @@ namespace WorldActionSystem
         private Dictionary<string,List<ActionTrigger>> actionDic;//触发器
         private ElementGroup elementGroup;//元素名、列表
         private string currentStep;
+
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
 
         public void RegistInstallElement(ElementGroup elements)
@@ -54,8 +55,7 @@ namespace WorldActionSystem
                     var stepName = item.Key;
                     foreach (var trigger in item.Value)
                     {
-                        trigger.onStepComplete = OnOneCommandComplete;
-                        trigger.onUserErr = (x, y) => { onUserErr(x, y); };
+                        trigger.InitTrigger(OnOneCommandComplete,onUserErr);
                     }
                 }
             }
@@ -102,23 +102,23 @@ namespace WorldActionSystem
                     {
                         item.Value.Sort();
                         var list = new List<IActionCommand>();
-                        for (int i = 0; i < item.Value.Count; i++)
-                        {
+                        for (int i = 0; i < item.Value.Count; i++){
                             item.Value[i].ElementGroup = () => { return elementGroup; };
-                            list.Add(item.Value[i].CreateCommand());
+                            list.AddRange(item.Value[i].CreateCommands());
                         }
-                        var cmd = new SequencesCommand(stepName, list);
+                        var cmd = new SequencesCommand(stepName,1, list);
                         seqDic.Add(stepName, cmd) ;
                         commandList.Add(cmd);
                     }
                     else
                     {
                         item.Value[0].ElementGroup = () => { return elementGroup; };
-                        commandList.Add(item.Value[0].CreateCommand());
+                        commandList.AddRange(item.Value[0].CreateCommands());
                     }
                    
                 }
             }
         }
     }
+
 }

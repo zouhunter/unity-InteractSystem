@@ -9,9 +9,11 @@ namespace WorldActionSystem
 
     public class InstallCtrl
     {
-        private InstallTrigger trigger;
-        public StepComplete onStepComplete;
-        private ElementGroup elementGroup;
+        public UnityAction<string> onInstallError;
+        public UnityAction onComplete;
+
+        private MonoBehaviour trigger;
+        public ElementGroup elementGroup { get; set; }
         public bool Active { get; private set; }
         IHighLightItems highLight;
         private InstallItem pickedUpObj;
@@ -22,18 +24,17 @@ namespace WorldActionSystem
         private RaycastHit[] hits;
         private bool installAble;
         private string resonwhy;
-        private float distence { get { return trigger.distence; } set { trigger.distence = value; } }
-        private string currStepName { get { return trigger.StepName; } }
-        private List<InstallObj> installObjs { get { return trigger.InstallObjs; } }
-        public UserError InstallErr;
+        private float distence;
+        //private string currStepName;
+        private List<InstallObj> installObjs;
         private Coroutine coroutine;
-
-        public InstallCtrl(InstallTrigger trigger)
+        public InstallCtrl(MonoBehaviour trigger,float distence,bool hightLightOn,List<InstallObj> installObjs)
         {
             this.trigger = trigger;
-            this.elementGroup = trigger.ElementGroup();
             highLight = new ShaderHighLight();
-            highLight.SetState(trigger.highLight);
+            highLight.SetState(hightLightOn);
+            this.distence = distence;
+            this.installObjs = installObjs;
         }
 
         #region 鼠标操作事件
@@ -128,7 +129,7 @@ namespace WorldActionSystem
                         else if (!IsInstallStep(installPos))
                         {
                             installAble = false;
-                            resonwhy = "当前安装步骤为" + currStepName;
+                            resonwhy = "操作顺序错误";
                         }
                         else if (HaveInstallObjInstalled(installPos))
                         {
@@ -213,8 +214,7 @@ namespace WorldActionSystem
             {
                 List<InstallObj> posList = GetInstalledPosList();
                 elementGroup.SetCompleteNotify(posList);
-                if (onStepComplete != null)
-                    onStepComplete.Invoke(currStepName);
+                if(onComplete!= null) onComplete();
             }
         }
 
@@ -276,10 +276,7 @@ namespace WorldActionSystem
 
         private void OnInstallErr(string err)
         {
-            if (InstallErr != null)
-            {
-                InstallErr.Invoke(currStepName, err);
-            }
+           if(onInstallError != null)  onInstallError(err);
         }
 
         private List<InstallObj> GetInstalledPosList()

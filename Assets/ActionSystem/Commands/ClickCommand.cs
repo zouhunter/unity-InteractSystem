@@ -12,10 +12,14 @@ namespace WorldActionSystem
         private ClickTrigger trigger;
         public string StepName { get; private set; }
 
-        public ClickCommand(string stepName, ClickTrigger trigger)
+        public int Count { get; private set; }
+
+
+        public ClickCommand(string stepName,int count, ClickTrigger trigger)
         {
             this.StepName = stepName;
             this.trigger = trigger;
+            this.Count = count;
         }
         public  void StartExecute(bool forceAuto)
         {

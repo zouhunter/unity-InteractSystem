@@ -29,9 +29,14 @@ namespace WorldActionSystem
             StartCoroutine(clickCtrl.StartController());
         }
 
-        public override IActionCommand CreateCommand()
+        public override IList<IActionCommand> CreateCommands()
         {
-            return new ClickCommand(StepName, this);
+            var cmds = new List<IActionCommand>();
+            for (int i = 0; i < repeat; i++)
+            {
+                cmds.Add(new ClickCommand(StepName, repeat, this));
+            }
+            return cmds;
         }
 
         internal void SetHighLightState(bool on)
@@ -42,18 +47,18 @@ namespace WorldActionSystem
         {
             if (!obj.Started)
             {
-                if (onUserErr != null) onUserErr.Invoke(StepName, "不可点击" + obj.name);
+                OnUserError("不可点击" + obj.name);
             }
             else if(obj.Complete)
             {
-                if (onUserErr != null) onUserErr.Invoke(StepName, "已经结束点击" + obj.name);
+                OnUserError("已经结束点击" + obj.name);
             }
             if (obj.Started && !obj.Complete)
             {
                 obj.EndExecute();
                 if (!SetNextButtonsClickAble())
                 {
-                    onStepComplete.Invoke(StepName);
+                    OnComplete();
                 }
             }
 
@@ -78,7 +83,7 @@ namespace WorldActionSystem
 
         void OnClickEmpty()
         {
-            if (onUserErr != null) onUserErr.Invoke(StepName, "点击位置不正确");
+            OnUserError("点击位置不正确");
         }
 
         internal void SetButtonClickAbleQueue(string stepName)
@@ -126,7 +131,10 @@ namespace WorldActionSystem
             {
                 item.EndExecute();
             }
-            if (@continue) onStepComplete.Invoke(StepName);
+            if (@continue)
+            {
+                OnComplete();
+            }
         }
 
         internal void SetButtonNotClicked(string stepName)

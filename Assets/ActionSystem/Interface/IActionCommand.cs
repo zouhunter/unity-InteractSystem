@@ -11,6 +11,7 @@ namespace WorldActionSystem
     public interface IActionCommand
     {
         string StepName { get; }
+        int Count { get; }
         void StartExecute(bool forceAuto);
         void EndExecute();
         void UnDoExecute();

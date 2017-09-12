@@ -46,7 +46,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 播放动画
         /// </summary>
-        public override void StartExecute(bool forceauto = false)
+        public override void StartExecute()
         {
             base.StartExecute();
             delyPlay = StartCoroutine(DelyPlay());

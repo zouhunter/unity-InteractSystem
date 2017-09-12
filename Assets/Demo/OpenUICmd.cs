@@ -8,9 +8,9 @@ using WorldActionSystem;
 
 public class OpenUICmd : QueueIDObj
 {
-    public override void StartExecute(bool forceAuto = true)
+    public override void StartExecute()
     {
-        base.StartExecute(forceAuto);
+        base.StartExecute();
         FindObjectOfType<OpenUICmdResponce>().onComplete = OnReceiveBack;
         FindObjectOfType<OpenUICmdResponce>().stepName = StepName;
     }

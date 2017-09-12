@@ -8,7 +8,7 @@ namespace WorldActionSystem
 {
     public interface AnimPlayer
     {
-        void Init(UnityAction onPlayEnd);
+        void Init(UnityAction onAutoPlayEnd);
         void Play(float duration);
         void EndPlay();
         void UnDoPlay();
