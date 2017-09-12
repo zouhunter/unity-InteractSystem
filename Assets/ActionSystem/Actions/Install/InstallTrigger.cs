@@ -23,7 +23,7 @@ namespace WorldActionSystem
             var cmds = new List<IActionCommand>();
             for (int i = 0; i < repeat; i++)
             {
-                cmds.Add(new InstallCommand(StepName, repeat, CreateInstallCtrl));
+                cmds.Add(new InstallCommand(StepName, CreateInstallCtrl));
             }
             return cmds;
         }

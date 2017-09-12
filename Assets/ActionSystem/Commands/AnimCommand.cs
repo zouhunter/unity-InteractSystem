@@ -16,12 +16,10 @@ namespace WorldActionSystem
         public int Count { get; private set; }
 
         public CommandExecute onBeforeExecute;
-        private int _count;
-        public AnimCommand(string stepName, int count, AnimObj[] anims) 
+        public AnimCommand(string stepName, AnimObj[] anims) 
         {
             this.StepName = stepName;
             this.anims = anims;
-            this.Count = count;
         }
 
         public void StartExecute(bool forceAuto)

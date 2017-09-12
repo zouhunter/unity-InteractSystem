@@ -18,7 +18,7 @@ namespace WorldActionSystem
             var cmds = new List<IActionCommand>();
             for (int i = 0; i < repeat; i++)
             {
-                cmds.Add(new AnimCommand(StepName,repeat,Array.ConvertAll<ActionObj,AnimObj>(actionObjs,x=>(AnimObj)x)));
+                cmds.Add(new AnimCommand(StepName,Array.ConvertAll<ActionObj,AnimObj>(actionObjs,x=>(AnimObj)x)));
             }
             return cmds;
         }

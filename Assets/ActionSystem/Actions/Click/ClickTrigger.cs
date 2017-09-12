@@ -34,7 +34,7 @@ namespace WorldActionSystem
             var cmds = new List<IActionCommand>();
             for (int i = 0; i < repeat; i++)
             {
-                cmds.Add(new ClickCommand(StepName, repeat, this));
+                cmds.Add(new ClickCommand(StepName,this));
             }
             return cmds;
         }

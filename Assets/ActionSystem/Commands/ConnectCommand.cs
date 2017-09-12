@@ -11,7 +11,7 @@ namespace WorldActionSystem
     {
         private ConnectCtrl ctrl;
         private Func<ConnectCtrl> onCreateCtrl;
-        public ConnectCommand(string stepName,int count,ConnectObj[] objs,UnityAction onStepComplete, Func<ConnectCtrl> onCreateCtrl):base(stepName,count, objs, onStepComplete)
+        public ConnectCommand(string stepName,ConnectObj[] objs,UnityAction onStepComplete, Func<ConnectCtrl> onCreateCtrl):base(stepName, objs, onStepComplete)
         {
             this.onCreateCtrl = onCreateCtrl;
         }

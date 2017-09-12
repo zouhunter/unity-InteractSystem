@@ -22,7 +22,7 @@ namespace WorldActionSystem
             var cmds = new List<IActionCommand>();
             for (int i = 0; i < repeat; i++)
             {
-                cmds.Add(new ConnectCommand(StepName,repeat, objs, OnTriggerComplete, GetCtrl));
+                cmds.Add(new ConnectCommand(StepName,objs, OnTriggerComplete, GetCtrl));
             }
             return cmds;
         }

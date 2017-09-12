@@ -13,13 +13,11 @@ namespace WorldActionSystem
         protected List<int> queueID = new List<int>();
         protected UnityAction onComplete;
         public int Count { get; private set; }
-
-        public QueueIDCommand(string stepName,int count, QueueIDObj[] actionObjs, UnityAction onStepComplete)
+        public QueueIDCommand(string stepName, QueueIDObj[] actionObjs, UnityAction onStepComplete)
         {
             this.StepName = stepName;
             this.actionObjs = actionObjs;
             this.onComplete = onStepComplete;
-            this.Count = count;
         }
 
         public virtual void EndExecute()

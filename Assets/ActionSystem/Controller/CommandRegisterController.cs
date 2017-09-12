@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class CommandRegisterController
+    public class CommandRegisterController: IActionEvents
     {
-        public StepComplete onStepComplete;
-        public UserError onUserErr;
+        public StepComplete onStepComplete { get; set; }
+        public UserError onUserErr { get; set; }
         public RegistCmds onRegisted;
         private List<IActionCommand> commandList = new List<IActionCommand>();
         private bool allInstallElementRegisted;
@@ -55,7 +55,8 @@ namespace WorldActionSystem
                     var stepName = item.Key;
                     foreach (var trigger in item.Value)
                     {
-                        trigger.InitTrigger(OnOneCommandComplete,onUserErr);
+                        trigger.onStepComplete = OnOneCommandComplete;
+                        trigger.onUserErr = onUserErr;
                     }
                 }
             }
@@ -106,7 +107,7 @@ namespace WorldActionSystem
                             item.Value[i].ElementGroup = () => { return elementGroup; };
                             list.AddRange(item.Value[i].CreateCommands());
                         }
-                        var cmd = new SequencesCommand(stepName,1, list);
+                        var cmd = new SequencesCommand(stepName,list);
                         seqDic.Add(stepName, cmd) ;
                         commandList.Add(cmd);
                     }

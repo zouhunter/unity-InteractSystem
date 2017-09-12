@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public abstract class ActionTrigger:MonoBehaviour,IComparable<ActionTrigger>
+    public abstract class ActionTrigger:MonoBehaviour,IComparable<ActionTrigger>, IActionEvents
     {
         [SerializeField]
         private string _stepName;
@@ -18,8 +18,8 @@ namespace WorldActionSystem
         public int repeat;
         public abstract IList<IActionCommand> CreateCommands();
         public Func<ElementGroup> ElementGroup { get; set; }
-        private StepComplete onStepComplete;
-        private UserError onUserErr;
+        public StepComplete onStepComplete { get; set; }
+        public UserError onUserErr { get; set; }
         protected ActionObj[] actionObjs;
 
         protected virtual void Awake()
@@ -29,15 +29,6 @@ namespace WorldActionSystem
                 item.StepName = _stepName;
             }
         }
-
-
-        public void InitTrigger(StepComplete onStepComplete, UserError onUserErr/*, Func<ElementGroup> ElementGroup*/)
-        {
-            this.onStepComplete = onStepComplete;
-            this.onUserErr = onUserErr;
-            //this.ElementGroup = ElementGroup;
-        }
-
         private int currentRepeat;
 
         protected void OnComplete()
