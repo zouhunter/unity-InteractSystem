@@ -48,7 +48,7 @@ namespace WorldActionSystem
 
         internal void StartConnecter()
         {
-            if (coroutine != null) coroutine = holder.StartCoroutine(ConnectLoop());
+            if (coroutine == null) coroutine = holder.StartCoroutine(ConnectLoop());
         }
 
         IEnumerator ConnectLoop()
@@ -120,6 +120,8 @@ namespace WorldActionSystem
 
         private void TryConnect(Collider collider)
         {
+            if (!Input.GetMouseButtonDown(0)) return;
+
             if (!positons.Contains(collider.transform.position))
             {
                 positons.Add(collider.transform.position);
