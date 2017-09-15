@@ -10,7 +10,7 @@ namespace WorldActionSystem
     {
         private MonoBehaviour holder;
         private ConnectObj[] objs;
-        public UnityAction onComplete;
+        public UnityAction<string> onError;
         public UnityAction<Collider> onSelectItem;
         public UnityAction<Collider> onHoverItem;
         private List<Vector3> positons = new List<Vector3>();
@@ -21,7 +21,6 @@ namespace WorldActionSystem
         private LineRenderer line;
         private float pointDistence;
         private Camera objCamera;
-
         public ConnectCtrl(MonoBehaviour holder, ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence, Camera camera = null)
         {
             this.holder = holder;
@@ -100,59 +99,74 @@ namespace WorldActionSystem
         }
         private void UpdateLine()
         {
-            ray = objCamera.ScreenPointToRay(Input.mousePosition);
-            Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, firstCollider.transform.position, firstCollider.transform.forward);
-            if (positons.Count > 0)
+            if(Input.GetMouseButtonDown(0))
             {
-                if (Vector3.Distance(positons[positons.Count - 1], mousePosition) > pointDistence)
+                ClearLineRender();
+            }
+            else
+            {
+                ray = objCamera.ScreenPointToRay(Input.mousePosition);
+                Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, firstCollider.transform.position, firstCollider.transform.forward);
+                if (positons.Count > 0)
                 {
-                    positons.Add(mousePosition);
+                    if (Vector3.Distance(positons[positons.Count - 1], mousePosition) > pointDistence)
+                    {
+                        positons.Add(mousePosition);
 #if UNITY_5_6_OR_NEWER
                     line.positionCount = positons.Count;
 
 #else
-                    line.SetVertexCount(positons.Count);
+                        line.SetVertexCount(positons.Count);
 #endif
-                    line.SetPositions(positons.ToArray());
+                        line.SetPositions(positons.ToArray());
+                    }
                 }
             }
+          
         }
 
         private void TryConnect(Collider collider)
         {
             if (!Input.GetMouseButtonDown(0)) return;
-
-            if (!positons.Contains(collider.transform.position))
-            {
-                positons.Add(collider.transform.position);
-            }
+            string element1 = firstCollider.name;
+            string element2 = collider.name;
+            bool canConnect = false;
             foreach (var item in objs)
             {
                 if (item.TryConnectNode(collider, firstCollider, positons.ToArray()))
                 {
-                    firstCollider = null;
-                    positons.Clear();
-#if UNITY_5_6_OR_NEWER
-                    line.positionCount = 1;
-
-#else
-                    line.SetVertexCount(1);
-
-#endif
+                    canConnect = true;
                     break;
                 }
             }
+            ClearLineRender();
+            if (!canConnect && onError != null) onError.Invoke(string.Format("{0}和{1}两点不需要连接", element1, element2));
+        }
+        private void ClearLineRender()
+        {
+            firstCollider = null;
+            positons.Clear();
+#if UNITY_5_6_OR_NEWER
+            line.positionCount = 1;
+#else
+            line.SetVertexCount(1);
+#endif
         }
 
         internal void StopConnecter()
         {
-            holder.StopCoroutine(coroutine);
-            //throw new NotImplementedException();
+            if(coroutine != null) holder.StopCoroutine(coroutine);
         }
 
         internal void UnDoConnectItems()
         {
-            //throw new NotImplementedException();
+            if (coroutine != null) holder.StopCoroutine(coroutine);
+            coroutine = null;
+            ClearLineRender();
+            foreach (var item in objs)
+            {
+                item.UnDoExecute();
+            }
         }
     }
 }

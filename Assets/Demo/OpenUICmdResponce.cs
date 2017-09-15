@@ -13,7 +13,8 @@ public class OpenUICmdResponce : MonoBehaviour {
         GUILayout.Space(100);
         if (onComplete != null && GUILayout.Button("结束" + stepName))
         {
-           if(onComplete != null) onComplete.Invoke(stepName+"结束了");
+           if(onComplete != null)
+                onComplete.Invoke(stepName+"结束了");
         }
     }
 }

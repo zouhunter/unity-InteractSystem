@@ -22,7 +22,7 @@ namespace WorldActionSystem
             var cmds = new List<IActionCommand>();
             for (int i = 0; i < repeat; i++)
             {
-                cmds.Add(new ConnectCommand(StepName,objs, OnTriggerComplete, GetCtrl));
+                cmds.Add(new ConnectCommand(StepName,objs, OnComplete, GetCtrl));
             }
             return cmds;
         }
@@ -30,12 +30,25 @@ namespace WorldActionSystem
         private ConnectCtrl GetCtrl()
         {
             var ctrl = new ConnectCtrl(this, objs,lineMaterial,lineWight,pointDistence);
+            ctrl.onError = OnConnectError;
+            ctrl.onHoverItem = OnHoverItem;
+            ctrl.onSelectItem = OnSelecteItem;
             return ctrl;
         }
 
-        private void OnTriggerComplete()
+        private void OnSelecteItem(Collider arg0)
         {
-            OnComplete();
+            //throw new NotImplementedException();
+        }
+
+        private void OnHoverItem(Collider arg0)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void OnConnectError(string error)
+        {
+            base.onUserErr(StepName, error);
         }
     }
 }

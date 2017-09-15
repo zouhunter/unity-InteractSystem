@@ -9,6 +9,8 @@ namespace WorldActionSystem
 {
     public class ConnectObj : QueueIDObj, ISortAble
     {
+        public float lineWight = 0.1f;
+        public Material lineMaterial;
         [System.Serializable]
         public class PointGroup
         {
@@ -17,38 +19,19 @@ namespace WorldActionSystem
         }
         public List<PointGroup> connectGroup;
         private List<Collider> nodes = new List<Collider>();
-        private LineRenderer lineRender;
+        private Dictionary<int, LineRenderer> lineRenders = new Dictionary<int, LineRenderer>();
         private Dictionary<int, Vector3[]> positionDic = new Dictionary<int, Vector3[]>();
-        protected override void Start(){
+        protected override void Start()
+        {
             base.Start();
             RegistNodes();
-            lineRender = GetComponent<LineRenderer>();
-        }
-
-        public override void StartExecute()
-        {
-            base.StartExecute();
-            //if (forceAuto)
-            //{
-            //    foreach (var item in connectGroup)
-            //    {
-            //        var id1 = item.p1;
-            //        var id2 = item.p2;
-            //        Vector3[] positions = new Vector3[2];
-            //        positions[0] = nodes[id1].transform.position;
-            //        positions[1] = nodes[id2].transform.position;
-            //        if (id1 > id2) Array.Reverse(positions);
-            //        positionDic[1 << id1 | 1 << id2] = positions;
-            //    }
-            //    RefeshState();
-            //}
         }
 
         public override void UnDoExecute()
         {
             base.UnDoExecute();
             positionDic.Clear();
-            RefeshState();
+            ResetLinRenders();
         }
         private void RegistNodes()
         {
@@ -64,15 +47,15 @@ namespace WorldActionSystem
         }
         public bool TryConnectNode(Collider collider1, Collider collider2, Vector3[] positions)
         {
-            if(nodes.Contains(collider1) && nodes.Contains(collider2))
+            if (nodes.Contains(collider1) && nodes.Contains(collider2))
             {
                 var id1 = nodes.IndexOf(collider1);
                 var id2 = nodes.IndexOf(collider2);
-                if (CanConnect(Mathf.Min(id1,id2), Mathf.Max(id1, id2)))
+                if (CanConnect(Mathf.Min(id1, id2), Mathf.Max(id1, id2)))
                 {
-                    if (id1 > id2) Array.Reverse(positions);
-                    positionDic[1 << id1 | 1 << id2] = positions;
-                    RefeshState();
+                    var id = 1 << id1 | 1 << id2;
+                    positionDic[id] = positions;
+                    RefeshState(id);
                     OnOneNodeConnected();
                     return true;
                 }
@@ -88,7 +71,8 @@ namespace WorldActionSystem
                 var key = 1 << item.p1 | 1 << item.p2;
                 allConnected &= positionDic.ContainsKey(key);
             }
-            if (allConnected){
+            if (allConnected)
+            {
                 EndExecute();
             }
         }
@@ -101,38 +85,72 @@ namespace WorldActionSystem
                 var id2 = nodes.IndexOf(collider2);
                 var id = 1 << id1 | 1 << id2;
                 if (positionDic.ContainsKey(id)) positionDic.Remove(id);
-                RefeshState();
+                RefeshState(id);
                 return true;
             }
             else
             {
                 return false;
             }
-          
+
         }
-        private void RefeshState()
+        private void RefeshState(int id)
         {
-            var positionList = new List<Vector3>();
-            foreach (var item in positionDic)
-            {
-                foreach (var pos in item.Value)
-                {
-                    positionList.Add(pos);
-                }
-            }
+            if (!positionDic.ContainsKey(id)) return;
+
+            var positionList = positionDic[id];
+
+            var lineRender = GetLineRender(id);
 #if UNITY_5_6_OR_NEWER
             lineRender.positionCount = positionList.Count;
 #else
-            lineRender.SetVertexCount(positionList.Count);
+            lineRender.SetVertexCount(positionList.Length);
 #endif
-            lineRender.SetPositions(positionList.ToArray());
+            lineRender.SetPositions(positionList);
         }
-        private bool CanConnect(int min,int max)
+        private bool CanConnect(int min, int max)
         {
-            return connectGroup.Find(x => {
+            return connectGroup.Find(x =>
+            {
                 return Mathf.Min(x.p2, x.p1) == min && Mathf.Max(x.p2, x.p1) == max;
             }) != null;
         }
+        private LineRenderer GetLineRender(int index)
+        {
+            if (lineRenders.ContainsKey(index))
+            {
+                return lineRenders[index];
+            }
+            else
+            {
+                var obj = new GameObject(index.ToString());
+                obj.transform.SetParent(transform);
+                var lineRender = obj.AddComponent<LineRenderer>();
+                lineRender.material = lineMaterial;
+#if UNITY_5_6_OR_NEWER
+                 lineRender.startWidth = lineWight;
+                 lineRender.endWidth = lineWight;
+                 lineRender.positionCount = 1;
+#else
+                lineRender.SetWidth(lineWight, lineWight);
+                lineRender.SetVertexCount(1);
+#endif
+                lineRenders.Add(index, lineRender);
+                return lineRender;
+            }
 
+
+        }
+        private void ResetLinRenders()
+        {
+            foreach (var lineRender in lineRenders)
+            {
+#if UNITY_5_6_OR_NEWER
+                 lineRender.Value..positionCount = 1;
+#else
+                lineRender.Value.SetVertexCount(1);
+#endif
+            }
+        }
     }
 }
