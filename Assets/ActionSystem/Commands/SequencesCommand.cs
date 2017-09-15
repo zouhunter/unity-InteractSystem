@@ -12,10 +12,10 @@ namespace WorldActionSystem
     {
         private int index;
         public string StepName { get; private set; }
-        private List<IActionCommand> commandList;
+        private IList<IActionCommand> commandList;
         private bool forceAuto;
 
-        public SequencesCommand(string stepName, List<IActionCommand> commandList)
+        public SequencesCommand(string stepName, IList<IActionCommand> commandList)
         {
             StepName = stepName;
             this.commandList = commandList;
@@ -50,12 +50,13 @@ namespace WorldActionSystem
         internal bool ContinueExecute()
         {
             index++;
-            Debug.Log(index);
             if (index < commandList.Count)
             {
+                Debug.Log("Execute:" + index + "->continue StartExecute");
                 StartExecute(forceAuto);
                 return true;
             }
+            Debug.Log("Execute:" + index + "->EndExecute");
             return false;
         }
     }

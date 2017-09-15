@@ -52,7 +52,6 @@ namespace WorldActionSystem
             {
                 foreach (var item in dic)
                 {
-                    var stepName = item.Key;
                     foreach (var trigger in item.Value)
                     {
                         trigger.onStepComplete = OnOneCommandComplete;
@@ -114,7 +113,17 @@ namespace WorldActionSystem
                     else
                     {
                         item.Value[0].ElementGroup = () => { return elementGroup; };
-                        commandList.AddRange(item.Value[0].CreateCommands());
+                        var cmds = item.Value[0].CreateCommands();
+                        if (cmds.Count > 1)
+                        {
+                            var cmd = new SequencesCommand(stepName, cmds);
+                            seqDic.Add(stepName, cmd);
+                            commandList.Add(cmd);
+                        }
+                        else if(cmds.Count == 1)
+                        {
+                            commandList.AddRange(cmds);
+                        }
                     }
                    
                 }

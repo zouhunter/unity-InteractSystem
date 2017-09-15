@@ -29,8 +29,6 @@ namespace WorldActionSystem
                 item.StepName = _stepName;
             }
         }
-        private int currentRepeat;
-
         protected void OnComplete()
         {
             if (onStepComplete != null) onStepComplete.Invoke(StepName);
