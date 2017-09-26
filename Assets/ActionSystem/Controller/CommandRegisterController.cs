@@ -97,7 +97,7 @@ namespace WorldActionSystem
                 foreach (var item in actionDic)
                 {
                     var stepName = item.Key;
-                    if (item.Value.Count > 1)
+                    if (item.Value.Count > 1)//多命令合并为一个命令
                     {
                         item.Value.Sort();
                         var list = new List<IActionCommand>();
@@ -110,7 +110,7 @@ namespace WorldActionSystem
                         seqDic.Add(stepName, cmd);
                         commandList.Add(cmd);
                     }
-                    else
+                    else//单命令 选择性合并为一个命令
                     {
                         item.Value[0].ElementController = () => { return elementController; };
                         var cmds = item.Value[0].CreateCommands();

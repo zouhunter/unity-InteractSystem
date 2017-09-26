@@ -14,12 +14,11 @@ namespace WorldActionSystem
         public string StepName { get { return _stepName; } }
         [Range(0,100)]
         public int executeIndex;
-        [Range(1,100)]
-        public int repeat =1;
         public abstract IList<IActionCommand> CreateCommands();
         public Func<ElementController> ElementController { get; set; }
         public StepComplete onStepComplete { get; set; }
         public UserError onUserErr { get; set; }
+
         protected ActionObj[] actionObjs;
 
         protected virtual void Awake()

@@ -9,17 +9,13 @@ namespace WorldActionSystem
 
     public class AnimTrigger : ActionTrigger
     {
-
         public override IList<IActionCommand> CreateCommands()
         {
             foreach (AnimObj anim in actionObjs){
                 anim.RegistAutoEndPlayEvent(OnEndPlayAnim);
             }
             var cmds = new List<IActionCommand>();
-            for (int i = 0; i < repeat; i++)
-            {
-                cmds.Add(new AnimCommand(StepName,Array.ConvertAll<ActionObj,AnimObj>(actionObjs,x=>(AnimObj)x)));
-            }
+            cmds.Add(new AnimCommand(StepName, Array.ConvertAll<ActionObj, AnimObj>(actionObjs, x => (AnimObj)x)));
             return cmds;
         }
 

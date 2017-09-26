@@ -11,7 +11,7 @@ namespace WorldActionSystem
         private RotateTrigger rotParent;
         public string StepName { get; private set; }
 
-        public RotateCommand(string stepName,int count, RotateTrigger rotParent) 
+        public RotateCommand(string stepName, RotateTrigger rotParent) 
         {
             this.StepName = stepName;
             this.rotParent = rotParent;

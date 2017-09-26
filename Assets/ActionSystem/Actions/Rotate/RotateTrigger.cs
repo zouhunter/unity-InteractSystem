@@ -29,10 +29,8 @@ namespace WorldActionSystem
         public override IList<IActionCommand> CreateCommands()
         {
             var cmds = new List<IActionCommand>();
-            for (int i = 0; i < repeat; i++)
-            {
-                cmds.Add(new RotateCommand(StepName, repeat, this));
-            }
+            cmds.Add(new RotateCommand(StepName, this));
+
             return cmds;
         }
 

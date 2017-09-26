@@ -21,10 +21,7 @@ namespace WorldActionSystem
         public override IList<IActionCommand> CreateCommands()
         {
             var cmds = new List<IActionCommand>();
-            for (int i = 0; i < repeat; i++)
-            {
-                cmds.Add(new InstallCommand(StepName, CreateInstallCtrl));
-            }
+            cmds.Add(new InstallCommand(StepName, CreateInstallCtrl));
             return cmds;
         }
         private InstallCtrl CreateInstallCtrl()

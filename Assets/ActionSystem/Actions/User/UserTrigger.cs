@@ -12,10 +12,7 @@ namespace WorldActionSystem
         public override IList<IActionCommand> CreateCommands()
         {
             var cmds = new List<IActionCommand>();
-            for (int i = 0; i < repeat; i++)
-            {
-                cmds.Add(new QueueIDCommand(StepName, Array.ConvertAll<ActionObj, QueueIDObj>(actionObjs, x => x as QueueIDObj), OnStepComplete));
-            }
+            cmds.Add(new QueueIDCommand(StepName, Array.ConvertAll<ActionObj, QueueIDObj>(actionObjs, x => x as QueueIDObj), OnStepComplete));
             return cmds;
         }
         private void OnStepComplete()

@@ -20,10 +20,7 @@ namespace WorldActionSystem
         public override IList<IActionCommand> CreateCommands()
         {
             var cmds = new List<IActionCommand>();
-            for (int i = 0; i < repeat; i++)
-            {
-                cmds.Add(new ConnectCommand(StepName,objs, OnComplete, GetCtrl));
-            }
+            cmds.Add(new ConnectCommand(StepName, objs, OnComplete, GetCtrl));
             return cmds;
         }
 
