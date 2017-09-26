@@ -7,28 +7,27 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class CommandRegisterController: IActionEvents
+    public class CommandRegisterController : IActionEvents
     {
         public StepComplete onStepComplete { get; set; }
         public UserError onUserErr { get; set; }
         public RegistCmds onRegisted;
         private List<IActionCommand> commandList = new List<IActionCommand>();
-        private bool allInstallElementRegisted;
         private bool allActionRegisted;
-        private bool allRegisted { get { return allInstallElementRegisted && allActionRegisted; } }
-        private Dictionary<string,List<ActionTrigger>> actionDic;//触发器
-        private ElementGroup elementGroup;//元素名、列表
-        private string currentStep;
+        private bool allRegisted { get { return allActionRegisted; } }
+        private Dictionary<string, List<ActionTrigger>> actionDic;//触发器
+        private ElementController elementController;//元素名、列表
 
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
 
-        public void RegistInstallElement(ElementGroup elements)
+        public CommandRegisterController()
         {
-            elementGroup = elements;
-            allInstallElementRegisted = true;
-            TryCreateCommandList();
+            this.elementController = new WorldActionSystem.ElementController();
         }
-
+        public void RegistElement(InstallItem installItem)
+        {
+            elementController.RegistElement(installItem);
+        }
         public void RegistActionTriggers(ActionTriggers actionTriggers)
         {
             if (actionTriggers == null)
@@ -45,7 +44,7 @@ namespace WorldActionSystem
         /// 如果动画被注册为命令，则替换
         /// </summary>
         /// <param name="dic"></param>
-        private void OnRegistTriggers(Dictionary<string,List<ActionTrigger>> dic)
+        private void OnRegistTriggers(Dictionary<string, List<ActionTrigger>> dic)
         {
             actionDic = dic;
             if (actionDic != null)
@@ -70,13 +69,13 @@ namespace WorldActionSystem
             if (allRegisted)
             {
                 RegistTriggerCommand();
-                if(onRegisted != null) onRegisted(commandList);
+                if (onRegisted != null) onRegisted(commandList);
             }
         }
 
         private void OnOneCommandComplete(string stepName)
         {
-            if(seqDic.ContainsKey(stepName))
+            if (seqDic.ContainsKey(stepName))
             {
                 var cmd = seqDic[stepName];
                 if (!cmd.ContinueExecute())
@@ -102,17 +101,18 @@ namespace WorldActionSystem
                     {
                         item.Value.Sort();
                         var list = new List<IActionCommand>();
-                        for (int i = 0; i < item.Value.Count; i++){
-                            item.Value[i].ElementGroup = () => { return elementGroup; };
+                        for (int i = 0; i < item.Value.Count; i++)
+                        {
+                            item.Value[i].ElementController = () => { return elementController; };
                             list.AddRange(item.Value[i].CreateCommands());
                         }
-                        var cmd = new SequencesCommand(stepName,list);
-                        seqDic.Add(stepName, cmd) ;
+                        var cmd = new SequencesCommand(stepName, list);
+                        seqDic.Add(stepName, cmd);
                         commandList.Add(cmd);
                     }
                     else
                     {
-                        item.Value[0].ElementGroup = () => { return elementGroup; };
+                        item.Value[0].ElementController = () => { return elementController; };
                         var cmds = item.Value[0].CreateCommands();
                         if (cmds.Count > 1)
                         {
@@ -120,12 +120,12 @@ namespace WorldActionSystem
                             seqDic.Add(stepName, cmd);
                             commandList.Add(cmd);
                         }
-                        else if(cmds.Count == 1)
+                        else if (cmds.Count == 1)
                         {
                             commandList.AddRange(cmds);
                         }
                     }
-                   
+
                 }
             }
         }

@@ -2,7 +2,7 @@
 //{
 //    public interface ICommandRegister
 //    {
-//        void RegistInstallElement(ElementGroup elements);
+//        void RegistInstallElement(ElementController elements);
 //        void RegistActionTriggers(ActionTriggers actionTriggers)
 //    }
 //}

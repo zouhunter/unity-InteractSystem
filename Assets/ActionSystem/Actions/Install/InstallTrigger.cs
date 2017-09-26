@@ -32,7 +32,7 @@ namespace WorldActionSystem
             installCtrl = new InstallCtrl(this,distence,highLight,InstallObjs);
             installCtrl.onComplete = OnStepComplete;
             installCtrl.onInstallError = base.OnUserError;
-            installCtrl.elementGroup = ElementGroup();
+            installCtrl.ElementController = ElementController();
             return installCtrl;
         }
 

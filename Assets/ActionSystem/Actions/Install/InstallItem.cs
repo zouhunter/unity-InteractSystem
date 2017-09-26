@@ -24,6 +24,7 @@ namespace WorldActionSystem
 
         public UnityAction onInstallOkEvent;
         public UnityAction onUnInstallOkEvent;
+
         [SerializeField]
         private Renderer m_render;
 #if !NoFunction
@@ -37,10 +38,12 @@ namespace WorldActionSystem
 #if !NoFunction
         void Start()
         {
+            ActionSystem.Instance.RegistElement(this);
+            if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
+
             gameObject.layer = Setting.installObjLayer;
             startPos = transform.position;
             startRotation = transform.eulerAngles;
-            if (m_render == null) m_render = GetComponentInChildren<Renderer>();
             gameObject.SetActive(startActive);
         }
         private void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)

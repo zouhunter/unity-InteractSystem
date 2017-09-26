@@ -6,32 +6,28 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ElementGroup : MonoBehaviour
+    public class ElementController
     {
-        private InstallItem[] _installItems;
         public event UnityAction onInstall;
         Dictionary<string, List<InstallItem>> objectList = new Dictionary<string, List<InstallItem>>();
-        public InstallItem[] InstallItems { get { return _installItems; } }
         private InstallItem pickedUpObj;
 
-        void Start()
+        /// <summary>
+        /// 外部添加Element
+        /// </summary>
+        public void RegistElement(InstallItem item)
         {
-            _installItems = GetComponentsInChildren<InstallItem>(true);
-
-            foreach (var item in _installItems)
+            var obj = item;
+            if (objectList.ContainsKey(obj.name))
             {
-                var obj = item;
-                if (objectList.ContainsKey(obj.name))
-                {
-                    objectList[obj.name].Add(obj);
-                }
-                else
-                {
-                    objectList[obj.name] = new List<InstallItem>() { obj };
-                }
-
-                obj.onInstallOkEvent = OnInstallOK;
+                objectList[obj.name].Add(obj);
             }
+            else
+            {
+                objectList[obj.name] = new List<InstallItem>() { obj };
+            }
+
+            obj.onInstallOkEvent = OnInstallOK;
         }
 
         /// <summary>

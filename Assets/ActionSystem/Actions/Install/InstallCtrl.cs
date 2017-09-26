@@ -13,7 +13,7 @@ namespace WorldActionSystem
         public UnityAction onComplete;
 
         private MonoBehaviour trigger;
-        public ElementGroup elementGroup { get; set; }
+        public ElementController ElementController { get; set; }
         public bool Active { get; private set; }
         IHighLightItems highLight;
         private InstallItem pickedUpObj;
@@ -40,7 +40,7 @@ namespace WorldActionSystem
         #region 鼠标操作事件
         IEnumerator Update()
         {
-            elementGroup.onInstall += OnEndInstall;
+            ElementController.onInstall += OnEndInstall;
 
             while (true)
             {
@@ -78,7 +78,7 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, 100, (1 << Setting.installObjLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<InstallItem>();
-                if (pickedUpObj != null && elementGroup.PickUpObject(pickedUpObj))
+                if (pickedUpObj != null && ElementController.PickUpObject(pickedUpObj))
                 {
                     pickedUp = true;
 
@@ -100,7 +100,7 @@ namespace WorldActionSystem
             List<InstallObj> poss = GetNotInstalledPosList();
             for (int i = 0; i < poss.Count; i++)
             {
-                if (!HaveInstallObjInstalled(poss[i]) && IsInstallStep(poss[i]) && elementGroup.CanInstallToPos(poss[i]))
+                if (!HaveInstallObjInstalled(poss[i]) && IsInstallStep(poss[i]) && ElementController.CanInstallToPos(poss[i]))
                 {
                     canInstall = true;
                 }
@@ -136,7 +136,7 @@ namespace WorldActionSystem
                             installAble = false;
                             resonwhy = "已经安装";
                         }
-                        else if (!elementGroup.CanInstallToPos(installPos))
+                        else if (!ElementController.CanInstallToPos(installPos))
                         {
                             installAble = false;
                             resonwhy = "零件不匹配";
@@ -174,12 +174,12 @@ namespace WorldActionSystem
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (installAble)
             {
-                elementGroup.InstallPickedUpObject(installPos);
+                ElementController.InstallPickedUpObject(installPos);
             }
             else
             {
                 OnInstallErr(resonwhy);
-                elementGroup.PickDownPickedUpObject();
+                ElementController.PickDownPickedUpObject();
             }
 
             pickedUp = false;
@@ -212,7 +212,7 @@ namespace WorldActionSystem
             if (AllElementInstalled())
             {
                 List<InstallObj> posList = GetInstalledPosList();
-                elementGroup.SetCompleteNotify(posList);
+                ElementController.SetCompleteNotify(posList);
                 if(onComplete!= null) onComplete();
             }
         }
@@ -224,7 +224,7 @@ namespace WorldActionSystem
         public void EndInstall()
         {
             List<InstallObj> posList = GetNotInstalledPosList();
-            elementGroup.QuickInstallObjListObjects(posList);
+            ElementController.QuickInstallObjListObjects(posList);
             SetSepComplete();
         }
 
@@ -232,7 +232,7 @@ namespace WorldActionSystem
         {
             SetObjsActive();
             List<InstallObj> posList = GetNotInstalledPosList();
-            elementGroup.SetStartNotify(posList);
+            ElementController.SetStartNotify(posList);
             if (coroutine == null) coroutine = trigger.StartCoroutine(Update());
         }
 
@@ -252,7 +252,7 @@ namespace WorldActionSystem
                 posList = GetNeedAutoInstallObjList();
             }
 
-            if (posList != null) elementGroup.InstallObjListObjects(posList);
+            if (posList != null) ElementController.InstallObjListObjects(posList);
 
             pickedUp = false;
         }
@@ -261,7 +261,7 @@ namespace WorldActionSystem
         {
             SetStapActive();
             List<InstallObj> posList = GetInstalledPosList();
-            elementGroup.UnInstallObjListObjects(posList);
+            ElementController.UnInstallObjListObjects(posList);
             SetSepUnDo();
         }
 
@@ -269,7 +269,7 @@ namespace WorldActionSystem
         {
             SetStapActive();
             List<InstallObj> posList = GetInstalledPosList();
-            elementGroup.QuickUnInstallObjListObjects(posList);
+            ElementController.QuickUnInstallObjListObjects(posList);
             SetSepUnDo();
         }
 
@@ -306,7 +306,7 @@ namespace WorldActionSystem
             if (coroutine != null)
                 trigger.StopCoroutine(coroutine);
             coroutine = null;
-            elementGroup.onInstall -= OnEndInstall;
+            ElementController.onInstall -= OnEndInstall;
         }
         private bool AllElementInstalled()
         {

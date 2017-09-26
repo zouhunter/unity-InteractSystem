@@ -15,9 +15,9 @@ namespace WorldActionSystem
         [Range(0,100)]
         public int executeIndex;
         [Range(1,100)]
-        public int repeat;
+        public int repeat =1;
         public abstract IList<IActionCommand> CreateCommands();
-        public Func<ElementGroup> ElementGroup { get; set; }
+        public Func<ElementController> ElementController { get; set; }
         public StepComplete onStepComplete { get; set; }
         public UserError onUserErr { get; set; }
         protected ActionObj[] actionObjs;

@@ -16,7 +16,7 @@ namespace WorldActionSystem
         {
             base.Start();
             if(render ==null) {
-                render = GetComponent<Renderer>();
+                render = GetComponentInChildren<Renderer>();
             }
             gameObject.layer = Setting.clickItemLayer;
         }

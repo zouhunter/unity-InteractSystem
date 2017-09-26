@@ -7,5 +7,5 @@ namespace WorldActionSystem
     public delegate void StepComplete(string stepName);
     public delegate void UserError(string step, string info);
 
-    public delegate ElementGroup GetElementGroup();
+    public delegate ElementController GetElementController();
 }

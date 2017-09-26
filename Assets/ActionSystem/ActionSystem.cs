@@ -25,7 +25,6 @@ namespace WorldActionSystem
             registController = new WorldActionSystem.CommandRegisterController();
             registController.onUserErr = OnUserError;
             registController.onStepComplete = OnStepComplete;
-            registController.RegistInstallElement(GetComponentInChildren<ElementGroup>());
             registController.RegistActionTriggers(GetComponentInChildren<ActionTriggers>());
             registController.onRegisted = (cmdList) => { activeCommand = cmdList; };
         }
@@ -50,6 +49,7 @@ namespace WorldActionSystem
                 Instance.steps = steps;
             }
         }
+        
         /// <summary>
         /// 打开或关闭绑定脚本
         /// </summary>
@@ -70,6 +70,15 @@ namespace WorldActionSystem
                     Destroy(titem);
                 }
             }
+        }
+
+        /// <summary>
+        /// 外部注册可移动的对象
+        /// </summary>
+        /// <param name="item"></param>
+        public void RegistElement(InstallItem item)
+        {
+            registController.RegistElement(item);
         }
         #endregion
 
