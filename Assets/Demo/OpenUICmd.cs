@@ -8,16 +8,16 @@ using WorldActionSystem;
 
 public class OpenUICmd : QueueIDObj
 {
-    public override void StartExecute()
+    public override void OnStartExecute()
     {
-        base.StartExecute();
+        base.OnStartExecute();
         FindObjectOfType<OpenUICmdResponce>().onComplete = OnReceiveBack;
-        FindObjectOfType<OpenUICmdResponce>().stepName = StepName;
+        //FindObjectOfType<OpenUICmdResponce>().stepName = StepName;
     }
     void OnReceiveBack(object data)
     {
         Debug.Log(data);
         FindObjectOfType<OpenUICmdResponce>().onComplete = null;
-        EndExecute();
+        OnEndExecute();
     }
 }

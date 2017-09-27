@@ -19,9 +19,9 @@ namespace WorldActionSystem
         }
         public UnityAction<int> onEndExecute;
 
-        public override void EndExecute()
+        public override void OnEndExecute()
         {
-            base.EndExecute();
+            base.OnEndExecute();
             if (onEndExecute != null)
             {
                 onEndExecute.Invoke(queueID);

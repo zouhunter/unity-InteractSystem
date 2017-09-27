@@ -14,7 +14,7 @@ namespace WorldActionSystem
         [Range(0.1f, 10f)]
         public float speed = 1;
         private Coroutine delyPlay;
-        private UnityAction<string> onAutoPlayEnd;
+        private UnityAction onAutoPlayEnd;
         protected override void Start()
         {
             base.Start();
@@ -29,7 +29,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void RegistAutoEndPlayEvent(UnityAction<string> onAutoEndPlay)
+        public void RegistAutoEndPlayEvent(UnityAction onAutoEndPlay)
         {
             onAutoPlayEnd = onAutoEndPlay;
         }
@@ -46,9 +46,9 @@ namespace WorldActionSystem
         /// <summary>
         /// 播放动画
         /// </summary>
-        public override void StartExecute()
+        public override void OnStartExecute()
         {
-            base.StartExecute();
+            base.OnStartExecute();
             delyPlay = StartCoroutine(DelyPlay());
         }
 
@@ -61,19 +61,19 @@ namespace WorldActionSystem
         {
             _complete = true;
             gameObject.SetActive(endActive);
-            if (onAutoPlayEnd != null) onAutoPlayEnd.Invoke(StepName);
+            if (onAutoPlayEnd != null) onAutoPlayEnd.Invoke();
         }
 
-        public override void EndExecute()
+        public override void OnEndExecute()
         {
-            base.EndExecute();
+            base.OnEndExecute();
             if (delyPlay != null) StopCoroutine(delyPlay);
             if (animPlayer != null) animPlayer.EndPlay();
         }
 
-        public override void UnDoExecute()
+        public override void OnUnDoExecute()
         {
-            base.UnDoExecute();
+            base.OnUnDoExecute();
             if (delyPlay != null) StopCoroutine(delyPlay);
             if (animPlayer != null) animPlayer.UnDoPlay();
         }

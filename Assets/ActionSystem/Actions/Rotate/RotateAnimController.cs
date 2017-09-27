@@ -7,19 +7,22 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class RotateAnimController
+    public class RotateAnimController:ICoroutineCtrl
     {
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
         private float distence = 10;
-
-        public UnityAction<RotObj> onHover;
-        public UnityAction<RotObj> OnRotateOk;
-        public UnityAction<RotObj> onStartRot;
-        public UnityAction<RotObj> onEndRot;
         private Camera objCamera;
-        public IEnumerator StartRotateAnimContrl()
+
+        public RotateAnimController(ActionCommand trigger)
+        {
+            InitCommand(trigger);
+        }
+
+        private ActionCommand trigger { get; set; }
+
+        public IEnumerator Update()
         {
             while (true)
             {
@@ -34,6 +37,7 @@ namespace WorldActionSystem
                 }
             }
         }
+
         public void SetViewCamera(Camera objCamera)
         {
             this.objCamera = objCamera;
@@ -47,7 +51,6 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, distence, (1 << Setting.rotateItemLayer)))
             {
                 selectedObj = hit.collider.GetComponent<RotObj>();
-               if(onHover != null) onHover.Invoke(selectedObj);
             }
 
             return selectedObj != null;
@@ -58,7 +61,6 @@ namespace WorldActionSystem
             Vector3 originalTargetPosition = selectedObj.transform.position;
             Vector3 axis = selectedObj.Direction;
             Vector3 previousMousePosition = Vector3.zero;
-            if (onStartRot != null) onStartRot.Invoke(selectedObj);
             while (!Input.GetMouseButtonUp(0) && selectedObj.Started)
             {
                 ray = objCamera.ScreenPointToRay(Input.mousePosition);
@@ -81,17 +83,37 @@ namespace WorldActionSystem
 
             if (selectedObj.TryMarchRot())
             {
-                if (OnRotateOk != null) OnRotateOk.Invoke(selectedObj);
+                //if (!SetNextRotateAble())
+                //{
+                //    trigger.Complete();
+                //}
                 Debug.Log("Match");
             }
-
-            if (onEndRot != null) onEndRot.Invoke(selectedObj);
         }
         private bool IsInCercle(Vector3 pos)
         {
             return Vector3.Distance(selectedObj.transform.position, pos) < selectedObj.triggerRadius;
         }
 
+        public void InitCommand(ActionCommand trigger)
+        {
+            this.trigger = trigger;
+        }
+
+        public void StartExecute(bool forceAuto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EndExecute()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnDoExecute()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

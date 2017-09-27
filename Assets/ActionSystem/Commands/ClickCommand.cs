@@ -7,38 +7,18 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class ClickCommand : IActionCommand
+    [Serializable]
+    public class ClickCommand : CoroutionCommand
     {
-        private ClickTrigger trigger;
-        public string StepName { get; private set; }
+        [SerializeField]
+        private Camera viewCamera;
+        [SerializeField]
+        private bool highLight;
 
-        public ClickCommand(string stepName,ClickTrigger trigger)
+        protected override ICoroutineCtrl CreateCtrl()
         {
-            this.StepName = stepName;
-            this.trigger = trigger;
-        }
-        public  void StartExecute(bool forceAuto)
-        {
-            trigger.CreateStartController();
-            if (forceAuto)
-            {
-                trigger.SetAllButtonClicked(StepName, true);
-            }
-            else
-            {
-                trigger.SetButtonClickAbleQueue(StepName);
-            }
-        }
-        public  void EndExecute()
-        {
-            trigger.StopStartController();
-            trigger.SetAllButtonClicked(StepName,false);
-        }
-        public  void UnDoExecute()
-        {
-            trigger.StopStartController();
-            trigger.SetAllButtonUnClickAble(StepName);
-            trigger.SetButtonNotClicked(StepName);
+            ClickObj[] clickObjs = Array.ConvertAll<ActionObj, ClickObj>(trigger.ActionObjs, x => x as ClickObj);
+            return new WorldActionSystem.ClickContrller(trigger, viewCamera ?? Camera.main, highLight, clickObjs);
         }
     }
 

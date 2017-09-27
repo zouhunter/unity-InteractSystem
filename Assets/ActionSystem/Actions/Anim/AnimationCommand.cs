@@ -6,39 +6,36 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
-    public class AnimTrigger : ActionTrigger
+    public class AnimationCommand : ActionCommand
     {
-        public override IList<IActionCommand> CreateCommands()
+        protected override void Awake()
         {
-            foreach (AnimObj anim in actionObjs){
+            base.Awake();
+            foreach (AnimObj anim in  ActionObjs){
                 anim.RegistAutoEndPlayEvent(OnEndPlayAnim);
             }
-            var cmds = new List<IActionCommand>();
-            cmds.Add(new AnimCommand(StepName, Array.ConvertAll<ActionObj, AnimObj>(actionObjs, x => (AnimObj)x)));
-            return cmds;
         }
-
-        private void OnEndPlayAnim(string StepName)
+        private void OnEndPlayAnim()
         {
             if (CurrentStepComplete())
             {
-                OnComplete();
+                Complete();
             }
             else
             {
                 Debug.Log("wait");
             }
         }
-        private bool CurrentStepComplete()
+        protected bool CurrentStepComplete()
         {
             bool complete = true;
-            foreach (AnimObj item in actionObjs)
+            foreach (var item in actionObjs)
             {
                 complete &= item.Complete;
             }
             return complete;
         }
+
     }
 
 }

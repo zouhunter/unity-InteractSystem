@@ -7,39 +7,40 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public abstract class ActionTrigger:MonoBehaviour,IComparable<ActionTrigger>, IActionEvents
+    public class ActionCommand : MonoBehaviour,IActionCommand, IComparable<ActionCommand>
     {
         [SerializeField]
         private string _stepName;
-        public string StepName { get { return _stepName; } }
-        [Range(0,100)]
+        [Range(0, 100)]
         public int executeIndex;
-        public abstract IList<IActionCommand> CreateCommands();
-        public Func<ElementController> ElementController { get; set; }
-        public StepComplete onStepComplete { get; set; }
-        public UserError onUserErr { get; set; }
+        public string StepName { get { return _stepName; } }
+        private UserError userErr { get; set; }
+        private StepComplete stepComplete { get; set; }
+        private Func<ElementController> elementCtrlGet { get; set; }
+        private ElementController elementCtrl;
+        public ActionObj[] ActionObjs { get { return actionObjs; } }
+        public ActionSystem actionSystem { get; set; }
 
         protected ActionObj[] actionObjs;
-
+        [SerializeField]
+        protected StepEvent onBeforeActive;
+        [SerializeField]
+        protected StepEvent onBeforeUnDo;
+        [SerializeField]
+        protected StepEvent onBeforePlayEnd;
         protected virtual void Awake()
         {
             actionObjs = GetComponentsInChildren<ActionObj>(true);
-            foreach (var item in actionObjs){
-                item.StepName = _stepName;
-            }
-        }
-        
-        protected void OnComplete()
-        {
-            if (onStepComplete != null) onStepComplete.Invoke(StepName);
         }
 
-        protected void OnUserError(string errorInfo)
+        public void RegistAsOperate(UserError userErr, StepComplete stepComplete, Func<ElementController> elementCtrlGet)
         {
-            if (onUserErr != null) onUserErr(StepName, errorInfo);
+            this.userErr = userErr;
+            this.stepComplete = stepComplete;
+            this.elementCtrlGet = elementCtrlGet;
+                
         }
-
-        public int CompareTo(ActionTrigger other)
+        public int CompareTo(ActionCommand other)
         {
             if (other.executeIndex > executeIndex)
             {
@@ -52,6 +53,55 @@ namespace WorldActionSystem
             else
             {
                 return 1;
+            }
+        }
+
+        internal ElementController ElementCtrl
+        {
+            get
+            {
+                if(elementCtrl == null)
+                {
+                    elementCtrl = elementCtrlGet();
+                }
+                return elementCtrl;
+            }
+        }
+
+        internal void UserError(string err)
+        {
+            userErr.Invoke(StepName,err);
+        }
+
+        internal void Complete()
+        {
+            stepComplete.Invoke(StepName);
+        }
+
+        public virtual void StartExecute(bool forceAuto)
+        {
+            onBeforeActive.Invoke(StepName);
+            foreach (var item in ActionObjs)
+            {
+                item.OnStartExecute();
+            }
+        }
+
+        public void EndExecute()
+        {
+            onBeforePlayEnd.Invoke(StepName);
+            foreach (var item in ActionObjs)
+            {
+                item.OnEndExecute();
+            }
+        }
+
+        public void UnDoExecute()
+        {
+            onBeforeUnDo.Invoke(StepName);
+            foreach (var item in ActionObjs)
+            {
+                item.OnUnDoExecute();
             }
         }
     }

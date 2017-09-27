@@ -14,7 +14,10 @@ namespace WorldActionSystem
         public string StepName { get; private set; }
         private IList<IActionCommand> commandList;
         private bool forceAuto;
+        public void InitCommand(string stepName, ActionCommand trigger)
+        {
 
+        }
         public SequencesCommand(string stepName, IList<IActionCommand> commandList)
         {
             StepName = stepName;
@@ -59,6 +62,8 @@ namespace WorldActionSystem
             Debug.Log("Execute:" + index + "->EndExecute");
             return false;
         }
+
+       
     }
 
 }

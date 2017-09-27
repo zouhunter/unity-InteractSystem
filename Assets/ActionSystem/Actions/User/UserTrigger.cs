@@ -7,18 +7,16 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class UserTrigger : ActionTrigger
+    public class UserTrigger : ActionCommand
     {
-        public override IList<IActionCommand> CreateCommands()
-        {
-            var cmds = new List<IActionCommand>();
-            cmds.Add(new QueueIDCommand(StepName, Array.ConvertAll<ActionObj, QueueIDObj>(actionObjs, x => x as QueueIDObj), OnStepComplete));
-            return cmds;
-        }
-        private void OnStepComplete()
-        {
-            OnComplete();
-        }
+        //public override IActionCommand Command
+        //{
+        //    get
+        //    {
+        //        return cmd;
+        //    }
+        //}
+        //public QueueIDCommand cmd;
     }
 
 }

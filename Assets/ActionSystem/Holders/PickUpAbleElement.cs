@@ -38,7 +38,7 @@ namespace WorldActionSystem
 #if !NoFunction
         void Start()
         {
-            ActionSystem.Instance.CommandCtrl.RegistElement(this);
+            ActionSystem.Instance.RegistElement(this);
             if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
 
             gameObject.layer = Setting.pickUpElementLayer;

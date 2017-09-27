@@ -6,36 +6,15 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class RotateCommand : IActionCommand
+    [Serializable]
+    public class RotateCommand : QueueIDCommand
     {
-        private RotateTrigger rotParent;
-        public string StepName { get; private set; }
+        public bool highlight;
 
-        public RotateCommand(string stepName, RotateTrigger rotParent) 
+        protected override ICoroutineCtrl CreateCtrl()
         {
-            this.StepName = stepName;
-            this.rotParent = rotParent;
-        }
-        public  void StartExecute(bool forceAuto)
-        {
-            rotParent.CrateRotAnimCtrl();
-            rotParent.ActiveStep(StepName);
-            if (forceAuto) {
-                rotParent.SetRotateComplete(true);
-            }
-            else{
-                rotParent.SetRotateQueue(StepName);
-            }
-        }
-        public  void EndExecute()
-        {
-            rotParent.CompleteRotateAnimCtrl();
-            rotParent.SetRotateComplete();
-        }
-        public  void UnDoExecute()
-        {
-            rotParent.CompleteRotateAnimCtrl();
-            rotParent.SetStepUnDo(StepName);
+            var rotAnimCtrl = new WorldActionSystem.RotateAnimController(trigger);
+            return rotAnimCtrl;
         }
     }
 

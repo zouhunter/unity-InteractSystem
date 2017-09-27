@@ -12,38 +12,28 @@ namespace WorldActionSystem
     {
         public bool startActive;
         public bool endActive;
-        [SerializeField]
-        protected StepEvent onBeforeActive;
-        [SerializeField]
-        protected StepEvent onBeforeUnDo;
-        [SerializeField]
-        protected StepEvent onBeforePlayEnd;
         protected bool _complete;
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
-        public string StepName { get; set; }
         protected virtual void Start()
         {
             gameObject.SetActive(startActive);
         }
-        public virtual void StartExecute()
+        public virtual void OnStartExecute()
         {
-            onBeforeActive.Invoke(StepName);
             _started = true;
             _complete = false;
             gameObject.SetActive(true);
         }
-        public virtual void EndExecute()
+        public virtual void OnEndExecute()
         {
-            onBeforePlayEnd.Invoke(StepName);
             _started = true;
             _complete = true;
             gameObject.SetActive(endActive);
         }
-        public virtual void UnDoExecute()
+        public virtual void OnUnDoExecute()
         {
-            onBeforeUnDo.Invoke(StepName);
             _started = false;
             _complete = false;
             gameObject.SetActive(startActive);

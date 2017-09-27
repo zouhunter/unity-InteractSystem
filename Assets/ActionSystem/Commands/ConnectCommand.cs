@@ -7,34 +7,20 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
+    [Serializable]
     public class ConnectCommand : QueueIDCommand
     {
-        private ConnectCtrl ctrl;
-        private Func<ConnectCtrl> onCreateCtrl;
-        public ConnectCommand(string stepName,ConnectObj[] objs,UnityAction onStepComplete, Func<ConnectCtrl> onCreateCtrl):base(stepName, objs, onStepComplete)
+        public float lineWight = 0.1f;
+        public Material lineMaterial;
+        public float pointDistence;
+        public Camera _viewCamera;
+        protected override ICoroutineCtrl CreateCtrl()
         {
-            this.onCreateCtrl = onCreateCtrl;
+            var objs = Array.ConvertAll<ActionObj, ConnectObj>(trigger.ActionObjs, x => x as ConnectObj);
+            var lineRender = trigger.GetComponent<LineRenderer>();
+            var ctrl = new ConnectCtrl(trigger, lineRender, objs, lineMaterial, lineWight, pointDistence, _viewCamera ?? Camera.main);
+            return ctrl;
         }
-
-        public override void StartExecute(bool forceAuto)
-        {
-            base.StartExecute(forceAuto);
-            if (ctrl == null) ctrl = onCreateCtrl();
-            ctrl.StartConnecter();
-        }
-
-        public override void EndExecute()
-        {
-            base.EndExecute();
-            if (ctrl != null) 
-            ctrl.StopConnecter();
-        }
-
-        public override void UnDoExecute()
-        {
-            base.UnDoExecute();
-            if (ctrl != null)
-                ctrl.UnDoConnectItems();
-        }
+      
     }
 }

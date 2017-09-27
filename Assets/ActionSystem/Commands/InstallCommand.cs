@@ -6,40 +6,17 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
-    public class InstallCommand : IActionCommand
+    [System.Serializable]
+    public class InstallCommand : CoroutionCommand
     {
-        public string StepName { get; private set; }
-        private Func<InstallCtrl> createFunc;
-        private InstallCtrl _installCtrl;
-        private InstallCtrl installCtrl
+        public float distence;
+        public bool hightLight;
+
+        protected override ICoroutineCtrl CreateCtrl()
         {
-            get
-            {
-                if (_installCtrl == null)
-                {
-                    _installCtrl = createFunc.Invoke();
-                }
-                return _installCtrl;
-            }
-        }
-        public InstallCommand(string stepName,Func<InstallCtrl> createFunc)
-        {
-            this.StepName = stepName;
-            this.createFunc = createFunc;
-        }
-        public void StartExecute(bool forceAuto)
-        {
-            installCtrl.SetStapActive();
-            installCtrl.AutoInstallWhenNeed(forceAuto);
-        }
-        public void EndExecute()
-        {
-            installCtrl.EndInstall();
-        }
-        public void UnDoExecute()
-        {
-            installCtrl.QuickUnInstall();
+            var installObjs = Array.ConvertAll<ActionObj, InstallObj>(trigger.ActionObjs, x => x as InstallObj);
+            var coroutineCtrl = new InstallCtrl(trigger, distence, hightLight, installObjs);
+            return coroutineCtrl;
         }
     }
 

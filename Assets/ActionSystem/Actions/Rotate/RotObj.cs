@@ -160,20 +160,20 @@ namespace WorldActionSystem
             }
         }
 
-        public override void StartExecute()
+        public override void OnStartExecute()
         {
-            base.StartExecute();
+            base.OnStartExecute();
             if (_viewCamera) _viewCamera.gameObject.SetActive(true);
             transform.rotation = startRot;
         }
-        public override void EndExecute()
+        public override void OnEndExecute()
         {
-            base.EndExecute();
+            base.OnEndExecute();
             if (_viewCamera) _viewCamera.gameObject.SetActive(false);
         }
-        public override void UnDoExecute()
+        public override void OnUnDoExecute()
         {
-            base.UnDoExecute();
+            base.OnUnDoExecute();
             transform.rotation = startRot;
             currAngle = 0;
             if (_viewCamera) _viewCamera.gameObject.SetActive(false);

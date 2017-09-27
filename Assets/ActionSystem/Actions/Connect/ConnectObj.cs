@@ -27,9 +27,9 @@ namespace WorldActionSystem
             RegistNodes();
         }
 
-        public override void UnDoExecute()
+        public override void OnUnDoExecute()
         {
-            base.UnDoExecute();
+            base.OnUnDoExecute();
             positionDic.Clear();
             ResetLinRenders();
         }
@@ -73,7 +73,7 @@ namespace WorldActionSystem
             }
             if (allConnected)
             {
-                EndExecute();
+                OnEndExecute();
             }
         }
 

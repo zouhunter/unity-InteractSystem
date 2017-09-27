@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public abstract class MutiTimeTrigger : ActionTrigger
+    public abstract class MutiTimeTrigger : ActionCommand
     {
         [Range(1,10)]
         public int repeat;

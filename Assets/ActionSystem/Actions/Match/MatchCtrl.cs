@@ -7,13 +7,8 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class MatchCtrl
+    public class MatchCtrl: ICoroutineCtrl,IRootUse
     {
-        public UnityAction<string> onMatchError;
-        public UnityAction onMatchComplete;
-
-        private MonoBehaviour holder;
-        private ElementController elementCtrl;
         private IHighLightItems highLight;
         private PickUpAbleElement pickedUpObj;
         private bool pickedUp;
@@ -27,22 +22,32 @@ namespace WorldActionSystem
         private string resonwhy;
         private float distence;
         private List<MatchObj> matchObjs;
-        private Coroutine coroutine;
-
-        public MatchCtrl(MonoBehaviour trigger, float distence, bool hightLightOn, ElementController elementCtrl, List<MatchObj> MatchObjs)
+        private ActionCommand trigger;
+        public ActionSystem actionSystem
         {
-            this.holder = trigger;
+            get
+            {
+                return actionSystem;
+            }
+        }
+
+        public MatchCtrl(ActionCommand trigger, float distence, bool hightLightOn)
+        {
             highLight = new ShaderHighLight();
             highLight.SetState(hightLightOn);
             this.distence = distence;
-            this.matchObjs = MatchObjs;
-            this.elementCtrl = elementCtrl;
+            this. matchObjs = new List<MatchObj>(Array.ConvertAll<ActionObj, MatchObj>(trigger.ActionObjs, x => x as MatchObj));
+            InitCommand(trigger);
+        }
+        public void InitCommand(ActionCommand trigger)
+        {
+            this.trigger = trigger;
         }
 
         #region 鼠标操作事件
-        private IEnumerator Update()
+        public IEnumerator Update()
         {
-            elementCtrl.onInstall += OnEndInstallElement;
+            actionSystem.ElementController.onInstall += OnEndInstallElement;
 
             while (true)
             {
@@ -192,7 +197,7 @@ namespace WorldActionSystem
             }
             else
             {
-                OnInstallErr(resonwhy);
+                trigger.UserError(resonwhy);
             }
 
             pickedUp = false;
@@ -216,74 +221,12 @@ namespace WorldActionSystem
         }
         #endregion
 
-        public void StartMatch(bool autoComplete)
-        {
-            List<MatchObj> posList = null;
-            if (autoComplete)
-            {
-                posList = GetNotInstalledPosList();
-            }
-            else
-            {
-                posList = GetNeedAutoMatchObjList();
-            }
-
-            MatchObj pos;
-            for (int i = 0; i < posList.Count; i++)
-            {
-                pos = posList[i];
-                IMatchItem obj = elementCtrl.GetUnInstalledObj(pos.name);
-                pos.Attach(obj);
-                obj.NormalMoveTo(pos.gameObject);
-            }
-
-            pickedUp = false;
-
-            if (!autoComplete)
-            {
-                coroutine = holder.StartCoroutine(Update());
-            }
-
-            foreach (var item in matchObjs)
-            {
-                item.StartExecute();
-            }
-        }
-
-        public void UnDoMatch()
-        {
-            foreach (var item in matchObjs)
-            {
-                var obj = item.Detach();
-                obj.QuickMoveBack();
-                item.UnDoExecute();
-            }
-        }
-
         private void OnEndInstallElement()
         {
             if (AllElementInstalled())
             {
-                if(onMatchComplete != null) onMatchComplete.Invoke();
+                trigger.Complete();//.OnStepComplete(stepName);
             }
-        }
-
-        /// <summary>
-        /// 结束当前步骤安装
-        /// </summary>
-        /// <param name="stepName"></param>
-        public void CompleteMatch()
-        {
-            List<MatchObj> posList = GetNotInstalledPosList();
-            QuickMatchObjListObjects(posList);
-            if (coroutine != null)
-                holder.StopCoroutine(coroutine);
-            coroutine = null;
-            foreach (var item in matchObjs)
-            {
-                item.EndExecute();
-            }
-            elementCtrl.onInstall -= OnEndInstallElement;
         }
 
         /// <summary>
@@ -298,19 +241,14 @@ namespace WorldActionSystem
                 pos = posList[i];
                 if (pos != null)
                 {
-                    PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(pos.name);
+                    PickUpAbleElement obj = actionSystem.ElementController.GetUnInstalledObj(pos.name);
                     obj.QuickMoveTo(pos.gameObject);
                     pos.Attach(obj);
                 }
             }
         }
 
-
-        private void OnInstallErr(string err)
-        {
-            if (onMatchError != null) onMatchError(err);
-        }
-
+        
         private List<MatchObj> GetInstalledPosList()
         {
             var list = matchObjs.FindAll(x => x.Matched);
@@ -338,6 +276,57 @@ namespace WorldActionSystem
             var noMatched = matchObjs.FindAll(x => !x.Matched);
             return noMatched.Count == 0;
         }
+
+        public void StartExecute(bool forceAuto)
+        {
+            List<MatchObj> posList = null;
+            if (forceAuto)
+            {
+                posList = GetNotInstalledPosList();
+            }
+            else
+            {
+                posList = GetNeedAutoMatchObjList();
+            }
+
+            MatchObj pos;
+            for (int i = 0; i < posList.Count; i++)
+            {
+                pos = posList[i];
+                IMatchItem obj = actionSystem.ElementController.GetUnInstalledObj(pos.name);
+                pos.Attach(obj);
+                obj.NormalMoveTo(pos.gameObject);
+            }
+
+            pickedUp = false;
+
+            foreach (var item in matchObjs)
+            {
+                item.OnStartExecute();
+            }
+        }
+
+        public void EndExecute()
+        {
+            List<MatchObj> posList = GetNotInstalledPosList();
+            QuickMatchObjListObjects(posList);
+            foreach (var item in matchObjs){
+                item.OnEndExecute();
+            }
+            actionSystem.ElementController.onInstall -= OnEndInstallElement;
+        }
+
+        public void UnDoExecute()
+        {
+            foreach (var item in matchObjs)
+            {
+                var obj = item.Detach();
+                obj.QuickMoveBack();
+                item.OnUnDoExecute();
+            }
+        }
+
+      
     }
 
 }

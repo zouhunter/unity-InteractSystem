@@ -6,34 +6,33 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ConnectCtrl
+    public class ConnectCtrl:ICoroutineCtrl
     {
-        private MonoBehaviour holder;
         private ConnectObj[] objs;
         public UnityAction<string> onError;
         public UnityAction<Collider> onSelectItem;
         public UnityAction<Collider> onHoverItem;
         private List<Vector3> positons = new List<Vector3>();
-        private Coroutine coroutine;
         private Ray ray;
         private RaycastHit hit;
         private Collider firstCollider;
         private LineRenderer line;
         private float pointDistence;
         private Camera objCamera;
-        public ConnectCtrl(MonoBehaviour holder, ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence, Camera camera = null)
+        private ActionCommand trigger { get; set; }
+
+        public ConnectCtrl(ActionCommand trigger, LineRenderer lineRender,ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence, Camera camera)
         {
-            this.holder = holder;
             this.objs = objs;
-            this.objCamera = camera ?? Camera.main;
+            this.objCamera = camera;
             this.pointDistence = pointDistence;
+            this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);
+            InitCommand(trigger);
         }
 
         private void InitConnectObj(Material lineMaterial, float lineWight)
         {
-            line = holder.GetComponent<LineRenderer>();
-            if (line == null) line = holder.gameObject.AddComponent<LineRenderer>();
 #if UNITY_5_6_OR_NEWER
             line.positionCount = 1;
             line.startWidth = lineWight;
@@ -45,12 +44,7 @@ namespace WorldActionSystem
             line.material = lineMaterial;
         }
 
-        internal void StartConnecter()
-        {
-            if (coroutine == null) coroutine = holder.StartCoroutine(ConnectLoop());
-        }
-
-        IEnumerator ConnectLoop()
+        public IEnumerator Update()
         {
             while (true)
             {
@@ -153,19 +147,33 @@ namespace WorldActionSystem
 #endif
         }
 
-        internal void StopConnecter()
+        public void InitCommand(ActionCommand trigger)
         {
-            if(coroutine != null) holder.StopCoroutine(coroutine);
+            this.trigger = trigger;
         }
 
-        internal void UnDoConnectItems()
+        public void StartExecute(bool forceAuto)
         {
-            if (coroutine != null) holder.StopCoroutine(coroutine);
-            coroutine = null;
+            foreach (var item in objs)
+            {
+                item.OnStartExecute();
+            };
+        }
+
+        public void EndExecute()
+        {
+            foreach (var item in objs)
+            {
+                item.OnEndExecute();
+            }
+        }
+
+        public void UnDoExecute()
+        {
             ClearLineRender();
             foreach (var item in objs)
             {
-                item.UnDoExecute();
+                item.OnUnDoExecute();
             }
         }
     }
