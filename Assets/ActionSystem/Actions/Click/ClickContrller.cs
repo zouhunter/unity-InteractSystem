@@ -10,11 +10,6 @@ namespace WorldActionSystem
 {
     public class ClickContrller : ICoroutineCtrl
     {
-        public UnityAction<ClickObj> onBtnClicked;
-        public UnityAction<ClickObj> onHoverBtn;
-        public UnityAction onHoverNothing;
-        public UnityAction onClickEmpty;
-
         private RaycastHit hit;
         private Ray ray;
         private ClickObj hitObj;
@@ -27,11 +22,12 @@ namespace WorldActionSystem
         private ClickObj[] actionObjs;
         private ActionCommand trigger { get; set; }
 
-        public ClickContrller(ActionCommand trigger, Camera camera, bool highLighter,ClickObj[] actionObjs)
+        public ClickContrller(ActionCommand trigger, Camera camera, bool highLighter)
         {
-            this.actionObjs = actionObjs;
+            Debug.Assert(camera != null);
             viewCamera = camera;
-            if (highLighter) highLight = new ShaderHighLight();
+            highLight = new ShaderHighLight();
+            if (highLighter) highLight.SetState(highLighter);
             InitCommand(trigger);
         }
 
@@ -107,16 +103,16 @@ namespace WorldActionSystem
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        if (onBtnClicked != null) onBtnClicked.Invoke(hitObj);
+                        OnBtnClicked(hitObj);
                     }
-                    if (onHoverBtn != null) onHoverBtn.Invoke(hitObj);
+                    OnHoverBtn(hitObj);
                 }
                 else
                 {
-                    if (onHoverNothing != null) onHoverNothing.Invoke();
+                    OnHoverNothing();
                     if (Input.GetMouseButtonDown(0) && EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject())
                     {
-                        if (onClickEmpty != null) onClickEmpty.Invoke();
+                        OnClickEmpty();
                     }
                 }
                 yield return null;
@@ -168,10 +164,6 @@ namespace WorldActionSystem
             {
                 item.OnEndExecute();
             }
-            if (@continue)
-            {
-                trigger.Complete();
-            }
         }
 
         internal void SetButtonNotClicked()
@@ -208,6 +200,7 @@ namespace WorldActionSystem
         public void InitCommand(ActionCommand trigger)
         {
             this.trigger = trigger;
+            actionObjs = Array.ConvertAll<ActionObj, ClickObj>(trigger.ActionObjs, x => x as ClickObj);
         }
     }
 

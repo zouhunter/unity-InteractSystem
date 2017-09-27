@@ -12,7 +12,6 @@ namespace WorldActionSystem
         private List<IActionCommand> commandList = new List<IActionCommand>();
         private Dictionary<string, List<ActionCommand>> actionDic = new Dictionary<string, List<ActionCommand>>();//触发器
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
-        private int triggerCount;//外部注册时,需要个数判断
         private StepComplete onStepComplete;
         public List<IActionCommand> RegistTriggers(ActionCommand[] triggers, StepComplete onStepComplete)
         {
@@ -62,6 +61,7 @@ namespace WorldActionSystem
                         var list = new List<IActionCommand>();
                         for (int i = 0; i < item.Value.Count; i++)
                         {
+                            item.Value[i].RegistComplete(OnOneCommandComplete);
                             list.Add(item.Value[i]);
                         }
                         var cmd = new SequencesCommand(stepName, list);
@@ -70,6 +70,7 @@ namespace WorldActionSystem
                     }
                     else//单命令 选择性合并为一个命令
                     {
+                        item.Value[0].RegistComplete(OnOneCommandComplete);
                         var cmd = item.Value[0];
                         commandList.Add(cmd);
                     }

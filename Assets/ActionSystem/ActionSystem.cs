@@ -41,7 +41,7 @@ namespace WorldActionSystem
         {
             var triggers = FindObjectsOfType<ActionCommand>();
             foreach (var item in triggers){
-                item.RegistAsOperate(OnUserError, OnStepComplete, () => { return elementController; });
+                item.RegistAsOperate(OnUserError, () => { return elementController; });
             }
             activeCommands = commandCtrl.RegistTriggers(triggers,OnStepComplete);
             if(onCommandRegist!=null) onCommandRegist.Invoke(activeCommands);

@@ -32,11 +32,13 @@ namespace WorldActionSystem
         {
             actionObjs = GetComponentsInChildren<ActionObj>(true);
         }
-
-        public void RegistAsOperate(UserError userErr, StepComplete stepComplete, Func<ElementController> elementCtrlGet)
+        public void RegistComplete(StepComplete stepComplete)
+        {
+            this.stepComplete = stepComplete;
+        }
+        public void RegistAsOperate(UserError userErr, Func<ElementController> elementCtrlGet)
         {
             this.userErr = userErr;
-            this.stepComplete = stepComplete;
             this.elementCtrlGet = elementCtrlGet;
                 
         }
@@ -75,6 +77,7 @@ namespace WorldActionSystem
 
         internal void Complete()
         {
+            Debug.Log(StepName);
             stepComplete.Invoke(StepName);
         }
 
@@ -86,7 +89,6 @@ namespace WorldActionSystem
                 item.OnStartExecute();
             }
         }
-
         public virtual void EndExecute()
         {
             onBeforePlayEnd.Invoke(StepName);
@@ -95,7 +97,6 @@ namespace WorldActionSystem
                 item.OnEndExecute();
             }
         }
-
         public virtual void UnDoExecute()
         {
             onBeforeUnDo.Invoke(StepName);

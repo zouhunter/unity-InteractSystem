@@ -29,8 +29,7 @@ namespace WorldActionSystem
         protected bool CurrentStepComplete()
         {
             bool complete = true;
-            foreach (var item in actionObjs)
-            {
+            foreach (var item in actionObjs){
                 complete &= item.Complete;
             }
             return complete;

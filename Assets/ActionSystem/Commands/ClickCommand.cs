@@ -17,8 +17,9 @@ namespace WorldActionSystem
 
         protected override ICoroutineCtrl CreateCtrl()
         {
-            ClickObj[] clickObjs = Array.ConvertAll<ActionObj, ClickObj>(ActionObjs, x => x as ClickObj);
-            return new WorldActionSystem.ClickContrller(this, viewCamera ?? Camera.main, highLight, clickObjs);
+            if (viewCamera == null) viewCamera = Camera.main;
+            
+            return new WorldActionSystem.ClickContrller(this, viewCamera, highLight);
         }
     }
 
