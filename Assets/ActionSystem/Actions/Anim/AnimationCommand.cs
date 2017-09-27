@@ -8,33 +8,10 @@ namespace WorldActionSystem
 {
     public class AnimationCommand : ActionCommand
     {
-        protected override void Awake()
+        protected override IActionCtroller CreateCtrl()
         {
-            base.Awake();
-            foreach (AnimObj anim in  ActionObjs){
-                anim.RegistAutoEndPlayEvent(OnEndPlayAnim);
-            }
+            return new AnimCtroller(this);
         }
-        private void OnEndPlayAnim()
-        {
-            if (CurrentStepComplete())
-            {
-                Complete();
-            }
-            else
-            {
-                Debug.Log("wait");
-            }
-        }
-        protected bool CurrentStepComplete()
-        {
-            bool complete = true;
-            foreach (var item in actionObjs){
-                complete &= item.Complete;
-            }
-            return complete;
-        }
-
     }
 
 }

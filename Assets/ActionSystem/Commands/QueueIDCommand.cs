@@ -6,12 +6,12 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class QueueIDCommand:CoroutionCommand
+    public abstract class QueueIDCommand:CoroutionCommand
     {
-        public int Count { get; private set; }
-        protected override ICoroutineCtrl CreateCtrl()
-        {
-            return new QueueIDCtrl(this);
-        }
+        //public int Count { get; private set; }
+        //protected override IActionCtroller CreateCtrl()
+        //{
+        //    return new QueueIDCtrl(this);
+        //}
     }
 }

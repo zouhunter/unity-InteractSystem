@@ -15,7 +15,7 @@ namespace WorldActionSystem
         public float pointDistence;
         public Camera _viewCamera;
 
-        protected override ICoroutineCtrl CreateCtrl()
+        protected override IActionCtroller CreateCtrl()
         {
             var objs = Array.ConvertAll<ActionObj, ConnectObj>(ActionObjs, x => x as ConnectObj);
             var lineRender = GetComponent<LineRenderer>();

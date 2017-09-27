@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class MatchCtrl: ICoroutineCtrl,IRootUse
+    public class MatchCtrl: IActionCtroller,IRootUse
     {
         private IHighLightItems highLight;
         private PickUpAbleElement pickedUpObj;

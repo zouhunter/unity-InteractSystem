@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class ActionCommand : MonoBehaviour,IActionCommand, IComparable<ActionCommand>
+    public abstract class ActionCommand : MonoBehaviour,IActionCommand, IComparable<ActionCommand>
     {
         [SerializeField]
         private string _stepName;
@@ -20,7 +20,9 @@ namespace WorldActionSystem
         private ElementController elementCtrl;
         public ActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
-
+        protected IActionCtroller coroutineCtrl;
+        protected Coroutine coroutine;
+        protected abstract IActionCtroller CreateCtrl();
         protected ActionObj[] actionObjs;
         [SerializeField]
         protected StepEvent onBeforeActive;
@@ -28,6 +30,7 @@ namespace WorldActionSystem
         protected StepEvent onBeforeUnDo;
         [SerializeField]
         protected StepEvent onBeforePlayEnd;
+        public int Count { get; private set; }
         protected virtual void Awake()
         {
             actionObjs = GetComponentsInChildren<ActionObj>(true);
@@ -84,25 +87,33 @@ namespace WorldActionSystem
         public virtual void StartExecute(bool forceAuto)
         {
             onBeforeActive.Invoke(StepName);
-            foreach (var item in ActionObjs)
+            if (coroutineCtrl == null)
+                coroutineCtrl = CreateCtrl();
+
+            coroutineCtrl.StartExecute(forceAuto);
+            if (coroutine == null)
             {
-                item.OnStartExecute();
+                coroutine = StartCoroutine(coroutineCtrl.Update());
             }
         }
         public virtual void EndExecute()
         {
             onBeforePlayEnd.Invoke(StepName);
-            foreach (var item in ActionObjs)
+            if (coroutineCtrl == null) return;
+            coroutineCtrl.EndExecute();
+            if (coroutine != null)
             {
-                item.OnEndExecute();
+                StopCoroutine(coroutineCtrl.Update());
             }
         }
         public virtual void UnDoExecute()
         {
             onBeforeUnDo.Invoke(StepName);
-            foreach (var item in ActionObjs)
+            if (coroutineCtrl == null) return;
+            coroutineCtrl.UnDoExecute();
+            if (coroutine != null)
             {
-                item.OnUnDoExecute();
+                StopCoroutine(coroutineCtrl.Update());
             }
         }
     }

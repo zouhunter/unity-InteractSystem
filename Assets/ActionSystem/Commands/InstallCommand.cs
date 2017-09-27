@@ -12,7 +12,7 @@ namespace WorldActionSystem
         public float distence;
         public bool hightLight;
 
-        protected override ICoroutineCtrl CreateCtrl()
+        protected override IActionCtroller CreateCtrl()
         {
             var installObjs = Array.ConvertAll<ActionObj, InstallObj>(ActionObjs, x => x as InstallObj);
             var coroutineCtrl = new InstallCtrl(this, distence, hightLight, installObjs);

@@ -11,7 +11,7 @@ namespace WorldActionSystem
     {
         public bool highlight;
 
-        protected override ICoroutineCtrl CreateCtrl()
+        protected override IActionCtroller CreateCtrl()
         {
             var rotAnimCtrl = new WorldActionSystem.RotateAnimController(this);
             return rotAnimCtrl;

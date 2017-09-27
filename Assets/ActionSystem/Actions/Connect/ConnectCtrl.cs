@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ConnectCtrl:ICoroutineCtrl
+    public class ConnectCtrl:IActionCtroller
     {
         private ConnectObj[] objs;
         public UnityAction<string> onError;

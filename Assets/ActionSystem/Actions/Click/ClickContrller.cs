@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace WorldActionSystem
 {
-    public class ClickContrller : ICoroutineCtrl
+    public class ClickContrller : IActionCtroller
     {
         private RaycastHit hit;
         private Ray ray;

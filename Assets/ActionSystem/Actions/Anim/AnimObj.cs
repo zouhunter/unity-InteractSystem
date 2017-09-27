@@ -14,7 +14,7 @@ namespace WorldActionSystem
         [Range(0.1f, 10f)]
         public float speed = 1;
         private Coroutine delyPlay;
-        private UnityAction onAutoPlayEnd;
+
         protected override void Start()
         {
             base.Start();
@@ -28,12 +28,7 @@ namespace WorldActionSystem
                 gameObject.SetActive(true);
             }
         }
-
-        public void RegistAutoEndPlayEvent(UnityAction onAutoEndPlay)
-        {
-            onAutoPlayEnd = onAutoEndPlay;
-        }
-
+        
         public void RegisterOutSideAnim(AnimPlayer animPlayer)
         {
             if (animPlayer != null)
@@ -61,7 +56,7 @@ namespace WorldActionSystem
         {
             _complete = true;
             gameObject.SetActive(endActive);
-            if (onAutoPlayEnd != null) onAutoPlayEnd.Invoke();
+            EndExecuteCurrent();
         }
 
         public override void OnEndExecute()

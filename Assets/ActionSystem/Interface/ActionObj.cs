@@ -16,9 +16,28 @@ namespace WorldActionSystem
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
+        [SerializeField]
+        private int queueID;
+        public int QueueID
+        {
+            get
+            {
+                return queueID;
+            }
+        }
+        public UnityAction<int> onEndExecuteCurrent;
+        
         protected virtual void Start()
         {
             gameObject.SetActive(startActive);
+        }
+
+        protected void EndExecuteCurrent()
+        {
+            if (onEndExecuteCurrent != null)
+            {
+                onEndExecuteCurrent.Invoke(queueID);
+            }
         }
         public virtual void OnStartExecute()
         {

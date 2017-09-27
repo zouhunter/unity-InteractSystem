@@ -15,7 +15,7 @@ namespace WorldActionSystem
         [SerializeField]
         private bool highLight;
 
-        protected override ICoroutineCtrl CreateCtrl()
+        protected override IActionCtroller CreateCtrl()
         {
             if (viewCamera == null) viewCamera = Camera.main;
             

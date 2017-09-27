@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using System.Collections;
 namespace WorldActionSystem
 {
-    public interface ICoroutineCtrl
+    public interface IActionCtroller
     {
         IEnumerator Update();
         void InitCommand(ActionCommand trigger);

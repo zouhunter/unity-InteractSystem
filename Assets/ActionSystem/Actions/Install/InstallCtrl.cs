@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCtrl:ICoroutineCtrl
+    public class InstallCtrl:IActionCtroller
     {
         public bool Active { get; private set; }
 

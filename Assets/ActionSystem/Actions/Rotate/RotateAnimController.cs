@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class RotateAnimController:ICoroutineCtrl
+    public class RotateAnimController:IActionCtroller
     {
         private RotObj selectedObj;
         private RaycastHit hit;

@@ -11,7 +11,7 @@ namespace WorldActionSystem
     {
         public float distence;
         public bool highLight;
-        protected override ICoroutineCtrl CreateCtrl()
+        protected override IActionCtroller CreateCtrl()
         {
             var matchCtrl = new MatchCtrl(this,distence, highLight);
             return matchCtrl;
