@@ -12,8 +12,6 @@ namespace WorldActionSystem
         private ClickTrigger trigger;
         public string StepName { get; private set; }
 
-
-
         public ClickCommand(string stepName,ClickTrigger trigger)
         {
             this.StepName = stepName;
@@ -21,7 +19,11 @@ namespace WorldActionSystem
         }
         public  void StartExecute(bool forceAuto)
         {
-            if (forceAuto) trigger.SetAllButtonClicked(StepName,true);
+            trigger.CreateStartController();
+            if (forceAuto)
+            {
+                trigger.SetAllButtonClicked(StepName, true);
+            }
             else
             {
                 trigger.SetButtonClickAbleQueue(StepName);
@@ -29,10 +31,12 @@ namespace WorldActionSystem
         }
         public  void EndExecute()
         {
+            trigger.StopStartController();
             trigger.SetAllButtonClicked(StepName,false);
         }
         public  void UnDoExecute()
         {
+            trigger.StopStartController();
             trigger.SetAllButtonUnClickAble(StepName);
             trigger.SetButtonNotClicked(StepName);
         }

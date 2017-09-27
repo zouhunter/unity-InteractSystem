@@ -8,8 +8,9 @@ namespace WorldActionSystem
 {
     public static class Setting
     {
-        internal const int installObjLayer = 8;
+        internal const int pickUpElementLayer = 8;
         internal const int installPosLayer = 9;
+        internal const int matchPosLayer = 14;
         internal const int rotateItemLayer = 10;
         internal const int clickItemLayer = 11;
         internal const int connectItemLayer = 12;

@@ -14,14 +14,14 @@ public class HideAndUnHideInstall : MonoBehaviour {
     {
         for (int i = 0; i < m_Objs.Count; i++)
         {
-            m_Objs[i].obj.gameObject.SetActive(false);
+            m_Objs[i].obj.SetActive(false);
         }
     }
     public void UnHideGameObjects()
     {
         for (int i = 0; i < m_Objs.Count; i++)
         {
-            m_Objs[i].obj.gameObject.SetActive(true);
+            m_Objs[i].obj.SetActive(true);
         }
     }
 }

@@ -13,17 +13,30 @@ namespace WorldActionSystem
         private RotateAnimController rotAnimCtrl;
         private List<int> queueID = new List<int>();
         private string currStepName;
-
+        private Coroutine coroutine;
         protected override void Awake()
         {
             base.Awake();
             InitObjects();
-            rotAnimCtrl = new WorldActionSystem.RotateAnimController();
-            rotAnimCtrl.onHover = OnHover;
-            rotAnimCtrl.OnRotateOk = OnRoateOK;
-            rotAnimCtrl.onStartRot = OnStartRot;
-            rotAnimCtrl.onEndRot = OnEndRot;
-            StartCoroutine(rotAnimCtrl.StartRotateAnimContrl());
+          
+        }
+        public void CrateRotAnimCtrl()
+        {
+            if(rotAnimCtrl == null)
+            {
+                rotAnimCtrl = new WorldActionSystem.RotateAnimController();
+                rotAnimCtrl.onHover = OnHover;
+                rotAnimCtrl.OnRotateOk = OnRoateOK;
+                rotAnimCtrl.onStartRot = OnStartRot;
+                rotAnimCtrl.onEndRot = OnEndRot;
+                coroutine = StartCoroutine(rotAnimCtrl.StartRotateAnimContrl());
+            }
+          
+        }
+        public void CompleteRotateAnimCtrl()
+        {
+            if (coroutine != null) StopCoroutine(coroutine);
+            rotAnimCtrl = null;
         }
 
         public override IList<IActionCommand> CreateCommands()

@@ -21,15 +21,17 @@ namespace WorldActionSystem
         private ClickObj hitObj;
         private Vector3 screenPoint;
         private float distence = 10;
-        public IEnumerator StartController()
+        private Camera viewCamera;
+        public IEnumerator StartController(Camera camera)
         {
+            viewCamera = camera??Camera.main;
             screenPoint = new Vector3();
             while (true)
             {
                 screenPoint.x = Input.mousePosition.x;
                 screenPoint.y = Input.mousePosition.y;
                 screenPoint.z = 10;
-                ray = Camera.main.ScreenPointToRay(screenPoint);
+                ray = viewCamera.ScreenPointToRay(screenPoint);
 
                 if (TryHitBtnObj(out hitObj))
                 {

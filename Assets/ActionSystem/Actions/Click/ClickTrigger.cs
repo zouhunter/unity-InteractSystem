@@ -14,19 +14,12 @@ namespace WorldActionSystem
         private IHighLightItems highter;
         private Renderer lastSelected;
         private List<int> queueID = new List<int>();
+        private Coroutine coroutine;
         protected override void Awake()
         {
             base.Awake();
             highter = new ShaderHighLight();
             if (hightButton) highter.SetState(hightButton);
-
-            clickCtrl = new ClickContrller();
-            clickCtrl.onBtnClicked = OnBtnClicked;
-            clickCtrl.onHoverBtn = OnHoverBtn;
-            clickCtrl.onHoverNothing = OnHoverNothing;
-            clickCtrl.onClickEmpty = OnClickEmpty;
-
-            StartCoroutine(clickCtrl.StartController());
         }
 
         public override IList<IActionCommand> CreateCommands()
@@ -35,11 +28,30 @@ namespace WorldActionSystem
             cmds.Add(new ClickCommand(StepName, this));
             return cmds;
         }
+        public void CreateStartController()
+        {
+            if(clickCtrl == null)
+            {
+                clickCtrl = new ClickContrller();
+                clickCtrl.onBtnClicked = OnBtnClicked;
+                clickCtrl.onHoverBtn = OnHoverBtn;
+                clickCtrl.onHoverNothing = OnHoverNothing;
+                clickCtrl.onClickEmpty = OnClickEmpty;
+                var camera = FindObjectOfType<Camera>();
+                coroutine = StartCoroutine(clickCtrl.StartController(camera));
+            }
+        }
+        public void StopStartController()
+        {
+            if(coroutine != null) StopCoroutine(coroutine);
+            clickCtrl = null;
+        }
 
         internal void SetHighLightState(bool on)
         {
             highter.SetState(on);
         }
+
         void OnBtnClicked(ClickObj obj)
         {
             if (!obj.Started)
@@ -60,6 +72,7 @@ namespace WorldActionSystem
             }
 
         }
+
         void OnHoverBtn(ClickObj obj)
         {
             if (obj == null) return;

@@ -13,13 +13,13 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class InstallItem : MonoBehaviour, IHightLightItem, IOutSideRegisterRender
+    public class PickUpAbleElement : MonoBehaviour,IPickUpAbleItem,IInstallItem,IMatchItem, IHightLightItem, IOutSideRegisterRender
     {
         public int animTime { get { return Setting.installTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool endActive = true;//如果是false,则完成后将进行隐藏
         public bool Installed { get { return target != null; } }
-        private InstallObj target;
+        private GameObject target;
         public Renderer Render { get { return m_render; } }
 
         public UnityAction onInstallOkEvent;
@@ -38,14 +38,15 @@ namespace WorldActionSystem
 #if !NoFunction
         void Start()
         {
-            ActionSystem.Instance.RegistElement(this);
+            ActionSystem.Instance.CommandCtrl.RegistElement(this);
             if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
 
-            gameObject.layer = Setting.installObjLayer;
+            gameObject.layer = Setting.pickUpElementLayer;
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
         }
+
         private void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
         {
             posList = new List<Vector3>();
@@ -77,10 +78,9 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public void NormalInstall(InstallObj target)
+        public void NormalInstall(GameObject target)
         {
 #if !NoFunction
-
             if (!Installed)
             {
                 //transform.rotation = target.transform.rotation;
@@ -93,11 +93,30 @@ namespace WorldActionSystem
             }
 #endif
         }
+        public void NormalMoveTo(GameObject target)
+        {
+#if !NoFunction
+            DoPath(target.transform.position, target.transform.eulerAngles, () =>
+            {
+                if (onInstallOkEvent != null)
+                    onInstallOkEvent();
+            });
+#endif
+        }
+        public void QuickMoveTo(GameObject target)
+        {
+            transform.position = target.transform.position;
+            transform.rotation = target.transform.rotation;
+
+            if (onInstallOkEvent != null)
+                onInstallOkEvent();
+        }
+
         /// <summary>
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public void QuickInstall(InstallObj target)
+        public void QuickInstall(GameObject target)
         {
             StopTween();
             if (!Installed)
@@ -113,10 +132,8 @@ namespace WorldActionSystem
         public void NormalUnInstall()
         {
 #if !NoFunction
-
             if (Installed)
             {
-                //transform.rotation = startRotation;
                 DoPath(startPos, startRotation, () =>
                 {
                     if (onUnInstallOkEvent != null)
@@ -126,6 +143,24 @@ namespace WorldActionSystem
             }
 #endif
         }
+        public void NormalMoveBack()
+        {
+#if !NoFunction
+            DoPath(startPos, startRotation, () =>
+            {
+                if (onUnInstallOkEvent != null)
+                    onUnInstallOkEvent();
+            });
+#endif
+        }
+        public void QuickMoveBack()
+        {
+            transform.eulerAngles = startRotation;
+            transform.position = startPos;
+            if (onUnInstallOkEvent != null)
+                onUnInstallOkEvent();
+        }
+
         public void QuickUnInstall()
         {
 #if !NoFunction
@@ -135,7 +170,6 @@ namespace WorldActionSystem
                 move.Pause();
                 transform.eulerAngles = startRotation;
                 transform.position = startPos;
-                target.Detach();
                 target = null;
                 if (onUnInstallOkEvent != null)
                     onUnInstallOkEvent();
@@ -145,7 +179,6 @@ namespace WorldActionSystem
 
         public void OnPickUp()
         {
-            //pickUpPos = transform.position;
             StopTween();
         }
 
@@ -164,11 +197,14 @@ namespace WorldActionSystem
         {
             gameObject.SetActive(endActive);
         }
+        public void SetActive(bool active)
+        {
+            gameObject.SetActive(active);
+        }
 
         public void OnPickDown()
         {
 #if !NoFunction
-
             move = transform.DOMove(startPos, animTime).SetAutoKill(true);
 #endif
         }
@@ -181,7 +217,7 @@ namespace WorldActionSystem
             move.Kill(true);
 #endif
         }
-        
+
         public void RegisterRenderer(Renderer renderer)
         {
             if (renderer != null)

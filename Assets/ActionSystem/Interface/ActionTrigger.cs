@@ -28,6 +28,7 @@ namespace WorldActionSystem
                 item.StepName = _stepName;
             }
         }
+        
         protected void OnComplete()
         {
             if (onStepComplete != null) onStepComplete.Invoke(StepName);

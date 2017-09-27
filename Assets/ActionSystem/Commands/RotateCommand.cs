@@ -18,6 +18,7 @@ namespace WorldActionSystem
         }
         public  void StartExecute(bool forceAuto)
         {
+            rotParent.CrateRotAnimCtrl();
             rotParent.ActiveStep(StepName);
             if (forceAuto) {
                 rotParent.SetRotateComplete(true);
@@ -28,10 +29,12 @@ namespace WorldActionSystem
         }
         public  void EndExecute()
         {
+            rotParent.CompleteRotateAnimCtrl();
             rotParent.SetRotateComplete();
         }
         public  void UnDoExecute()
         {
+            rotParent.CompleteRotateAnimCtrl();
             rotParent.SetStepUnDo(StepName);
         }
     }

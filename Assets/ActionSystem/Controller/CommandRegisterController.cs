@@ -7,70 +7,44 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class CommandRegisterController : IActionEvents
+    public class CommandController : IActionEvents
     {
         public StepComplete onStepComplete { get; set; }
+        public RegistCmds onRegistCommand{get;set;}
         public UserError onUserErr { get; set; }
-        public RegistCmds onRegisted;
         private List<IActionCommand> commandList = new List<IActionCommand>();
-        private bool allActionRegisted;
-        private bool allRegisted { get { return allActionRegisted; } }
-        private Dictionary<string, List<ActionTrigger>> actionDic;//触发器
+        private Dictionary<string, List<ActionTrigger>> actionDic = new Dictionary<string, List<ActionTrigger>>();//触发器
         private ElementController elementController;//元素名、列表
-
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
+        private int triggerCount;//外部注册时,需要个数判断
 
-        public CommandRegisterController()
+        public CommandController()
         {
             this.elementController = new WorldActionSystem.ElementController();
         }
-        public void RegistElement(InstallItem installItem)
+        public void RegistElement(PickUpAbleElement installItem)
         {
             elementController.RegistElement(installItem);
         }
-        public void RegistActionTriggers(ActionTriggers actionTriggers)
+        public void RegistTriggers(List<ActionTrigger> triggers)
         {
-            if (actionTriggers == null)
+            foreach (var trigger in triggers)
             {
-                allActionRegisted = true;
-            }
-            else
-            {
-                actionTriggers.onAllElementInit = OnRegistTriggers;
-            }
-        }
+                var obj = trigger;
+                trigger.onStepComplete = OnOneCommandComplete;
+                trigger.onUserErr = onUserErr;
 
-        /// <summary>
-        /// 如果动画被注册为命令，则替换
-        /// </summary>
-        /// <param name="dic"></param>
-        private void OnRegistTriggers(Dictionary<string, List<ActionTrigger>> dic)
-        {
-            actionDic = dic;
-            if (actionDic != null)
-            {
-                foreach (var item in dic)
+                if (actionDic.ContainsKey(obj.StepName))
                 {
-                    foreach (var trigger in item.Value)
-                    {
-                        trigger.onStepComplete = OnOneCommandComplete;
-                        trigger.onUserErr = onUserErr;
-                    }
+                    actionDic[obj.StepName].Add(obj);
+                }
+                else
+                {
+                    actionDic[obj.StepName] = new List<ActionTrigger>() { obj };
                 }
             }
-            allActionRegisted = true;
-            TryCreateCommandList();
-        }
-        /// <summary>
-        /// 创建命令列表
-        /// </summary>
-        private void TryCreateCommandList()
-        {
-            if (allRegisted)
-            {
-                RegistTriggerCommand();
-                if (onRegisted != null) onRegisted(commandList);
-            }
+            RegistTriggerCommand();
+            if (onRegistCommand != null) onRegistCommand.Invoke(commandList);
         }
 
         private void OnOneCommandComplete(string stepName)
@@ -88,7 +62,6 @@ namespace WorldActionSystem
                 onStepComplete.Invoke(stepName);
             }
         }
-
 
         private void RegistTriggerCommand()
         {

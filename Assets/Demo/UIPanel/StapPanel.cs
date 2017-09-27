@@ -168,7 +168,7 @@ namespace WorldActionSystem
         }
         void OnInsertScript()
         {
-            ActionSystem.Instance.InsertScript<InstallItem, InfoTextShow>(true);
+            //ActionSystem.Instance.InsertScript<PickUpAbleElement, InfoTextShow>(true);
         }
         public Text textShow;
     }
@@ -177,14 +177,16 @@ namespace WorldActionSystem
         public GameObject panel;
         IRemoteController remoteController;
         public Step[] steps;
-        IEnumerator Start()
+        void Start()
         {
             panel.SetActive(false);
-            yield return ActionSystem.LunchActionSystem(steps);
-            remoteController = ActionSystem.Instance.RemoteController;
+            StartCoroutine(ActionSystem.LunchActionSystem(steps, (Instance, newStep)=> {
+                remoteController = Instance.RemoteController;
+                steps = newStep;
+                Instance.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
+            }));
             panel.SetActive(true);
 
-            ActionSystem.Instance.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
         }
     }
 

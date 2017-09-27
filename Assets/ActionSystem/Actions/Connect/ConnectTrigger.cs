@@ -26,7 +26,8 @@ namespace WorldActionSystem
 
         private ConnectCtrl GetCtrl()
         {
-            var ctrl = new ConnectCtrl(this, objs,lineMaterial,lineWight,pointDistence);
+            var _viewCamera = FindObjectOfType<Camera>();
+            var ctrl = new ConnectCtrl(this, objs,lineMaterial,lineWight,pointDistence, _viewCamera);
             ctrl.onError = OnConnectError;
             ctrl.onHoverItem = OnHoverItem;
             ctrl.onSelectItem = OnSelecteItem;

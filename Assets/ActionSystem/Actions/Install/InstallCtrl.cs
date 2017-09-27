@@ -13,10 +13,10 @@ namespace WorldActionSystem
         public UnityAction onComplete;
 
         private MonoBehaviour trigger;
-        public ElementController ElementController { get; set; }
+        public ElementController elementCtrl { get; set; }
         public bool Active { get; private set; }
         IHighLightItems highLight;
-        private InstallItem pickedUpObj;
+        private PickUpAbleElement pickedUpObj;
         private bool pickedUp;
         private InstallObj installPos;
         private Ray ray;
@@ -40,7 +40,7 @@ namespace WorldActionSystem
         #region 鼠标操作事件
         IEnumerator Update()
         {
-            ElementController.onInstall += OnEndInstall;
+            elementCtrl.onInstall += OnEndInstall;
 
             while (true)
             {
@@ -75,11 +75,12 @@ namespace WorldActionSystem
         void SelectAnElement()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100, (1 << Setting.installObjLayer)))
+            if (Physics.Raycast(ray, out hit, 100, (1 << Setting.pickUpElementLayer)))
             {
-                pickedUpObj = hit.collider.GetComponent<InstallItem>();
-                if (pickedUpObj != null && ElementController.PickUpObject(pickedUpObj))
+                pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
+                if (pickedUpObj != null && !pickedUpObj.Installed)
                 {
+                    pickedUpObj.OnPickUp();
                     pickedUp = true;
 
                     if (!PickUpedCanInstall())
@@ -100,7 +101,7 @@ namespace WorldActionSystem
             List<InstallObj> poss = GetNotInstalledPosList();
             for (int i = 0; i < poss.Count; i++)
             {
-                if (!HaveInstallObjInstalled(poss[i]) && IsInstallStep(poss[i]) && ElementController.CanInstallToPos(poss[i]))
+                if (!HaveInstallObjInstalled(poss[i]) && IsInstallStep(poss[i]) && pickedUpObj.name == poss[i].name)
                 {
                     canInstall = true;
                 }
@@ -136,7 +137,7 @@ namespace WorldActionSystem
                             installAble = false;
                             resonwhy = "已经安装";
                         }
-                        else if (!ElementController.CanInstallToPos(installPos))
+                        else if (pickedUpObj.name != installPos.name)
                         {
                             installAble = false;
                             resonwhy = "零件不匹配";
@@ -174,12 +175,16 @@ namespace WorldActionSystem
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (installAble)
             {
-                ElementController.InstallPickedUpObject(installPos);
+                var status = installPos.Attach(pickedUpObj);
+                if(status)
+                {
+                    pickedUpObj.QuickInstall(installPos.gameObject);
+                }
             }
             else
             {
+                pickedUpObj.NormalMoveBack();
                 OnInstallErr(resonwhy);
-                ElementController.PickDownPickedUpObject();
             }
 
             pickedUp = false;
@@ -212,11 +217,23 @@ namespace WorldActionSystem
             if (AllElementInstalled())
             {
                 List<InstallObj> posList = GetInstalledPosList();
-                ElementController.SetCompleteNotify(posList);
+                SetCompleteNotify(posList);
                 if(onComplete!= null) onComplete();
             }
         }
 
+        /// <summary>
+        /// 结束指定步骤
+        /// </summary>
+        /// <param name="poss"></param>
+        private void SetCompleteNotify(List<InstallObj> poss)
+        {
+            //当前步骤结束
+            foreach (var item in poss)
+            {
+                item.obj.StepComplete();
+            }
+        }
         /// <summary>
         /// 结束当前步骤安装
         /// </summary>
@@ -224,16 +241,58 @@ namespace WorldActionSystem
         public void EndInstall()
         {
             List<InstallObj> posList = GetNotInstalledPosList();
-            ElementController.QuickInstallObjListObjects(posList);
+            QuickInstallObjListObjects(posList);
             SetSepComplete();
+        }
+        /// <summary>
+        /// 快速安装 列表 
+        /// </summary>
+        /// <param name="posList"></param>
+        private void QuickInstallObjListObjects(List<InstallObj> posList)
+        {
+            InstallObj pos;
+            for (int i = 0; i < posList.Count; i++)
+            {
+                pos = posList[i];
+                if (pos != null)
+                {
+                    PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(pos.name);
+                    obj.QuickInstall(pos.gameObject);
+                    pos.Attach(obj);
+                }
+            }
         }
 
         public void SetStapActive()
         {
             SetObjsActive();
             List<InstallObj> posList = GetNotInstalledPosList();
-            ElementController.SetStartNotify(posList);
+            SetStartNotify(posList);
             if (coroutine == null) coroutine = trigger.StartCoroutine(Update());
+        }
+        /// <summary>
+        /// 激活步骤 
+        /// </summary>
+        /// <param name="poss"></param>
+        public void SetStartNotify(List<InstallObj> posList)
+        {
+            List<PickUpAbleElement> temp = new List<PickUpAbleElement>();
+            foreach (var pos in posList)
+            {
+                List<PickUpAbleElement> listObjs = elementCtrl.GetElements(pos.name);
+                if (listObjs != null)
+                {
+                    for (int j = 0; j < listObjs.Count; j++)
+                    {
+                        if (!listObjs[j].Installed && !temp.Contains(listObjs[j]))
+                        {
+                            temp.Add(listObjs[j]);
+                            listObjs[j].StepActive();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -252,26 +311,69 @@ namespace WorldActionSystem
                 posList = GetNeedAutoInstallObjList();
             }
 
-            if (posList != null) ElementController.InstallObjListObjects(posList);
+            if (posList != null)
+            {
+                InstallObjListObjects(posList);
+            }
 
             pickedUp = false;
         }
 
+        private void InstallObjListObjects(List<InstallObj> posList)
+        {
+            InstallObj pos;
+            for (int i = 0; i < posList.Count; i++)
+            {
+                pos = posList[i];
+                PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(pos.name);
+                pos.Attach(obj);
+                obj.NormalInstall(pos.gameObject);
+            }
+        }
         public void UnInstall(string stepName)
         {
             SetStapActive();
             List<InstallObj> posList = GetInstalledPosList();
-            ElementController.UnInstallObjListObjects(posList);
+            UnInstallObjListObjects(posList);
             SetSepUnDo();
+        }
+
+        /// <summary>
+        /// uninstll
+        /// </summary>
+        /// <param name="posList"></param>
+        public void UnInstallObjListObjects(List<InstallObj> posList)
+        {
+            InstallObj pos;
+            for (int i = 0; i < posList.Count; i++)
+            {
+                pos = posList[i];
+                var obj = pos.Detach();
+                obj.NormalUnInstall();
+            }
         }
 
         public void QuickUnInstall()
         {
             SetStapActive();
             List<InstallObj> posList = GetInstalledPosList();
-            ElementController.QuickUnInstallObjListObjects(posList);
+            QuickUnInstallObjListObjects(posList);
             SetSepUnDo();
         }
+
+        /// <summary>
+        /// QuickUnInstall
+        /// </summary>
+        /// <param name="posList"></param>
+        public void QuickUnInstallObjListObjects(List<InstallObj> posList)
+        {
+            foreach (var item in posList)
+            {
+                var obj = item.Detach();
+                obj.QuickUnInstall();
+            }
+        }
+
 
         private void OnInstallErr(string err)
         {
@@ -306,7 +408,7 @@ namespace WorldActionSystem
             if (coroutine != null)
                 trigger.StopCoroutine(coroutine);
             coroutine = null;
-            ElementController.onInstall -= OnEndInstall;
+            elementCtrl.onInstall -= OnEndInstall;
         }
         private bool AllElementInstalled()
         {
