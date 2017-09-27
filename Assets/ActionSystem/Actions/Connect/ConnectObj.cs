@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class ConnectObj : QueueIDObj, ISortAble
+    public class ConnectObj : ActionObj, ISortAble
     {
         public float lineWight = 0.1f;
         public Material lineMaterial;

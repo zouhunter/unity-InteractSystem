@@ -16,31 +16,7 @@ namespace WorldActionSystem
     {
         public AnimCtroller(ActionCommand trigger) : base(trigger)
         {
-            //foreach (AnimObj anim in trigger.ActionObjs)
-            //{
-            //    anim.RegistAutoEndPlayEvent(OnEndPlayAnim);
-            //}
+            
         }
-
-        //private void OnEndPlayAnim(int id)
-        //{
-        //    if (CurrentStepComplete())
-        //    {
-        //       trigger.Complete();
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("wait");
-        //    }
-        //}
-        //protected bool CurrentStepComplete()
-        //{
-        //    bool complete = true;
-        //    foreach (var item in actionObjs)
-        //    {
-        //        complete &= item.Complete;
-        //    }
-        //    return complete;
-        //}
     }
 }

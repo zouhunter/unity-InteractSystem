@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [Serializable]
-    public class MatchCommand : CoroutionCommand
+    public class MatchCommand : ActionCommand
     {
         public float distence;
         public bool highLight;

@@ -7,11 +7,9 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCtrl:IActionCtroller
+    public class InstallCtrl:ActionCtroller
     {
         public bool Active { get; private set; }
-
-        private ActionCommand trigger;
 
         IHighLightItems highLight;
         private PickUpAbleElement pickedUpObj;
@@ -26,21 +24,16 @@ namespace WorldActionSystem
         private string stepName;
         private List<InstallObj> installObjs = new List<InstallObj>();
 
-        public InstallCtrl(ActionCommand trigger, float distence, bool hightLightOn, InstallObj[] installObjs)
+        public InstallCtrl(ActionCommand trigger, float distence, bool hightLightOn, InstallObj[] installObjs):base(trigger)
         {
-            InitCommand( trigger);
             highLight = new ShaderHighLight();
             highLight.SetState(hightLightOn);
             this.distence = distence;
             this.installObjs.AddRange(installObjs);
         }
-        public void InitCommand( ActionCommand trigger)
-        {
-            this.trigger = trigger;
-        }
 
         #region 鼠标操作事件
-        public IEnumerator Update()
+        public override IEnumerator Update()
         {
             trigger.ElementCtrl.onInstall += OnEndInstall;
 
@@ -265,9 +258,8 @@ namespace WorldActionSystem
             }
         }
 
-        public void SetStapActive()
+        public void SetElemetsActive()
         {
-            SetObjsActive();
             List<InstallObj> posList = GetNotInstalledPosList();
             SetStartNotify(posList);
         }
@@ -333,7 +325,7 @@ namespace WorldActionSystem
         }
         public void UnInstall(string stepName)
         {
-            SetStapActive();
+            SetElemetsActive();
             List<InstallObj> posList = GetInstalledPosList();
             UnInstallObjListObjects(posList);
             SetSepUnDo();
@@ -356,7 +348,7 @@ namespace WorldActionSystem
 
         public void QuickUnInstall()
         {
-            SetStapActive();
+            SetElemetsActive();
             List<InstallObj> posList = GetInstalledPosList();
             QuickUnInstallObjListObjects(posList);
             SetSepUnDo();
@@ -408,13 +400,7 @@ namespace WorldActionSystem
             var notInstalls = installObjs.FindAll(x => !x.Installed);
             return notInstalls.Count == 0;
         }
-        private void SetObjsActive()
-        {
-            foreach (var item in installObjs)
-            {
-                item.OnStartExecute();
-            }
-        }
+
         private void SetSepUnDo()
         {
             foreach (var item in installObjs)
@@ -423,23 +409,12 @@ namespace WorldActionSystem
             }
         }
 
-        public void StartExecute(bool forceAuto)
+        public override void StartExecute(bool forceAuto)
         {
-            SetStapActive();
+            SetElemetsActive();
+            base.StartExecute(forceAuto);
             AutoInstallWhenNeed(forceAuto);
         }
-
-        public void EndExecute()
-        {
-            EndInstall();
-        }
-
-        public void UnDoExecute()
-        {
-            QuickUnInstall();
-        }
-
-      
     }
 
 }

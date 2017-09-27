@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [Serializable]
-    public class ClickCommand : CoroutionCommand
+    public class ClickCommand : ActionCommand
     {
         [SerializeField]
         private Camera viewCamera;

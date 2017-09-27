@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem;
 
-public class OpenUICmd : QueueIDObj
+public class OpenUICmd : ActionObj
 {
     public override void OnStartExecute()
     {

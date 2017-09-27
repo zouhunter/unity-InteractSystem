@@ -20,7 +20,7 @@ namespace WorldActionSystem
             base.Start();
             animPlayer = GetComponentInChildren<AnimPlayer>();
             if (animPlayer != null){
-                animPlayer.Init(OnAutoEndPlay);
+                animPlayer.Init(OnEndExecute);
                 gameObject.SetActive(startActive);
             }
             else
@@ -34,7 +34,7 @@ namespace WorldActionSystem
             if (animPlayer != null)
             {
                 this.animPlayer = animPlayer;
-                animPlayer.Init(OnAutoEndPlay);
+                animPlayer.Init(OnEndExecute);
                 gameObject.SetActive(startActive);
             }
         }
@@ -51,12 +51,6 @@ namespace WorldActionSystem
         {
             yield return new WaitForSeconds(delyTime);
             if (animPlayer != null) animPlayer.Play(speed);
-        }
-        private void OnAutoEndPlay()
-        {
-            _complete = true;
-            gameObject.SetActive(endActive);
-            EndExecuteCurrent();
         }
 
         public override void OnEndExecute()

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-    public abstract class ActionObj:MonoBehaviour
+    public abstract class ActionObj:MonoBehaviour, ISortAble
     {
         public bool startActive;
         public bool endActive;
@@ -25,31 +25,49 @@ namespace WorldActionSystem
                 return queueID;
             }
         }
-        public UnityAction<int> onEndExecuteCurrent;
-        
+        public UnityAction<int> onEndExecute;
+        public UnityEvent onBeforeComplete;
+        public UnityEvent onBeforeStart;
+        public UnityEvent onBeforeUnDo;
+
         protected virtual void Start()
         {
             gameObject.SetActive(startActive);
         }
 
-        protected void EndExecuteCurrent()
-        {
-            if (onEndExecuteCurrent != null)
-            {
-                onEndExecuteCurrent.Invoke(queueID);
-            }
-        }
         public virtual void OnStartExecute()
         {
-            _started = true;
-            _complete = false;
-            gameObject.SetActive(true);
+            if(!_started)
+            {
+                onBeforeStart.Invoke();
+                _started = true;
+                _complete = false;
+                gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("already started" ,gameObject);
+            }
+           
         }
         public virtual void OnEndExecute()
         {
-            _started = true;
-            _complete = true;
-            gameObject.SetActive(endActive);
+            if(!_complete)
+            {
+                onBeforeComplete.Invoke();
+                _started = true;
+                _complete = true;
+                gameObject.SetActive(endActive);
+                if (onEndExecute != null)
+                {
+                    onEndExecute.Invoke(queueID);
+                }
+            }
+            else
+            {
+                Debug.Log("already completed", gameObject);
+            }
+          
         }
         public virtual void OnUnDoExecute()
         {

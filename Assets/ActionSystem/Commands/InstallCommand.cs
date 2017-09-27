@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [System.Serializable]
-    public class InstallCommand : CoroutionCommand
+    public class InstallCommand : ActionCommand
     {
         public float distence;
         public bool hightLight;

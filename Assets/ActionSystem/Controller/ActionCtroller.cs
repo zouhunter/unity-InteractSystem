@@ -5,12 +5,13 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
+    
     public class ActionCtroller : IActionCtroller
     {
         protected ActionCommand trigger { get; set; }
         protected List<int> queueID = new List<int>();
         protected ActionObj[] actionObjs { get; set; }
-
+        protected bool isForceAuto;
         public ActionCtroller( ActionCommand trigger)
         {
             InitCommand(trigger);
@@ -23,16 +24,21 @@ namespace WorldActionSystem
 
         public virtual void StartExecute(bool forceAuto)
         {
-            queueID.Clear();
-            foreach (ActionObj item in actionObjs)
+            this.isForceAuto = forceAuto;
+            if (!forceAuto)
             {
-                if (!queueID.Contains(item.QueueID))
+                queueID.Clear();
+                foreach (ActionObj item in actionObjs)
                 {
-                    queueID.Add(item.QueueID);
+                    if (!queueID.Contains(item.QueueID))
+                    {
+                        queueID.Add(item.QueueID);
+                    }
                 }
+                queueID.Sort();
+                ExecuteAStep();
             }
-            queueID.Sort();
-            ExecuteAStep();
+           
         }
         public virtual void EndExecute()
         {
@@ -79,7 +85,7 @@ namespace WorldActionSystem
                     foreach (ActionObj item in neetActive)
                     {
                         item.OnStartExecute();
-                        item.onEndExecuteCurrent = OnCommandObjComplete;
+                        item.onEndExecute = OnCommandObjComplete;
                     }
                 }
 
