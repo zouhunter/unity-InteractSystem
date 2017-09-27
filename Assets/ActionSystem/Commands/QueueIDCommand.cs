@@ -8,16 +8,10 @@ namespace WorldActionSystem
 {
     public class QueueIDCommand:CoroutionCommand
     {
-        protected QueueIDObj[] actionObjs;
         public int Count { get; private set; }
-        public override void InitCommand(string stepName, ActionCommand trigger)
-        {
-            base.InitCommand(stepName, trigger);
-            this.actionObjs = Array.ConvertAll<ActionObj, QueueIDObj>(trigger.ActionObjs, x => x as QueueIDObj) ;// actionObjs;
-        }
         protected override ICoroutineCtrl CreateCtrl()
         {
-            return new QueueIDCtrl(trigger);
+            return new QueueIDCtrl(this);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace WorldActionSystem
         public bool highLight;
         protected override ICoroutineCtrl CreateCtrl()
         {
-            var matchCtrl = new MatchCtrl(trigger,distence, highLight);
+            var matchCtrl = new MatchCtrl(this,distence, highLight);
             return matchCtrl;
         }
     }

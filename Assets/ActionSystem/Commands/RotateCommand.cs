@@ -13,7 +13,7 @@ namespace WorldActionSystem
 
         protected override ICoroutineCtrl CreateCtrl()
         {
-            var rotAnimCtrl = new WorldActionSystem.RotateAnimController(trigger);
+            var rotAnimCtrl = new WorldActionSystem.RotateAnimController(this);
             return rotAnimCtrl;
         }
     }

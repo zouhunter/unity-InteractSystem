@@ -14,11 +14,12 @@ namespace WorldActionSystem
         public Material lineMaterial;
         public float pointDistence;
         public Camera _viewCamera;
+
         protected override ICoroutineCtrl CreateCtrl()
         {
-            var objs = Array.ConvertAll<ActionObj, ConnectObj>(trigger.ActionObjs, x => x as ConnectObj);
-            var lineRender = trigger.GetComponent<LineRenderer>();
-            var ctrl = new ConnectCtrl(trigger, lineRender, objs, lineMaterial, lineWight, pointDistence, _viewCamera ?? Camera.main);
+            var objs = Array.ConvertAll<ActionObj, ConnectObj>(ActionObjs, x => x as ConnectObj);
+            var lineRender = GetComponent<LineRenderer>();
+            var ctrl = new ConnectCtrl(this,lineRender, objs, lineMaterial, lineWight, pointDistence, _viewCamera ?? Camera.main);
             return ctrl;
         }
       

@@ -87,7 +87,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void EndExecute()
+        public virtual void EndExecute()
         {
             onBeforePlayEnd.Invoke(StepName);
             foreach (var item in ActionObjs)
@@ -96,7 +96,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void UnDoExecute()
+        public virtual void UnDoExecute()
         {
             onBeforeUnDo.Invoke(StepName);
             foreach (var item in ActionObjs)
