@@ -22,7 +22,6 @@ namespace WorldActionSystem
         private string resonwhy;
         private float distence;
         private List<InstallObj> installObjs = new List<InstallObj>();
-
         public InstallCtrl(ActionCommand trigger, float distence, InstallObj[] installObjs):base(trigger)
         {
             highLight = new ShaderHighLight();
@@ -210,6 +209,11 @@ namespace WorldActionSystem
             if (AllElementInstalled())
             {
                 SetCompleteNotify();
+                if (isForceAuto)
+                {
+                    OnEndExecute();
+                    trigger.Complete();
+                }
             }
         }
 
@@ -392,11 +396,11 @@ namespace WorldActionSystem
             }
         }
 
-        public override void OnStartExecute(bool forceAuto)
+        public override void OnStartExecute(bool forceauto)
         {
-            base.OnStartExecute(forceAuto);
+            base.OnStartExecute(forceauto);
             SetElemetsStart();
-            AutoInstallWhenNeed(forceAuto);
+            AutoInstallWhenNeed(forceauto);
         }
         public override void OnEndExecute()
         {

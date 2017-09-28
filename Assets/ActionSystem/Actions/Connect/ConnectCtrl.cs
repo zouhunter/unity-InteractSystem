@@ -157,6 +157,7 @@ namespace WorldActionSystem
             if(forceAuto)
             {
                 OnEndExecute();
+                trigger.Complete();
             }
         }
 

@@ -117,6 +117,7 @@ namespace WorldActionSystem
                 {
                     item.OnEndExecute();
                 }
+                trigger.Complete();
             }
         }
     }

@@ -88,6 +88,7 @@ namespace WorldActionSystem
             if (forceAuto)
             {
                 OnEndExecute();//直接结束??
+                trigger.Complete();
             }
         }
     }

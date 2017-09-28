@@ -19,6 +19,14 @@ namespace WorldActionSystem
         {
             
         }
+        public override void OnStartExecute(bool forceAuto)
+        {
+            base.OnStartExecute(forceAuto);
+            if(forceAuto)
+            {
+                ExecuteAStep();
+            }
+        }
         public override IEnumerator Update()
         {
             yield break;

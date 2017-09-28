@@ -83,7 +83,10 @@ namespace WorldActionSystem
             if (remoteController.CurrCommand != null)
             {
                 remoteController.StartExecuteCommand(OnEndExecute, autoPlay.isOn);
-                textShow.text = remoteController.CurrCommand.StepName;
+                if(remoteController.CurrCommand != null)
+                {
+                    textShow.text = remoteController.CurrCommand.StepName;
+                }
             }
             else
             {

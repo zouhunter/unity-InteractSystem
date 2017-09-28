@@ -76,7 +76,7 @@ namespace WorldActionSystem
             }
         }
 
-        private bool ExecuteAStep()
+        protected bool ExecuteAStep()
         {
             if (queueID.Count > 0)
             {
