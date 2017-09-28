@@ -116,42 +116,75 @@ namespace WorldActionSystem
         {
             foreach (var item in prefabList)
             {
-                var instence = GameObject.Instantiate(item.prefab);
-                instence.name = item.prefab.name;
+                if (!item.active) continue;
+                else {
+                    item.prefab.gameObject.SetActive(true);
+                }
+                var created = GameObject.Instantiate(item.prefab);
+                created.name = item.prefab.name;
                 if (item.reset && item.target != null)
                 {
-                    ResetInstenceMatrix(instence.transform, item.target);
+                    ResetInstenceMatrix(created.transform, item.target);
                 }
                 else
                 {
-                    instance.transform.SetParent(transform);
+                    created.transform.SetParent(transform);
                 }
                 if (item.containsCommand)
                 {
-                    var cmdList = new List<ActionCommand>();
-                    instence.GetComponentsInChildren<ActionCommand>(true, cmdList);
-                    foreach (var cmd in cmdList)
-                    {
-                        onCreateCommand(cmd);
-                    }
+                    RetriveCommand(created.transform, onCreateCommand);
                 }
                 if (item.containsPickAble)
                 {
-                    var pickList = new List<PickUpAbleElement>();
-                    instence.GetComponentsInChildren<PickUpAbleElement>(true, pickList);
-                    foreach (var pick in pickList)
-                    {
-                        onCreateElement(pick);
-                    }
+                    RetivePickElement(created.transform, onCreateElement);
                 }
             }
         }
-        private void ResetInstenceMatrix(Transform transform, Transform target)
+        public static void ResetInstenceMatrix(Transform transform, Transform target)
         {
             transform.SetParent(target);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
+        }
+
+        private void RetriveCommand(Transform trans,UnityAction<ActionCommand> onRetive)
+        {
+            if (!trans.gameObject.activeSelf) return;
+            var com = trans.GetComponent<ActionCommand>();
+            if(com)
+            {
+                onRetive(com);
+                return;
+            }
+            else
+            {
+
+                foreach (Transform child in trans)
+                {
+                    RetriveCommand(child, onRetive);
+                }
+            }
+
+        }
+
+        private void RetivePickElement(Transform trans, UnityAction<PickUpAbleElement> onRetive)
+        {
+            if (!trans.gameObject.activeSelf) return;
+            var com = trans.GetComponent<PickUpAbleElement>();
+            if (com)
+            {
+                onRetive(com);
+                return;
+            }
+            else
+            {
+                foreach (Transform child in trans)
+                {
+                    RetivePickElement(child, onRetive);
+                }
+            }
+
         }
 
 

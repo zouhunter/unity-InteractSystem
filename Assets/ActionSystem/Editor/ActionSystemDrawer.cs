@@ -139,9 +139,23 @@ namespace WorldActionSystem
                         for (int i = 0; i < objs.Length; i++)
                         {
                             var obj = objs[i];
+                            var prefab = PrefabUtility.GetPrefabParent(obj);
+                            UnityEngine.Object goodObj = null;
+                            if (prefab != null)
+                            {
+                                goodObj = PrefabUtility.FindPrefabRoot(prefab as GameObject);
+                            }
+                            else
+                            {
+                                var path = AssetDatabase.GetAssetPath(obj);
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    goodObj = obj;
+                                }
+                            }
                             prefabListProp.InsertArrayElementAtIndex(prefabListProp.arraySize);
                             var itemprefab = prefabListProp.GetArrayElementAtIndex(prefabListProp.arraySize - 1);
-                            itemprefab.FindPropertyRelative("prefab").objectReferenceValue = obj;
+                            itemprefab.FindPropertyRelative("prefab").objectReferenceValue = goodObj;
                         }
                     }
                     break;
@@ -156,7 +170,13 @@ namespace WorldActionSystem
                 GameObject prefab = null;
                 var prefabProp = itemProp.FindPropertyRelative("prefab");
                 var instanceIDProp = itemProp.FindPropertyRelative("instanceID");
-
+                if (instanceIDProp.intValue != 0) {
+                    var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
+                    if (gitem != null)
+                    {
+                        continue;
+                    }
+                }
                 prefab = prefabProp.objectReferenceValue as GameObject;
 
                 if (prefab == null)
@@ -174,9 +194,7 @@ namespace WorldActionSystem
                     if (resetProp.boolValue && targetProp.objectReferenceValue != null)
                     {
                         var targetO = targetProp.objectReferenceValue as Transform;
-                        go.transform.position = targetO.position;
-                        go.transform.rotation = targetO.rotation;
-                        go.transform.localScale = targetO.localScale;
+                        ActionSystem.ResetInstenceMatrix(go.transform, targetO);
                     }
 
                     instanceIDProp.intValue = go.GetInstanceID();
@@ -192,7 +210,7 @@ namespace WorldActionSystem
             var needRemove = new List<ActionPrefabItem>();
             foreach (var item in actionSystem.prefabList)
             {
-                if(newList.Find(x=>x.ID == item.ID) == null)
+                if (newList.Find(x => x.ID == item.ID) == null)
                 {
                     newList.Add(item);
                 }
@@ -225,25 +243,9 @@ namespace WorldActionSystem
         }
         private void SortPrefabs(SerializedProperty property)
         {
-            for (int i = 0; i < property.arraySize; i++)
-            {
-                for (int j = i; j < property.arraySize - i - 1; j++)
-                {
-                    var itemj = property.GetArrayElementAtIndex(j).FindPropertyRelative("prefab");
-                    var itemj1 = property.GetArrayElementAtIndex(j + 1).FindPropertyRelative("prefab");
-                    if(itemj.objectReferenceValue != null &&itemj1.objectReferenceValue != null)
-                    {
-                        var name1 = itemj.objectReferenceValue.name;
-                        var name2 = itemj1.objectReferenceValue.name;
-
-                        if (string.Compare(name1, name2) > 0)
-                        {
-                            property.MoveArrayElement(j, j + 1);
-                        }
-                    }
-                   
-                }
-            }
+            var actionSystem = (ActionSystem)target;
+            actionSystem.prefabList.Sort();
+            EditorUtility.SetDirty(actionSystem);
         }
 
         private void TrySaveAllPrefabs(SerializedProperty arrayProp)

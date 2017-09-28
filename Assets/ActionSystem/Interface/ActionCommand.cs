@@ -63,7 +63,7 @@ namespace WorldActionSystem
 
         protected virtual void Awake()
         {
-            actionObjs = GetComponentsInChildren<ActionObj>(true);
+            actionObjs = GetComponentsInChildren<ActionObj>(false);
             if (m_viewCamera != null) cameraStartVisiable = m_viewCamera.gameObject.activeSelf;
         }
         public void RegistComplete(StepComplete stepComplete)

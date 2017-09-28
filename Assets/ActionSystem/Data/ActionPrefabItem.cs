@@ -3,12 +3,13 @@ using System;
 namespace WorldActionSystem
 {
     [System.Serializable]
-    public class ActionPrefabItem:IComparable<string>
+    public class ActionPrefabItem:IComparable<ActionPrefabItem>
     {
 #if UNITY_EDITOR
         public int instanceID;
 #endif
         protected string _id;
+        public bool active = true;
         public string ID
         {
             get
@@ -33,10 +34,10 @@ namespace WorldActionSystem
         public bool reset;
         public Transform target;
         public GameObject prefab;
-
-        public int CompareTo(string other)
+        public int CompareTo(ActionPrefabItem other)
         {
-            return string.Compare(prefab.name,other);
+            if (prefab == null || other.prefab == null) return 0;
+            return string.Compare(prefab.name,other.prefab.name);
         }
     }
 

@@ -13,7 +13,9 @@ namespace WorldActionSystem
         protected SerializedProperty resetProp;
         protected SerializedProperty containsCommandProp;
         protected SerializedProperty containsPickAbleProp;
-        
+        protected SerializedProperty activeProp;
+
+
         protected SerializedProperty instanceIDProp;
         protected SerializedProperty targetProp;
         protected SerializedProperty prefabProp;
@@ -21,6 +23,7 @@ namespace WorldActionSystem
         private Color color;
         protected void FindCommonPropertys(SerializedProperty property)
         {
+            activeProp = property.FindPropertyRelative("active");
             resetProp = property.FindPropertyRelative("reset");
             instanceIDProp = property.FindPropertyRelative("instanceID");
             targetProp = property.FindPropertyRelative("target");
@@ -43,6 +46,7 @@ namespace WorldActionSystem
                 }
                 GameObject.DestroyImmediate(gitem);
             }
+            instanceIDProp.intValue = 0;
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -80,30 +84,44 @@ namespace WorldActionSystem
             {
                 drawrText = "";
                 color = Color.clear;
+                var count = 0;
                 if (resetProp.boolValue)
                 {
                     drawrText += "[reset] ";
-                    color += new Color(0.1f, 0.2f, 0.3f);
+                    color += new Color(0.3f, 0.5f, 0.8f);
+                    count++;
                 }
                 if (containsCommandProp.boolValue)
                 {
                     drawrText += "[command] ";
-                    color += new Color(0.2f, 0.3f, 0.1f);
+                    color += new Color(0.5f, 0.8f, 0.3f);
+                    count++;
                 }
                 if (containsPickAbleProp.boolValue)
                 {
                     drawrText += "[pickup] ";
-                    color += new Color(0.3f, 0.2f, 0.1f);
+                    color += new Color(0.8f, 0.3f, 0.5f);
+                    count++;
                 }
-                var infoRect = rect;
-                infoRect.x += 100f;
-                infoRect.width -= 100f;
-                GUI.color = color;
-                EditorGUI.SelectableLabel(infoRect, drawrText);
-                GUI.color = Color.white;
+                if(!activeProp.boolValue)
+                {
+                    drawrText = "[hide]";
+                    color = Color.gray;
+                    count = 1;
+                }
+                if(count >0)
+                {
+                    var infoRect = rect;
+                    infoRect.x = infoRect.width - 150f;
+                    infoRect.width = 150f;
+                    GUI.color = color / count;
+                    EditorGUI.SelectableLabel(infoRect, drawrText);
+                    GUI.color = Color.white;
+                }
+               
             }
 
-            rect = new Rect(position.max.x - position.width * 0.1f, position.y, position.width * 0.1f, EditorGUIUtility.singleLineHeight);
+            rect = new Rect(position.max.x - position.width * 0.1f, position.y,20, EditorGUIUtility.singleLineHeight);
 
             switch (Event.current.type)
             {
@@ -124,7 +142,7 @@ namespace WorldActionSystem
                                 var prefab = PrefabUtility.GetPrefabParent(obj);
                                 if(prefab != null)
                                 {
-                                    prefabProp.objectReferenceValue = prefab;
+                                    prefabProp.objectReferenceValue =PrefabUtility.FindPrefabRoot(prefab as GameObject);
                                 }
                                 else
                                 {
@@ -159,11 +177,13 @@ namespace WorldActionSystem
             rect = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
             if (property.isExpanded)
             {
-                var choiseRect = new Rect(rect.x, rect.y, position.width * 0.3f, rect.height);
+                var choiseRect = new Rect(rect.x, rect.y, position.width * 0.24f, rect.height);
+                activeProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Active", activeProp.boolValue);
+                choiseRect.x += position.width * 0.26f;
                 resetProp.boolValue = EditorGUI.ToggleLeft(choiseRect,"Reset", resetProp.boolValue);
-                choiseRect.x += position.width * 0.32f;
+                choiseRect.x += position.width * 0.26f;
                 containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect,"Command", containsCommandProp.boolValue);
-                choiseRect.x += position.width * 0.32f;
+                choiseRect.x += position.width * 0.26f;
                 containsPickAbleProp.boolValue = EditorGUI.ToggleLeft(choiseRect,"PickUp", containsPickAbleProp.boolValue);
                 if (resetProp.boolValue)
                 {
@@ -177,6 +197,14 @@ namespace WorldActionSystem
             if (prefabProp.objectReferenceValue == null){
                 return;
             }
+            if(instanceIDProp.intValue != 0)
+            {
+                var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
+                if(gitem != null)
+                {
+                    return;
+                }
+            }
             GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
             if (gopfb != null)
             {
@@ -189,13 +217,11 @@ namespace WorldActionSystem
                     if(trans != null)
                     {
                         var target = trans as Transform;
-                        go.transform.position = target.position;
-                        go.transform.rotation = target.rotation;
-                        go.transform.localScale = target.localScale;
+                        ActionSystem.ResetInstenceMatrix(go.transform, target);
                     }
-                  else
+                    else
                     {
-                        Debug.LogError("坐标对象为空");
+                        Debug.LogWarning("坐标对象为空"+go.name);
                     }
                 }
                 instanceIDProp.intValue = go.GetInstanceID();
