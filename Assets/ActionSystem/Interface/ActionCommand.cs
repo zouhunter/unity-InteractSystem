@@ -191,8 +191,8 @@ namespace WorldActionSystem
                 mainCamera.gameObject.SetActive(mainCamraExecuteVisiable);
             }
             onBeforePlayEnd.Invoke(StepName);
-            coroutineCtrl.OnEndExecute();
-            StopCoroutine();
+            if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
+            StopUpdateAction();
         }
 
         public virtual void UnDoExecute()
@@ -206,12 +206,13 @@ namespace WorldActionSystem
             started = false;
             completed = false;
             onBeforeUnDo.Invoke(StepName);
-            coroutineCtrl.OnUnDoExecute();
-            StopCoroutine();
+            if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
+            StopUpdateAction();
         }
 
-        private void StopCoroutine()
+        private void StopUpdateAction()
         {
+
             if (coroutine != null)
             {
                 StopCoroutine(coroutine);

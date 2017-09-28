@@ -12,7 +12,7 @@ namespace WorldActionSystem
     {
         public float lineWight = 0.1f;
         public Material lineMaterial;
-        public float hitDistence;
+        public float hitDistence = 10;
         public float pointDistence=0.1f;
 
         protected override IActionCtroller CreateCtrl()

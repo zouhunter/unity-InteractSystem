@@ -9,6 +9,92 @@ namespace WorldActionSystem
     public static class GeometryUtil
     {
         /// <summary>
+        /// 点到直线距离
+        /// </summary>
+        /// <param name="point">点坐标</param>
+        /// <param name="linePoint1">直线上一个点的坐标</param>
+        /// <param name="linePoint2">直线上另一个点的坐标</param>
+        /// <returns></returns>
+        public static float DisPoint2Line(Vector3 point, Vector3 linePoint1, Vector3 linePoint2)
+        {
+            Vector3 vec1 = point - linePoint1;
+            Vector3 vec2 = linePoint2 - linePoint1;
+            Vector3 vecProj = Vector3.Project(vec1, vec2);
+            float dis = Mathf.Sqrt(Mathf.Pow(Vector3.Magnitude(vec1), 2) - Mathf.Pow(Vector3.Magnitude(vecProj), 2));
+            return dis;
+        }
+        /// <summary>
+        /// 点到平面的距离 自行推演函数
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="surfacePoint1"></param>
+        /// <param name="surfacePoint2"></param>
+        /// <param name="surfacePoint3"></param>
+        /// <returns></returns>
+        public static float DisPoint2Surface(Vector3 point, Vector3 surfacePoint1, Vector3 surfacePoint2, Vector3 surfacePoint3)
+        {
+            //空间直线一般式方程 Ax + By + Cz + D = 0;
+            //假定 A = 1 ，推演B C D用A来表示，约去A，可得方程
+            float BNumerator = (surfacePoint1.x - surfacePoint2.x) * (surfacePoint2.z - surfacePoint3.z) - (surfacePoint2.x - surfacePoint3.x) * (surfacePoint1.z - surfacePoint2.z);
+            float BDenominator = (surfacePoint2.y - surfacePoint3.y) * (surfacePoint1.z - surfacePoint2.z) - (surfacePoint1.y - surfacePoint2.y) * (surfacePoint2.z - surfacePoint3.z);
+            float B = BNumerator / BDenominator;
+            float C = (B * (surfacePoint1.y - surfacePoint2.y) + (surfacePoint1.x - surfacePoint2.x)) / (surfacePoint2.z - surfacePoint1.z);
+            float D = -surfacePoint1.x - B * surfacePoint1.y - C * surfacePoint1.z;
+
+            return DisPoint2Surface(point, 1f, B, C, D);
+        }
+
+        public static float DisPoint2Surface(Vector3 point, float FactorA, float FactorB, float FactorC, float FactorD)
+        {
+            //点到平面的距离公式 d = |Ax + By + Cz + D|/sqrt(A2 + B2 + C2);
+            float numerator = Mathf.Abs(FactorA * point.x + FactorB * point.y + FactorC * point.z + FactorD);
+            float denominator = Mathf.Sqrt(Mathf.Pow(FactorA, 2) + Mathf.Pow(FactorB, 2) + Mathf.Pow(FactorC, 2));
+            float dis = numerator / denominator;
+            return dis;
+        }
+
+        /// <summary>
+        /// 点到平面距离 调用U3D Plane类处理
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="surfacePoint1"></param>
+        /// <param name="surfacePoint2"></param>
+        /// <param name="surfacePoint3"></param>
+        /// <returns></returns>
+        public static float DisPoint2Surface2(Vector3 point, Vector3 surfacePoint1, Vector3 surfacePoint2, Vector3 surfacePoint3)
+        {
+            Plane plane = new Plane(surfacePoint1, surfacePoint2, surfacePoint3);
+
+            return DisPoint2Surface2(point, plane);
+        }
+
+        public static float DisPoint2Surface2(Vector3 point, Plane plane)
+        {
+            return plane.GetDistanceToPoint(point);
+        }
+
+        /// <summary>
+        /// 平面夹角
+        /// </summary>
+        /// <param name="surface1Point1"></param>
+        /// <param name="surface1Point2"></param>
+        /// <param name="surface1Point3"></param>
+        /// <param name="surface2Point1"></param>
+        /// <param name="surface2Point2"></param>
+        /// <param name="surface2Point3"></param>
+        /// <returns></returns>
+        public static float SurfaceAngle(Vector3 surface1Point1, Vector3 surface1Point2, Vector3 surface1Point3, Vector3 surface2Point1, Vector3 surface2Point2, Vector3 surface2Point3)
+        {
+            Plane plane1 = new Plane(surface1Point1, surface1Point1, surface1Point1);
+            Plane plane2 = new Plane(surface2Point1, surface2Point1, surface2Point1);
+            return SurfaceAngle(plane1, plane2);
+        }
+
+        public static float SurfaceAngle(Plane plane1, Plane plane2)
+        {
+            return Vector3.Angle(plane1.normal, plane2.normal);
+        }
+        /// <summary>
         /// 利用线上一个点，线的方向，面上一个点，及面的法向量 判断线上一点到面的距离
         /// </summary>
         /// <param name="linePoint"></param>
@@ -29,6 +115,7 @@ namespace WorldActionSystem
 
             return 0;
         }
+
         /// <summary>
         /// 判断面与线的焦点
         /// </summary>
@@ -60,7 +147,7 @@ namespace WorldActionSystem
         /// <param name="point2Direction"></param>
         /// <returns></returns>
         //Returns 2 points since on line 1 there will be a closest point to line 2, and on line 2 there will be a closest point to line 1.
-        public static KeyValuePair<Vector3,Vector3> ClosestPointsOnTwoLines(Vector3 point1, Vector3 point1Direction, Vector3 point2, Vector3 point2Direction)
+        public static KeyValuePair<Vector3, Vector3> ClosestPointsOnTwoLines(Vector3 point1, Vector3 point1Direction, Vector3 point2, Vector3 point2Direction)
         {
             //I dont think we need to normalize
             //point1Direction.Normalize();
@@ -97,7 +184,7 @@ namespace WorldActionSystem
                 second = point2 + Vector3.Project(point1 - point2, point2Direction);
             }
 
-            KeyValuePair<Vector3, Vector3> pair = new KeyValuePair<Vector3, Vector3>(first,second);
+            KeyValuePair<Vector3, Vector3> pair = new KeyValuePair<Vector3, Vector3>(first, second);
 
             return pair;
         }
@@ -109,10 +196,10 @@ namespace WorldActionSystem
         /// <param name="linePoint"></param>
         /// <param name="lineDirection"></param>
         /// <returns></returns>
-        public static KeyValuePair<Vector3,Vector3> ClosestPointsOnSegmentToLine(Vector3 segment0, Vector3 segment1, Vector3 linePoint, Vector3 lineDirection)
+        public static KeyValuePair<Vector3, Vector3> ClosestPointsOnSegmentToLine(Vector3 segment0, Vector3 segment1, Vector3 linePoint, Vector3 lineDirection)
         {
             var closests = ClosestPointsOnTwoLines(segment0, segment1 - segment0, linePoint, lineDirection);
-            closests =new KeyValuePair<Vector3, Vector3>( ClampToSegment(closests.Key, segment0, segment1),closests.Value);
+            closests = new KeyValuePair<Vector3, Vector3>(ClampToSegment(closests.Key, segment0, segment1), closests.Value);
 
             return closests;
         }
@@ -175,5 +262,6 @@ namespace WorldActionSystem
         {
             return Vector3.Dot(direction, otherDirection) > 0f;
         }
+
     }
 }
