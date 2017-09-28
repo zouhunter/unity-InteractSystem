@@ -18,6 +18,7 @@ namespace WorldActionSystem
             var coroutineCtrl = new InstallCtrl(this, distence, installObjs);
             return coroutineCtrl;
         }
+
     }
 
 }

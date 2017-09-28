@@ -21,7 +21,6 @@ namespace WorldActionSystem
         private bool installAble;
         private string resonwhy;
         private float distence;
-        private string stepName;
         private List<InstallObj> installObjs = new List<InstallObj>();
 
         public InstallCtrl(ActionCommand trigger, float distence, InstallObj[] installObjs):base(trigger)

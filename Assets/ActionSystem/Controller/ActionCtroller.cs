@@ -42,7 +42,10 @@ namespace WorldActionSystem
         {
             foreach (var item in actionObjs)
             {
-                item.OnEndExecute();
+                if (!item.Complete)
+                {
+                    item.OnEndExecute();
+                }
             }
         }
 
@@ -51,7 +54,10 @@ namespace WorldActionSystem
             ChargeQueueIDs();
             foreach (var item in actionObjs)
             {
-                item.OnUnDoExecute();
+                if (item.Started)
+                {
+                    item.OnUnDoExecute();
+                }
             }
         }
 

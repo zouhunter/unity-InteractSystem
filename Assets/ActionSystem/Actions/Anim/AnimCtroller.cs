@@ -19,7 +19,6 @@ namespace WorldActionSystem
         {
             
         }
-
         public override IEnumerator Update()
         {
             yield break;

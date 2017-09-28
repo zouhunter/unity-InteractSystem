@@ -45,6 +45,10 @@ namespace WorldActionSystem
             if(!completed)
             {
                 completed = true;
+                foreach (var item in commandList)
+                {
+                    item.EndExecute();
+                }
                 OnEndExecute();
                 return true;
             }
@@ -82,10 +86,6 @@ namespace WorldActionSystem
         public void OnEndExecute()
         {
             index = commandList.Count - 1;
-            foreach (var item in commandList)
-            {
-                item.OnEndExecute();
-            }
         }
     }
 

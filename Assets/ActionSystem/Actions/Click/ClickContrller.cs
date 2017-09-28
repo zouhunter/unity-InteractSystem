@@ -19,7 +19,7 @@ namespace WorldActionSystem
         private IHighLightItems highLight;
         private Renderer lastSelected;
 
-        public ClickContrller(ActionCommand trigger):base(trigger)
+        public ClickContrller(ActionCommand trigger) : base(trigger)
         {
             viewCamera = trigger.viewCamera;
             highLight = new ShaderHighLight();
@@ -88,7 +88,8 @@ namespace WorldActionSystem
 
                 if (TryHitBtnObj(out hitObj))
                 {
-                    if (Input.GetMouseButtonDown(0)){
+                    if (Input.GetMouseButtonDown(0))
+                    {
                         OnBtnClicked(hitObj);
                     }
                     OnHoverBtn(hitObj);
@@ -105,7 +106,7 @@ namespace WorldActionSystem
             }
         }
 
-      
+
         public override void OnStartExecute(bool forceAuto)
         {
             base.OnStartExecute(forceAuto);
@@ -118,8 +119,6 @@ namespace WorldActionSystem
                 }
             }
         }
-
-
     }
 
 }
