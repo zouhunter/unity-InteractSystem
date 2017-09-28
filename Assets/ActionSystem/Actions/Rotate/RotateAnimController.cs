@@ -7,22 +7,19 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class RotateAnimController:IActionCtroller
+    public class RotateAnimController:ActionCtroller
     {
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
         private float distence = 10;
-        private Camera objCamera;
 
-        public RotateAnimController(ActionCommand trigger)
+        public RotateAnimController(float distence,ActionCommand trigger):base(trigger)
         {
-            InitCommand(trigger);
+            this.distence = distence;
         }
 
-        private ActionCommand trigger { get; set; }
-
-        public IEnumerator Update()
+        public override IEnumerator Update()
         {
             while (true)
             {
@@ -37,16 +34,11 @@ namespace WorldActionSystem
                 }
             }
         }
-
-        public void SetViewCamera(Camera objCamera)
-        {
-            this.objCamera = objCamera;
-        }
         private bool TrySelectRotateObj()
         {
-            if (objCamera == null) return false;
+            if (trigger.viewCamera == null) return false;
 
-            ray = objCamera.ScreenPointToRay(Input.mousePosition);
+            ray = trigger.viewCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit, distence, (1 << Setting.rotateItemLayer)))
             {
@@ -63,7 +55,7 @@ namespace WorldActionSystem
             Vector3 previousMousePosition = Vector3.zero;
             while (!Input.GetMouseButtonUp(0) && selectedObj.Started)
             {
-                ray = objCamera.ScreenPointToRay(Input.mousePosition);
+                ray = trigger.viewCamera.ScreenPointToRay(Input.mousePosition);
                 Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, originalTargetPosition, axis);
                 if (previousMousePosition != Vector3.zero && mousePosition != Vector3.zero && IsInCercle(mousePosition))
                 {
@@ -83,36 +75,20 @@ namespace WorldActionSystem
 
             if (selectedObj.TryMarchRot())
             {
-                //if (!SetNextRotateAble())
-                //{
-                //    trigger.Complete();
-                //}
-                Debug.Log("Match");
+                selectedObj.OnEndExecute();
             }
         }
         private bool IsInCercle(Vector3 pos)
         {
             return Vector3.Distance(selectedObj.transform.position, pos) < selectedObj.triggerRadius;
         }
-
-        public void InitCommand(ActionCommand trigger)
+        public override void OnStartExecute(bool forceAuto)
         {
-            this.trigger = trigger;
-        }
-
-        public void OnStartExecute(bool forceAuto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnEndExecute()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnUnDoExecute()
-        {
-            throw new NotImplementedException();
+            base.OnStartExecute(forceAuto);
+            if (forceAuto)
+            {
+                OnEndExecute();//直接结束??
+            }
         }
     }
 

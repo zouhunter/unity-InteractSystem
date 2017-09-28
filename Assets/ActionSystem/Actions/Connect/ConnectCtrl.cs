@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ConnectCtrl:IActionCtroller
+    public class ConnectCtrl:ActionCtroller
     {
         private ConnectObj[] objs;
         public UnityAction<string> onError;
@@ -18,17 +18,19 @@ namespace WorldActionSystem
         private Collider firstCollider;
         private LineRenderer line;
         private float pointDistence;
-        private Camera objCamera;
-        private ActionCommand trigger { get; set; }
+        private float hitDistence;
+        private Camera objCamera { get; set; }
 
-        public ConnectCtrl(ActionCommand trigger, LineRenderer lineRender,ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence)
+        public ConnectCtrl(ActionCommand trigger,ConnectObj[] objs, Material lineMaterial, float lineWight,float hitDistence, float pointDistence):base(trigger)
         {
             this.objs = objs;
             this.objCamera = trigger.viewCamera;
+            this.hitDistence = hitDistence;
             this.pointDistence = pointDistence;
+            var lineRender = trigger. GetComponent<LineRenderer>();
+            if (lineRender == null) lineRender = trigger.gameObject.AddComponent<LineRenderer>();
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);
-            InitCommand(trigger);
         }
 
         private void InitConnectObj(Material lineMaterial, float lineWight)
@@ -44,7 +46,7 @@ namespace WorldActionSystem
             line.material = lineMaterial;
         }
 
-        public IEnumerator Update()
+        public override IEnumerator Update()
         {
             while (true)
             {
@@ -78,7 +80,7 @@ namespace WorldActionSystem
         private bool TryHitNode(out Collider collider)
         {
             ray = objCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 10, 1 << Setting.connectItemLayer))
+            if (Physics.Raycast(ray, out hit, hitDistence, 1 << Setting.connectItemLayer))
             {
                 if (onHoverItem != null) onHoverItem(hit.collider);
                 if (Input.GetMouseButtonDown(0))
@@ -91,6 +93,7 @@ namespace WorldActionSystem
             collider = null;
             return false;
         }
+
         private void UpdateLine()
         {
             if(Input.GetMouseButtonDown(0))
@@ -136,6 +139,7 @@ namespace WorldActionSystem
             ClearLineRender();
             if (!canConnect && onError != null) onError.Invoke(string.Format("{0}和{1}两点不需要连接", element1, element2));
         }
+
         private void ClearLineRender()
         {
             firstCollider = null;
@@ -147,34 +151,25 @@ namespace WorldActionSystem
 #endif
         }
 
-        public void InitCommand(ActionCommand trigger)
+        public override void OnStartExecute(bool forceAuto)
         {
-            this.trigger = trigger;
-        }
-
-        public void OnStartExecute(bool forceAuto)
-        {
-            foreach (var item in objs)
+            base.OnStartExecute(forceAuto);
+            if(forceAuto)
             {
-                item.OnStartExecute();
-            };
-        }
-
-        public void OnEndExecute()
-        {
-            foreach (var item in objs)
-            {
-                item.OnEndExecute();
+                OnEndExecute();
             }
         }
 
-        public void OnUnDoExecute()
+        public override void OnEndExecute()
         {
+            base.OnEndExecute(); 
             ClearLineRender();
-            foreach (var item in objs)
-            {
-                item.OnUnDoExecute();
-            }
+        }
+
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            ClearLineRender();
         }
     }
 }

@@ -23,12 +23,10 @@ namespace WorldActionSystem
         public float circleDetail = 40;
         public float deviation = 1;
         public float rotSpeed = 40;
-        private float flashSpeed = 1f;
+        public float flashSpeed = 1f;
+        public bool highLight = true;
         public DirType dirType;
 
-        [SerializeField]
-        private Camera _viewCamera;
-        public Camera ViewCamera { get { return _viewCamera ?? Camera.main; } }
         public Vector3 Direction
         {
             get
@@ -48,13 +46,13 @@ namespace WorldActionSystem
         private float currAngle;
         private List<Vector3> _lines = new List<Vector3>();
         private LineRenderer lineRender;
-        private bool highLight;
         private Quaternion startRot;
         private FloatComparer comparer;
         internal Renderer render;
         private float flash = 0;
         private float rangleCercle = .1f;
         private bool right;
+
         protected override void Start()
         {
             base.Start();
@@ -162,20 +160,17 @@ namespace WorldActionSystem
         public override void OnStartExecute()
         {
             base.OnStartExecute();
-            if (_viewCamera) _viewCamera.gameObject.SetActive(true);
             transform.rotation = startRot;
         }
         public override void OnEndExecute()
         {
             base.OnEndExecute();
-            if (_viewCamera) _viewCamera.gameObject.SetActive(false);
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
             transform.rotation = startRot;
             currAngle = 0;
-            if (_viewCamera) _viewCamera.gameObject.SetActive(false);
         }
 
         internal void SetHighLight(bool on)
