@@ -45,16 +45,33 @@ namespace WorldActionSystem
                 }
             }
         }
-        public bool TryConnectNode(Collider collider1, Collider collider2, Vector3[] positions)
+        public void AutoConnectNodes()
+        {
+            foreach (var item in connectGroup)
+            {
+                var id1 = item.p1;
+                var id2 = item.p2;
+                Vector3[] positions = new Vector3[2];
+                positions[0] = nodes[id1].transform.position;
+                positions[1] = nodes[id2].transform.position;
+                if (id1 > id2) Array.Reverse(positions);
+                var id = 1 << id1 | 1 << id2;
+                positionDic[id] = positions;
+                RefeshState(id);
+                OnOneNodeConnected();
+            }
+        }
+        public bool TryConnectNode(Collider collider1, Collider collider2)
         {
             if (nodes.Contains(collider1) && nodes.Contains(collider2))
             {
                 var id1 = nodes.IndexOf(collider1);
                 var id2 = nodes.IndexOf(collider2);
+
                 if (CanConnect(Mathf.Min(id1, id2), Mathf.Max(id1, id2)))
                 {
                     var id = 1 << id1 | 1 << id2;
-                    positionDic[id] = positions;
+                    positionDic[id] = new Vector3[] { collider1.transform.position, collider2.transform.position };
                     RefeshState(id);
                     OnOneNodeConnected();
                     return true;
@@ -102,7 +119,7 @@ namespace WorldActionSystem
 
             var lineRender = GetLineRender(id);
 #if UNITY_5_6_OR_NEWER
-            lineRender.positionCount = positionList.Count;
+            lineRender.positionCount = positionList.Length;
 #else
             lineRender.SetVertexCount(positionList.Length);
 #endif
@@ -143,10 +160,11 @@ namespace WorldActionSystem
         }
         private void ResetLinRenders()
         {
+            Debug.Log("ResetLinRenders");
             foreach (var lineRender in lineRenders)
             {
 #if UNITY_5_6_OR_NEWER
-                 lineRender.Value..positionCount = 1;
+                 lineRender.Value.positionCount = 1;
 #else
                 lineRender.Value.SetVertexCount(1);
 #endif

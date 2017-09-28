@@ -263,8 +263,9 @@ namespace WorldActionSystem
             return noMatched.Count == 0;
         }
 
-        public void OnStartExecute(bool forceAuto)
+        public override void OnStartExecute(bool forceAuto)
         {
+            base.OnStartExecute(forceAuto);
             List<MatchObj> posList = null;
             if (forceAuto)
             {
@@ -285,11 +286,6 @@ namespace WorldActionSystem
             }
 
             pickedUp = false;
-
-            foreach (var item in matchObjs)
-            {
-                item.OnStartExecute();
-            }
         }
 
         public override void OnEndExecute()

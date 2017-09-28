@@ -103,12 +103,12 @@ namespace WorldActionSystem
             else
             {
                 ray = objCamera.ScreenPointToRay(Input.mousePosition);
-                Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, firstCollider.transform.position, firstCollider.transform.forward);
+                Vector3 hitPosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, firstCollider.transform.position, ray.direction);
                 if (positons.Count > 0)
                 {
-                    if (Vector3.Distance(positons[positons.Count - 1], mousePosition) > pointDistence)
+                    if (Vector3.Distance(positons[positons.Count - 1], hitPosition) > pointDistence)
                     {
-                        positons.Add(mousePosition);
+                        positons.Add(hitPosition);
 #if UNITY_5_6_OR_NEWER
                     line.positionCount = positons.Count;
 
@@ -130,7 +130,7 @@ namespace WorldActionSystem
             bool canConnect = false;
             foreach (var item in objs)
             {
-                if (item.TryConnectNode(collider, firstCollider, positons.ToArray()))
+                if (item.TryConnectNode(collider, firstCollider))
                 {
                     canConnect = true;
                     break;
