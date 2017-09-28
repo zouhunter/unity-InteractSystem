@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace WorldActionSystem
 {
-    public class ClickContrller : IActionCtroller
+    public class ClickContrller : ActionCtroller
     {
         private RaycastHit hit;
         private Ray ray;
@@ -18,17 +18,11 @@ namespace WorldActionSystem
         private Camera viewCamera;
         private IHighLightItems highLight;
         private Renderer lastSelected;
-        private ClickObj[] actionObjs;
-        private List<int> queueID = new List<int>();
-        private ActionCommand trigger { get; set; }
 
-        public ClickContrller(ActionCommand trigger, Camera camera, bool highLighter)
+        public ClickContrller(ActionCommand trigger):base(trigger)
         {
-            Debug.Assert(camera != null);
-            viewCamera = camera;
+            viewCamera = trigger.viewCamera;
             highLight = new ShaderHighLight();
-            if (highLighter) highLight.SetState(highLighter);
-            InitCommand(trigger);
         }
 
         void OnBtnClicked(ClickObj obj)
@@ -44,12 +38,8 @@ namespace WorldActionSystem
             if (obj.Started && !obj.Complete)
             {
                 obj.OnEndExecute();
-                if (!SetNextButtonsClickAble())
-                {
-                    trigger.Complete();
-                }
             }
-
+            highLight.UnHighLightTarget(obj.render);
         }
 
         void OnHoverBtn(ClickObj obj)
@@ -86,7 +76,7 @@ namespace WorldActionSystem
             return false;
         }
 
-        public IEnumerator Update()
+        public override IEnumerator Update()
         {
             screenPoint = new Vector3();
             while (true)
@@ -98,8 +88,7 @@ namespace WorldActionSystem
 
                 if (TryHitBtnObj(out hitObj))
                 {
-                    if (Input.GetMouseButtonDown(0))
-                    {
+                    if (Input.GetMouseButtonDown(0)){
                         OnBtnClicked(hitObj);
                     }
                     OnHoverBtn(hitObj);
@@ -116,89 +105,21 @@ namespace WorldActionSystem
             }
         }
 
-        internal void SetButtonClickAbleQueue()
+      
+        public override void OnStartExecute(bool forceAuto)
         {
-            queueID.Clear();
-            foreach (ClickObj item in actionObjs)
-            {
-                if (!queueID.Contains(item.QueueID))
-                {
-                    queueID.Add(item.QueueID);
-                }
-            }
-            queueID.Sort();
-            SetNextButtonsClickAble();
-        }
-
-        private bool SetNextButtonsClickAble()
-        {
-            if (queueID.Count > 0)
-            {
-                var id = queueID[0];
-                queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as ClickObj).QueueID == id);
-                foreach (var item in neetActive)
-                {
-                    item.OnStartExecute();
-                }
-                return true;
-            }
-            return false;
-        }
-
-        internal void SetAllButtonUnClickAble()
-        {
-            foreach (ClickObj item in actionObjs)
-            {
-                item.OnUnDoExecute();
-            }
-        }
-
-
-        internal void SetAllButtonClicked(bool @continue)
-        {
-            foreach (ClickObj item in actionObjs)
-            {
-                item.OnEndExecute();
-            }
-        }
-
-        internal void SetButtonNotClicked()
-        {
-            foreach (ClickObj item in actionObjs)
-            {
-                item.OnUnDoExecute();
-            }
-        }
-
-        public void OnStartExecute(bool forceAuto)
-        {
+            base.OnStartExecute(forceAuto);
             if (forceAuto)
             {
-                SetAllButtonClicked(true);
+                //自动播放按扭点击??
+                foreach (var item in actionObjs)
+                {
+                    item.OnEndExecute();
+                }
             }
-            else
-            {
-                SetButtonClickAbleQueue();
-            }
         }
 
-        public void OnEndExecute()
-        {
-            SetAllButtonClicked(false);
-        }
 
-        public void OnUnDoExecute()
-        {
-            SetAllButtonUnClickAble();
-            SetButtonNotClicked();
-        }
-
-        public void InitCommand(ActionCommand trigger)
-        {
-            this.trigger = trigger;
-            actionObjs = Array.ConvertAll<ActionObj, ClickObj>(trigger.ActionObjs, x => x as ClickObj);
-        }
     }
 
 }

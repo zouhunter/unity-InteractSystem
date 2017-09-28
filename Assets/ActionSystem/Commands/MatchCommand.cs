@@ -10,10 +10,9 @@ namespace WorldActionSystem
     public class MatchCommand : ActionCommand
     {
         public float distence;
-        public bool highLight;
         protected override IActionCtroller CreateCtrl()
         {
-            var matchCtrl = new MatchCtrl(this,distence, highLight);
+            var matchCtrl = new MatchCtrl(this,distence);
             return matchCtrl;
         }
     }

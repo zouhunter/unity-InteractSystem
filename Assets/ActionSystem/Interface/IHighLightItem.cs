@@ -11,7 +11,6 @@ namespace WorldActionSystem
     {
         void HighLightTarget(Renderer go,Color color);
         void UnHighLightTarget(Renderer go);
-        void SetState(bool isOpen);
     }
 
     public interface IHightLightItem

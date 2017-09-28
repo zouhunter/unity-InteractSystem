@@ -15,7 +15,7 @@ namespace WorldActionSystem
         protected override IActionCtroller CreateCtrl()
         {
             var installObjs = Array.ConvertAll<ActionObj, InstallObj>(ActionObjs, x => x as InstallObj);
-            var coroutineCtrl = new InstallCtrl(this, distence, hightLight, installObjs);
+            var coroutineCtrl = new InstallCtrl(this, distence, installObjs);
             return coroutineCtrl;
         }
     }

@@ -48,6 +48,7 @@ namespace WorldActionSystem
             }
         }
 
+
         private void RegistTriggerCommand()
         {
             if (actionDic != null)
@@ -55,20 +56,20 @@ namespace WorldActionSystem
                 foreach (var item in actionDic)
                 {
                     var stepName = item.Key;
-                    if (item.Value.Count > 1)//多命令合并为一个命令
+                    if (item.Value.Count > 1)//多命令
                     {
                         item.Value.Sort();
                         var list = new List<IActionCommand>();
                         for (int i = 0; i < item.Value.Count; i++)
                         {
-                            item.Value[i].RegistComplete(OnOneCommandComplete);
+                            item.Value[i].RegistAutoComplete(OnOneCommandComplete);
                             list.Add(item.Value[i]);
                         }
                         var cmd = new SequencesCommand(stepName, list);
                         seqDic.Add(stepName, cmd);
                         commandList.Add(cmd);
                     }
-                    else//单命令 选择性合并为一个命令
+                    else//单命令
                     {
                         item.Value[0].RegistComplete(OnOneCommandComplete);
                         var cmd = item.Value[0];

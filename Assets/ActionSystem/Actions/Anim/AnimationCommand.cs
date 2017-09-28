@@ -8,9 +8,10 @@ namespace WorldActionSystem
 {
     public class AnimationCommand : ActionCommand
     {
+
         protected override IActionCtroller CreateCtrl()
         {
-            return new ActionCtroller(this);
+            return new AnimCtroller(this);
         }
     }
 

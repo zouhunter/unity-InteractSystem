@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Assertions.Must;
 using UnityEngine.Assertions.Comparers;
 using System.Collections;
+using System;
 
 namespace WorldActionSystem
 {
@@ -17,6 +18,11 @@ namespace WorldActionSystem
         public AnimCtroller(ActionCommand trigger) : base(trigger)
         {
             
+        }
+
+        public override IEnumerator Update()
+        {
+            yield break;
         }
     }
 }

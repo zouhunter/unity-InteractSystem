@@ -21,10 +21,10 @@ namespace WorldActionSystem
         private Camera objCamera;
         private ActionCommand trigger { get; set; }
 
-        public ConnectCtrl(ActionCommand trigger, LineRenderer lineRender,ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence, Camera camera)
+        public ConnectCtrl(ActionCommand trigger, LineRenderer lineRender,ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence)
         {
             this.objs = objs;
-            this.objCamera = camera;
+            this.objCamera = trigger.viewCamera;
             this.pointDistence = pointDistence;
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);

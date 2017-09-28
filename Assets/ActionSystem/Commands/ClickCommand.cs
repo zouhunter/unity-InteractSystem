@@ -10,15 +10,9 @@ namespace WorldActionSystem
     [Serializable]
     public class ClickCommand : ActionCommand
     {
-        [SerializeField]
-        private Camera viewCamera;
-        [SerializeField]
-        private bool highLight;
-
         protected override IActionCtroller CreateCtrl()
         {
-            if (viewCamera == null) viewCamera = Camera.main;
-            return new WorldActionSystem.ClickContrller(this, viewCamera, highLight);
+            return new WorldActionSystem.ClickContrller(this);
         }
     }
 

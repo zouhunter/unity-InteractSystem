@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     
-    public class ActionCtroller : IActionCtroller
+    public abstract class ActionCtroller : IActionCtroller
     {
         protected ActionCommand trigger { get; set; }
         protected List<int> queueID = new List<int>();
@@ -14,20 +14,15 @@ namespace WorldActionSystem
         protected bool isForceAuto;
         public ActionCtroller( ActionCommand trigger)
         {
-            InitCommand(trigger);
-            ChargeQueueIDs();
-        }
-        public void InitCommand(ActionCommand trigger)
-        {
             this.trigger = trigger;
             actionObjs = trigger.ActionObjs;
+            ChargeQueueIDs();
         }
 
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            if (!forceAuto)
-            {
+            if (!forceAuto) {
                 ExecuteAStep();
             }
            
@@ -60,10 +55,7 @@ namespace WorldActionSystem
             }
         }
 
-        public virtual IEnumerator Update()
-        {
-            yield return null;
-        }
+        public abstract IEnumerator Update();
 
         private void OnCommandObjComplete(int id)
         {

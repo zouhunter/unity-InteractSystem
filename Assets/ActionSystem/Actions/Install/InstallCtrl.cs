@@ -24,10 +24,9 @@ namespace WorldActionSystem
         private string stepName;
         private List<InstallObj> installObjs = new List<InstallObj>();
 
-        public InstallCtrl(ActionCommand trigger, float distence, bool hightLightOn, InstallObj[] installObjs):base(trigger)
+        public InstallCtrl(ActionCommand trigger, float distence, InstallObj[] installObjs):base(trigger)
         {
             highLight = new ShaderHighLight();
-            highLight.SetState(hightLightOn);
             this.distence = distence;
             this.installObjs.AddRange(installObjs);
         }

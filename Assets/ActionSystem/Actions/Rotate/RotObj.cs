@@ -49,7 +49,6 @@ namespace WorldActionSystem
         private List<Vector3> _lines = new List<Vector3>();
         private LineRenderer lineRender;
         private bool highLight;
-        public int queueID;
         private Quaternion startRot;
         private FloatComparer comparer;
         internal Renderer render;

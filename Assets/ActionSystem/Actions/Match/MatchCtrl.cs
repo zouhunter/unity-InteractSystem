@@ -31,10 +31,9 @@ namespace WorldActionSystem
             }
         }
 
-        public MatchCtrl(ActionCommand trigger, float distence, bool hightLightOn)
+        public MatchCtrl(ActionCommand trigger, float distence)
         {
             highLight = new ShaderHighLight();
-            highLight.SetState(hightLightOn);
             this.distence = distence;
             this. matchObjs = new List<MatchObj>(Array.ConvertAll<ActionObj, MatchObj>(trigger.ActionObjs, x => x as MatchObj));
             InitCommand(trigger);

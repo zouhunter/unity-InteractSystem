@@ -12,12 +12,38 @@ namespace WorldActionSystem
         private string _stepName;
         [Range(0, 100)]
         public int executeIndex;
+        [SerializeField]
+        private Camera m_viewCamera;//触发相机
+        private Camera m_mainCamera;
         public string StepName { get { return _stepName; } }
+        public Camera viewCamera
+        {
+            get
+            {
+                if (m_viewCamera != null) return m_viewCamera;
+                else
+                {
+                    return mainCamera;
+                }
+            }
+        }
+        private Camera mainCamera
+        {
+            get
+            {
+                if (m_mainCamera == null)
+                {
+                    m_mainCamera = Camera.main;
+                }
+                return m_mainCamera;
+            }
+        }
         private UserError userErr { get; set; }
         private StepComplete stepComplete { get; set; }
         private Func<ElementController> elementCtrlGet { get; set; }
         private ElementController elementCtrl;
         public ActionObj[] ActionObjs { get { return actionObjs; } }
+
         public ActionSystem actionSystem { get; set; }
         protected IActionCtroller coroutineCtrl;
         protected Coroutine coroutine;
@@ -29,15 +55,24 @@ namespace WorldActionSystem
         protected StepEvent onBeforeUnDo;
         [SerializeField]
         protected StepEvent onBeforePlayEnd;
+
         private bool started;
         private bool completed;
+        private bool cameraStartVisiable;
+        private bool mainCamraExecuteVisiable;
+
         protected virtual void Awake()
         {
             actionObjs = GetComponentsInChildren<ActionObj>(true);
+            if (m_viewCamera != null) cameraStartVisiable = m_viewCamera.gameObject.activeSelf;
         }
         public void RegistComplete(StepComplete stepComplete)
         {
             this.stepComplete = stepComplete;
+        }
+        public void RegistAutoComplete(StepComplete stepComplete)
+        {
+            this.stepComplete = (x) => { stepComplete(StepName); OnEndExecute(); };
         }
         public void RegistAsOperate(UserError userErr, Func<ElementController> elementCtrlGet)
         {
@@ -83,7 +118,7 @@ namespace WorldActionSystem
         /// </summary>
         internal bool Complete()
         {
-            if(!completed)
+            if (!completed)
             {
                 completed = true;
                 stepComplete.Invoke(StepName);
@@ -98,8 +133,18 @@ namespace WorldActionSystem
 
         public virtual bool StartExecute(bool forceAuto)
         {
-            if(!started)
+            if (!started)
             {
+                if (m_viewCamera != null)
+                {
+                    m_viewCamera.gameObject.SetActive(true);
+                    if (mainCamera != null && m_viewCamera != mainCamera)
+                    {
+                        mainCamraExecuteVisiable = mainCamera.gameObject.activeSelf;
+                        mainCamera.gameObject.SetActive(false);
+                    }
+                }
+
                 started = true;
                 onBeforeActive.Invoke(StepName);
                 if (coroutineCtrl == null)
@@ -141,6 +186,13 @@ namespace WorldActionSystem
 
         public void OnEndExecute()
         {
+            if (m_viewCamera != null)
+            {
+                m_viewCamera.gameObject.SetActive(cameraStartVisiable);
+                mainCamera.gameObject.SetActive(mainCamraExecuteVisiable);
+            }
+
+
             onBeforePlayEnd.Invoke(StepName);
             if (coroutineCtrl == null) return;
             coroutineCtrl.OnEndExecute();
@@ -152,6 +204,12 @@ namespace WorldActionSystem
 
         public virtual void UnDoExecute()
         {
+            if (m_viewCamera != null)
+            {
+                m_viewCamera.gameObject.SetActive(cameraStartVisiable);
+                mainCamera.gameObject.SetActive(mainCamraExecuteVisiable);
+            }
+
             started = false;
             completed = false;
             onBeforeUnDo.Invoke(StepName);

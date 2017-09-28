@@ -12,7 +12,7 @@ using WorldActionSystem;
 public class ShaderHighLight : IHighLightItems
 {
 #if !NoFunction
-    private bool isOn;
+    private static bool isOn = true;
     private float freq = 1;
     public Dictionary<Renderer, Highlighter> highlightDic = new Dictionary<Renderer, Highlighter>();
 #endif
@@ -46,10 +46,10 @@ public class ShaderHighLight : IHighLightItems
 #endif
     }
 
-    public void SetState(bool isOpen)
+    public static void SetState(bool isOpen)
     {
 #if !NoFunction
-        this.isOn = isOpen;
+        ShaderHighLight.isOn = isOpen;
 #endif
     }
 
