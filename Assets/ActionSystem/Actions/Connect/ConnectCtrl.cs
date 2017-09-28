@@ -152,7 +152,7 @@ namespace WorldActionSystem
             this.trigger = trigger;
         }
 
-        public void StartExecute(bool forceAuto)
+        public void OnStartExecute(bool forceAuto)
         {
             foreach (var item in objs)
             {
@@ -160,7 +160,7 @@ namespace WorldActionSystem
             };
         }
 
-        public void EndExecute()
+        public void OnEndExecute()
         {
             foreach (var item in objs)
             {
@@ -168,7 +168,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void UnDoExecute()
+        public void OnUnDoExecute()
         {
             ClearLineRender();
             foreach (var item in objs)

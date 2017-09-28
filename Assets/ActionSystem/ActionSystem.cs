@@ -89,7 +89,7 @@ namespace WorldActionSystem
         /// <param name="stepName"></param>
         private void OnStepComplete(string stepName)
         {
-            remoteController.EndExecuteCommand();
+            remoteController.OnEndExecuteCommand();
         }
 
         /// <summary>

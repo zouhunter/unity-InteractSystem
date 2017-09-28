@@ -100,17 +100,17 @@ namespace WorldActionSystem
             this.trigger = trigger;
         }
 
-        public void StartExecute(bool forceAuto)
+        public void OnStartExecute(bool forceAuto)
         {
             throw new NotImplementedException();
         }
 
-        public void EndExecute()
+        public void OnEndExecute()
         {
             throw new NotImplementedException();
         }
 
-        public void UnDoExecute()
+        public void OnUnDoExecute()
         {
             throw new NotImplementedException();
         }

@@ -10,7 +10,7 @@ namespace WorldActionSystem
     {
         protected override IActionCtroller CreateCtrl()
         {
-            return new AnimCtroller(this);
+            return new ActionCtroller(this);
         }
     }
 

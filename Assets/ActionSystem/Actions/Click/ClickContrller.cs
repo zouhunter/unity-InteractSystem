@@ -17,9 +17,9 @@ namespace WorldActionSystem
         private float distence = 10;
         private Camera viewCamera;
         private IHighLightItems highLight;
-        private List<int> queueID = new List<int>();
         private Renderer lastSelected;
         private ClickObj[] actionObjs;
+        private List<int> queueID = new List<int>();
         private ActionCommand trigger { get; set; }
 
         public ClickContrller(ActionCommand trigger, Camera camera, bool highLighter)
@@ -75,7 +75,6 @@ namespace WorldActionSystem
             trigger.UserError("点击位置不正确");
         }
 
-
         private bool TryHitBtnObj(out ClickObj obj)
         {
             if (Physics.Raycast(ray, out hit, distence, (1 << Setting.clickItemLayer)))
@@ -86,8 +85,6 @@ namespace WorldActionSystem
             obj = null;
             return false;
         }
-
-
 
         public IEnumerator Update()
         {
@@ -124,9 +121,9 @@ namespace WorldActionSystem
             queueID.Clear();
             foreach (ClickObj item in actionObjs)
             {
-                if (!queueID.Contains(item.queueID))
+                if (!queueID.Contains(item.QueueID))
                 {
-                    queueID.Add(item.queueID);
+                    queueID.Add(item.QueueID);
                 }
             }
             queueID.Sort();
@@ -139,7 +136,7 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as ClickObj).queueID == id);
+                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as ClickObj).QueueID == id);
                 foreach (var item in neetActive)
                 {
                     item.OnStartExecute();
@@ -174,7 +171,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void StartExecute(bool forceAuto)
+        public void OnStartExecute(bool forceAuto)
         {
             if (forceAuto)
             {
@@ -186,12 +183,12 @@ namespace WorldActionSystem
             }
         }
 
-        public void EndExecute()
+        public void OnEndExecute()
         {
             SetAllButtonClicked(false);
         }
 
-        public void UnDoExecute()
+        public void OnUnDoExecute()
         {
             SetAllButtonUnClickAble();
             SetButtonNotClicked();

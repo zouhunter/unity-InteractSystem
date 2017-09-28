@@ -213,7 +213,6 @@ namespace WorldActionSystem
             {
                 List<InstallObj> posList = GetInstalledPosList();
                 SetCompleteNotify(posList);
-                trigger.Complete();
             }
         }
 
@@ -409,10 +408,10 @@ namespace WorldActionSystem
             }
         }
 
-        public override void StartExecute(bool forceAuto)
+        public override void OnStartExecute(bool forceAuto)
         {
             SetElemetsActive();
-            base.StartExecute(forceAuto);
+            base.OnStartExecute(forceAuto);
             AutoInstallWhenNeed(forceAuto);
         }
     }

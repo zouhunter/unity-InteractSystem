@@ -277,7 +277,7 @@ namespace WorldActionSystem
             return noMatched.Count == 0;
         }
 
-        public void StartExecute(bool forceAuto)
+        public void OnStartExecute(bool forceAuto)
         {
             List<MatchObj> posList = null;
             if (forceAuto)
@@ -306,7 +306,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void EndExecute()
+        public void OnEndExecute()
         {
             List<MatchObj> posList = GetNotInstalledPosList();
             QuickMatchObjListObjects(posList);
@@ -316,7 +316,7 @@ namespace WorldActionSystem
             actionSystem.ElementController.onInstall -= OnEndInstallElement;
         }
 
-        public void UnDoExecute()
+        public void OnUnDoExecute()
         {
             foreach (var item in matchObjs)
             {

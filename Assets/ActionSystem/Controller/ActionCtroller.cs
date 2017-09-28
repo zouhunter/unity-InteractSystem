@@ -15,6 +15,7 @@ namespace WorldActionSystem
         public ActionCtroller( ActionCommand trigger)
         {
             InitCommand(trigger);
+            ChargeQueueIDs();
         }
         public void InitCommand(ActionCommand trigger)
         {
@@ -22,25 +23,27 @@ namespace WorldActionSystem
             actionObjs = trigger.ActionObjs;
         }
 
-        public virtual void StartExecute(bool forceAuto)
+        public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
             if (!forceAuto)
             {
-                queueID.Clear();
-                foreach (ActionObj item in actionObjs)
-                {
-                    if (!queueID.Contains(item.QueueID))
-                    {
-                        queueID.Add(item.QueueID);
-                    }
-                }
-                queueID.Sort();
                 ExecuteAStep();
             }
            
         }
-        public virtual void EndExecute()
+        private void ChargeQueueIDs()
+        {
+            foreach (ActionObj item in actionObjs)
+            {
+                if (!queueID.Contains(item.QueueID))
+                {
+                    queueID.Add(item.QueueID);
+                }
+            }
+            queueID.Sort();
+        }
+        public virtual void OnEndExecute()
         {
             foreach (var item in actionObjs)
             {
@@ -48,8 +51,9 @@ namespace WorldActionSystem
             }
         }
 
-        public virtual void UnDoExecute()
+        public virtual void OnUnDoExecute()
         {
+            ChargeQueueIDs();
             foreach (var item in actionObjs)
             {
                 item.OnUnDoExecute();
@@ -73,6 +77,7 @@ namespace WorldActionSystem
                 }
             }
         }
+
         private bool ExecuteAStep()
         {
             if (queueID.Count > 0)

@@ -7,8 +7,8 @@ namespace WorldActionSystem
     {
         IEnumerator Update();
         void InitCommand(ActionCommand trigger);
-        void StartExecute(bool forceAuto);
-        void EndExecute();
-        void UnDoExecute();
+        void OnStartExecute(bool forceAuto);
+        void OnEndExecute();
+        void OnUnDoExecute();
     }
 }

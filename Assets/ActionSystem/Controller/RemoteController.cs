@@ -90,6 +90,19 @@ namespace WorldActionSystem
             return false;
 
         }
+        /// <summary>
+        /// 结束已经开始的命令
+        /// </summary>
+        public void OnEndExecuteCommand()
+        {
+            started = false;
+            index++;
+
+            if (onEndExecute != null)
+            {
+                onEndExecute();
+            }
+        }
 
         /// <summary>
         /// 撤消操作，并返回能否继续撤销

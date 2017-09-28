@@ -18,7 +18,6 @@ namespace WorldActionSystem
         protected override IActionCtroller CreateCtrl()
         {
             if (viewCamera == null) viewCamera = Camera.main;
-            
             return new WorldActionSystem.ClickContrller(this, viewCamera, highLight);
         }
     }

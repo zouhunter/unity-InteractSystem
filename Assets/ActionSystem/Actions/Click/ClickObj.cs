@@ -9,9 +9,16 @@ namespace WorldActionSystem
 
     public class ClickObj : ActionObj
     {
+        [SerializeField]
+        private int queueID;
+        public int QueueID
+        {
+            get
+            {
+                return queueID;
+            }
+        }
         public Renderer render;
-        public int queueID;
-
         protected override void Start()
         {
             base.Start();
