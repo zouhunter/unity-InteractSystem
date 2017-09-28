@@ -6,15 +6,20 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class OpenUICmdResponce : MonoBehaviour {
-    public string stepName;
+    private string commandName;
     public UnityAction<object> onComplete;
     private void OnGUI()
     {
         GUILayout.Space(100);
-        if (onComplete != null && GUILayout.Button("结束" + stepName))
+        if (onComplete != null && GUILayout.Button("结束" + commandName))
         {
            if(onComplete != null)
-                onComplete.Invoke(stepName+"结束了");
+                onComplete.Invoke(commandName+"结束了");
         }
+    }
+
+    internal void OpenUI(string cmdName)
+    {
+        this.commandName = cmdName;
     }
 }

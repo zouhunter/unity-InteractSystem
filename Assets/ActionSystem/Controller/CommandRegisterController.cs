@@ -62,7 +62,7 @@ namespace WorldActionSystem
                         var list = new List<IActionCommand>();
                         for (int i = 0; i < item.Value.Count; i++)
                         {
-                            item.Value[i].RegistAutoComplete(OnOneCommandComplete);
+                            item.Value[i].RegistComplete(OnOneCommandComplete);
                             list.Add(item.Value[i]);
                         }
                         var cmd = new SequencesCommand(stepName, list);

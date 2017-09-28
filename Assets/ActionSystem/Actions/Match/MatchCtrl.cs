@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class MatchCtrl: IActionCtroller,IRootUse
+    public class MatchCtrl: ActionCtroller
     {
         private IHighLightItems highLight;
         private PickUpAbleElement pickedUpObj;
@@ -22,31 +22,18 @@ namespace WorldActionSystem
         private string resonwhy;
         private float distence;
         private List<MatchObj> matchObjs;
-        private ActionCommand trigger;
-        public ActionSystem actionSystem
-        {
-            get
-            {
-                return actionSystem;
-            }
-        }
 
-        public MatchCtrl(ActionCommand trigger, float distence)
+        public MatchCtrl(ActionCommand trigger, float distence):base(trigger)
         {
             highLight = new ShaderHighLight();
             this.distence = distence;
             this. matchObjs = new List<MatchObj>(Array.ConvertAll<ActionObj, MatchObj>(trigger.ActionObjs, x => x as MatchObj));
-            InitCommand(trigger);
-        }
-        public void InitCommand(ActionCommand trigger)
-        {
-            this.trigger = trigger;
         }
 
         #region 鼠标操作事件
-        public IEnumerator Update()
+        public override IEnumerator Update()
         {
-            actionSystem.ElementController.onInstall += OnEndInstallElement;
+            trigger.ElementCtrl.onInstall += OnEndInstallElement;
 
             while (true)
             {
@@ -240,7 +227,7 @@ namespace WorldActionSystem
                 pos = posList[i];
                 if (pos != null)
                 {
-                    PickUpAbleElement obj = actionSystem.ElementController.GetUnInstalledObj(pos.name);
+                    PickUpAbleElement obj = trigger.ElementCtrl.GetUnInstalledObj(pos.name);
                     obj.QuickMoveTo(pos.gameObject);
                     pos.Attach(obj);
                 }
@@ -292,7 +279,7 @@ namespace WorldActionSystem
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                IMatchItem obj = actionSystem.ElementController.GetUnInstalledObj(pos.name);
+                IMatchItem obj = trigger.ElementCtrl.GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalMoveTo(pos.gameObject);
             }
@@ -305,17 +292,15 @@ namespace WorldActionSystem
             }
         }
 
-        public void OnEndExecute()
+        public override void OnEndExecute()
         {
             List<MatchObj> posList = GetNotInstalledPosList();
             QuickMatchObjListObjects(posList);
-            foreach (var item in matchObjs){
-                item.OnEndExecute();
-            }
-            actionSystem.ElementController.onInstall -= OnEndInstallElement;
+            trigger.ElementCtrl.onInstall -= OnEndInstallElement;
+            base.OnEndExecute();
         }
 
-        public void OnUnDoExecute()
+        public override void OnUnDoExecute()
         {
             foreach (var item in matchObjs)
             {
@@ -323,6 +308,7 @@ namespace WorldActionSystem
                 obj.QuickMoveBack();
                 item.OnUnDoExecute();
             }
+            base.OnUnDoExecute();
         }
 
       

@@ -70,10 +70,6 @@ namespace WorldActionSystem
         {
             this.stepComplete = stepComplete;
         }
-        public void RegistAutoComplete(StepComplete stepComplete)
-        {
-            this.stepComplete = (x) => { stepComplete(StepName); OnEndExecute(); };
-        }
         public void RegistAsOperate(UserError userErr, Func<ElementController> elementCtrlGet)
         {
             this.userErr = userErr;
@@ -120,7 +116,9 @@ namespace WorldActionSystem
         {
             if (!completed)
             {
+                started = true;
                 completed = true;
+                OnEndExecute();
                 stepComplete.Invoke(StepName);
                 return true;
             }
@@ -172,6 +170,7 @@ namespace WorldActionSystem
 
             if (!completed)
             {
+                started = true;
                 completed = true;
                 OnEndExecute();
                 return true;
@@ -191,15 +190,9 @@ namespace WorldActionSystem
                 m_viewCamera.gameObject.SetActive(cameraStartVisiable);
                 mainCamera.gameObject.SetActive(mainCamraExecuteVisiable);
             }
-
-
             onBeforePlayEnd.Invoke(StepName);
-            if (coroutineCtrl == null) return;
             coroutineCtrl.OnEndExecute();
-            if (coroutine != null)
-            {
-                StopCoroutine(coroutineCtrl.Update());
-            }
+            StopCoroutine();
         }
 
         public virtual void UnDoExecute()
@@ -213,11 +206,16 @@ namespace WorldActionSystem
             started = false;
             completed = false;
             onBeforeUnDo.Invoke(StepName);
-            if (coroutineCtrl == null) return;
             coroutineCtrl.OnUnDoExecute();
+            StopCoroutine();
+        }
+
+        private void StopCoroutine()
+        {
             if (coroutine != null)
             {
-                StopCoroutine(coroutineCtrl.Update());
+                StopCoroutine(coroutine);
+                coroutine = null;
             }
         }
     }

@@ -7,13 +7,12 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [Serializable]
-    public class RotateCommand : QueueIDCommand
+    public class RotateCommand : ActionCommand 
     {
-        public bool highlight;
-
+        public float operateDistence;
         protected override IActionCtroller CreateCtrl()
         {
-            var rotAnimCtrl = new WorldActionSystem.RotateAnimController(this);
+            var rotAnimCtrl = new WorldActionSystem.RotateAnimController(operateDistence,this);
             return rotAnimCtrl;
         }
     }

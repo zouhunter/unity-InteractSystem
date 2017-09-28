@@ -33,7 +33,7 @@ namespace WorldActionSystem
         #region 鼠标操作事件
         public override IEnumerator Update()
         {
-            trigger.ElementCtrl.onInstall += OnEndInstall;
+            trigger.ElementCtrl.onInstall += OnOneElementEndInstall;
 
             while (true)
             {
@@ -169,10 +169,10 @@ namespace WorldActionSystem
             if (installAble)
             {
                 var status = installPos.Attach(pickedUpObj);
-                if (status)
-                {
+                if (status){
                     pickedUpObj.QuickInstall(installPos.gameObject);
                 }
+                installPos.OnEndExecute();
             }
             else
             {
@@ -205,12 +205,11 @@ namespace WorldActionSystem
         }
         #endregion
 
-        private void OnEndInstall()
+        private void OnOneElementEndInstall()
         {
             if (AllElementInstalled())
             {
-                List<InstallObj> posList = GetInstalledPosList();
-                SetCompleteNotify(posList);
+                SetCompleteNotify();
             }
         }
 
@@ -218,24 +217,16 @@ namespace WorldActionSystem
         /// 结束指定步骤
         /// </summary>
         /// <param name="poss"></param>
-        private void SetCompleteNotify(List<InstallObj> poss)
+        private void SetCompleteNotify()
         {
+            List<InstallObj> poss = GetInstalledPosList();
             //当前步骤结束
             foreach (var item in poss)
             {
                 item.obj.StepComplete();
             }
         }
-        /// <summary>
-        /// 结束当前步骤安装
-        /// </summary>
-        /// <param name="stepName"></param>
-        public void EndInstall()
-        {
-            List<InstallObj> posList = GetNotInstalledPosList();
-            QuickInstallObjListObjects(posList);
-            SetSepComplete();
-        }
+
         /// <summary>
         /// 快速安装 列表 
         /// </summary>
@@ -255,7 +246,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void SetElemetsActive()
+        public void SetElemetsStart()
         {
             List<InstallObj> posList = GetNotInstalledPosList();
             SetStartNotify(posList);
@@ -322,7 +313,7 @@ namespace WorldActionSystem
         }
         public void UnInstall(string stepName)
         {
-            SetElemetsActive();
+            SetElemetsStart();
             List<InstallObj> posList = GetInstalledPosList();
             UnInstallObjListObjects(posList);
             SetSepUnDo();
@@ -345,7 +336,7 @@ namespace WorldActionSystem
 
         public void QuickUnInstall()
         {
-            SetElemetsActive();
+            SetElemetsStart();
             List<InstallObj> posList = GetInstalledPosList();
             QuickUnInstallObjListObjects(posList);
             SetSepUnDo();
@@ -363,7 +354,6 @@ namespace WorldActionSystem
                 obj.QuickUnInstall();
             }
         }
-        
 
         private List<InstallObj> GetInstalledPosList()
         {
@@ -388,10 +378,6 @@ namespace WorldActionSystem
         {
             return installObjs.Contains(obj);
         }
-        private void SetSepComplete()
-        {
-           trigger.ElementCtrl.onInstall -= OnEndInstall;
-        }
         private bool AllElementInstalled()
         {
             var notInstalls = installObjs.FindAll(x => !x.Installed);
@@ -408,9 +394,24 @@ namespace WorldActionSystem
 
         public override void OnStartExecute(bool forceAuto)
         {
-            SetElemetsActive();
             base.OnStartExecute(forceAuto);
+            SetElemetsStart();
             AutoInstallWhenNeed(forceAuto);
+        }
+        public override void OnEndExecute()
+        {
+            trigger.ElementCtrl.onInstall -= OnOneElementEndInstall;
+            List<InstallObj> posList = GetNotInstalledPosList();
+            QuickInstallObjListObjects(posList);
+            SetCompleteNotify();
+            base.OnEndExecute();
+        }
+        public override void OnUnDoExecute()
+        {
+            trigger.ElementCtrl.onInstall -= OnOneElementEndInstall;
+            QuickUnInstall();
+            SetElemetsStart();
+            base.OnUnDoExecute();
         }
     }
 

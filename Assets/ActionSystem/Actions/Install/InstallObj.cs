@@ -32,7 +32,6 @@ namespace WorldActionSystem
             else
             {
                 this.obj = obj;
-                OnEndExecute();
                 return true;
             }
         }
@@ -40,7 +39,6 @@ namespace WorldActionSystem
         public IInstallItem Detach()
         {
             IInstallItem old = obj;
-            OnUnDoExecute();
             obj = null;
             return old;
         }
