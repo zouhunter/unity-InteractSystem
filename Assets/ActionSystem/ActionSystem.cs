@@ -30,6 +30,8 @@ namespace WorldActionSystem
         private List<IActionCommand> activeCommands;
         private RegistCmds onCommandRegist;
 
+        public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
+        
         #region Interface Fuctions
 
         private void Awake()
@@ -39,12 +41,19 @@ namespace WorldActionSystem
 
         private void Start()
         {
-            var triggers = FindObjectsOfType<ActionCommand>();
-            foreach (var item in triggers){
-                item.RegistAsOperate(OnUserError, () => { return elementController; });
-            }
-            activeCommands = commandCtrl.RegistTriggers(triggers,OnStepComplete);
-            if(onCommandRegist!=null) onCommandRegist.Invoke(activeCommands);
+            OnCreateCommandAndElements();
+        }
+        private void OnCreateCommandAndElements()
+        {
+            var cmds = new List<ActionCommand>();
+            CreateActionObjects((cmd)=> {
+                cmd.RegistAsOperate(OnUserError, () => { return elementController; });
+                cmds.Add(cmd);}, (pick)=> {
+                elementController.RegistElement(pick);
+            });
+           
+            activeCommands = commandCtrl.RegistTriggers(cmds.ToArray(), OnStepComplete);
+            if (onCommandRegist != null) onCommandRegist.Invoke(activeCommands);
         }
         #endregion
 
@@ -57,6 +66,7 @@ namespace WorldActionSystem
         {
             Debug.Assert(steps != null);
             yield return new WaitUntil(() => Instance != null);
+
             Instance.onCommandRegist = (commandList) =>
             {
                 Instance.steps = ConfigSteps<T>(Instance.activeCommands, steps);//重新计算步骤
@@ -71,15 +81,6 @@ namespace WorldActionSystem
             }
         }
         
-     
-        /// <summary>
-        /// 注册可移动元素
-        /// </summary>
-        /// <param name="installItem"></param>
-        public void RegistElement(PickUpAbleElement installItem)
-        {
-            elementController.RegistElement(installItem);
-        }
         #endregion
 
         #region private Funtions
@@ -110,6 +111,49 @@ namespace WorldActionSystem
             instance.activeCommands = cmdList;
             if (onCommandRegist != null) onCommandRegist.Invoke(cmdList);
         }
+
+        internal void CreateActionObjects(UnityAction<ActionCommand> onCreateCommand, UnityAction<PickUpAbleElement> onCreateElement)
+        {
+            foreach (var item in prefabList)
+            {
+                var instence = GameObject.Instantiate(item.prefab);
+                instence.name = item.prefab.name;
+                if (item.reset && item.target != null)
+                {
+                    ResetInstenceMatrix(instence.transform, item.target);
+                }
+                else
+                {
+                    instance.transform.SetParent(transform);
+                }
+                if (item.containsCommand)
+                {
+                    var cmdList = new List<ActionCommand>();
+                    instence.GetComponentsInChildren<ActionCommand>(true, cmdList);
+                    foreach (var cmd in cmdList)
+                    {
+                        onCreateCommand(cmd);
+                    }
+                }
+                if (item.containsPickAble)
+                {
+                    var pickList = new List<PickUpAbleElement>();
+                    instence.GetComponentsInChildren<PickUpAbleElement>(true, pickList);
+                    foreach (var pick in pickList)
+                    {
+                        onCreateElement(pick);
+                    }
+                }
+            }
+        }
+        private void ResetInstenceMatrix(Transform transform, Transform target)
+        {
+            transform.SetParent(target);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+        }
+
 
         /// 重置步骤
         /// </summary>
