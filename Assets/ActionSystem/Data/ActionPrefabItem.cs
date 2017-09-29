@@ -8,8 +8,7 @@ namespace WorldActionSystem
 #if UNITY_EDITOR
         public int instanceID;
 #endif
-        protected string _id;
-        public bool active = true;
+        private string _id;
         public string ID
         {
             get
@@ -17,22 +16,29 @@ namespace WorldActionSystem
                 if (string.IsNullOrEmpty(_id))
                 {
                     var name = prefab == null ? "Null" : prefab.name;
-                    if (!reset)
+                    if (!reparent && !rematrix)
                     {
                         _id = name;
                     }
+                    else if(reparent)
+                    {
+                        _id = string.Format("[{0}][{1}][{2}]", name, ((parent == null) ? "" : parent.GetHashCode().ToString()),matrix);
+                    }
                     else
                     {
-                        _id = string.Format("[{0}][{1}]", name, ((target == null) ? "" : target.GetHashCode().ToString()));
+                        _id = string.Format("[{0}][{1}]", name, matrix);
                     }
+                    Debug.Log(_id);
                 }
                 return _id;
             }
         }
         public bool containsCommand;
         public bool containsPickAble;
-        public bool reset;
-        public Transform target;
+        public bool reparent;
+        public bool rematrix;
+        public Matrix4x4 matrix;
+        public Transform parent;
         public GameObject prefab;
         public int CompareTo(ActionPrefabItem other)
         {

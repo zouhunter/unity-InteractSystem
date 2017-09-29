@@ -112,24 +112,28 @@ namespace WorldActionSystem
             if (onCommandRegist != null) onCommandRegist.Invoke(cmdList);
         }
 
-        internal void CreateActionObjects(UnityAction<ActionCommand> onCreateCommand, UnityAction<PickUpAbleElement> onCreateElement)
+        internal  void CreateActionObjects(UnityAction<ActionCommand> onCreateCommand, UnityAction<PickUpAbleElement> onCreateElement)
         {
             foreach (var item in prefabList)
             {
-                if (!item.active) continue;
-                else {
-                    item.prefab.gameObject.SetActive(true);
-                }
+                item.prefab.gameObject.SetActive(true);
                 var created = GameObject.Instantiate(item.prefab);
                 created.name = item.prefab.name;
-                if (item.reset && item.target != null)
+                if (item.reparent && item.parent != null)
                 {
-                    ResetInstenceMatrix(created.transform, item.target);
+                    transform.SetParent(item.parent,false);
                 }
                 else
                 {
-                    created.transform.SetParent(transform);
+                    created.transform.SetParent(transform,false);
                 }
+
+                if(item.rematrix)
+                {
+                    TransUtil.LoadmatrixInfo(item.matrix, created.transform);
+                }
+
+
                 if (item.containsCommand)
                 {
                     RetriveCommand(created.transform, onCreateCommand);
@@ -139,13 +143,6 @@ namespace WorldActionSystem
                     RetivePickElement(created.transform, onCreateElement);
                 }
             }
-        }
-        public static void ResetInstenceMatrix(Transform transform, Transform target)
-        {
-            transform.SetParent(target);
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
-            transform.localScale = Vector3.one;
         }
 
         private void RetriveCommand(Transform trans,UnityAction<ActionCommand> onRetive)

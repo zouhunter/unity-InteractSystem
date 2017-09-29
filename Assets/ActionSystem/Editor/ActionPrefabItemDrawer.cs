@@ -10,55 +10,35 @@ namespace WorldActionSystem
     [CustomPropertyDrawer(typeof(ActionPrefabItem), true)]
     public class ActionPrefabItemDrawer : PropertyDrawer
     {
-        protected SerializedProperty resetProp;
+        protected SerializedProperty reparentProp;
         protected SerializedProperty containsCommandProp;
         protected SerializedProperty containsPickAbleProp;
-        protected SerializedProperty activeProp;
-
+        protected SerializedProperty rematrixProp;
+        protected SerializedProperty matrixProp;
 
         protected SerializedProperty instanceIDProp;
-        protected SerializedProperty targetProp;
+        protected SerializedProperty parentProp;
         protected SerializedProperty prefabProp;
-        private string drawrText;
-        private Color color;
         protected void FindCommonPropertys(SerializedProperty property)
         {
-            activeProp = property.FindPropertyRelative("active");
-            resetProp = property.FindPropertyRelative("reset");
+            rematrixProp = property.FindPropertyRelative("rematrix");
+            matrixProp = property.FindPropertyRelative("matrix");
+            reparentProp = property.FindPropertyRelative("reparent");
             instanceIDProp = property.FindPropertyRelative("instanceID");
-            targetProp = property.FindPropertyRelative("target");
+            parentProp = property.FindPropertyRelative("parent");
             containsCommandProp = property.FindPropertyRelative("containsCommand");
             containsPickAbleProp = property.FindPropertyRelative("containsPickAble");
-        }
-        protected void TryHideItem()
-        {
-            var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
-            if (gitem != null)
-            {
-                var prefab = PrefabUtility.GetPrefabParent(gitem);
-                if (prefab != null)
-                {
-                    var root = PrefabUtility.FindPrefabRoot((GameObject)prefab);
-                    if (root != null)
-                    {
-                        PrefabUtility.ReplacePrefab(gitem as GameObject, root, ReplacePrefabOptions.ConnectToPrefab);
-                    }
-                }
-                GameObject.DestroyImmediate(gitem);
-            }
-            instanceIDProp.intValue = 0;
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             FindCommonPropertys(property);
             prefabProp = property.FindPropertyRelative("prefab");
-            return (property.isExpanded ? resetProp.boolValue ? 4 : 2 : 1) * EditorGUIUtility.singleLineHeight;
+            return (property.isExpanded ? reparentProp.boolValue ? 4 : 2 : 1) * EditorGUIUtility.singleLineHeight;
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (prefabProp.objectReferenceValue != null)
-            {
+            if (prefabProp.objectReferenceValue != null){
                 label = new GUIContent(prefabProp.objectReferenceValue.name);
             }
             var rect = new Rect(position.x, position.y, position.width * 0.9f, EditorGUIUtility.singleLineHeight);
@@ -68,60 +48,17 @@ namespace WorldActionSystem
                 property.isExpanded = !property.isExpanded;
                 if (property.isExpanded)
                 {
-                    TryCreateItem();
+                    ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, reparentProp, parentProp, rematrixProp, matrixProp);
                 }
                 else
                 {
-                    TryHideItem();
+                    ActionEditorUtility.SavePrefab(instanceIDProp, rematrixProp, matrixProp);
                 }
             }
 
-            if (prefabProp.objectReferenceValue == null)
-            {
-                EditorGUI.HelpBox(rect, "丢失", MessageType.Error);
-            }
-            else
-            {
-                drawrText = "";
-                color = Color.clear;
-                var count = 0;
-                if (resetProp.boolValue)
-                {
-                    drawrText += "[reset] ";
-                    color += new Color(0.3f, 0.5f, 0.8f);
-                    count++;
-                }
-                if (containsCommandProp.boolValue)
-                {
-                    drawrText += "[command] ";
-                    color += new Color(0.5f, 0.8f, 0.3f);
-                    count++;
-                }
-                if (containsPickAbleProp.boolValue)
-                {
-                    drawrText += "[pickup] ";
-                    color += new Color(0.8f, 0.3f, 0.5f);
-                    count++;
-                }
-                if(!activeProp.boolValue)
-                {
-                    drawrText = "[hide]";
-                    color = Color.gray;
-                    count = 1;
-                }
-                if(count >0)
-                {
-                    var infoRect = rect;
-                    infoRect.x = infoRect.width - 150f;
-                    infoRect.width = 150f;
-                    GUI.color = color / count;
-                    EditorGUI.SelectableLabel(infoRect, drawrText);
-                    GUI.color = Color.white;
-                }
-               
-            }
+            InformationShow(rect);
 
-            rect = new Rect(position.max.x - position.width * 0.1f, position.y,20, EditorGUIUtility.singleLineHeight);
+             rect = new Rect(position.max.x - position.width * 0.1f, position.y,20, EditorGUIUtility.singleLineHeight);
 
             switch (Event.current.type)
             {
@@ -139,19 +76,7 @@ namespace WorldActionSystem
                         {
                             var obj = DragAndDrop.objectReferences[0];
                             if (obj is GameObject){
-                                var prefab = PrefabUtility.GetPrefabParent(obj);
-                                if(prefab != null)
-                                {
-                                    prefabProp.objectReferenceValue =PrefabUtility.FindPrefabRoot(prefab as GameObject);
-                                }
-                                else
-                                {
-                                    var path = AssetDatabase.GetAssetPath(obj);
-                                    if (!string.IsNullOrEmpty(path))
-                                    {
-                                        prefabProp.objectReferenceValue = obj;
-                                    }
-                                }
+                                ActionEditorUtility.InsertItem(prefabProp, obj);
                             }
                             DragAndDrop.AcceptDrag();
                         }
@@ -175,56 +100,75 @@ namespace WorldActionSystem
             }
           
             rect = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
+
             if (property.isExpanded)
             {
-                var choiseRect = new Rect(rect.x, rect.y, position.width * 0.24f, rect.height);
-                activeProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Active", activeProp.boolValue);
-                choiseRect.x += position.width * 0.26f;
-                resetProp.boolValue = EditorGUI.ToggleLeft(choiseRect,"Reset", resetProp.boolValue);
-                choiseRect.x += position.width * 0.26f;
-                containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect,"Command", containsCommandProp.boolValue);
-                choiseRect.x += position.width * 0.26f;
-                containsPickAbleProp.boolValue = EditorGUI.ToggleLeft(choiseRect,"PickUp", containsPickAbleProp.boolValue);
-                if (resetProp.boolValue)
-                {
-                    rect.y += 1.5f * EditorGUIUtility.singleLineHeight;
-                    EditorGUI.PropertyField(rect, targetProp);
-                }
+                DrawOptions(rect);
             }
         }
-        protected void TryCreateItem()
+
+        protected void DrawOptions(Rect rect)
         {
-            if (prefabProp.objectReferenceValue == null){
-                return;
-            }
-            if(instanceIDProp.intValue != 0)
+            var tempRect = rect;
+            var optionCount = 4;
+            var width = rect.width / optionCount;
+            var choiseRect = new Rect(rect.x, rect.y, width, rect.height);
+            EditorGUI.BeginDisabledGroup(containsPickAbleProp.boolValue);
+            rematrixProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Matrix", rematrixProp.boolValue);
+            if (containsPickAbleProp.boolValue) rematrixProp.boolValue = true;//强制重置坐标
+            EditorGUI.EndDisabledGroup();
+            choiseRect.x += width;
+            reparentProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Parent", reparentProp.boolValue);
+            choiseRect.x += width;
+            containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Command", containsCommandProp.boolValue);
+            choiseRect.x += width;
+            containsPickAbleProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Element", containsPickAbleProp.boolValue);
+            if (reparentProp.boolValue)
             {
-                var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
-                if(gitem != null)
-                {
-                    return;
-                }
+                tempRect.y += 1.5f * EditorGUIUtility.singleLineHeight;
+                EditorGUI.PropertyField(tempRect, parentProp);
             }
-            GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
-            if (gopfb != null)
+        }
+
+        protected void InformationShow(Rect rect)
+        {
+            if (prefabProp.objectReferenceValue == null)
             {
-                GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
-                var actionSystem = GameObject.FindObjectOfType<ActionSystem>();
-                go.transform.SetParent(actionSystem.transform, true);
-                if (resetProp.boolValue)
+                EditorGUI.HelpBox(rect, "丢失", MessageType.Error);
+            }
+            else
+            {
+                var infoRect = rect;
+                infoRect.x = infoRect.width - 80;
+                infoRect.width = 20;
+                if (reparentProp.boolValue)
                 {
-                    var trans = targetProp.objectReferenceValue;
-                    if(trans != null)
-                    {
-                        var target = trans as Transform;
-                        ActionSystem.ResetInstenceMatrix(go.transform, target);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("坐标对象为空"+go.name);
-                    }
+                    GUI.color = new Color(0.3f, 0.5f, 0.8f);
+                    EditorGUI.SelectableLabel(infoRect, "[p]");
+                    infoRect.x += infoRect.width;
                 }
-                instanceIDProp.intValue = go.GetInstanceID();
+
+                if (rematrixProp.boolValue)
+                {
+                    GUI.color = new Color(0.8f, 0.8f, 0.4f);
+                    EditorGUI.SelectableLabel(infoRect, "[m]");
+                    infoRect.x += infoRect.width;
+                }
+
+                if (containsCommandProp.boolValue)
+                {
+                    GUI.color = new Color(0.5f, 0.8f, 0.3f);
+                    EditorGUI.SelectableLabel(infoRect, "[c]");
+                    infoRect.x += infoRect.width;
+
+                }
+                if (containsPickAbleProp.boolValue)
+                {
+                    GUI.color = new Color(0.8f, 0.3f, 0.5f);
+                    EditorGUI.SelectableLabel(infoRect, "[e]");
+                    infoRect.x += infoRect.width;
+                }
+                GUI.color = Color.white;
             }
         }
     }

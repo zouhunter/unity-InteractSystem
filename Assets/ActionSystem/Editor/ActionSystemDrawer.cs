@@ -185,19 +185,11 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    var resetProp = itemProp.FindPropertyRelative("reset");
-                    var targetProp = itemProp.FindPropertyRelative("target");
-                    GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-
-                    go.transform.SetParent((target as ActionSystem).transform, true);
-
-                    if (resetProp.boolValue && targetProp.objectReferenceValue != null)
-                    {
-                        var targetO = targetProp.objectReferenceValue as Transform;
-                        ActionSystem.ResetInstenceMatrix(go.transform, targetO);
-                    }
-
-                    instanceIDProp.intValue = go.GetInstanceID();
+                    var parentProp = itemProp.FindPropertyRelative("parent");
+                    var matrixProp = itemProp.FindPropertyRelative("matrix");
+                    var reparentProp = itemProp.FindPropertyRelative("reparent");
+                    var rematrixProp = itemProp.FindPropertyRelative("rematrix");
+                    ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, reparentProp, parentProp, rematrixProp, matrixProp);
                 }
 
             }
@@ -228,17 +220,18 @@ namespace WorldActionSystem
 
         private void CloseAllCreated(SerializedProperty arrayProp)
         {
-            TrySaveAllPrefabs(arrayProp);
             for (int i = 0; i < arrayProp.arraySize; i++)
             {
-                var item = arrayProp.GetArrayElementAtIndex(i);
-                var instanceIDPorp = item.FindPropertyRelative("instanceID");
+                var itemProp = arrayProp.GetArrayElementAtIndex(i);
+                var instanceIDPorp = itemProp.FindPropertyRelative("instanceID");
                 var obj = EditorUtility.InstanceIDToObject(instanceIDPorp.intValue);
                 if (obj != null)
                 {
+                    var matrixProp = itemProp.FindPropertyRelative("matrix");
+                    var rematrixProp = itemProp.FindPropertyRelative("rematrix");
+                    ActionEditorUtility.SavePrefab(instanceIDPorp, rematrixProp, matrixProp);
                     DestroyImmediate(obj);
                 }
-                instanceIDPorp.intValue = 0;
             }
         }
         private void SortPrefabs(SerializedProperty property)
