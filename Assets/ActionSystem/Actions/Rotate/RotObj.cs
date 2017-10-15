@@ -70,7 +70,6 @@ namespace WorldActionSystem
             comparer = new FloatComparer(deviation);
             if (render == null) render = GetComponent<Renderer>();
         }
-
         private bool Flash()
         {
             if (Started && !Complete)
@@ -162,15 +161,21 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(forceauto);
             transform.rotation = startRot;
-            if (forceauto)
-            {
-                Invoke("OnEndExecute", 0.5f);
-            }
+            if (forceauto) StartCoroutine(AutoRotateTo(() => { OnEndExecute(); }));
         }
-        public override void OnEndExecute()
+
+        private IEnumerator AutoRotateTo(UnityAction callBack)
         {
-            base.OnEndExecute();
+            var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
+            var start = transform.rotation;
+            for (float timer = 0; timer < 1f; timer += Time.deltaTime)
+            {
+                yield return new WaitForEndOfFrame();
+                transform.rotation = Quaternion.Lerp(start, target, timer);
+            }
+            callBack();
         }
+
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
