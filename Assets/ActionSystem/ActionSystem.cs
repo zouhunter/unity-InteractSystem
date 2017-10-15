@@ -31,7 +31,7 @@ namespace WorldActionSystem
         private RegistCmds onCommandRegist;
 
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
-        
+
         #region Interface Fuctions
 
         private void Awake()
@@ -41,24 +41,42 @@ namespace WorldActionSystem
 
         private void Start()
         {
-            OnCreateCommandAndElements();
-        }
-        private void OnCreateCommandAndElements()
-        {
             var cmds = new List<ActionCommand>();
-            CreateActionObjects((cmd)=> {
-                cmd.RegistAsOperate(OnUserError, () => { return elementController; });
-                cmds.Add(cmd);}, (pick)=> {
-                elementController.RegistElement(pick);
-            });
-           
+            RetriveCommandAndElements(cmds);//自身加载
+            OnCreateCommandAndElements(cmds);//动态加载
             activeCommands = commandCtrl.RegistTriggers(cmds.ToArray(), OnStepComplete);
             if (onCommandRegist != null) onCommandRegist.Invoke(activeCommands);
+        }
+        private void OnCreateCommandAndElements(List<ActionCommand> cmds)
+        {
+            CreateActionObjects((cmd) =>
+            {
+                cmd.RegistAsOperate(OnUserError, () => { return elementController; });
+                cmds.Add(cmd);
+            }, (pick) =>
+            {
+                elementController.RegistElement(pick);
+            });
+        }
+        private void RetriveCommandAndElements(List<ActionCommand> cmds)
+        {
+            RetriveCommand(transform, (cmd) =>
+            {
+                cmd.RegistAsOperate(OnUserError, () => { return elementController; });
+                cmds.Add(cmd);
+            });
+            RetivePickElement(transform, (pickUp) =>
+            {
+                elementController.RegistElement(pickUp);
+            });
         }
         #endregion
 
         #region Public Functions
-
+        public static void LunchActionSystemAsync<T>(T[] steps, UnityAction<ActionSystem, T[]> onLunchOK) where T : IActionStap
+        {
+            SceneMain.Current.StartCoroutine(LunchActionSystem(steps, onLunchOK));
+        }
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
@@ -80,7 +98,7 @@ namespace WorldActionSystem
                 Instance.onCommandRegist.Invoke(Instance.activeCommands);
             }
         }
-        
+
         #endregion
 
         #region private Funtions
@@ -112,7 +130,7 @@ namespace WorldActionSystem
             if (onCommandRegist != null) onCommandRegist.Invoke(cmdList);
         }
 
-        internal  void CreateActionObjects(UnityAction<ActionCommand> onCreateCommand, UnityAction<PickUpAbleElement> onCreateElement)
+        internal void CreateActionObjects(UnityAction<ActionCommand> onCreateCommand, UnityAction<PickUpAbleElement> onCreateElement)
         {
             foreach (var item in prefabList)
             {
@@ -121,14 +139,14 @@ namespace WorldActionSystem
                 created.name = item.prefab.name;
                 if (item.reparent && item.parent != null)
                 {
-                    transform.SetParent(item.parent,false);
+                    transform.SetParent(item.parent, false);
                 }
                 else
                 {
-                    created.transform.SetParent(transform,false);
+                    created.transform.SetParent(transform, false);
                 }
 
-                if(item.rematrix)
+                if (item.rematrix)
                 {
                     TransUtil.LoadmatrixInfo(item.matrix, created.transform);
                 }
@@ -145,13 +163,16 @@ namespace WorldActionSystem
             }
         }
 
-        private void RetriveCommand(Transform trans,UnityAction<ActionCommand> onRetive)
+        private void RetriveCommand(Transform trans, UnityAction<ActionCommand> onRetive)
         {
             if (!trans.gameObject.activeSelf) return;
-            var com = trans.GetComponent<ActionCommand>();
-            if(com)
+            var coms = trans.GetComponents<ActionCommand>();
+            if (coms != null && coms.Length > 0)
             {
-                onRetive(com);
+                foreach (var com in coms)
+                {
+                    onRetive(com);
+                }
                 return;
             }
             else

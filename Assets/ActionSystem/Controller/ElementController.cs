@@ -65,7 +65,7 @@ namespace WorldActionSystem
                     }
                 }
             }
-            return null;
+            throw new Exception("配制错误,缺少" + elementName);
         }
     }
 

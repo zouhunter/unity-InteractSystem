@@ -26,16 +26,16 @@ namespace WorldActionSystem
             }
         }
         public UnityAction<int> onEndExecute;
-        public UnityEvent onBeforeComplete;
         public UnityEvent onBeforeStart;
         public UnityEvent onBeforeUnDo;
+        public UnityEvent onBeforeComplete;
 
         protected virtual void Start()
         {
             gameObject.SetActive(startActive);
         }
 
-        public virtual void OnStartExecute()
+        public virtual void OnStartExecute(bool auto = false)
         {
             if(!_started)
             {
@@ -61,6 +61,7 @@ namespace WorldActionSystem
                 if (onEndExecute != null)
                 {
                     onEndExecute.Invoke(queueID);
+                    Debug.Log("onEndExecute"+ name);
                 }
             }
             else

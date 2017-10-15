@@ -24,6 +24,15 @@ namespace WorldActionSystem
 
         public UnityAction onInstallOkEvent;
         public UnityAction onUnInstallOkEvent;
+        InfoTextShow textShow;
+
+        public UnityEvent onPickUp;
+        public UnityEvent OnLayDown;
+        public UnityEvent OnInstallEnd;
+
+        public UnityEvent onStepActive;
+        public UnityEvent onStepComplete;
+        public UnityEvent onStepUnDo;
 
         [SerializeField]
         private Renderer m_render;
@@ -44,6 +53,7 @@ namespace WorldActionSystem
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
+            textShow = GetComponent<InfoTextShow>();
         }
 
         private void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
@@ -117,6 +127,7 @@ namespace WorldActionSystem
         /// <param name="target"></param>
         public void QuickInstall(GameObject target)
         {
+            if (OnInstallEnd != null) OnInstallEnd.Invoke();
             StopTween();
             if (!Installed)
             {
@@ -145,6 +156,9 @@ namespace WorldActionSystem
         public void NormalMoveBack()
         {
 #if !NoFunction
+            if(OnLayDown !=null) OnLayDown.Invoke();
+            if (textShow) textShow.enabled = true;
+
             DoPath(startPos, startRotation, () =>
             {
                 if (onUnInstallOkEvent != null)
@@ -178,6 +192,9 @@ namespace WorldActionSystem
 
         public void OnPickUp()
         {
+            if (onPickUp != null) onPickUp.Invoke();
+
+            if (textShow) textShow.enabled = false;
             StopTween();
         }
 
@@ -186,14 +203,20 @@ namespace WorldActionSystem
         /// </summary>
         public void StepActive()
         {
+            onStepActive.Invoke();
             gameObject.SetActive(true);
         }
-
+        public void StepUpDo()
+        {
+            onStepUnDo.Invoke();
+            gameObject.SetActive(startActive);
+        }
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
         /// </summary>
         public void StepComplete()
         {
+            onStepComplete.Invoke();
             gameObject.SetActive(endActive);
         }
         public void SetActive(bool active)

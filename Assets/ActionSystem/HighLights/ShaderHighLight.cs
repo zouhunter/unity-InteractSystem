@@ -18,6 +18,7 @@ public class ShaderHighLight : IHighLightItems
 #endif
     public void HighLightTarget(Renderer go, Color color)
     {
+        if (go == null) return;
 #if !NoFunction
         if (!isOn) return;
         Highlighter highlighter;
@@ -37,6 +38,7 @@ public class ShaderHighLight : IHighLightItems
 
     public void UnHighLightTarget(Renderer go)
     {
+        if (go == null) return;
 #if !NoFunction
         Highlighter highlighter;
         if (highlightDic.TryGetValue(go, out highlighter))

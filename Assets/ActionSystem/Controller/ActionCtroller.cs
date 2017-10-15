@@ -6,13 +6,13 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     
-    public abstract class ActionCtroller : IActionCtroller
+    public class ActionCtroller : IActionCtroller
     {
         protected ActionCommand trigger { get; set; }
         protected List<int> queueID = new List<int>();
         protected ActionObj[] actionObjs { get; set; }
         protected bool isForceAuto;
-        public ActionCtroller( ActionCommand trigger)
+        public ActionCtroller(ActionCommand trigger)
         {
             this.trigger = trigger;
             actionObjs = trigger.ActionObjs;
@@ -22,10 +22,7 @@ namespace WorldActionSystem
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            if (!forceAuto) {
-                ExecuteAStep();
-            }
-           
+            ExecuteAStep(isForceAuto);
         }
         private void ChargeQueueIDs()
         {
@@ -61,7 +58,7 @@ namespace WorldActionSystem
             }
         }
 
-        public abstract IEnumerator Update();
+        public virtual IEnumerator Update() { yield break; }
 
         private void OnCommandObjComplete(int id)
         {
@@ -69,14 +66,14 @@ namespace WorldActionSystem
             var notComplete = Array.FindAll<ActionObj>(actionObjs, x => (x as ActionObj).QueueID == id && !x.Complete);
             if (notComplete.Length == 0)
             {
-                if (!ExecuteAStep())
+                if (!ExecuteAStep(isForceAuto))
                 {
                     trigger.Complete();
                 }
             }
         }
 
-        protected bool ExecuteAStep()
+        protected bool ExecuteAStep(bool auto)
         {
             if (queueID.Count > 0)
             {
@@ -87,8 +84,8 @@ namespace WorldActionSystem
                 {
                     foreach (ActionObj item in neetActive)
                     {
-                        item.OnStartExecute();
                         item.onEndExecute = OnCommandObjComplete;
+                        item.OnStartExecute(isForceAuto);
                     }
                 }
 

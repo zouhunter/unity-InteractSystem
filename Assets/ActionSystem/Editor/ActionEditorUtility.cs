@@ -88,7 +88,8 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    go.transform.SetParent(actionSystem.transform, false);
+                    var parent = actionSystem == null ? null : actionSystem.transform;
+                    go.transform.SetParent(parent, false);
                 }
 
                 if (rematrixProp.boolValue)

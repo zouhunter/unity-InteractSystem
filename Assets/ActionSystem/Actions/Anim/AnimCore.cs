@@ -6,21 +6,22 @@ using System;
 
 namespace WorldActionSystem
 {
-    [RequireComponent(typeof(Animation))]
     public class AnimCore : MonoBehaviour, AnimPlayer
     {
+        public Animation anim;
+        public string animName;
         private UnityAction onAutoPlayEnd;
-        private Animation anim;
-        private string animName;
         private AnimationClip clip;
         private AnimationState state;
         private float animTime;
         private AnimationEvent even;
+        private Coroutine coroutine;
         private void Awake()
         {
-            anim = GetComponent<Animation>();
+            if(anim == null) anim = GetComponent<Animation>();
+            if (string.IsNullOrEmpty(animName)) animName = anim.clip.name;
         }
-        public void Init(UnityAction onAutoPlayEnd)
+        void Init(UnityAction onAutoPlayEnd)
         {
             anim.playAutomatically = false;
             anim.wrapMode = WrapMode.Once;
@@ -30,36 +31,25 @@ namespace WorldActionSystem
 
         void RegisterEvent()
         {
-            animName = anim.clip.name;
             state = anim[animName];
             animTime = state.length;
             anim.cullingType = AnimationCullingType.BasedOnRenderers;
-
-            clip = anim.GetClip(animName);
-            var even = Array.Find(clip.events, x => x.time == animTime); 
-            if (even == null)
-            {
-                even = new AnimationEvent();
-                even.time = animTime;
-                even.functionName = "OnPlayToEnd";
-                clip.AddEvent(even);
-            }
-
+            anim.clip = clip = anim.GetClip(animName);
         }
 
-        /// <summary>
-        /// 完成事件
-        /// </summary>
-        void OnPlayToEnd()
+        public void Play(float speed, UnityAction onAutoPlayEnd)
         {
-            //Debug.Log("onAutoPlayEnd:" + transform.parent.name);
-            onAutoPlayEnd.Invoke();
-        }
-        public void Play(float speed)
-        {
+            Init(onAutoPlayEnd);
             state.normalizedTime = 0f;
             state.speed = speed;
             anim.Play();
+            if(coroutine == null) coroutine = StartCoroutine(DelyStop());
+        }
+        IEnumerator DelyStop()
+        {
+            float waitTime = animTime / state.speed;
+            yield return new WaitForSeconds(waitTime);
+            onAutoPlayEnd.Invoke();
         }
         /// <summary>
         /// 强制完成
@@ -68,11 +58,15 @@ namespace WorldActionSystem
         {
             state.normalizedTime = 1f;
             state.normalizedSpeed = 0;
+            if (coroutine != null) StopCoroutine(coroutine);
+            coroutine = null;
         }
         public void UnDoPlay()
         {
             state.normalizedTime = 0f;
             state.speed = 0;
+            if (coroutine != null) StopCoroutine(coroutine);
+            coroutine = null;
         }
 
 

@@ -57,7 +57,7 @@ namespace WorldActionSystem
         {
             base.Start();
             startRot = transform.rotation;
-            lineRender = gameObject.AddComponent<LineRenderer>();
+            lineRender = gameObject.GetComponent<LineRenderer>();
             lineRender.material = new Material(Shader.Find("Sprites/Default"));
 #if UNITY_5_6_OR_NEWER
             lineRender.startWidth = 0.1f;
@@ -157,10 +157,14 @@ namespace WorldActionSystem
             }
         }
 
-        public override void OnStartExecute()
+        public override void OnStartExecute(bool forceauto)
         {
-            base.OnStartExecute();
+            base.OnStartExecute(forceauto);
             transform.rotation = startRot;
+            if (forceauto)
+            {
+                Invoke("OnEndExecute", 0.5f);
+            }
         }
         public override void OnEndExecute()
         {

@@ -18,6 +18,14 @@ namespace WorldActionSystem
             }
             gameObject.layer = Setting.clickItemLayer;
         }
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            if (auto)
+            {
+                Invoke("OnEndExecute", 0.5f);
+            }
+        }
     }
 
 }

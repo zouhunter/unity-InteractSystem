@@ -16,7 +16,7 @@ namespace WorldActionSystem
 #if !NoFunction
         public Tweener tween;
 #endif
-        public void Init(UnityAction onAutoPlayEnd)
+        void Init(UnityAction onAutoPlayEnd)
         {
 #if !NoFunction
 
@@ -30,8 +30,9 @@ namespace WorldActionSystem
 #endif
         }
 
-        public void Play(float speed)
+        public void Play(float speed, UnityAction onAutoPlayEnd)
         {
+            Init(onAutoPlayEnd);
 #if !NoFunction
             tween.ChangeValues(transform.position, initPos,1f/ speed).Play();
 #endif

@@ -105,21 +105,6 @@ namespace WorldActionSystem
                 yield return null;
             }
         }
-
-
-        public override void OnStartExecute(bool forceAuto)
-        {
-            base.OnStartExecute(forceAuto);
-            if (forceAuto)
-            {
-                //自动播放按扭点击??
-                foreach (var item in actionObjs)
-                {
-                    item.OnEndExecute();
-                }
-                trigger.Complete();
-            }
-        }
     }
 
 }

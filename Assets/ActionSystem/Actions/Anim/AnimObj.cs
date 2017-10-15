@@ -20,7 +20,6 @@ namespace WorldActionSystem
             base.Start();
             animPlayer = GetComponentInChildren<AnimPlayer>();
             if (animPlayer != null){
-                animPlayer.Init(OnEndExecute);
                 gameObject.SetActive(startActive);
             }
             else
@@ -34,23 +33,22 @@ namespace WorldActionSystem
             if (animPlayer != null)
             {
                 this.animPlayer = animPlayer;
-                animPlayer.Init(OnEndExecute);
                 gameObject.SetActive(startActive);
             }
         }
         /// <summary>
         /// 播放动画
         /// </summary>
-        public override void OnStartExecute()
+        public override void OnStartExecute(bool forceauto)
         {
-            base.OnStartExecute();
+            base.OnStartExecute(forceauto);
             delyPlay = StartCoroutine(DelyPlay());
         }
 
         private IEnumerator DelyPlay()
         {
             yield return new WaitForSeconds(delyTime);
-            if (animPlayer != null) animPlayer.Play(speed);
+            if (animPlayer != null) animPlayer.Play(speed, OnEndExecute);
         }
 
         public override void OnEndExecute()

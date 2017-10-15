@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public abstract class ActionCommand : MonoBehaviour, IActionCommand, IComparable<ActionCommand>
+    public class ActionCommand : MonoBehaviour, IActionCommand, IComparable<ActionCommand>
     {
         [SerializeField]
         private string _stepName;
@@ -45,9 +45,13 @@ namespace WorldActionSystem
         public ActionObj[] ActionObjs { get { return actionObjs; } }
 
         public ActionSystem actionSystem { get; set; }
+
         protected IActionCtroller coroutineCtrl;
         protected Coroutine coroutine;
-        protected abstract IActionCtroller CreateCtrl();
+        protected virtual IActionCtroller CreateCtrl()
+        {
+            return new ActionCtroller(this);
+        }
         protected ActionObj[] actionObjs;
         [SerializeField]
         protected StepEvent onBeforeActive;

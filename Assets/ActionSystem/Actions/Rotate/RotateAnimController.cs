@@ -82,15 +82,6 @@ namespace WorldActionSystem
         {
             return Vector3.Distance(selectedObj.transform.position, pos) < selectedObj.triggerRadius;
         }
-        public override void OnStartExecute(bool forceAuto)
-        {
-            base.OnStartExecute(forceAuto);
-            if (forceAuto)
-            {
-                OnEndExecute();//直接结束??
-                trigger.Complete();
-            }
-        }
     }
 
 }

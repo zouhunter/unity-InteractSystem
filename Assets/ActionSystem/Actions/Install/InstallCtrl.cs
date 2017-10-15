@@ -255,6 +255,15 @@ namespace WorldActionSystem
             List<InstallObj> posList = GetNotInstalledPosList();
             SetStartNotify(posList);
         }
+
+        public void SetElementUnDo()
+        {
+           var elements = trigger.ElementCtrl.GetElements(trigger.StepName);
+            foreach (var item in elements)
+            {
+                item.StepUpDo();
+            }
+        }
         /// <summary>
         /// 激活步骤 
         /// </summary>
@@ -414,7 +423,7 @@ namespace WorldActionSystem
         {
             trigger.ElementCtrl.onInstall -= OnOneElementEndInstall;
             QuickUnInstall();
-            SetElemetsStart();
+            SetElementUnDo();
             base.OnUnDoExecute();
         }
     }
