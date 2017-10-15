@@ -58,6 +58,7 @@ namespace WorldActionSystem
             base.Start();
             startRot = transform.rotation;
             lineRender = gameObject.GetComponent<LineRenderer>();
+            if (lineRender == null) lineRender = gameObject.AddComponent<LineRenderer>();
             lineRender.material = new Material(Shader.Find("Sprites/Default"));
 #if UNITY_5_6_OR_NEWER
             lineRender.startWidth = 0.1f;

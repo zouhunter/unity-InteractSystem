@@ -150,17 +150,6 @@ namespace WorldActionSystem
             line.SetVertexCount(1);
 #endif
         }
-
-        public override void OnStartExecute(bool forceAuto)
-        {
-            base.OnStartExecute(forceAuto);
-            if(forceAuto)
-            {
-                OnEndExecute();
-                trigger.Complete();
-            }
-        }
-
         public override void OnEndExecute()
         {
             base.OnEndExecute(); 

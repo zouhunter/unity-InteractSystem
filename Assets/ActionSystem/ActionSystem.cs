@@ -31,7 +31,7 @@ namespace WorldActionSystem
         private RegistCmds onCommandRegist;
 
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
-
+        private static GameObject handle;
         #region Interface Fuctions
 
         private void Awake()
@@ -73,10 +73,6 @@ namespace WorldActionSystem
         #endregion
 
         #region Public Functions
-        public static void LunchActionSystemAsync<T>(T[] steps, UnityAction<ActionSystem, T[]> onLunchOK) where T : IActionStap
-        {
-            SceneMain.Current.StartCoroutine(LunchActionSystem(steps, onLunchOK));
-        }
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>

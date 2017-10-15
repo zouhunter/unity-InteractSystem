@@ -26,7 +26,21 @@ namespace WorldActionSystem
             base.Start();
             RegistNodes();
         }
-
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            if(auto)
+            {
+                for (int i = 0; i < connectGroup.Count; i++)
+                {
+                    var group = connectGroup[i];
+                    var id = 1 << group.p1 | 1 << group.p2;
+                    positionDic[id] = new Vector3[] { nodes[group.p1].transform.position, nodes[group.p2].transform.position };
+                    RefeshState(id);
+                    OnOneNodeConnected();
+                }
+            }
+        }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
