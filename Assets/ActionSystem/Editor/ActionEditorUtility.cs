@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEditor;
 using System;
-
+using UnityEditorInternal;
 namespace WorldActionSystem
 {
     public class ActionEditorUtility 
@@ -43,7 +43,25 @@ namespace WorldActionSystem
                 var root = PrefabUtility.FindPrefabRoot((GameObject)prefab);
                 if (root != null)
                 {
-                    PrefabUtility.ReplacePrefab(gitem as GameObject, root, ReplacePrefabOptions.ConnectToPrefab);
+                    if (root.name == gitem.name)
+                    {
+                        //PrefabUtility.RecordPrefabInstancePropertyModifications(gitem);
+                        var modify = PrefabUtility.GetPropertyModifications(gitem);
+                        Debug.Log("GetPropertyModifications:" + modify.Length);
+                        foreach (var item in modify)
+                        {
+                            Debug.Log(item.propertyPath);
+                        }
+                        modify = PrefabUtility.GetPropertyModifications(root);
+                        Debug.Log("GetPropertyModifications:" + modify.Length);
+                        foreach (var item in modify)
+                        {
+                            Debug.Log(item.propertyPath);
+                        }
+                        PrefabUtility.SetPropertyModifications(root, modify);
+                        return;
+                        PrefabUtility.ReplacePrefab(gitem as GameObject, root, ReplacePrefabOptions.ConnectToPrefab);
+                    }
                 }
             }
         }
