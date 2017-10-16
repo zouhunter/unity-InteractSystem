@@ -12,7 +12,7 @@ namespace WorldActionSystem
         protected bool _started;
         public bool Started { get { return _started; } }
         protected bool auto;
-        [SerializeField]
+        [SerializeField,Range(0,10)]
         private int queueID;
         public int QueueID
         {
@@ -25,6 +25,7 @@ namespace WorldActionSystem
 
         public virtual void OnStartExecute(bool auto = false)
         {
+            Debug.Log("OnStartExecute" + name);
             this.auto = auto;
             if (!_started)
             {

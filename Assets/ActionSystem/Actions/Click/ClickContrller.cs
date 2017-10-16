@@ -17,7 +17,7 @@ namespace WorldActionSystem
         private float distence = 10;
         private Camera viewCamera;
         private IHighLightItems highLight;
-        private Renderer lastSelected;
+        private GameObject lastSelected;
 
         public ClickContrller(ActionCommand trigger) : base(trigger)
         {
@@ -39,16 +39,16 @@ namespace WorldActionSystem
             {
                 obj.TryEndExecute();
             }
-            highLight.UnHighLightTarget(obj.render);
+            highLight.UnHighLightTarget(obj.ViewObj);
         }
 
         void OnHoverBtn(ClickObj obj)
         {
             if (obj == null) return;
-            if (lastSelected == obj.render) return;
+            if (lastSelected == obj.ViewObj) return;
             OnHoverNothing();
-            highLight.HighLightTarget(obj.render, obj.Started && !obj.Complete ? Color.green : Color.red);
-            lastSelected = obj.render;
+            highLight.HighLightTarget(obj.ViewObj, obj.Started && !obj.Complete ? Color.green : Color.red);
+            lastSelected = obj.ViewObj;
         }
 
         void OnHoverNothing()

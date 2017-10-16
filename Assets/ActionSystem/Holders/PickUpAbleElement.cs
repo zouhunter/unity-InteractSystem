@@ -36,26 +36,32 @@ namespace WorldActionSystem
 
         [SerializeField]
         private Renderer m_render;
+        [SerializeField]
+        protected Color highLightColor = Color.green;
 #if !NoFunction
         private Vector3 startRotation;
         private Vector3 startPos;
         private Tweener move;
         private int smooth = 50;
 #endif
+        private IHighLightItems highLighter;
 
 
 #if !NoFunction
         void Start()
         {
-            if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
-
+            InitRender();
             gameObject.layer = Setting.pickUpElementLayer;
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
             textShow = GetComponent<InfoTextShow>();
         }
-
+        private void InitRender()
+        {
+            if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
+            highLighter = new ShaderHighLight();
+        }
         private void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
         {
             posList = new List<Vector3>();
@@ -203,11 +209,14 @@ namespace WorldActionSystem
         /// </summary>
         public void StepActive()
         {
+            if (Setting.highLightNotice) highLighter.HighLightTarget(m_render, highLightColor);
             onStepActive.Invoke();
             gameObject.SetActive(true);
         }
         public void StepUpDo()
         {
+            if (Setting.highLightNotice) highLighter.UnHighLightTarget(m_render);
+
             onStepUnDo.Invoke();
             gameObject.SetActive(startActive);
         }
@@ -216,6 +225,8 @@ namespace WorldActionSystem
         /// </summary>
         public void StepComplete()
         {
+            if (Setting.highLightNotice) highLighter.UnHighLightTarget(m_render);
+
             onStepComplete.Invoke();
             gameObject.SetActive(endActive);
         }

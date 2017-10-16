@@ -48,8 +48,8 @@ namespace WorldActionSystem
         public Button skipAStap;
         public Button skipMutiStap;
         public Button toEnd;
-        public Button insert;
 
+        public Toggle notice;
         public Toggle autoNext;
         public Toggle autoPlay;
 
@@ -66,8 +66,8 @@ namespace WorldActionSystem
             skipAStap.onClick.AddListener(OnSkipAstepButtonClicekd);
             skipMutiStap.onClick.AddListener(OnSkipMutiButtonClicked);
             toEnd.onClick.AddListener(ToEndButtonClicked);
-            insert.onClick.AddListener(OnInsertScript);
-
+            notice.onValueChanged.AddListener(OnNoticeStateChanged);
+            autoPlay.onValueChanged.AddListener(OnAutoPlayStateChanged);
             //accept.onClick.AddListener(OnSelected);
             start.onClick.AddListener(OnStapChange);
             backAstep.onClick.AddListener(OnStapChange);
@@ -76,6 +76,11 @@ namespace WorldActionSystem
             skipAStap.onClick.AddListener(OnStapChange);
             skipMutiStap.onClick.AddListener(OnStapChange);
             toEnd.onClick.AddListener(OnStapChange);
+        }
+
+        private void OnAutoPlayStateChanged(bool arg0)
+        {
+            OnAcceptButtonCilcked();
         }
 
         void OnAcceptButtonCilcked()
@@ -169,9 +174,9 @@ namespace WorldActionSystem
             }
 
         }
-        void OnInsertScript()
+        void OnNoticeStateChanged(bool isOn)
         {
-            //ActionSystem.Instance.InsertScript<PickUpAbleElement, InfoTextShow>(true);
+            Setting.highLightNotice = isOn;
         }
         public Text textShow;
     }

@@ -237,10 +237,7 @@ namespace WorldActionSystem
             //当前步骤结束
             foreach (var item in poss)
             {
-                if(!item.Complete)
-                {
-                    item.obj.StepComplete();
-                }
+                item.obj.StepComplete();
             }
         }
 

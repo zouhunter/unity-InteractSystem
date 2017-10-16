@@ -18,7 +18,7 @@ namespace WorldActionSystem
         public bool Started { get { return _started; } }
 
         protected bool auto;
-        [SerializeField]
+        [SerializeField,Range(0,10)]
         private int queueID;
         public int QueueID
         {
@@ -49,6 +49,19 @@ namespace WorldActionSystem
                 hookCtrl = new HookCtroller(this);
             }
         }
+        protected virtual void Update()
+        {
+            if (Started && Complete) return;
+
+            if(Started && !Complete)
+            {
+                if (Setting.highLightNotice) highLighter.HighLightTarget(viewObj, highLightColor);
+            }
+            else
+            {
+                if (Setting.highLightNotice) highLighter.UnHighLightTarget(viewObj);
+            }
+        }
         private void InitRender()
         {
             if (viewObj == null) viewObj = gameObject;
@@ -57,11 +70,9 @@ namespace WorldActionSystem
 
         public virtual void OnStartExecute(bool auto = false)
         {
-
             this.auto = auto;
             if (!_started)
             {
-                if (Setting.highLightNotice) highLighter.HighLightTarget(viewObj, highLightColor);
 
                 onBeforeStart.Invoke();
                 _started = true;
@@ -129,7 +140,6 @@ namespace WorldActionSystem
             _started = false;
             _complete = false;
 
-            if (Setting.highLightNotice) highLighter.UnHighLightTarget(viewObj);
 
             gameObject.SetActive(startActive);
             if (hooks.Length > 0)

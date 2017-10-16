@@ -10,21 +10,18 @@ namespace WorldActionSystem
     public class ClickObj : ActionObj
     {
         public float autoCompleteTime = 2;
-        public Renderer render;
         private Coroutine waitCoroutine;
+        public GameObject ViewObj { get { return viewObj; } }
         protected override void Start()
         {
             base.Start();
-            if(render ==null) {
-                render = GetComponentInChildren<Renderer>();
-            }
             gameObject.layer = Setting.clickItemLayer;
         }
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
             if (auto){
-                if (waitCoroutine != null)
+                if (waitCoroutine == null)
                 {
                     StartCoroutine(WaitClose());
                 }
