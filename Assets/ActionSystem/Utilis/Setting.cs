@@ -17,6 +17,7 @@ namespace WorldActionSystem
         internal static int obstacleLayer = 13;
         internal static int installTime = 4;
         internal static bool highLightOpen = true;
+        internal static bool highLightNotice = true;
     }
 }
 

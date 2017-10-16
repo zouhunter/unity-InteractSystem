@@ -7,52 +7,78 @@ using System.Collections.Generic;
 #if !NoFunction
 using HighlightingSystem;
 #endif
-using WorldActionSystem;
-
-public class ShaderHighLight : IHighLightItems
+namespace WorldActionSystem
 {
-#if !NoFunction
-    private static bool isOn = true;
-    private float freq = 1;
-    public Dictionary<Renderer, Highlighter> highlightDic = new Dictionary<Renderer, Highlighter>();
-#endif
-    public void HighLightTarget(Renderer go, Color color)
+    public class ShaderHighLight : IHighLightItems
     {
-        if (go == null) return;
 #if !NoFunction
-        if (!isOn) return;
-        Highlighter highlighter;
-        if (!highlightDic.ContainsKey(go))
+        private bool isOn { get { return Setting.highLightOpen; } }
+        private float freq = 1;
+        public Dictionary<GameObject, Highlighter> highlightDic = new Dictionary<GameObject, Highlighter>();
+#endif
+        public void HighLightTarget(Renderer go, Color color)
         {
-            highlighter = go.gameObject.GetComponent<Highlighter>();
-            if(highlighter == null){
-                highlighter = go.gameObject.AddComponent<Highlighter>();
+            if (go == null) return;
+#if !NoFunction
+            if (!isOn) return;
+            Highlighter highlighter;
+            if (!highlightDic.ContainsKey(go.gameObject))
+            {
+                highlighter = go.gameObject.GetComponent<Highlighter>();
+                if (highlighter == null)
+                {
+                    highlighter = go.gameObject.AddComponent<Highlighter>();
+                }
+                highlighter.On();
+                highlighter.SeeThroughOn();
+                highlightDic.Add(go.gameObject, highlighter);
             }
-            highlighter.On();
-            highlighter.SeeThroughOn();
-            highlightDic.Add(go, highlighter);
-        }
-        highlightDic[go].FlashingOn(Color.white, color, freq);
+            highlightDic[go.gameObject].FlashingOn(Color.white, color, freq);
 #endif
-    }
-
-    public void UnHighLightTarget(Renderer go)
-    {
-        if (go == null) return;
-#if !NoFunction
-        Highlighter highlighter;
-        if (highlightDic.TryGetValue(go, out highlighter))
+        }
+        public void HighLightTarget(GameObject go, Color color)
         {
-            highlighter.Off();
-        }
-#endif
-    }
-
-    public static void SetState(bool isOpen)
-    {
+            if (go == null) return;
 #if !NoFunction
-        ShaderHighLight.isOn = isOpen;
+            if (!isOn) return;
+            Highlighter highlighter;
+            if (!highlightDic.ContainsKey(go))
+            {
+                highlighter = go.gameObject.GetComponent<Highlighter>();
+                if (highlighter == null)
+                {
+                    highlighter = go.gameObject.AddComponent<Highlighter>();
+                }
+                highlighter.On();
+                highlighter.SeeThroughOn();
+                highlightDic.Add(go, highlighter);
+            }
+            highlightDic[go].FlashingOn(Color.white, color, freq);
 #endif
-    }
+        }
 
+        public void UnHighLightTarget(Renderer go)
+        {
+            if (go == null) return;
+#if !NoFunction
+            Highlighter highlighter;
+            if (highlightDic.TryGetValue(go.gameObject, out highlighter))
+            {
+                highlighter.Off();
+            }
+#endif
+        }
+
+        public void UnHighLightTarget(GameObject go)
+        {
+            if (go == null) return;
+#if !NoFunction
+            Highlighter highlighter;
+            if (highlightDic.TryGetValue(go, out highlighter))
+            {
+                highlighter.Off();
+            }
+#endif
+        }
+    }
 }

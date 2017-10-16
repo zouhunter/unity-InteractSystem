@@ -11,10 +11,12 @@ namespace WorldActionSystem
     {
         void HighLightTarget(Renderer go,Color color);
         void UnHighLightTarget(Renderer go);
+        void HighLightTarget(GameObject go, Color color);
+        void UnHighLightTarget(GameObject go);
     }
 
-    public interface IHightLightItem
-    {
-        Renderer Render { get;}
-    }
+    //public interface IHightLightItem
+    //{
+    //    Renderer Render { get;}
+    //}
 }

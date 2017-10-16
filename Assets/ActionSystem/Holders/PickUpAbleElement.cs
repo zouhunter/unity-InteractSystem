@@ -13,7 +13,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : MonoBehaviour,IPickUpAbleItem,IInstallItem,IMatchItem, IHightLightItem, IOutSideRegisterRender
+    public class PickUpAbleElement : MonoBehaviour,IPickUpAbleItem,IInstallItem,IMatchItem, IOutSideRegisterRender
     {
         public int animTime { get { return Setting.installTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象

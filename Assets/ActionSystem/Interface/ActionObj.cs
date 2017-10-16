@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-    public class ActionObj:MonoBehaviour, ISortAble
+    public class ActionObj : MonoBehaviour, ISortAble
     {
         public bool startActive;
         public bool endActive;
@@ -16,6 +16,7 @@ namespace WorldActionSystem
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
+
         protected bool auto;
         [SerializeField]
         private int queueID;
@@ -26,27 +27,42 @@ namespace WorldActionSystem
                 return queueID;
             }
         }
+        [SerializeField]
+        protected GameObject viewObj;
+        [SerializeField]
+        protected Color highLightColor = Color.green;
         public UnityAction<int> onEndExecute;
         public UnityEvent onBeforeStart;
         public UnityEvent onBeforeUnDo;
         public UnityEvent onBeforeComplete;
+        private IHighLightItems highLighter;
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
         protected virtual void Start()
         {
+            InitRender();
             gameObject.SetActive(startActive);
             hooks = GetComponentsInChildren<ActionHook>(false);
-            if(hooks.Length > 0){
+            if (hooks.Length > 0)
+            {
                 hookCtrl = new HookCtroller(this);
             }
+        }
+        private void InitRender()
+        {
+            if (viewObj == null) viewObj = gameObject;
+            highLighter = new ShaderHighLight();
         }
 
         public virtual void OnStartExecute(bool auto = false)
         {
+
             this.auto = auto;
-            if(!_started)
+            if (!_started)
             {
+                if (Setting.highLightNotice) highLighter.HighLightTarget(viewObj, highLightColor);
+
                 onBeforeStart.Invoke();
                 _started = true;
                 _complete = false;
@@ -54,19 +70,19 @@ namespace WorldActionSystem
             }
             else
             {
-                Debug.Log("already started" ,gameObject);
+                Debug.Log("already started", gameObject);
             }
         }
 
         public virtual void TryEndExecute()
         {
-            if(hooks.Length > 0)
+            if (hooks.Length > 0)
             {
-                if(hookCtrl.Complete)
+                if (hookCtrl.Complete)
                 {
                     OnEndExecute();
                 }
-                else if(!hookCtrl.Started)
+                else if (!hookCtrl.Started)
                 {
                     hookCtrl.OnStartExecute(auto);
                 }
@@ -87,6 +103,8 @@ namespace WorldActionSystem
 
             if (!_complete)
             {
+                if (Setting.highLightNotice) highLighter.UnHighLightTarget(viewObj);
+
                 onBeforeComplete.Invoke();
                 _started = true;
                 _complete = true;
@@ -104,12 +122,15 @@ namespace WorldActionSystem
             {
                 Debug.Log("already completed", gameObject);
             }
-          
+
         }
         public virtual void OnUnDoExecute()
         {
             _started = false;
             _complete = false;
+
+            if (Setting.highLightNotice) highLighter.UnHighLightTarget(viewObj);
+
             gameObject.SetActive(startActive);
             if (hooks.Length > 0)
             {
