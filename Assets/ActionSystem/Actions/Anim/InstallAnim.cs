@@ -16,12 +16,15 @@ namespace WorldActionSystem
 #if !NoFunction
         public Tweener tween;
 #endif
+        private void Awake()
+        {
+            initPos = transform.position;
+        }
+
         void Init(UnityAction onAutoPlayEnd)
         {
 #if !NoFunction
-
-            initPos = transform.position;
-            transform.position += startPos;
+            transform.position = initPos + startPos;
             tween = transform.DOMove(initPos, 1).OnComplete(() =>
             {
                 onAutoPlayEnd.Invoke();
@@ -48,7 +51,8 @@ namespace WorldActionSystem
         public void UnDoPlay()
         {
 #if !NoFunction
-            transform.position += startPos;
+            Debug.Log("UnDoPlay");
+            transform.position = initPos;
             tween.Rewind();
 #endif
         }

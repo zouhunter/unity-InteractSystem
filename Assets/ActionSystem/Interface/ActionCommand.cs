@@ -54,12 +54,12 @@ namespace WorldActionSystem
         }
         protected ActionObj[] actionObjs;
         [SerializeField]
-        protected StepEvent onBeforeActive;
+        protected InputField.OnChangeEvent onBeforeActive;
         [SerializeField]
-        protected StepEvent onBeforeUnDo;
+        protected InputField.OnChangeEvent onBeforeUnDo;
         [SerializeField]
-        protected StepEvent onBeforePlayEnd;
-
+        protected InputField.OnChangeEvent onBeforePlayEnd;
+        public UnityEvent<string> Test;
         private bool started;
         private bool completed;
         private bool cameraStartVisiable;
