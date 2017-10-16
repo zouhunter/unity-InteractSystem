@@ -5,7 +5,7 @@ using System;
 using UnityEditorInternal;
 namespace WorldActionSystem
 {
-    public class ActionEditorUtility 
+    public class ActionEditorUtility
     {
         public static void LoadmatrixInfo(SerializedProperty matrixProp, Transform transform)
         {
@@ -37,36 +37,23 @@ namespace WorldActionSystem
         }
         public static void ApplyPrefab(GameObject gitem)
         {
-            var prefab = PrefabUtility.GetPrefabParent(gitem);
+            var instanceRoot = PrefabUtility.FindValidUploadPrefabInstanceRoot(gitem);
+            var prefab = PrefabUtility.GetPrefabParent(instanceRoot);
             if (prefab != null)
             {
-                var root = PrefabUtility.FindPrefabRoot((GameObject)prefab);
-                if (root != null)
+                if (prefab.name == gitem.name)
                 {
-                    if (root.name == gitem.name)
+                    var modify = PrefabUtility.GetPropertyModifications(gitem);
+                    foreach (var item in modify)
                     {
-                        //PrefabUtility.RecordPrefabInstancePropertyModifications(gitem);
-                        var modify = PrefabUtility.GetPropertyModifications(gitem);
-                        Debug.Log("GetPropertyModifications:" + modify.Length);
-                        foreach (var item in modify)
-                        {
-                            Debug.Log(item.propertyPath);
-                        }
-                        modify = PrefabUtility.GetPropertyModifications(root);
-                        Debug.Log("GetPropertyModifications:" + modify.Length);
-                        foreach (var item in modify)
-                        {
-                            Debug.Log(item.propertyPath);
-                        }
-                        PrefabUtility.SetPropertyModifications(root, modify);
-                        return;
-                        PrefabUtility.ReplacePrefab(gitem as GameObject, root, ReplacePrefabOptions.ConnectToPrefab);
+                        Debug.Log(item.propertyPath);
                     }
+                    PrefabUtility.ReplacePrefab(gitem, prefab, ReplacePrefabOptions.ConnectToPrefab);
                 }
             }
         }
 
-        internal static void LoadPrefab(SerializedProperty prefabProp,SerializedProperty instanceIDProp, SerializedProperty reparentProp,SerializedProperty parentProp,SerializedProperty rematrixProp,SerializedProperty matrixProp)
+        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty reparentProp, SerializedProperty parentProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)
         {
             if (prefabProp.objectReferenceValue == null)
             {
@@ -119,7 +106,7 @@ namespace WorldActionSystem
 
         }
 
-        internal static void SavePrefab( SerializedProperty instanceIDProp,SerializedProperty rematrixProp, SerializedProperty matrixProp)
+        internal static void SavePrefab(SerializedProperty instanceIDProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)
         {
             var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
             if (gitem != null)
