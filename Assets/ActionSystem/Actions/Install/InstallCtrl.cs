@@ -171,7 +171,7 @@ namespace WorldActionSystem
                 if (status){
                     pickedUpObj.QuickInstall(installPos.gameObject);
                 }
-                installPos.OnEndExecute();
+                installPos.TryEndExecute();
             }
             else
             {
@@ -259,10 +259,18 @@ namespace WorldActionSystem
         public void SetElementUnDo()
         {
            var elements = trigger.ElementCtrl.GetElements(trigger.StepName);
-            foreach (var item in elements)
+            if(elements == null)
             {
-                item.StepUpDo();
+                Debug.LogWarning(trigger.StepName + ":elementEmpty");
             }
+            else
+            {
+                foreach (var item in elements)
+                {
+                    item.StepUpDo();
+                }
+            }
+          
         }
         /// <summary>
         /// 激活步骤 
@@ -389,11 +397,11 @@ namespace WorldActionSystem
         }
         private bool IsInstallStep(InstallObj obj)
         {
-            return installObjs.Contains(obj);
+            return installObjs.Contains(obj) && obj.Started;
         }
         private bool AllElementInstalled()
         {
-            var notInstalls = installObjs.FindAll(x => !x.Installed);
+            var notInstalls = installObjs.FindAll(x => !x.Installed || !x.Complete);
             return notInstalls.Count == 0;
         }
 

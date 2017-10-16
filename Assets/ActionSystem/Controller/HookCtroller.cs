@@ -5,29 +5,38 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    
-    public class ActionCtroller : IActionCtroller
+    public class HookCtroller 
     {
-        protected ActionCommand trigger { get; set; }
+        protected bool _complete;
+        public bool Complete { get { return _complete; } }
+        protected bool _started;
+        public bool Started { get { return _started; } }
+
+        protected ActionObj trigger { get; set; }
         protected List<int> queueID = new List<int>();
-        protected ActionObj[] actionObjs { get; set; }
+        protected ActionHook[] hooks { get; set; }
         protected bool isForceAuto;
-        public ActionCtroller(ActionCommand trigger)
+        public HookCtroller(ActionObj trigger)
         {
             this.trigger = trigger;
-            actionObjs = trigger.ActionObjs;
-            ChargeQueueIDs();
+            hooks = trigger.Hooks;
         }
 
         public virtual void OnStartExecute(bool forceAuto)
         {
-            this.isForceAuto = forceAuto;
-            ExecuteAStep(isForceAuto);
+            if(!_started)
+            {
+                _started = true;
+                this.isForceAuto = forceAuto;
+                ChargeQueueIDs();
+                ExecuteAStep(isForceAuto);
+            }
         }
+
         private void ChargeQueueIDs()
         {
             queueID.Clear();
-            foreach (ActionObj item in actionObjs)
+            foreach (ActionHook item in hooks)
             {
                 if (!queueID.Contains(item.QueueID))
                 {
@@ -38,37 +47,44 @@ namespace WorldActionSystem
         }
         public virtual void OnEndExecute()
         {
-            foreach (var item in actionObjs)
+            if (!_complete)
             {
-                if (!item.Complete)
+                _complete = true;
+                _started = true;
+                foreach (var item in hooks)
                 {
-                    item.OnEndExecute();
+                    if (!item.Complete)
+                    {
+                        item.OnEndExecute();
+                    }
                 }
             }
         }
 
         public virtual void OnUnDoExecute()
         {
-            ChargeQueueIDs();
-            foreach (var item in actionObjs)
+            if (_started)
             {
-                if (item.Started)
+                _started = false;
+                _complete = false;
+                foreach (var item in hooks)
                 {
-                    item.OnUnDoExecute();
+                    if (item.Started)
+                    {
+                        item.OnUnDoExecute();
+                    }
                 }
             }
         }
 
-        public virtual IEnumerator Update() { yield break; }
-
         private void OnCommandObjComplete(int id)
         {
-            var notComplete = Array.FindAll<ActionObj>(actionObjs, x => (x as ActionObj).QueueID == id && !x.Complete);
+            var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == id && !x.Complete);
             if (notComplete.Length == 0)
             {
                 if (!ExecuteAStep(isForceAuto))
                 {
-                    trigger.Complete();
+                    trigger.OnEndExecute();
                 }
             }
         }
@@ -79,10 +95,10 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as ActionObj).QueueID == id);
+                var neetActive = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == id);
                 if (neetActive.Length > 0)
                 {
-                    foreach (ActionObj item in neetActive)
+                    foreach (ActionHook item in neetActive)
                     {
                         item.onEndExecute = OnCommandObjComplete;
                         item.OnStartExecute(isForceAuto);

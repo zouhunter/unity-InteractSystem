@@ -201,6 +201,7 @@ namespace WorldActionSystem
 
         public virtual void UnDoExecute()
         {
+            Debug.Log("UnDoExecute" + name);
             if (m_viewCamera != null)
             {
                 m_viewCamera.gameObject.SetActive(cameraStartVisiable);

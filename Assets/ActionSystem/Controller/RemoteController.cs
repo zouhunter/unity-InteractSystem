@@ -15,10 +15,12 @@ namespace WorldActionSystem
         public UnityAction onEndExecute;
         List<IActionCommand> commandList;
 
-        public IActionCommand CurrCommand{
+        public IActionCommand CurrCommand
+        {
             get { return HaveCommand(index) ? commandList[index] : null; }
         }
-        public RemoteController(IEnumerable<IActionCommand> commandList){
+        public RemoteController(IEnumerable<IActionCommand> commandList)
+        {
             this.commandList = new List<IActionCommand>(commandList);
         }
 
@@ -53,7 +55,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 开启一个命令,并返回正常执行与否
         /// </summary>
-        public bool StartExecuteCommand(UnityAction onEndExecute,bool forceAuto)
+        public bool StartExecuteCommand(UnityAction onEndExecute, bool forceAuto)
         {
             if (!started && HaveCommand(index))
             {
@@ -146,7 +148,7 @@ namespace WorldActionSystem
                     {
                         for (int i = 0; i < step - 1; i++)
                         {
-                            StartExecuteCommand(null,false);
+                            StartExecuteCommand(null, false);
                             EndExecuteCommand();
                         }
                     }
@@ -192,69 +194,16 @@ namespace WorldActionSystem
                     }
                 }
             }
-            return false;
-            /*
-            int newIndex = step + index;
-
-            if (started)
-            {
-                if (step > 0)
-                {
-                    EndExecuteCommand();
-
-                }
-                else
-                {
-                    UnDoCommand();
-                }
-
-                if (step != 0)
-                {
-                    if (HaveCommand(newIndex))
-                    {
-                        if (step > 0)
-                        {
-                            for (int i = 0; i < step - 1; i++)
-                            {
-                                StartExecuteCommand(null);
-                                EndExecuteCommand();
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < - step; i++)
-                            {
-                                UnDoCommand();
-                            }
-                        }
-                    }
-                    return true;
-                }
-            }
             else
             {
-                if (step != 0)
+                if (started)
                 {
-                    if (step > 0 && HaveCommand(newIndex - 1))
-                    {
-                        for (int i = 0; i < step; i++)
-                        {
-                            StartExecuteCommand(null);
-                            EndExecuteCommand();
-                        }
-                    }
-                    else if(step < 0 && HaveCommand(newIndex))
-                    {
-                        for (int i = 0; i < -step; i++)
-                        {
-                            UnDoCommand();
-                        }
-                    }
+                    UnDoCommand();
                     return true;
                 }
-            }
 
-            return false;*/
+            }
+            return false;
         }
 
         /// <summary>

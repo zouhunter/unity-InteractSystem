@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-    public abstract class ActionObj:MonoBehaviour, ISortAble
+    public class ActionObj:MonoBehaviour, ISortAble
     {
         public bool startActive;
         public bool endActive;
@@ -16,6 +16,7 @@ namespace WorldActionSystem
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
+        protected bool auto;
         [SerializeField]
         private int queueID;
         public int QueueID
@@ -29,14 +30,21 @@ namespace WorldActionSystem
         public UnityEvent onBeforeStart;
         public UnityEvent onBeforeUnDo;
         public UnityEvent onBeforeComplete;
-
+        private ActionHook[] hooks;//外部结束钩子
+        public ActionHook[] Hooks { get { return hooks; } }
+        private HookCtroller hookCtrl;
         protected virtual void Start()
         {
             gameObject.SetActive(startActive);
+            hooks = GetComponentsInChildren<ActionHook>(false);
+            if(hooks.Length > 0){
+                hookCtrl = new HookCtroller(this);
+            }
         }
 
         public virtual void OnStartExecute(bool auto = false)
         {
+            this.auto = auto;
             if(!_started)
             {
                 onBeforeStart.Invoke();
@@ -48,11 +56,36 @@ namespace WorldActionSystem
             {
                 Debug.Log("already started" ,gameObject);
             }
-           
         }
+
+        public virtual void TryEndExecute()
+        {
+            if(hooks.Length > 0)
+            {
+                if(hookCtrl.Complete)
+                {
+                    OnEndExecute();
+                }
+                else if(!hookCtrl.Started)
+                {
+                    hookCtrl.OnStartExecute(auto);
+                }
+                else
+                {
+                    Debug.Log("wait:" + name);
+                }
+            }
+            else
+            {
+                OnEndExecute();
+            }
+        }
+
         public virtual void OnEndExecute()
         {
-            if(!_complete)
+            Debug.Log("onEndExecute" + name);
+
+            if (!_complete)
             {
                 onBeforeComplete.Invoke();
                 _started = true;
@@ -61,7 +94,10 @@ namespace WorldActionSystem
                 if (onEndExecute != null)
                 {
                     onEndExecute.Invoke(queueID);
-                    Debug.Log("onEndExecute"+ name);
+                }
+                if (hooks.Length > 0)
+                {
+                    hookCtrl.OnEndExecute();
                 }
             }
             else
@@ -75,6 +111,10 @@ namespace WorldActionSystem
             _started = false;
             _complete = false;
             gameObject.SetActive(startActive);
+            if (hooks.Length > 0)
+            {
+                hookCtrl.OnUnDoExecute();
+            }
         }
     }
 }

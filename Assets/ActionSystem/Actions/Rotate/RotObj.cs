@@ -161,7 +161,7 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(forceauto);
             transform.rotation = startRot;
-            if (forceauto) StartCoroutine(AutoRotateTo(() => { OnEndExecute(); }));
+            if (forceauto) StartCoroutine(AutoRotateTo(() => { TryEndExecute(); }));
         }
 
         private IEnumerator AutoRotateTo(UnityAction callBack)

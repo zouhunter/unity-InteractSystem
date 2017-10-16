@@ -37,7 +37,7 @@ namespace WorldActionSystem
             }
             if (obj.Started && !obj.Complete)
             {
-                obj.OnEndExecute();
+                obj.TryEndExecute();
             }
             highLight.UnHighLightTarget(obj.render);
         }

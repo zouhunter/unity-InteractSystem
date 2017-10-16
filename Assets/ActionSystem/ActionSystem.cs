@@ -32,6 +32,7 @@ namespace WorldActionSystem
 
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
         private static GameObject handle;
+        
         #region Interface Fuctions
 
         private void Awake()

@@ -48,7 +48,7 @@ namespace WorldActionSystem
         private IEnumerator DelyPlay()
         {
             yield return new WaitForSeconds(delyTime);
-            if (animPlayer != null) animPlayer.Play(speed, OnEndExecute);
+            if (animPlayer != null) animPlayer.Play(speed, TryEndExecute);
         }
 
         public override void OnEndExecute()

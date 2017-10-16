@@ -259,7 +259,7 @@ namespace WorldActionSystem
         
         private bool AllElementInstalled()
         {
-            var noMatched = matchObjs.FindAll(x => !x.Matched);
+            var noMatched = matchObjs.FindAll(x => !x.Matched || !x.Complete);
             return noMatched.Count == 0;
         }
 
@@ -300,8 +300,8 @@ namespace WorldActionSystem
         {
             foreach (var item in matchObjs)
             {
-                var obj = item.Detach();
-                obj.QuickMoveBack();
+                //var obj = item.Detach();
+                //obj.QuickMoveBack();
                 item.OnUnDoExecute();
             }
             base.OnUnDoExecute();

@@ -12,7 +12,7 @@ namespace WorldActionSystem
         public float distence = 10;
         protected override IActionCtroller CreateCtrl()
         {
-            var installObjs = Array.ConvertAll<ActionObj, InstallObj>(ActionObjs, x => x as InstallObj);
+            var installObjs = Array.ConvertAll < ActionObj, InstallObj>( Array.FindAll< ActionObj>(ActionObjs,x=>x is InstallObj), x => x as InstallObj);
             var coroutineCtrl = new InstallCtrl(this, distence, installObjs);
             return coroutineCtrl;
         }
