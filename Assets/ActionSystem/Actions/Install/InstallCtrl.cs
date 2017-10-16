@@ -206,14 +206,24 @@ namespace WorldActionSystem
 
         private void OnOneElementEndInstall()
         {
-            if (AllElementInstalled())
+            bool allComplete = true;
+            foreach (var item in installObjs)
             {
-                SetCompleteNotify();
-                if (isForceAuto)
+                if(isForceAuto)
                 {
-                    OnEndExecute();
-                    trigger.Complete();
+                    allComplete &= item.Installed;
+                    if (!item.Complete)
+                    {
+                        //强制结束
+                        item.OnEndExecute();
+                    }
                 }
+                else
+                {
+                    allComplete &= item.Installed;
+                    allComplete &= item.Complete;
+                }
+              
             }
         }
 
@@ -227,7 +237,10 @@ namespace WorldActionSystem
             //当前步骤结束
             foreach (var item in poss)
             {
-                item.obj.StepComplete();
+                if(!item.Complete)
+                {
+                    item.obj.StepComplete();
+                }
             }
         }
 
@@ -241,7 +254,7 @@ namespace WorldActionSystem
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                if (pos != null)
+                if (pos != null && !pos.Installed)
                 {
                     PickUpAbleElement obj = trigger. ElementCtrl.GetUnInstalledObj(pos.name);
                     obj.QuickInstall(pos.gameObject);
@@ -371,8 +384,11 @@ namespace WorldActionSystem
         {
             foreach (var item in posList)
             {
-                var obj = item.Detach();
-                obj.QuickUnInstall();
+                if (item.Installed)
+                {
+                    var obj = item.Detach();
+                    obj.QuickUnInstall();
+                }
             }
         }
 
@@ -398,11 +414,6 @@ namespace WorldActionSystem
         private bool IsInstallStep(InstallObj obj)
         {
             return installObjs.Contains(obj) && obj.Started;
-        }
-        private bool AllElementInstalled()
-        {
-            var notInstalls = installObjs.FindAll(x => !x.Installed || !x.Complete);
-            return notInstalls.Count == 0;
         }
 
         private void SetSepUnDo()

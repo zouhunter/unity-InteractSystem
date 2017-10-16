@@ -27,7 +27,7 @@ namespace WorldActionSystem
         {
             highLight = new ShaderHighLight();
             this.distence = distence;
-            this. matchObjs = new List<MatchObj>(Array.ConvertAll<ActionObj, MatchObj>(trigger.ActionObjs, x => x as MatchObj));
+            this.matchObjs = new List<MatchObj>(Array.ConvertAll<ActionObj, MatchObj>(Array.FindAll<ActionObj>(trigger.ActionObjs,x=> x is MatchObj), x => x as MatchObj));
         }
 
         #region 鼠标操作事件
@@ -179,6 +179,7 @@ namespace WorldActionSystem
             {
                 matchPos.Attach(pickedUpObj);
                 pickedUpObj.QuickMoveTo(matchPos.gameObject);
+                matchPos.OnEndExecute();
                 pickedUpObj = null;
             }
             else
@@ -209,12 +210,26 @@ namespace WorldActionSystem
 
         private void OnEndInstallElement()
         {
-            if (AllElementInstalled())
+            bool allComplete = true;
+            foreach (var item in matchObjs)
             {
-                trigger.Complete();//.OnStepComplete(stepName);
+                if (isForceAuto)
+                {
+                    allComplete &= item.Matched;
+                    if (!item.Complete)
+                    {
+                        //强制结束
+                        item.OnEndExecute();
+                    }
+                }
+                else
+                {
+                    allComplete &= item.Matched;
+                    allComplete &= item.Complete;
+                }
             }
         }
-
+       
         /// <summary>
         /// 快速安装 列表 
         /// </summary>
@@ -257,12 +272,6 @@ namespace WorldActionSystem
             return matchObjs.Contains(obj);
         }
         
-        private bool AllElementInstalled()
-        {
-            var noMatched = matchObjs.FindAll(x => !x.Matched || !x.Complete);
-            return noMatched.Count == 0;
-        }
-
         public override void OnStartExecute(bool forceAuto)
         {
             base.OnStartExecute(forceAuto);
@@ -300,9 +309,12 @@ namespace WorldActionSystem
         {
             foreach (var item in matchObjs)
             {
-                //var obj = item.Detach();
-                //obj.QuickMoveBack();
-                item.OnUnDoExecute();
+                if(item.Matched)
+                {
+                    var ele = item.Detach();
+                    ele.NormalMoveBack();
+                    item.OnUnDoExecute();
+                }
             }
             base.OnUnDoExecute();
         }
