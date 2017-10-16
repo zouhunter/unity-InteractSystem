@@ -43,11 +43,6 @@ namespace WorldActionSystem
             {
                 if (prefab.name == gitem.name)
                 {
-                    var modify = PrefabUtility.GetPropertyModifications(gitem);
-                    foreach (var item in modify)
-                    {
-                        Debug.Log(item.propertyPath);
-                    }
                     PrefabUtility.ReplacePrefab(gitem, prefab, ReplacePrefabOptions.ConnectToPrefab);
                 }
             }
