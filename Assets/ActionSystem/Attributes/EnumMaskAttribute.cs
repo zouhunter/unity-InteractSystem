@@ -3,7 +3,10 @@
 
 using UnityEngine;
 using System;
+namespace WorldActionSystem
+{
+    public class EnumMaskAttribute : PropertyAttribute
+    {
 
-public class EnumMaskAttribute : PropertyAttribute {
-	
+    }
 }
