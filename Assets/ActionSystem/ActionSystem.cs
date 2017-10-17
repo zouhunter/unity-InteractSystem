@@ -21,54 +21,48 @@ namespace WorldActionSystem
         }
         public event UserError onUserError;//步骤操作错误
         public IRemoteController RemoteController { get { return remoteController; } }
-        public ElementController ElementController { get { return elementController; } }
         public IActionStap[] ActiveStaps { get { return steps; } }
         private IRemoteController remoteController;
         private IActionStap[] steps;
         private CommandController commandCtrl = new WorldActionSystem.CommandController();
-        private ElementController elementController = new WorldActionSystem.ElementController();//元素名、列表
+        private CameraController cameraCtrl = new WorldActionSystem.CameraController();
         private List<IActionCommand> activeCommands;
         private RegistCmds onCommandRegist;
-
+        public Camera viewCamera;
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
-        private static GameObject handle;
-        
         #region Interface Fuctions
 
         private void Awake()
         {
             instance = this;
+            if(viewCamera == null){
+                viewCamera = GetComponentInChildren<Camera>(true);
+            }
+            CameraController.RegistCamera(viewCamera);
         }
 
         private void Start()
         {
             var cmds = new List<ActionCommand>();
-            RetriveCommandAndElements(cmds);//自身加载
-            OnCreateCommandAndElements(cmds);//动态加载
+            RetriveCommand(cmds);//自身加载
+            CreateAndRegistCommands(cmds);//动态加载
             activeCommands = commandCtrl.RegistTriggers(cmds.ToArray(), OnStepComplete);
             if (onCommandRegist != null) onCommandRegist.Invoke(activeCommands);
         }
-        private void OnCreateCommandAndElements(List<ActionCommand> cmds)
+        private void CreateAndRegistCommands(List<ActionCommand> cmds)
         {
-            CreateActionObjects((cmd) =>
+            CreateObjects((cmd) =>
             {
-                cmd.RegistAsOperate(OnUserError, () => { return elementController; });
+                cmd.RegistAsOperate(OnUserError);
                 cmds.Add(cmd);
-            }, (pick) =>
-            {
-                elementController.RegistElement(pick);
             });
         }
-        private void RetriveCommandAndElements(List<ActionCommand> cmds)
+        private void RetriveCommand(List<ActionCommand> cmds)
         {
             RetriveCommand(transform, (cmd) =>
             {
-                cmd.RegistAsOperate(OnUserError, () => { return elementController; });
+                cmd.RegistAsOperate(OnUserError);
                 cmds.Add(cmd);
-            });
-            RetivePickElement(transform, (pickUp) =>
-            {
-                elementController.RegistElement(pickUp);
             });
         }
         #endregion
@@ -127,7 +121,7 @@ namespace WorldActionSystem
             if (onCommandRegist != null) onCommandRegist.Invoke(cmdList);
         }
 
-        internal void CreateActionObjects(UnityAction<ActionCommand> onCreateCommand, UnityAction<PickUpAbleElement> onCreateElement)
+        internal void CreateObjects(UnityAction<ActionCommand> onCreateCommand)
         {
             foreach (var item in prefabList)
             {
@@ -136,7 +130,7 @@ namespace WorldActionSystem
                 created.name = item.prefab.name;
                 if (item.reparent && item.parent != null)
                 {
-                    transform.SetParent(item.parent, false);
+                    created.transform.SetParent(item.parent, false);
                 }
                 else
                 {
@@ -152,10 +146,6 @@ namespace WorldActionSystem
                 if (item.containsCommand)
                 {
                     RetriveCommand(created.transform, onCreateCommand);
-                }
-                if (item.containsPickAble)
-                {
-                    RetivePickElement(created.transform, onCreateElement);
                 }
             }
         }
@@ -251,6 +241,11 @@ namespace WorldActionSystem
         }
 
         #endregion
+        private void OnDestroy()
+        {
+            CameraController.Clean();
+            ElementController.Clean();
+        }
     }
 
 }

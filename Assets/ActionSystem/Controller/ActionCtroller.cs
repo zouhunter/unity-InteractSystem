@@ -24,9 +24,11 @@ namespace WorldActionSystem
         }
         private void InitController()
         {
+            var viewCamera = CameraController.GetViewCamera(trigger.CameraID);
+            Debug.Assert(viewCamera);
             if ((commandType & ControllerType.Click) == ControllerType.Click)
             {
-                var clickCtrl = new ClickContrller(trigger.viewCamera);
+                var clickCtrl = new ClickContrller(viewCamera);
                 clickCtrl.UserError = trigger.UserError;
                 commandList.Add(clickCtrl);
             }
@@ -35,7 +37,7 @@ namespace WorldActionSystem
                 var lineRender = trigger.GetComponent<LineRenderer>();
                 if (lineRender == null) lineRender = trigger.gameObject.AddComponent<LineRenderer>();
                 var objs = Array.ConvertAll<ActionObj, ConnectObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
-                var connectCtrl = new ConnectCtrl(trigger.viewCamera, lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
+                var connectCtrl = new ConnectCtrl(viewCamera, lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
                 connectCtrl.onError = trigger.UserError;
                 commandList.Add(connectCtrl);
             }
@@ -44,7 +46,7 @@ namespace WorldActionSystem
                 var matchObjs = Array.ConvertAll<ActionObj, MatchObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
                 var matchCtrl = new MatchCtrl(trigger.hitDistence, matchObjs,trigger.ElementCtrl);
                 matchCtrl.UserError = trigger.UserError;
-                trigger.ElementCtrl.onInstall += matchCtrl.OnEndInstallElement;
+                ElementController.onInstall += matchCtrl.OnEndInstallElement;
                 commandList.Add(matchCtrl);
             }
             if ((commandType & ControllerType.Install) == ControllerType.Install)
@@ -52,12 +54,12 @@ namespace WorldActionSystem
                 var installObjs = Array.ConvertAll<ActionObj, InstallObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
                 var installCtrl = new InstallCtrl(trigger.hitDistence, installObjs, trigger.ElementCtrl);
                 installCtrl.UserError = trigger.UserError;
-                trigger.ElementCtrl.onInstall += installCtrl.OnOneElementEndInstall;
+                ElementController.onInstall += installCtrl.OnOneElementEndInstall;
                 commandList.Add(installCtrl);
             }
             if ((commandType & ControllerType.Rotate) == ControllerType.Rotate)
             {
-                var rotAnimCtrl = new RotateAnimController(trigger.viewCamera,trigger.hitDistence);
+                var rotAnimCtrl = new RotateAnimController(viewCamera,trigger.hitDistence);
                 rotAnimCtrl.UserError = trigger.UserError;
                 commandList.Add(rotAnimCtrl);
             }

@@ -10,40 +10,17 @@ namespace WorldActionSystem
     {
         [SerializeField]
         private string _stepName;
-        [SerializeField,Range(0, 100)]
+        [SerializeField,Range(0, 10)]
         private int _queueID;
         public int QueueID { get { return _queueID; } }
-     
-        private Camera m_mainCamera;
-        public string StepName { get { return _stepName; } }
         [SerializeField]
-        private Camera m_viewCamera;//触发相机
-        public Camera viewCamera
-        {
-            get
-            {
-                if (m_viewCamera != null) return m_viewCamera;
-                else
-                {
-                    return mainCamera;
-                }
-            }
-        }
-        private Camera mainCamera
-        {
-            get
-            {
-                if (m_mainCamera == null)
-                {
-                    m_mainCamera = Camera.main;
-                }
-                return m_mainCamera;
-            }
-        }
+        private string _cameraID;
+        public string CameraID { get { return _cameraID; } }
+        public string StepName { get { return _stepName; } }
         private UserError userErr { get; set; }
         private StepComplete stepComplete { get; set; }
-        private Func<ElementController> elementCtrlGet { get; set; }
-        private ElementController elementCtrl;
+        private CameraController cameraCtrl { get; set; }
+        private ElementController elementCtrl { get; set; }
         public ActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
 
@@ -74,24 +51,20 @@ namespace WorldActionSystem
         public UnityEvent<string> Test;
         private bool started;
         private bool completed;
-        private bool cameraStartVisiable;
-        private bool mainCamraExecuteVisiable;
-
         protected virtual void Awake()
         {
             actionObjs = GetComponentsInChildren<ActionObj>(false);
-            if (m_viewCamera != null) cameraStartVisiable = m_viewCamera.gameObject.activeSelf;
         }
         public void RegistComplete(StepComplete stepComplete)
         {
             this.stepComplete = stepComplete;
         }
 
-        public void RegistAsOperate(UserError userErr, Func<ElementController> elementCtrlGet)
+        public void RegistAsOperate(UserError userErr)
         {
             this.userErr = userErr;
-            this.elementCtrlGet = elementCtrlGet;
-
+            this.elementCtrl = elementCtrl;
+            this.cameraCtrl = cameraCtrl;
         }
         public int CompareTo(ActionCommand other)
         {
@@ -113,12 +86,12 @@ namespace WorldActionSystem
         {
             get
             {
-                if (elementCtrl == null)
-                {
-                    elementCtrl = elementCtrlGet();
-                }
                 return elementCtrl;
             }
+        }
+        internal CameraController CameraCtrl
+        {
+            get { return cameraCtrl; }
         }
 
         internal void UserError(string err)
@@ -148,21 +121,12 @@ namespace WorldActionSystem
 
         public virtual bool StartExecute(bool forceAuto)
         {
+            CameraController.SetViewCamera(_cameraID);
             if (coroutineCtrl == null)
                 coroutineCtrl = new ActionCtroller(this);
 
             if (!started)
             {
-                if (m_viewCamera != null)
-                {
-                    m_viewCamera.gameObject.SetActive(true);
-                    if (mainCamera != null && m_viewCamera != mainCamera)
-                    {
-                        mainCamraExecuteVisiable = mainCamera.gameObject.activeSelf;
-                        mainCamera.gameObject.SetActive(false);
-                    }
-                }
-
                 started = true;
                 onBeforeActive.Invoke(StepName);
                 
@@ -200,22 +164,15 @@ namespace WorldActionSystem
 
         public void OnEndExecute()
         {
-            if (m_viewCamera != null)
-            {
-                m_viewCamera.gameObject.SetActive(cameraStartVisiable);
-                mainCamera.gameObject.SetActive(mainCamraExecuteVisiable);
-            }
+            CameraController.SetViewCamera();
+
             onBeforePlayEnd.Invoke(StepName);
             if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
         }
 
         public virtual void UnDoExecute()
         {
-            if (m_viewCamera != null)
-            {
-                m_viewCamera.gameObject.SetActive(cameraStartVisiable);
-                mainCamera.gameObject.SetActive(mainCamraExecuteVisiable);
-            }
+            CameraController.SetViewCamera();
 
             started = false;
             completed = false;

@@ -13,7 +13,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : MonoBehaviour,IPickUpAbleItem,IInstallItem,IMatchItem, IOutSideRegisterRender
+    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IInstallItem, IMatchItem, IOutSideRegisterRender
     {
         public int animTime { get { return Setting.installTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
@@ -46,7 +46,10 @@ namespace WorldActionSystem
 #endif
         private IHighLightItems highLighter;
 
-
+        private void Awake()
+        {
+            ElementController.RegistElement(this);
+        }
 #if !NoFunction
         void Start()
         {
@@ -162,7 +165,7 @@ namespace WorldActionSystem
         public void NormalMoveBack()
         {
 #if !NoFunction
-            if(OnLayDown !=null) OnLayDown.Invoke();
+            if (OnLayDown != null) OnLayDown.Invoke();
             if (textShow) textShow.enabled = true;
 
             DoPath(startPos, startRotation, () =>

@@ -240,7 +240,7 @@ namespace WorldActionSystem
                 pos = posList[i];
                 if (pos != null)
                 {
-                    PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(pos.name);
+                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
                     obj.QuickMoveTo(pos.gameObject);
                     pos.Attach(obj);
                 }
@@ -287,7 +287,7 @@ namespace WorldActionSystem
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                IMatchItem obj = elementCtrl.GetUnInstalledObj(pos.name);
+                IMatchItem obj = ElementController.GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalMoveTo(pos.gameObject);
             }

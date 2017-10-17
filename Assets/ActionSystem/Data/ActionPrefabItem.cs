@@ -34,7 +34,6 @@ namespace WorldActionSystem
             }
         }
         public bool containsCommand;
-        public bool containsPickAble;
         public bool reparent;
         public bool rematrix;
         public Matrix4x4 matrix;

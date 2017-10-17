@@ -8,13 +8,18 @@ namespace WorldActionSystem
 {
     public class ElementController
     {
-        public event UnityAction onInstall;
-        private Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
+        public static event UnityAction onInstall;
+        private static Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
 
+        public static void Clean()
+        {
+            objectList.Clear();
+            onInstall = null;
+        }
         /// <summary>
         /// 外部添加Element
         /// </summary>
-        public void RegistElement(PickUpAbleElement item)
+        public static void RegistElement(PickUpAbleElement item)
         {
             var obj = item;
             if (objectList.ContainsKey(obj.name))
@@ -35,7 +40,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public List<PickUpAbleElement> GetElements(string elementName)
+        public static List<PickUpAbleElement> GetElements(string elementName)
         {
             if(objectList.ContainsKey(elementName))
             {
@@ -51,7 +56,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-       public  PickUpAbleElement GetUnInstalledObj(string elementName)
+       public static PickUpAbleElement GetUnInstalledObj(string elementName)
         {
             List<PickUpAbleElement> listObj;
 

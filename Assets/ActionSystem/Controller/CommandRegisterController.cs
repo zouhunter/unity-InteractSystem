@@ -12,6 +12,7 @@ namespace WorldActionSystem
         private List<IActionCommand> commandList = new List<IActionCommand>();
         private Dictionary<string, List<ActionCommand>> actionDic = new Dictionary<string, List<ActionCommand>>();//触发器
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
+
         private StepComplete onStepComplete;
         public List<IActionCommand> RegistTriggers(ActionCommand[] triggers, StepComplete onStepComplete)
         {

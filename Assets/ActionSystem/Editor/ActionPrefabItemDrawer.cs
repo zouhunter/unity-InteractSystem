@@ -12,7 +12,6 @@ namespace WorldActionSystem
     {
         protected SerializedProperty reparentProp;
         protected SerializedProperty containsCommandProp;
-        protected SerializedProperty containsPickAbleProp;
         protected SerializedProperty rematrixProp;
         protected SerializedProperty matrixProp;
 
@@ -27,7 +26,6 @@ namespace WorldActionSystem
             instanceIDProp = property.FindPropertyRelative("instanceID");
             parentProp = property.FindPropertyRelative("parent");
             containsCommandProp = property.FindPropertyRelative("containsCommand");
-            containsPickAbleProp = property.FindPropertyRelative("containsPickAble");
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -113,16 +111,12 @@ namespace WorldActionSystem
             var optionCount = 4;
             var width = rect.width / optionCount;
             var choiseRect = new Rect(rect.x, rect.y, width, rect.height);
-            EditorGUI.BeginDisabledGroup(containsPickAbleProp.boolValue);
             rematrixProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Matrix", rematrixProp.boolValue);
-            if (containsPickAbleProp.boolValue) rematrixProp.boolValue = true;//强制重置坐标
-            EditorGUI.EndDisabledGroup();
             choiseRect.x += width;
             reparentProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Parent", reparentProp.boolValue);
             choiseRect.x += width;
             containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Command", containsCommandProp.boolValue);
             choiseRect.x += width;
-            containsPickAbleProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Element", containsPickAbleProp.boolValue);
             if (reparentProp.boolValue)
             {
                 tempRect.y += 1.5f * EditorGUIUtility.singleLineHeight;
@@ -161,12 +155,6 @@ namespace WorldActionSystem
                     EditorGUI.SelectableLabel(infoRect, "[c]");
                     infoRect.x += infoRect.width;
 
-                }
-                if (containsPickAbleProp.boolValue)
-                {
-                    GUI.color = new Color(0.8f, 0.3f, 0.5f);
-                    EditorGUI.SelectableLabel(infoRect, "[e]");
-                    infoRect.x += infoRect.width;
                 }
                 GUI.color = Color.white;
             }

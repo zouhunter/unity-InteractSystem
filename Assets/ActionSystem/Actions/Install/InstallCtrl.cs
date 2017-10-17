@@ -230,11 +230,35 @@ namespace WorldActionSystem
         /// <param name="poss"></param>
         private void SetCompleteNotify()
         {
+            List<InstallObj> posList = GetInstalledPosList();
+            List<PickUpAbleElement> temp = new List<PickUpAbleElement>();
+            foreach (var pos in posList)
+            {
+                List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
+                if (listObjs != null)
+                {
+                    for (int j = 0; j < listObjs.Count; j++)
+                    {
+                        if (!listObjs[j].Installed && !temp.Contains(listObjs[j]))
+                        {
+                            listObjs[j].StepUpDo();
+                        }
+                        else if(listObjs[j].Installed)
+                        {
+                            listObjs[j].StepComplete();
+                        }
+                    }
+                }
+            }
+        }
+        private void SetUnDoNotify()
+        {
             List<InstallObj> poss = GetInstalledPosList();
             //当前步骤结束
             foreach (var item in poss)
             {
-                item.obj.StepComplete();
+                var pickUp = item.obj as PickUpAbleElement;
+                pickUp.StepUpDo();
             }
         }
 
@@ -250,7 +274,7 @@ namespace WorldActionSystem
                 pos = posList[i];
                 if (pos != null && !pos.Installed)
                 {
-                    PickUpAbleElement obj =  elementCtrl.GetUnInstalledObj(pos.name);
+                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
                     obj.QuickInstall(pos.gameObject);
                     pos.Attach(obj);
                 }
@@ -263,7 +287,7 @@ namespace WorldActionSystem
             List<PickUpAbleElement> temp = new List<PickUpAbleElement>();
             foreach (var pos in posList)
             {
-                List<PickUpAbleElement> listObjs = elementCtrl.GetElements(pos.name);
+                List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
                 if (listObjs != null)
                 {
                     for (int j = 0; j < listObjs.Count; j++)
@@ -309,7 +333,7 @@ namespace WorldActionSystem
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(pos.name);
+                PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalInstall(pos.gameObject);
             }
@@ -395,6 +419,9 @@ namespace WorldActionSystem
         public void OnUnDoExecute()
         {
             QuickUnInstall();
+            List<InstallObj> posList = GetInstalledPosList();
+            QuickUnInstallObjListObjects(posList);
+            SetUnDoNotify();
         }
     }
 
