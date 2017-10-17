@@ -10,8 +10,9 @@ namespace WorldActionSystem
     {
         [SerializeField]
         private string _stepName;
-        [Range(0, 100)]
-        public int executeIndex;
+        [SerializeField,Range(0, 100)]
+        private int _queueID;
+        public int QueueID { get { return _queueID; } }
         [SerializeField]
         private Camera m_viewCamera;//触发相机
         private Camera m_mainCamera;
@@ -43,7 +44,6 @@ namespace WorldActionSystem
         private Func<ElementController> elementCtrlGet { get; set; }
         private ElementController elementCtrl;
         public ActionObj[] ActionObjs { get { return actionObjs; } }
-
         public ActionSystem actionSystem { get; set; }
 
         protected IActionCtroller coroutineCtrl;
@@ -53,6 +53,8 @@ namespace WorldActionSystem
             return new ActionCtroller(this);
         }
         protected ActionObj[] actionObjs;
+        [EnumMask]
+        public CommandType commandType;
         [SerializeField]
         protected InputField.OnChangeEvent onBeforeActive;
         [SerializeField]
@@ -82,11 +84,11 @@ namespace WorldActionSystem
         }
         public int CompareTo(ActionCommand other)
         {
-            if (other.executeIndex > executeIndex)
+            if (other.QueueID > QueueID)
             {
                 return -1;
             }
-            else if (other.executeIndex == executeIndex)
+            else if (other.QueueID == QueueID)
             {
                 return 0;
             }
