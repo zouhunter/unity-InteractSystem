@@ -5,24 +5,42 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    
+
     public class ActionCtroller : IActionCtroller
     {
         protected ActionCommand trigger { get; set; }
         protected List<int> queueID = new List<int>();
         protected ActionObj[] actionObjs { get; set; }
         protected bool isForceAuto;
+        private CommandType commandType { get { return trigger.commandType; } }
+        private List<CommandType> commandTypeList = new List<CommandType>();
+        protected Coroutine coroutine;
+        private ClickContrller clickCtrl;
         public ActionCtroller(ActionCommand trigger)
         {
             this.trigger = trigger;
             actionObjs = trigger.ActionObjs;
             ChargeQueueIDs();
+            InitController();
+        }
+        private void InitController()
+        {
+            if ((commandType & CommandType.Click )== CommandType.Click)
+            {
+                clickCtrl = new ClickContrller(trigger.viewCamera);
+                clickCtrl.UserError = trigger.UserError;
+                commandTypeList.Add(CommandType.Click);
+            }
         }
 
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
             ExecuteAStep(isForceAuto);
+            if (coroutine == null)
+            {
+                coroutine = trigger.StartCoroutine(Update());
+            }
         }
         private void ChargeQueueIDs()
         {
@@ -45,6 +63,7 @@ namespace WorldActionSystem
                     item.OnEndExecute();
                 }
             }
+            StopUpdateAction();
         }
 
         public virtual void OnUnDoExecute()
@@ -57,9 +76,20 @@ namespace WorldActionSystem
                     item.OnUnDoExecute();
                 }
             }
+            StopUpdateAction();
         }
 
-        public virtual IEnumerator Update() { yield break; }
+        public virtual IEnumerator Update() {
+            while (true)
+            {
+                if (commandTypeList.Contains(CommandType.Click))
+                {
+                    clickCtrl.Update();
+                }
+                yield return null;
+            }
+         
+        }
 
         private void OnCommandObjComplete(int id)
         {
@@ -92,6 +122,16 @@ namespace WorldActionSystem
                 return true;
             }
             return false;
+        }
+
+        private void StopUpdateAction()
+        {
+
+            if (coroutine != null)
+            {
+                trigger.StopCoroutine(coroutine);
+                coroutine = null;
+            }
         }
     }
 }

@@ -10,10 +10,10 @@ namespace WorldActionSystem
     [Serializable]
     public class ClickCommand : ActionCommand
     {
-        protected override IActionCtroller CreateCtrl()
-        {
-            return new WorldActionSystem.ClickContrller(this);
-        }
+        //protected override IActionCtroller CreateCtrl()
+        //{
+        //    //return new WorldActionSystem.ClickContrller(this);
+        //}
     }
 
 }

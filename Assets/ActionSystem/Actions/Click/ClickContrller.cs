@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace WorldActionSystem
 {
-    public class ClickContrller : ActionCtroller
+    public class ClickContrller
     {
         private RaycastHit hit;
         private Ray ray;
@@ -19,9 +19,11 @@ namespace WorldActionSystem
         private IHighLightItems highLight;
         private GameObject lastSelected;
 
-        public ClickContrller(ActionCommand trigger) : base(trigger)
+        public UnityAction<string> UserError { get; set; }
+
+        public ClickContrller(Camera viewCamera)
         {
-            viewCamera = trigger.viewCamera;
+            this. viewCamera = viewCamera;
             highLight = new ShaderHighLight();
         }
 
@@ -29,11 +31,11 @@ namespace WorldActionSystem
         {
             if (!obj.Started)
             {
-                trigger.UserError("不可点击" + obj.name);
+                UserError("不可点击" + obj.name);
             }
             else if (obj.Complete)
             {
-                trigger.UserError("已经结束点击" + obj.name);
+                UserError("已经结束点击" + obj.name);
             }
             if (obj.Started && !obj.Complete)
             {
@@ -62,7 +64,7 @@ namespace WorldActionSystem
 
         void OnClickEmpty()
         {
-            trigger.UserError("点击位置不正确");
+            UserError("点击位置不正确");
         }
 
         private bool TryHitBtnObj(out ClickObj obj)
@@ -76,33 +78,30 @@ namespace WorldActionSystem
             return false;
         }
 
-        public override IEnumerator Update()
+        public void Update()
         {
             screenPoint = new Vector3();
-            while (true)
-            {
-                screenPoint.x = Input.mousePosition.x;
-                screenPoint.y = Input.mousePosition.y;
-                screenPoint.z = 10;
-                ray = viewCamera.ScreenPointToRay(screenPoint);
 
-                if (TryHitBtnObj(out hitObj))
+            screenPoint.x = Input.mousePosition.x;
+            screenPoint.y = Input.mousePosition.y;
+            screenPoint.z = 10;
+            ray = viewCamera.ScreenPointToRay(screenPoint);
+
+            if (TryHitBtnObj(out hitObj))
+            {
+                if (Input.GetMouseButtonDown(0))
                 {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        OnBtnClicked(hitObj);
-                    }
-                    OnHoverBtn(hitObj);
+                    OnBtnClicked(hitObj);
                 }
-                else
+                OnHoverBtn(hitObj);
+            }
+            else
+            {
+                OnHoverNothing();
+                if (Input.GetMouseButtonDown(0) && EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject())
                 {
-                    OnHoverNothing();
-                    if (Input.GetMouseButtonDown(0) && EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject())
-                    {
-                        OnClickEmpty();
-                    }
+                    OnClickEmpty();
                 }
-                yield return null;
             }
         }
     }

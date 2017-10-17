@@ -47,7 +47,6 @@ namespace WorldActionSystem
         public ActionSystem actionSystem { get; set; }
 
         protected IActionCtroller coroutineCtrl;
-        protected Coroutine coroutine;
         protected virtual IActionCtroller CreateCtrl()
         {
             return new ActionCtroller(this);
@@ -155,10 +154,7 @@ namespace WorldActionSystem
                     coroutineCtrl = CreateCtrl();
 
                 coroutineCtrl.OnStartExecute(forceAuto);
-                if (coroutine == null)
-                {
-                    coroutine = StartCoroutine(coroutineCtrl.Update());
-                }
+              
                 return true;
             }
             else
@@ -198,7 +194,6 @@ namespace WorldActionSystem
             }
             onBeforePlayEnd.Invoke(StepName);
             if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
-            StopUpdateAction();
         }
 
         public virtual void UnDoExecute()
@@ -213,18 +208,9 @@ namespace WorldActionSystem
             completed = false;
             onBeforeUnDo.Invoke(StepName);
             if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
-            StopUpdateAction();
         }
 
-        private void StopUpdateAction()
-        {
-
-            if (coroutine != null)
-            {
-                StopCoroutine(coroutine);
-                coroutine = null;
-            }
-        }
+     
     }
 }
 
