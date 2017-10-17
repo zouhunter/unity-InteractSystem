@@ -7,8 +7,9 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class MatchCtrl: ActionCtroller
+    public class MatchCtrl : IActionCtroller
     {
+        public UnityAction<string> UserError;
         private IHighLightItems highLight;
         private PickUpAbleElement pickedUpObj;
         private bool pickedUp;
@@ -22,32 +23,29 @@ namespace WorldActionSystem
         private string resonwhy;
         private float distence;
         private List<MatchObj> matchObjs;
-
-        public MatchCtrl(ActionCommand trigger, float distence):base(trigger)
+        private bool isForceAuto;
+        private ElementController elementCtrl { get; set; }
+        public MatchCtrl(float distence,MatchObj[] matchObjs,ElementController elementCtrl)
         {
             highLight = new ShaderHighLight();
             this.distence = distence;
-            this.matchObjs = new List<MatchObj>(Array.ConvertAll<ActionObj, MatchObj>(Array.FindAll<ActionObj>(trigger.ActionObjs,x=> x is MatchObj), x => x as MatchObj));
+            this.matchObjs = new List<MatchObj>(matchObjs);
+            this.elementCtrl = elementCtrl;
         }
 
         #region 鼠标操作事件
-        public override IEnumerator Update()
+        public void Update()
         {
-            trigger.ElementCtrl.onInstall += OnEndInstallElement;
-
-            while (true)
+            if (Input.GetMouseButtonDown(0))
             {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    OnLeftMouseClicked();
-                }
-                else if (pickedUp)
-                {
-                    UpdateMatchState();
-                    MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
-                }
-                yield return null;
+                OnLeftMouseClicked();
             }
+            else if (pickedUp)
+            {
+                UpdateMatchState();
+                MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
+            }
+
         }
 
         /// <summary>
@@ -184,7 +182,7 @@ namespace WorldActionSystem
             }
             else
             {
-                trigger.UserError(resonwhy);
+                if(UserError != null) UserError(resonwhy);
             }
 
             pickedUp = false;
@@ -208,7 +206,7 @@ namespace WorldActionSystem
         }
         #endregion
 
-        private void OnEndInstallElement()
+        public void OnEndInstallElement()
         {
             bool allComplete = true;
             foreach (var item in matchObjs)
@@ -229,7 +227,7 @@ namespace WorldActionSystem
                 }
             }
         }
-       
+
         /// <summary>
         /// 快速安装 列表 
         /// </summary>
@@ -242,14 +240,14 @@ namespace WorldActionSystem
                 pos = posList[i];
                 if (pos != null)
                 {
-                    PickUpAbleElement obj = trigger.ElementCtrl.GetUnInstalledObj(pos.name);
+                    PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(pos.name);
                     obj.QuickMoveTo(pos.gameObject);
                     pos.Attach(obj);
                 }
             }
         }
 
-        
+
         private List<MatchObj> GetInstalledPosList()
         {
             var list = matchObjs.FindAll(x => x.Matched);
@@ -271,10 +269,10 @@ namespace WorldActionSystem
         {
             return matchObjs.Contains(obj);
         }
-        
-        public override void OnStartExecute(bool forceAuto)
+
+        public void OnStartExecute(bool forceAuto)
         {
-            base.OnStartExecute(forceAuto);
+            this.isForceAuto = forceAuto;
             List<MatchObj> posList = null;
             if (forceAuto)
             {
@@ -289,7 +287,7 @@ namespace WorldActionSystem
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                IMatchItem obj = trigger.ElementCtrl.GetUnInstalledObj(pos.name);
+                IMatchItem obj = elementCtrl.GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalMoveTo(pos.gameObject);
             }
@@ -297,29 +295,26 @@ namespace WorldActionSystem
             pickedUp = false;
         }
 
-        public override void OnEndExecute()
+        public void OnEndExecute()
         {
             List<MatchObj> posList = GetNotInstalledPosList();
             QuickMatchObjListObjects(posList);
-            trigger.ElementCtrl.onInstall -= OnEndInstallElement;
-            base.OnEndExecute();
         }
 
-        public override void OnUnDoExecute()
+        public void OnUnDoExecute()
         {
             foreach (var item in matchObjs)
             {
-                if(item.Matched)
+                if (item.Matched)
                 {
                     var ele = item.Detach();
                     ele.NormalMoveBack();
                     item.OnUnDoExecute();
                 }
             }
-            base.OnUnDoExecute();
         }
 
-      
+
     }
 
 }

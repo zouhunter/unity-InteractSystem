@@ -7,10 +7,10 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCtrl:ActionCtroller
+    public class InstallCtrl:IActionCtroller
     {
         public bool Active { get; private set; }
-
+        public UnityAction<string> UserError { get; set; }
         IHighLightItems highLight;
         private PickUpAbleElement pickedUpObj;
         private bool pickedUp;
@@ -22,30 +22,27 @@ namespace WorldActionSystem
         private string resonwhy;
         private float distence;
         private List<InstallObj> installObjs = new List<InstallObj>();
-        public InstallCtrl(ActionCommand trigger, float distence, InstallObj[] installObjs):base(trigger)
+        private ElementController elementCtrl { get; set; }
+        private bool isForceAuto;
+        public InstallCtrl(float distence, InstallObj[] installObjs,ElementController elementCtrl)
         {
             highLight = new ShaderHighLight();
             this.distence = distence;
             this.installObjs.AddRange(installObjs);
+            this.elementCtrl = elementCtrl;
         }
 
         #region 鼠标操作事件
-        public override IEnumerator Update()
+        public void Update()
         {
-            trigger.ElementCtrl.onInstall += OnOneElementEndInstall;
-
-            while (true)
+            if (Input.GetMouseButtonDown(0))
             {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    OnLeftMouseClicked();
-                }
-                else if (pickedUp)
-                {
-                    UpdateInstallState();
-                    MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
-                }
-                yield return null;
+                OnLeftMouseClicked();
+            }
+            else if (pickedUp)
+            {
+                UpdateInstallState();
+                MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
             }
         }
 
@@ -176,7 +173,7 @@ namespace WorldActionSystem
             else
             {
                 pickedUpObj.NormalMoveBack();
-                trigger.UserError(resonwhy);
+                UserError(resonwhy);
             }
 
             pickedUp = false;
@@ -204,7 +201,7 @@ namespace WorldActionSystem
         }
         #endregion
 
-        private void OnOneElementEndInstall()
+        public void OnOneElementEndInstall()
         {
             bool allComplete = true;
             foreach (var item in installObjs)
@@ -253,7 +250,7 @@ namespace WorldActionSystem
                 pos = posList[i];
                 if (pos != null && !pos.Installed)
                 {
-                    PickUpAbleElement obj = trigger. ElementCtrl.GetUnInstalledObj(pos.name);
+                    PickUpAbleElement obj =  elementCtrl.GetUnInstalledObj(pos.name);
                     obj.QuickInstall(pos.gameObject);
                     pos.Attach(obj);
                 }
@@ -263,35 +260,10 @@ namespace WorldActionSystem
         public void SetElemetsStart()
         {
             List<InstallObj> posList = GetNotInstalledPosList();
-            SetStartNotify(posList);
-        }
-
-        public void SetElementUnDo()
-        {
-           var elements = trigger.ElementCtrl.GetElements(trigger.StepName);
-            if(elements == null)
-            {
-                Debug.LogWarning(trigger.StepName + ":elementEmpty");
-            }
-            else
-            {
-                foreach (var item in elements)
-                {
-                    item.StepUpDo();
-                }
-            }
-          
-        }
-        /// <summary>
-        /// 激活步骤 
-        /// </summary>
-        /// <param name="poss"></param>
-        public void SetStartNotify(List<InstallObj> posList)
-        {
             List<PickUpAbleElement> temp = new List<PickUpAbleElement>();
             foreach (var pos in posList)
             {
-                List<PickUpAbleElement> listObjs = trigger.ElementCtrl.GetElements(pos.name);
+                List<PickUpAbleElement> listObjs = elementCtrl.GetElements(pos.name);
                 if (listObjs != null)
                 {
                     for (int j = 0; j < listObjs.Count; j++)
@@ -306,7 +278,7 @@ namespace WorldActionSystem
                 }
             }
         }
-
+      
         /// <summary>
         /// 自动安装部分需要进行自动安装的零件
         /// </summary>
@@ -337,19 +309,11 @@ namespace WorldActionSystem
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                PickUpAbleElement obj = trigger.ElementCtrl.GetUnInstalledObj(pos.name);
+                PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalInstall(pos.gameObject);
             }
         }
-        public void UnInstall(string stepName)
-        {
-            SetElemetsStart();
-            List<InstallObj> posList = GetInstalledPosList();
-            UnInstallObjListObjects(posList);
-            SetSepUnDo();
-        }
-
         /// <summary>
         /// uninstll
         /// </summary>
@@ -367,10 +331,12 @@ namespace WorldActionSystem
 
         public void QuickUnInstall()
         {
-            SetElemetsStart();
             List<InstallObj> posList = GetInstalledPosList();
             QuickUnInstallObjListObjects(posList);
-            SetSepUnDo();
+            foreach (var item in installObjs)
+            {
+                item.OnUnDoExecute();
+            }
         }
 
         /// <summary>
@@ -412,35 +378,23 @@ namespace WorldActionSystem
         {
             return installObjs.Contains(obj) && obj.Started;
         }
+        
 
-        private void SetSepUnDo()
+        public void OnStartExecute(bool forceauto)
         {
-            foreach (var item in installObjs)
-            {
-                item.OnUnDoExecute();
-            }
-        }
-
-        public override void OnStartExecute(bool forceauto)
-        {
-            base.OnStartExecute(forceauto);
+            this.isForceAuto = forceauto;
             SetElemetsStart();
             AutoInstallWhenNeed(forceauto);
         }
-        public override void OnEndExecute()
+        public void OnEndExecute()
         {
-            trigger.ElementCtrl.onInstall -= OnOneElementEndInstall;
             List<InstallObj> posList = GetNotInstalledPosList();
             QuickInstallObjListObjects(posList);
             SetCompleteNotify();
-            base.OnEndExecute();
         }
-        public override void OnUnDoExecute()
+        public void OnUnDoExecute()
         {
-            trigger.ElementCtrl.onInstall -= OnOneElementEndInstall;
             QuickUnInstall();
-            SetElementUnDo();
-            base.OnUnDoExecute();
         }
     }
 

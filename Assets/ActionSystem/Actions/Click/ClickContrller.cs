@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace WorldActionSystem
 {
-    public class ClickContrller
+    public class ClickContrller: IActionCtroller
     {
         private RaycastHit hit;
         private Ray ray;
@@ -103,6 +103,21 @@ namespace WorldActionSystem
                     OnClickEmpty();
                 }
             }
+        }
+
+        public void OnStartExecute(bool forceAuto)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void OnEndExecute()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void OnUnDoExecute()
+        {
+            //throw new NotImplementedException();
         }
     }
 

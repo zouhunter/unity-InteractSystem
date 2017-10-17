@@ -11,14 +11,12 @@ namespace WorldActionSystem
         public Animation anim;
         public string animName;
         private UnityAction onAutoPlayEnd;
-        private AnimationClip clip;
         private AnimationState state;
         private float animTime;
-        private AnimationEvent even;
         private Coroutine coroutine;
         private void Awake()
         {
-            if(anim == null) anim = GetComponent<Animation>();
+            if (anim == null) anim = GetComponent<Animation>();
             if (string.IsNullOrEmpty(animName)) animName = anim.clip.name;
         }
         void Init(UnityAction onAutoPlayEnd)
@@ -34,7 +32,7 @@ namespace WorldActionSystem
             state = anim[animName];
             animTime = state.length;
             anim.cullingType = AnimationCullingType.BasedOnRenderers;
-            anim.clip = clip = anim.GetClip(animName);
+            anim.clip = anim.GetClip(animName);
         }
 
         public void Play(float speed, UnityAction onAutoPlayEnd)
@@ -43,7 +41,7 @@ namespace WorldActionSystem
             state.normalizedTime = 0f;
             state.speed = speed;
             anim.Play();
-            if(coroutine == null) coroutine = StartCoroutine(DelyStop());
+            if (coroutine == null) coroutine = StartCoroutine(DelyStop());
         }
         IEnumerator DelyStop()
         {
@@ -56,15 +54,15 @@ namespace WorldActionSystem
         /// </summary>
         public void EndPlay()
         {
-            state.normalizedTime = 1f;
-            state.normalizedSpeed = 0;
+            if (state) state.normalizedTime = 1f;
+            if (state) state.normalizedSpeed = 0;
             if (coroutine != null) StopCoroutine(coroutine);
             coroutine = null;
         }
         public void UnDoPlay()
         {
-            state.normalizedTime = 0f;
-            state.speed = 0;
+            if (state) state.normalizedTime = 0f;
+            if (state) state.speed = 0;
             if (coroutine != null) StopCoroutine(coroutine);
             coroutine = null;
         }

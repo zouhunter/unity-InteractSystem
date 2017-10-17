@@ -45,6 +45,7 @@ namespace WorldActionSystem
         {
 #if !NoFunction
             tween.Complete();
+            transform.position = initPos;
 #endif
         }
 
@@ -52,8 +53,8 @@ namespace WorldActionSystem
         {
 #if !NoFunction
             Debug.Log("UnDoPlay");
-            transform.position = initPos;
             tween.Rewind();
+            transform.position = initPos;
 #endif
         }
     }

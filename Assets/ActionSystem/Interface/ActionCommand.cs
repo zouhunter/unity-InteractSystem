@@ -13,10 +13,11 @@ namespace WorldActionSystem
         [SerializeField,Range(0, 100)]
         private int _queueID;
         public int QueueID { get { return _queueID; } }
-        [SerializeField]
-        private Camera m_viewCamera;//触发相机
+     
         private Camera m_mainCamera;
         public string StepName { get { return _stepName; } }
+        [SerializeField]
+        private Camera m_viewCamera;//触发相机
         public Camera viewCamera
         {
             get
@@ -46,20 +47,30 @@ namespace WorldActionSystem
         public ActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
 
-        protected IActionCtroller coroutineCtrl;
-        protected virtual IActionCtroller CreateCtrl()
-        {
-            return new ActionCtroller(this);
-        }
+        protected ActionCtroller coroutineCtrl;
+
         protected ActionObj[] actionObjs;
-        [EnumMask]
-        public CommandType commandType;
-        [SerializeField]
-        protected InputField.OnChangeEvent onBeforeActive;
-        [SerializeField]
-        protected InputField.OnChangeEvent onBeforeUnDo;
-        [SerializeField]
-        protected InputField.OnChangeEvent onBeforePlayEnd;
+        [EnumMask, HideInInspector]
+        public ControllerType commandType;
+
+        #region 可选参数配制
+     
+        [HideInInspector]
+        public float     lineWight = 0.1f;
+        [HideInInspector]
+        public Material lineMaterial;
+        [HideInInspector]
+        public float hitDistence = 10;
+        [HideInInspector]
+        public float pointDistence = 0.1f;
+        #endregion
+
+        [HideInInspector]
+        public InputField.OnChangeEvent onBeforeActive;
+        [HideInInspector]
+        public InputField.OnChangeEvent onBeforeUnDo;
+        [HideInInspector]
+        public InputField.OnChangeEvent onBeforePlayEnd;
         public UnityEvent<string> Test;
         private bool started;
         private bool completed;
@@ -75,6 +86,7 @@ namespace WorldActionSystem
         {
             this.stepComplete = stepComplete;
         }
+
         public void RegistAsOperate(UserError userErr, Func<ElementController> elementCtrlGet)
         {
             this.userErr = userErr;
@@ -136,6 +148,9 @@ namespace WorldActionSystem
 
         public virtual bool StartExecute(bool forceAuto)
         {
+            if (coroutineCtrl == null)
+                coroutineCtrl = new ActionCtroller(this);
+
             if (!started)
             {
                 if (m_viewCamera != null)
@@ -150,9 +165,7 @@ namespace WorldActionSystem
 
                 started = true;
                 onBeforeActive.Invoke(StepName);
-                if (coroutineCtrl == null)
-                    coroutineCtrl = CreateCtrl();
-
+                
                 coroutineCtrl.OnStartExecute(forceAuto);
               
                 return true;

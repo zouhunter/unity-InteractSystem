@@ -140,7 +140,6 @@ namespace WorldActionSystem
             _started = false;
             _complete = false;
 
-
             gameObject.SetActive(startActive);
             if (hooks.Length > 0)
             {

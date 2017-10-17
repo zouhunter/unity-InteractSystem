@@ -5,7 +5,7 @@ namespace WorldActionSystem
 {
     public interface IActionCtroller
     {
-        IEnumerator Update();
+        void Update();
         void OnStartExecute(bool forceAuto);
         void OnEndExecute();
         void OnUnDoExecute();

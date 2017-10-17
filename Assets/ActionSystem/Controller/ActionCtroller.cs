@@ -6,16 +6,15 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class ActionCtroller : IActionCtroller
+    public class ActionCtroller
     {
         protected ActionCommand trigger { get; set; }
         protected List<int> queueID = new List<int>();
         protected ActionObj[] actionObjs { get; set; }
         protected bool isForceAuto;
-        private CommandType commandType { get { return trigger.commandType; } }
-        private List<CommandType> commandTypeList = new List<CommandType>();
+        private ControllerType commandType { get { return trigger.commandType; } }
+        private List<IActionCtroller> commandList = new List<IActionCtroller>();
         protected Coroutine coroutine;
-        private ClickContrller clickCtrl;
         public ActionCtroller(ActionCommand trigger)
         {
             this.trigger = trigger;
@@ -25,11 +24,42 @@ namespace WorldActionSystem
         }
         private void InitController()
         {
-            if ((commandType & CommandType.Click )== CommandType.Click)
+            if ((commandType & ControllerType.Click) == ControllerType.Click)
             {
-                clickCtrl = new ClickContrller(trigger.viewCamera);
+                var clickCtrl = new ClickContrller(trigger.viewCamera);
                 clickCtrl.UserError = trigger.UserError;
-                commandTypeList.Add(CommandType.Click);
+                commandList.Add(clickCtrl);
+            }
+            if ((commandType & ControllerType.Connect) == ControllerType.Connect)
+            {
+                var lineRender = trigger.GetComponent<LineRenderer>();
+                if (lineRender == null) lineRender = trigger.gameObject.AddComponent<LineRenderer>();
+                var objs = Array.ConvertAll<ActionObj, ConnectObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
+                var connectCtrl = new ConnectCtrl(trigger.viewCamera, lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
+                connectCtrl.onError = trigger.UserError;
+                commandList.Add(connectCtrl);
+            }
+            if ((commandType & ControllerType.Match) == ControllerType.Match)
+            {
+                var matchObjs = Array.ConvertAll<ActionObj, MatchObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
+                var matchCtrl = new MatchCtrl(trigger.hitDistence, matchObjs,trigger.ElementCtrl);
+                matchCtrl.UserError = trigger.UserError;
+                trigger.ElementCtrl.onInstall += matchCtrl.OnEndInstallElement;
+                commandList.Add(matchCtrl);
+            }
+            if ((commandType & ControllerType.Install) == ControllerType.Install)
+            {
+                var installObjs = Array.ConvertAll<ActionObj, InstallObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
+                var installCtrl = new InstallCtrl(trigger.hitDistence, installObjs, trigger.ElementCtrl);
+                installCtrl.UserError = trigger.UserError;
+                trigger.ElementCtrl.onInstall += installCtrl.OnOneElementEndInstall;
+                commandList.Add(installCtrl);
+            }
+            if ((commandType & ControllerType.Rotate) == ControllerType.Rotate)
+            {
+                var rotAnimCtrl = new RotateAnimController(trigger.viewCamera,trigger.hitDistence);
+                rotAnimCtrl.UserError = trigger.UserError;
+                commandList.Add(rotAnimCtrl);
             }
         }
 
@@ -41,6 +71,10 @@ namespace WorldActionSystem
             {
                 coroutine = trigger.StartCoroutine(Update());
             }
+            ForEachAction((ctrl) =>
+            {
+                ctrl.OnStartExecute(forceAuto);
+            });
         }
         private void ChargeQueueIDs()
         {
@@ -63,6 +97,10 @@ namespace WorldActionSystem
                     item.OnEndExecute();
                 }
             }
+            ForEachAction((ctrl) =>
+            {
+                ctrl.OnEndExecute();
+            });
             StopUpdateAction();
         }
 
@@ -76,19 +114,23 @@ namespace WorldActionSystem
                     item.OnUnDoExecute();
                 }
             }
+            ForEachAction((ctrl) =>
+            {
+                ctrl.OnUnDoExecute();
+            });
             StopUpdateAction();
         }
 
-        public virtual IEnumerator Update() {
+        public virtual IEnumerator Update()
+        {
             while (true)
             {
-                if (commandTypeList.Contains(CommandType.Click))
+                ForEachAction((ctrl) =>
                 {
-                    clickCtrl.Update();
-                }
+                    ctrl.Update();
+                });
                 yield return null;
             }
-         
         }
 
         private void OnCommandObjComplete(int id)
@@ -122,6 +164,14 @@ namespace WorldActionSystem
                 return true;
             }
             return false;
+        }
+
+        private void ForEachAction(UnityEngine.Events.UnityAction<IActionCtroller> OnRetive)
+        {
+            foreach (var item in commandList)
+            {
+                OnRetive(item);
+            }
         }
 
         private void StopUpdateAction()

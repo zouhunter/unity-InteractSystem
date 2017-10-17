@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ConnectCtrl:ActionCtroller
+    public class ConnectCtrl : IActionCtroller
     {
         private ConnectObj[] objs;
         public UnityAction<string> onError;
@@ -21,14 +21,12 @@ namespace WorldActionSystem
         private float hitDistence;
         private Camera objCamera { get; set; }
 
-        public ConnectCtrl(ActionCommand trigger,ConnectObj[] objs, Material lineMaterial, float lineWight,float hitDistence, float pointDistence):base(trigger)
+        public ConnectCtrl(Camera viewCamera,LineRenderer lineRender, ConnectObj[] objs, Material lineMaterial, float lineWight, float hitDistence, float pointDistence)
         {
             this.objs = objs;
-            this.objCamera = trigger.viewCamera;
+            this.objCamera = viewCamera;
             this.hitDistence = hitDistence;
             this.pointDistence = pointDistence;
-            var lineRender = trigger. GetComponent<LineRenderer>();
-            if (lineRender == null) lineRender = trigger.gameObject.AddComponent<LineRenderer>();
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);
         }
@@ -41,39 +39,35 @@ namespace WorldActionSystem
             line.endWidth = lineWight * 0.8f;
 #else
             line.SetVertexCount(1);
-            line.SetWidth(lineWight,lineWight*0.8f);
+            line.SetWidth(lineWight, lineWight * 0.8f);
 #endif
             line.material = lineMaterial;
         }
 
-        public override IEnumerator Update()
+        public void Update()
         {
-            while (true)
+            if (firstCollider != null)
             {
-                if (firstCollider != null)
+                Collider collider;
+                if (TryHitNode(out collider))
                 {
-                    Collider collider;
-                    if (TryHitNode(out collider))
+                    if (collider != null && collider != firstCollider)
                     {
-                        if (collider != null && collider != firstCollider)
-                        {
-                            TryConnect(collider);
-                        }
-                    }
-                    else
-                    {
-                        UpdateLine();
+                        TryConnect(collider);
                     }
                 }
                 else
                 {
-                    if (TryHitNode(out firstCollider))
-                    {
-                        positons.Clear();
-                        positons.Add(firstCollider.transform.position);
-                    }
+                    UpdateLine();
                 }
-                yield return null;
+            }
+            else
+            {
+                if (TryHitNode(out firstCollider))
+                {
+                    positons.Clear();
+                    positons.Add(firstCollider.transform.position);
+                }
             }
         }
 
@@ -96,7 +90,7 @@ namespace WorldActionSystem
 
         private void UpdateLine()
         {
-            if(Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 ClearLineRender();
             }
@@ -119,7 +113,7 @@ namespace WorldActionSystem
                     }
                 }
             }
-          
+
         }
 
         private void TryConnect(Collider collider)
@@ -150,16 +144,18 @@ namespace WorldActionSystem
             line.SetVertexCount(1);
 #endif
         }
-        public override void OnEndExecute()
+        public void OnEndExecute()
         {
-            base.OnEndExecute(); 
             ClearLineRender();
         }
 
-        public override void OnUnDoExecute()
+        public void OnUnDoExecute()
         {
-            base.OnUnDoExecute();
             ClearLineRender();
+        }
+
+        public void OnStartExecute(bool forceAuto)
+        {
         }
     }
 }

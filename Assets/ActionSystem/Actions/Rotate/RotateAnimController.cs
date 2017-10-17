@@ -7,38 +7,35 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class RotateAnimController:ActionCtroller
+    public class RotateAnimController : IActionCtroller
     {
+        public UnityAction<string> UserError { get; set; }
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
         private float distence = 10;
-
-        public RotateAnimController(float distence,ActionCommand trigger):base(trigger)
+        private Camera viewCamera;
+        public RotateAnimController(Camera viewCamera, float distence)
         {
+            this.viewCamera = viewCamera;
             this.distence = distence;
         }
 
-        public override IEnumerator Update()
+        public void Update()
         {
-            while (true)
+            if (TrySelectRotateObj())
             {
-                yield return new WaitForFixedUpdate();
-
-                if (TrySelectRotateObj())
+                if (Input.GetMouseButtonDown(0))
                 {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        yield return TransformSelected(selectedObj);
-                    }
+                    selectedObj.StartCoroutine(TransformSelected(selectedObj));
                 }
             }
         }
         private bool TrySelectRotateObj()
         {
-            if (trigger.viewCamera == null) return false;
+            if (viewCamera == null) return false;
 
-            ray = trigger.viewCamera.ScreenPointToRay(Input.mousePosition);
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit, distence, (1 << Setting.rotateItemLayer)))
             {
@@ -55,7 +52,7 @@ namespace WorldActionSystem
             Vector3 previousMousePosition = Vector3.zero;
             while (!Input.GetMouseButtonUp(0) && selectedObj.Started)
             {
-                ray = trigger.viewCamera.ScreenPointToRay(Input.mousePosition);
+                ray = viewCamera.ScreenPointToRay(Input.mousePosition);
                 Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, originalTargetPosition, axis);
                 if (previousMousePosition != Vector3.zero && mousePosition != Vector3.zero && IsInCercle(mousePosition))
                 {
@@ -71,7 +68,7 @@ namespace WorldActionSystem
                 yield return null;
             }
 
-           yield return selectedObj.Clamp();
+            yield return selectedObj.Clamp();
 
             if (selectedObj.TryMarchRot())
             {
@@ -81,6 +78,18 @@ namespace WorldActionSystem
         private bool IsInCercle(Vector3 pos)
         {
             return Vector3.Distance(selectedObj.transform.position, pos) < selectedObj.triggerRadius;
+        }
+
+        public void OnStartExecute(bool forceAuto)
+        {
+        }
+
+        public void OnEndExecute()
+        {
+        }
+
+        public void OnUnDoExecute()
+        {
         }
     }
 

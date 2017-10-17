@@ -98,8 +98,9 @@ namespace WorldActionSystem
                 return false;
             }
         }
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             if (Flash())
             {
                 _lines.Clear();
