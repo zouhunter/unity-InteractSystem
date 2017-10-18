@@ -73,7 +73,6 @@ namespace WorldActionSystem
             this.auto = auto;
             if (!_started)
             {
-
                 onBeforeStart.Invoke();
                 _started = true;
                 _complete = false;

@@ -54,6 +54,13 @@ namespace WorldActionSystem
         protected virtual void Awake()
         {
             actionObjs = GetComponentsInChildren<ActionObj>(false);
+            if(string.IsNullOrEmpty( _cameraID))
+            {
+                var node = GetComponentInChildren<CameraNode>();
+                if(node != null){
+                    _cameraID = node.name;
+                }
+            }
         }
         public void RegistComplete(StepComplete stepComplete)
         {
@@ -121,17 +128,16 @@ namespace WorldActionSystem
 
         public virtual bool StartExecute(bool forceAuto)
         {
-            CameraController.SetViewCamera(_cameraID);
             if (coroutineCtrl == null)
                 coroutineCtrl = new ActionCtroller(this);
 
             if (!started)
             {
-                started = true;
-                onBeforeActive.Invoke(StepName);
-                
-                coroutineCtrl.OnStartExecute(forceAuto);
-              
+                CameraController.SetViewCamera(() => {
+                    started = true;
+                    onBeforeActive.Invoke(StepName);
+                    coroutineCtrl.OnStartExecute(forceAuto);
+                }, _cameraID);
                 return true;
             }
             else
@@ -164,20 +170,20 @@ namespace WorldActionSystem
 
         public void OnEndExecute()
         {
-            CameraController.SetViewCamera();
-
-            onBeforePlayEnd.Invoke(StepName);
-            if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
+            CameraController.SetViewCamera(()=> {
+                onBeforePlayEnd.Invoke(StepName);
+                if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
+            });
         }
 
         public virtual void UnDoExecute()
         {
-            CameraController.SetViewCamera();
-
-            started = false;
-            completed = false;
-            onBeforeUnDo.Invoke(StepName);
-            if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
+            CameraController.SetViewCamera(()=> {
+                started = false;
+                completed = false;
+                onBeforeUnDo.Invoke(StepName);
+                if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
+            });
         }
 
      

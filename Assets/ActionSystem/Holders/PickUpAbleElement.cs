@@ -46,13 +46,10 @@ namespace WorldActionSystem
 #endif
         private IHighLightItems highLighter;
 
-        private void Awake()
-        {
-            ElementController.RegistElement(this);
-        }
 #if !NoFunction
         void Start()
         {
+            ElementController.RegistElement(this);
             InitRender();
             gameObject.layer = Setting.pickUpElementLayer;
             startPos = transform.position;

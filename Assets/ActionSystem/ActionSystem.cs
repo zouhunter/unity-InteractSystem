@@ -38,7 +38,7 @@ namespace WorldActionSystem
             if(viewCamera == null){
                 viewCamera = GetComponentInChildren<Camera>(true);
             }
-            CameraController.RegistCamera(viewCamera);
+            CameraController.Init(this);
         }
 
         private void Start()
