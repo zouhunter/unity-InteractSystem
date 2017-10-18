@@ -134,7 +134,7 @@ namespace WorldActionSystem
             {
                 var infoRect = rect;
                 infoRect.x = infoRect.width - 80;
-                infoRect.width = 20;
+                infoRect.width = 25;
                 if (reparentProp.boolValue)
                 {
                     GUI.color = new Color(0.3f, 0.5f, 0.8f);

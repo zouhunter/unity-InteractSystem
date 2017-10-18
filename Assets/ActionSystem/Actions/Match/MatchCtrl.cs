@@ -353,18 +353,12 @@ namespace WorldActionSystem
             {
                 if (!keyList.Contains(pos.name))
                 {
+                    keyList.Add(pos.name);
                     List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
                     if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
-                        if (listObjs[j].Installed)
-                        {
-                            listObjs[j].StepComplete();
-                        }
-                        else
-                        {
-                            listObjs[j].StepUnDo();
-                        }
+                        listObjs[j].QuickMoveBack();
                     }
                 }
             }

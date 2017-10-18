@@ -10,7 +10,7 @@ namespace WorldActionSystem
     {
         protected ActionCommand trigger { get; set; }
         protected List<int> queueID = new List<int>();
-        protected ActionObj[] actionObjs { get; set; }
+        protected IActionObj[] actionObjs { get; set; }
         protected bool isForceAuto;
         private ControllerType commandType { get { return trigger.commandType; } }
         private List<IActionCtroller> commandList = new List<IActionCtroller>();
@@ -36,14 +36,14 @@ namespace WorldActionSystem
             {
                 var lineRender = trigger.GetComponent<LineRenderer>();
                 if (lineRender == null) lineRender = trigger.gameObject.AddComponent<LineRenderer>();
-                var objs = Array.ConvertAll<ActionObj, ConnectObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
+                var objs = Array.ConvertAll<IActionObj, ConnectObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
                 var connectCtrl = new ConnectCtrl(viewCamera, lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
                 connectCtrl.onError = trigger.UserError;
                 commandList.Add(connectCtrl);
             }
             if ((commandType & ControllerType.Match) == ControllerType.Match)
             {
-                var matchObjs = Array.ConvertAll<ActionObj, MatchObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
+                var matchObjs = Array.ConvertAll<IActionObj, MatchObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
                 var matchCtrl = new MatchCtrl(trigger.hitDistence, matchObjs,trigger.ElementCtrl);
                 matchCtrl.UserError = trigger.UserError;
                 ElementController.onInstall += matchCtrl.OnEndInstallElement;
@@ -51,7 +51,7 @@ namespace WorldActionSystem
             }
             if ((commandType & ControllerType.Install) == ControllerType.Install)
             {
-                var installObjs = Array.ConvertAll<ActionObj, InstallObj>(Array.FindAll<ActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
+                var installObjs = Array.ConvertAll<IActionObj, InstallObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
                 var installCtrl = new InstallCtrl(trigger.hitDistence, installObjs, trigger.ElementCtrl);
                 installCtrl.UserError = trigger.UserError;
                 ElementController.onInstall += installCtrl.OnOneElementEndInstall;
@@ -81,7 +81,7 @@ namespace WorldActionSystem
         private void ChargeQueueIDs()
         {
             queueID.Clear();
-            foreach (ActionObj item in actionObjs)
+            foreach (var item in actionObjs)
             {
                 if (!queueID.Contains(item.QueueID))
                 {
@@ -92,6 +92,11 @@ namespace WorldActionSystem
         }
         public virtual void OnEndExecute()
         {
+            ForEachAction((ctrl) =>
+            {
+                ctrl.OnEndExecute();
+            });
+
             foreach (var item in actionObjs)
             {
                 if (!item.Complete)
@@ -99,10 +104,7 @@ namespace WorldActionSystem
                     item.OnEndExecute();
                 }
             }
-            ForEachAction((ctrl) =>
-            {
-                ctrl.OnEndExecute();
-            });
+          
             StopUpdateAction();
         }
 
@@ -137,7 +139,7 @@ namespace WorldActionSystem
 
         private void OnCommandObjComplete(int id)
         {
-            var notComplete = Array.FindAll<ActionObj>(actionObjs, x => (x as ActionObj).QueueID == id && !x.Complete);
+            var notComplete = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Complete);
             if (notComplete.Length == 0)
             {
                 if (!ExecuteAStep(isForceAuto))
@@ -153,10 +155,10 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => (x as ActionObj).QueueID == id);
+                var neetActive = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id);
                 if (neetActive.Length > 0)
                 {
-                    foreach (ActionObj item in neetActive)
+                    foreach (var item in neetActive)
                     {
                         item.onEndExecute = OnCommandObjComplete;
                         item.OnStartExecute(isForceAuto);

@@ -107,6 +107,7 @@ namespace WorldActionSystem
                 this.target = target;
             }
 #endif
+            StepComplete();
         }
         public void NormalMoveTo(GameObject target)
         {
@@ -143,6 +144,7 @@ namespace WorldActionSystem
                     onInstallOkEvent();
                 this.target = target;
             }
+            StepComplete();
         }
 
         public void NormalUnInstall()
@@ -158,6 +160,7 @@ namespace WorldActionSystem
                 target = null;
             }
 #endif
+            StepUnDo();
         }
         public void NormalMoveBack()
         {
@@ -171,6 +174,7 @@ namespace WorldActionSystem
                     onUnInstallOkEvent();
             });
 #endif
+            StepUnDo();
         }
         public void QuickMoveBack()
         {
@@ -178,6 +182,7 @@ namespace WorldActionSystem
             transform.position = startPos;
             if (onUnInstallOkEvent != null)
                 onUnInstallOkEvent();
+            StepUnDo();
         }
 
         public void QuickUnInstall()

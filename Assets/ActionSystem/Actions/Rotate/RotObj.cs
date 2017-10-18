@@ -162,7 +162,7 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(forceauto);
             transform.rotation = startRot;
-            if (forceauto) StartCoroutine(AutoRotateTo(() => { TryEndExecute(); }));
+            if (forceauto) StartCoroutine(AutoRotateTo(TryEndExecute));
         }
 
         private IEnumerator AutoRotateTo(UnityAction callBack)
@@ -171,7 +171,7 @@ namespace WorldActionSystem
             var start = transform.rotation;
             for (float timer = 0; timer < 1f; timer += Time.deltaTime)
             {
-                yield return new WaitForEndOfFrame();
+                yield return null;
                 transform.rotation = Quaternion.Lerp(start, target, timer);
             }
             callBack();
@@ -215,8 +215,11 @@ namespace WorldActionSystem
         {
             return comparer.Equals(currAngle, triggerAngle);
         }
-
-        public IEnumerator Clamp()
+        public void ClampAsync()
+        {
+            StartCoroutine(Clamp());
+        }
+        private IEnumerator Clamp()
         {
             if (currAngle > maxAngle || currAngle < minAngle)
             {

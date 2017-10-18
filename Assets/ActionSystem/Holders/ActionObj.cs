@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-    public class ActionObj : MonoBehaviour, ISortAble
+    public class ActionObj : MonoBehaviour, IActionObj
     {
         public bool startActive;
         public bool endActive;
@@ -31,7 +31,7 @@ namespace WorldActionSystem
         protected GameObject viewObj;
         [SerializeField]
         protected Color highLightColor = Color.green;
-        public UnityAction<int> onEndExecute;
+        public UnityAction<int> onEndExecute { get; set; }
         public UnityEvent onBeforeStart;
         public UnityEvent onBeforeUnDo;
         public UnityEvent onBeforeComplete;
@@ -42,12 +42,13 @@ namespace WorldActionSystem
         protected virtual void Start()
         {
             InitRender();
-            gameObject.SetActive(startActive);
             hooks = GetComponentsInChildren<ActionHook>(false);
             if (hooks.Length > 0)
             {
                 hookCtrl = new HookCtroller(this);
+                Debug.Log(name + "registHooks :" + hooks.Length);
             }
+            gameObject.SetActive(startActive);
         }
         protected virtual void Update()
         {

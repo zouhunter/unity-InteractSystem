@@ -3,9 +3,11 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+
 namespace WorldActionSystem
 {
-    public abstract class ActionHook : MonoBehaviour
+    public abstract class ActionHook : MonoBehaviour, IActionObj
     {
         protected bool _complete;
         public bool Complete { get { return _complete; } }
@@ -21,7 +23,8 @@ namespace WorldActionSystem
                 return queueID;
             }
         }
-        public UnityAction<int> onEndExecute;
+
+        public UnityAction<int> onEndExecute { get; set; }
 
         public virtual void OnStartExecute(bool auto = false)
         {
@@ -41,6 +44,7 @@ namespace WorldActionSystem
 
         public virtual void OnEndExecute()
         {
+            Debug.Log("OnEndExecute");
             if (!_complete)
             {
                 _started = true;

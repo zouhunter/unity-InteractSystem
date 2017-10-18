@@ -21,12 +21,12 @@ namespace WorldActionSystem
         private StepComplete stepComplete { get; set; }
         private CameraController cameraCtrl { get; set; }
         private ElementController elementCtrl { get; set; }
-        public ActionObj[] ActionObjs { get { return actionObjs; } }
+        public IActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
 
         protected ActionCtroller coroutineCtrl;
 
-        protected ActionObj[] actionObjs;
+        protected IActionObj[] actionObjs;
         [EnumMask, HideInInspector]
         public ControllerType commandType;
 
@@ -53,7 +53,16 @@ namespace WorldActionSystem
         private bool completed;
         protected virtual void Awake()
         {
-            actionObjs = GetComponentsInChildren<ActionObj>(false);
+            var first = new List<IActionObj>();
+            foreach (Transform item in transform){
+                if(item.gameObject.activeSelf){
+                    var action = item.GetComponent<IActionObj>();
+                    if(action != null){
+                        first.Add(action);
+                    }
+                }
+            }
+            actionObjs = first.ToArray();
             if(string.IsNullOrEmpty( _cameraID))
             {
                 var node = GetComponentInChildren<CameraNode>();

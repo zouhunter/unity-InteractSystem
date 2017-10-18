@@ -17,6 +17,7 @@ namespace WorldActionSystem
         private static Transform viewCameraParent;
         private static Coroutine coroutine;
         public static CameraController Instence { get; private set; }
+        private static UnityAction onComplete;
         public void Awake()
         {
             Instence = this;
@@ -37,23 +38,27 @@ namespace WorldActionSystem
         }
         public static void SetViewCamera(UnityAction onComplete,string id = null)
         {
+            CameraController.onComplete = onComplete;
             StopCoroutine();
             var node = cameraNodes.Find(x =>x != null && x.ID == id);
             if (node != currentNode)
             {
                 if (node == null)//移动到主摄像机
                 {
-                    coroutine= Instence. StartCoroutine(MoveCameraToMainCamera(onComplete));
+                    coroutine= Instence.StartCoroutine(MoveCameraToMainCamera());
                 }
                 else //移动到新坐标
                 {
-                    coroutine= Instence.StartCoroutine(MoveCameraToNode(node, onComplete));
+                    coroutine= Instence.StartCoroutine(MoveCameraToNode(node));
                 }
                 currentNode = node;
             }
             else
             {
-                onComplete.Invoke();
+                viewCamera.gameObject.SetActive(false);
+                mainCamera.gameObject.SetActive(true);
+                viewCamera.transform.SetParent(viewCameraParent);
+                OnStepComplete();
             }
         }
 
@@ -73,7 +78,7 @@ namespace WorldActionSystem
             }
         }
 
-        static IEnumerator MoveCameraToMainCamera(UnityAction onComplete)
+        static IEnumerator MoveCameraToMainCamera()
         {
             if(mainCamera == null)
             {
@@ -95,9 +100,9 @@ namespace WorldActionSystem
                 mainCamera.gameObject.SetActive(true);
                 viewCamera.transform.SetParent(viewCameraParent);
             }
-            onComplete.Invoke();
+            OnStepComplete();//
         }
-        static IEnumerator MoveCameraToNode(CameraNode target, UnityAction onComplete)
+        static IEnumerator MoveCameraToNode(CameraNode target)
         {
             if(mainCamera != null)
             {
@@ -115,7 +120,7 @@ namespace WorldActionSystem
             }
             SetTransform(viewCamera.transform, target.transform);
             viewCamera.transform.SetParent(target.transform);
-            onComplete.Invoke();
+            OnStepComplete();
         }
         private static void SetTransform(Transform obj,Transform target)
         {
@@ -127,12 +132,19 @@ namespace WorldActionSystem
             if(coroutine != null)
             {
                 Instence.StopCoroutine(coroutine);
+                OnStepComplete();//结束上一步骤
                 coroutine = null;
             }
         }
         private void OnDestroy()
         {
+            onComplete = null;
             cameraNodes.Clear();
+        }
+        private static void OnStepComplete()
+        {
+            if (onComplete != null) onComplete.Invoke();
+            onComplete = null;
         }
     }
 
