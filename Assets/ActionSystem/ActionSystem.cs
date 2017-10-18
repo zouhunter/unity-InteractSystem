@@ -25,20 +25,14 @@ namespace WorldActionSystem
         private IRemoteController remoteController;
         private IActionStap[] steps;
         private CommandController commandCtrl = new WorldActionSystem.CommandController();
-        private CameraController cameraCtrl = new WorldActionSystem.CameraController();
         private List<IActionCommand> activeCommands;
         private RegistCmds onCommandRegist;
-        public Camera viewCamera;
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
         #region Interface Fuctions
 
         private void Awake()
         {
             instance = this;
-            if(viewCamera == null){
-                viewCamera = GetComponentInChildren<Camera>(true);
-            }
-            CameraController.Init(this);
         }
 
         private void Start()
@@ -243,7 +237,6 @@ namespace WorldActionSystem
         #endregion
         private void OnDestroy()
         {
-            CameraController.Clean();
             ElementController.Clean();
         }
     }

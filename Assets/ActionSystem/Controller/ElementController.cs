@@ -16,6 +16,7 @@ namespace WorldActionSystem
             objectList.Clear();
             onInstall = null;
         }
+
         /// <summary>
         /// 外部添加Element
         /// </summary>
@@ -35,6 +36,7 @@ namespace WorldActionSystem
                 if (onInstall != null) onInstall.Invoke(obj);
             };
         }
+        
         /// <summary>
         /// 获取指定元素名的列表
         /// </summary>
@@ -51,12 +53,13 @@ namespace WorldActionSystem
                 return null;
             }
         }
+        
         /// <summary>
         /// 找出一个没有安装的元素
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-       public static PickUpAbleElement GetUnInstalledObj(string elementName)
+         public static PickUpAbleElement GetUnInstalledObj(string elementName)
         {
             List<PickUpAbleElement> listObj;
 

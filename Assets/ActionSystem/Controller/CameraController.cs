@@ -7,7 +7,7 @@ using System;
 
 namespace WorldActionSystem
 {
-    public class CameraController
+    internal class CameraController:MonoBehaviour
     {
         private static List<CameraNode> cameraNodes = new List<CameraNode>();
         public static Camera viewCamera { get; set; }
@@ -15,18 +15,16 @@ namespace WorldActionSystem
         private static CameraNode currentNode;
         private static Camera activeCamera { get; set; }
         private static Transform viewCameraParent;
-        private static ActionSystem holder;
         private static Coroutine coroutine;
-        public  static void Clean()
+        public static CameraController Instence { get; private set; }
+        public void Awake()
         {
-            cameraNodes.Clear();
-        }
-        public static void Init(ActionSystem holder)
-        {
-            CameraController.holder = holder;
-            viewCameraParent = holder.transform;
-            CameraController.viewCamera = holder.viewCamera;
-            CameraController.mainCamera = Camera.main;
+            Instence = this;
+            viewCameraParent = transform;
+            if (viewCamera == null) {
+                viewCamera = GetComponentInChildren<Camera>(true);
+            }
+            mainCamera = Camera.main;
             SetTransform(viewCamera.transform, mainCamera.transform);
             viewCamera.gameObject.SetActive(mainCamera == null);
         }
@@ -45,11 +43,11 @@ namespace WorldActionSystem
             {
                 if (node == null)//移动到主摄像机
                 {
-                    coroutine= holder.StartCoroutine(MoveCameraToMainCamera(onComplete));
+                    coroutine= Instence. StartCoroutine(MoveCameraToMainCamera(onComplete));
                 }
                 else //移动到新坐标
                 {
-                    coroutine= holder.StartCoroutine(MoveCameraToNode(node, onComplete));
+                    coroutine= Instence.StartCoroutine(MoveCameraToNode(node, onComplete));
                 }
                 currentNode = node;
             }
@@ -128,9 +126,13 @@ namespace WorldActionSystem
         {
             if(coroutine != null)
             {
-                holder.StopCoroutine(coroutine);
+                Instence.StopCoroutine(coroutine);
                 coroutine = null;
             }
+        }
+        private void OnDestroy()
+        {
+            cameraNodes.Clear();
         }
     }
 
