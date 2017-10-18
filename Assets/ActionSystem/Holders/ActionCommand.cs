@@ -133,11 +133,13 @@ namespace WorldActionSystem
 
             if (!started)
             {
+                started = true;
+                onBeforeActive.Invoke(StepName);
+
                 CameraController.SetViewCamera(() => {
-                    started = true;
-                    onBeforeActive.Invoke(StepName);
                     coroutineCtrl.OnStartExecute(forceAuto);
                 }, _cameraID);
+
                 return true;
             }
             else
@@ -178,10 +180,11 @@ namespace WorldActionSystem
 
         public virtual void UnDoExecute()
         {
+            started = false;
+            completed = false;
+            onBeforeUnDo.Invoke(StepName);
+
             CameraController.SetViewCamera(()=> {
-                started = false;
-                completed = false;
-                onBeforeUnDo.Invoke(StepName);
                 if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
             });
         }

@@ -17,13 +17,13 @@ namespace WorldActionSystem
     {
         public bool autoInstall;
         public bool Installed { get { return obj != null; } }
-        public IInstallItem obj { get; private set; }
+        public PickUpAbleElement obj { get; private set; }
 
         void Awake(){
             gameObject.layer = Setting.installPosLayer;
         }
 
-        public bool Attach(IInstallItem obj)
+        public bool Attach(PickUpAbleElement obj)
         {
             if(this.obj != null)
             {
@@ -36,9 +36,9 @@ namespace WorldActionSystem
             }
         }
 
-        public IInstallItem Detach()
+        public PickUpAbleElement Detach()
         {
-            IInstallItem old = obj;
+            PickUpAbleElement old = obj;
             obj = null;
             return old;
         }

@@ -25,7 +25,8 @@ namespace WorldActionSystem
         private List<MatchObj> matchObjs;
         private bool isForceAuto;
         private ElementController elementCtrl { get; set; }
-        public MatchCtrl(float distence,MatchObj[] matchObjs,ElementController elementCtrl)
+        private List<PickUpAbleElement> usedElements = new List<PickUpAbleElement>();
+        public MatchCtrl(float distence, MatchObj[] matchObjs, ElementController elementCtrl)
         {
             highLight = new ShaderHighLight();
             this.distence = distence;
@@ -95,7 +96,7 @@ namespace WorldActionSystem
         private bool PickUpedIsMatch()
         {
             bool canInstall = false;
-            List<MatchObj> poss = GetNotInstalledPosList();
+            List<MatchObj> poss = GetNotMatchedPosList();
             for (int i = 0; i < poss.Count; i++)
             {
                 if (poss[i].obj == null && IsMatchStep(poss[i]) && pickedUpObj.name == poss[i].name)
@@ -182,7 +183,7 @@ namespace WorldActionSystem
             }
             else
             {
-                if(UserError != null) UserError(resonwhy);
+                if (UserError != null) UserError(resonwhy);
             }
 
             pickedUp = false;
@@ -206,7 +207,28 @@ namespace WorldActionSystem
         }
         #endregion
 
-        public void OnEndInstallElement()
+        #region Surch MatchObj
+
+        private List<MatchObj> GetNotMatchedPosList()
+        {
+            var list = matchObjs.FindAll(x => !x.Matched);
+            return list;
+
+        }
+        private List<MatchObj> GetNeedAutoMatchObjList()
+        {
+            var list = matchObjs.FindAll(x => x.autoMatch);
+            return list;
+
+        }
+        private bool IsMatchStep(MatchObj obj)
+        {
+            return matchObjs.Contains(obj);
+        }
+        #endregion
+
+
+        public void OnEndInstallElement(PickUpAbleElement element)
         {
             bool allComplete = true;
             foreach (var item in matchObjs)
@@ -225,6 +247,10 @@ namespace WorldActionSystem
                     allComplete &= item.Matched;
                     allComplete &= item.Complete;
                 }
+            }
+            if (allComplete)
+            {
+                OnEndExecute();
             }
         }
 
@@ -247,36 +273,14 @@ namespace WorldActionSystem
             }
         }
 
-
-        private List<MatchObj> GetInstalledPosList()
-        {
-            var list = matchObjs.FindAll(x => x.Matched);
-            return list;
-        }
-        private List<MatchObj> GetNotInstalledPosList()
-        {
-            var list = matchObjs.FindAll(x => !x.Matched);
-            return list;
-
-        }
-        private List<MatchObj> GetNeedAutoMatchObjList()
-        {
-            var list = matchObjs.FindAll(x => x.autoMatch);
-            return list;
-
-        }
-        private bool IsMatchStep(MatchObj obj)
-        {
-            return matchObjs.Contains(obj);
-        }
-
         public void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
+            SetStartNotify();
             List<MatchObj> posList = null;
             if (forceAuto)
             {
-                posList = GetNotInstalledPosList();
+                posList = GetNotMatchedPosList();
             }
             else
             {
@@ -287,22 +291,23 @@ namespace WorldActionSystem
             for (int i = 0; i < posList.Count; i++)
             {
                 pos = posList[i];
-                IMatchItem obj = ElementController.GetUnInstalledObj(pos.name);
+                var obj = ElementController.GetUnInstalledObj(pos.name);
                 pos.Attach(obj);
                 obj.NormalMoveTo(pos.gameObject);
             }
-
             pickedUp = false;
         }
 
         public void OnEndExecute()
         {
-            List<MatchObj> posList = GetNotInstalledPosList();
+            SetCompleteNotify();
+            List<MatchObj> posList = GetNotMatchedPosList();
             QuickMatchObjListObjects(posList);
         }
 
         public void OnUnDoExecute()
         {
+            SetCompleteNotify();
             foreach (var item in matchObjs)
             {
                 if (item.Matched)
@@ -314,7 +319,56 @@ namespace WorldActionSystem
             }
         }
 
-
+        /// <summary>
+        /// 将可安装元素全部显示出来
+        /// </summary>
+        private void SetStartNotify()
+        {
+            var keyList = new List<string>();
+            foreach (var pos in matchObjs)
+            {
+                if (!keyList.Contains(pos.name))
+                {
+                    keyList.Add(pos.name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    for (int j = 0; j < listObjs.Count; j++)
+                    {
+                        if (!listObjs[j].Installed)
+                        {
+                            listObjs[j].StepActive();
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 结束指定步骤
+        /// </summary>
+        /// <param name="poss"></param>
+        private void SetCompleteNotify()
+        {
+            var keyList = new List<string>();
+            foreach (var pos in matchObjs)
+            {
+                if (!keyList.Contains(pos.name))
+                {
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    for (int j = 0; j < listObjs.Count; j++)
+                    {
+                        if (listObjs[j].Installed)
+                        {
+                            listObjs[j].StepComplete();
+                        }
+                        else
+                        {
+                            listObjs[j].StepUnDo();
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

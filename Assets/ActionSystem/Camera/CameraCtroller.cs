@@ -53,6 +53,10 @@ namespace WorldActionSystem
                 }
                 currentNode = node;
             }
+            else
+            {
+                onComplete.Invoke();
+            }
         }
 
         internal static Camera GetViewCamera(string cameraID)

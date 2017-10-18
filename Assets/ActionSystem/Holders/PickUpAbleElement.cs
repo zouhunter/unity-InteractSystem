@@ -13,7 +13,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IInstallItem, IMatchItem, IOutSideRegisterRender
+    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem,IOutSideRegisterRender
     {
         public int animTime { get { return Setting.installTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
@@ -194,6 +194,7 @@ namespace WorldActionSystem
                     onUnInstallOkEvent();
             }
 #endif
+            StepUnDo();
         }
 
         public void OnPickUp()
@@ -210,15 +211,9 @@ namespace WorldActionSystem
         public void StepActive()
         {
             if (Setting.highLightNotice) highLighter.HighLightTarget(m_render, highLightColor);
+
             onStepActive.Invoke();
             gameObject.SetActive(true);
-        }
-        public void StepUpDo()
-        {
-            if (Setting.highLightNotice) highLighter.UnHighLightTarget(m_render);
-
-            onStepUnDo.Invoke();
-            gameObject.SetActive(startActive);
         }
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
@@ -230,11 +225,15 @@ namespace WorldActionSystem
             onStepComplete.Invoke();
             gameObject.SetActive(endActive);
         }
-        public void SetActive(bool active)
+        /// <summary>
+        /// 步骤重置(没有用到的元素)
+        /// </summary>
+        public void StepUnDo()
         {
-            gameObject.SetActive(active);
+            if (Setting.highLightNotice) highLighter.UnHighLightTarget(m_render);
+            onStepUnDo.Invoke();
+            gameObject.SetActive(startActive);
         }
-
         public void OnPickDown()
         {
 #if !NoFunction

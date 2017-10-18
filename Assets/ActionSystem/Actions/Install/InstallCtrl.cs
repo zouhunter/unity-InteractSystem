@@ -24,6 +24,7 @@ namespace WorldActionSystem
         private List<InstallObj> installObjs = new List<InstallObj>();
         private ElementController elementCtrl { get; set; }
         private bool isForceAuto;
+
         public InstallCtrl(float distence, InstallObj[] installObjs,ElementController elementCtrl)
         {
             highLight = new ShaderHighLight();
@@ -201,7 +202,7 @@ namespace WorldActionSystem
         }
         #endregion
 
-        public void OnOneElementEndInstall()
+        public void OnOneElementEndInstall(PickUpAbleElement element)
         {
             bool allComplete = true;
             foreach (var item in installObjs)
@@ -222,87 +223,12 @@ namespace WorldActionSystem
                 }
               
             }
-        }
-
-        /// <summary>
-        /// 结束指定步骤
-        /// </summary>
-        /// <param name="poss"></param>
-        private void SetCompleteNotify()
-        {
-            List<InstallObj> posList = GetInstalledPosList();
-            List<PickUpAbleElement> temp = new List<PickUpAbleElement>();
-            foreach (var pos in posList)
+            if(allComplete)
             {
-                List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                if (listObjs != null)
-                {
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (!listObjs[j].Installed && !temp.Contains(listObjs[j]))
-                        {
-                            listObjs[j].StepUpDo();
-                        }
-                        else if(listObjs[j].Installed)
-                        {
-                            listObjs[j].StepComplete();
-                        }
-                    }
-                }
-            }
-        }
-        private void SetUnDoNotify()
-        {
-            List<InstallObj> poss = GetInstalledPosList();
-            //当前步骤结束
-            foreach (var item in poss)
-            {
-                var pickUp = item.obj as PickUpAbleElement;
-                pickUp.StepUpDo();
+                OnEndExecute();
             }
         }
 
-        /// <summary>
-        /// 快速安装 列表 
-        /// </summary>
-        /// <param name="posList"></param>
-        private void QuickInstallObjListObjects(List<InstallObj> posList)
-        {
-            InstallObj pos;
-            for (int i = 0; i < posList.Count; i++)
-            {
-                pos = posList[i];
-                if (pos != null && !pos.Installed)
-                {
-                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
-                    obj.QuickInstall(pos.gameObject);
-                    pos.Attach(obj);
-                }
-            }
-        }
-
-        public void SetElemetsStart()
-        {
-            List<InstallObj> posList = GetNotInstalledPosList();
-            List<PickUpAbleElement> temp = new List<PickUpAbleElement>();
-            foreach (var pos in posList)
-            {
-                List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                if (listObjs != null)
-                {
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (!listObjs[j].Installed && !temp.Contains(listObjs[j]))
-                        {
-                            temp.Add(listObjs[j]);
-                            listObjs[j].StepActive();
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-      
         /// <summary>
         /// 自动安装部分需要进行自动安装的零件
         /// </summary>
@@ -353,37 +279,6 @@ namespace WorldActionSystem
             }
         }
 
-        public void QuickUnInstall()
-        {
-            List<InstallObj> posList = GetInstalledPosList();
-            QuickUnInstallObjListObjects(posList);
-            foreach (var item in installObjs)
-            {
-                item.OnUnDoExecute();
-            }
-        }
-
-        /// <summary>
-        /// QuickUnInstall
-        /// </summary>
-        /// <param name="posList"></param>
-        public void QuickUnInstallObjListObjects(List<InstallObj> posList)
-        {
-            foreach (var item in posList)
-            {
-                if (item.Installed)
-                {
-                    var obj = item.Detach();
-                    obj.QuickUnInstall();
-                }
-            }
-        }
-
-        private List<InstallObj> GetInstalledPosList()
-        {
-            var list = installObjs.FindAll(x => x.Installed);
-            return list;
-        }
         private List<InstallObj> GetNotInstalledPosList()
         {
             var list = installObjs.FindAll(x => !x.Installed);
@@ -407,21 +302,88 @@ namespace WorldActionSystem
         public void OnStartExecute(bool forceauto)
         {
             this.isForceAuto = forceauto;
-            SetElemetsStart();
+            SetStartNotify();
             AutoInstallWhenNeed(forceauto);
         }
         public void OnEndExecute()
         {
-            List<InstallObj> posList = GetNotInstalledPosList();
-            QuickInstallObjListObjects(posList);
             SetCompleteNotify();
+            List<InstallObj> posList = GetNotInstalledPosList();
+            for (int i = 0; i < posList.Count; i++)
+            {
+                var pos = posList[i];
+                if (pos != null && !pos.Installed)
+                {
+                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
+                    obj.QuickInstall(pos.gameObject);
+                    pos.Attach(obj);
+                }
+            }
         }
         public void OnUnDoExecute()
         {
-            QuickUnInstall();
-            List<InstallObj> posList = GetInstalledPosList();
-            QuickUnInstallObjListObjects(posList);
-            SetUnDoNotify();
+            SetCompleteNotify();
+            foreach (var item in installObjs)
+            {
+                if (item.Installed)
+                {
+                    var obj = item.Detach();
+                    obj.QuickUnInstall();
+                    item.OnUnDoExecute();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 将可安装元素全部显示出来
+        /// </summary>
+        private void SetStartNotify()
+        {
+            List<InstallObj> posList = GetNotInstalledPosList();
+            var keyList = new List<string>();
+            foreach (var pos in posList)
+            {
+                if(!keyList.Contains(pos.name))
+                {
+                    keyList.Add(pos.name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    for (int j = 0; j < listObjs.Count; j++)
+                    {
+                        if (!listObjs[j].Installed)
+                        {
+                            listObjs[j].StepActive();
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 结束指定步骤
+        /// </summary>
+        /// <param name="poss"></param>
+        private void SetCompleteNotify()
+        {
+            var keyList = new List<string>();
+            foreach (var pos in installObjs)
+            {
+                if (!keyList.Contains(pos.name))
+                {
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    for (int j = 0; j < listObjs.Count; j++)
+                    {
+                        if (listObjs[j].Installed)
+                        {
+                            listObjs[j].StepComplete();
+                        }
+                        else
+                        {
+                            listObjs[j].StepUnDo();
+                        }
+                    }
+                }
+            }
         }
     }
 

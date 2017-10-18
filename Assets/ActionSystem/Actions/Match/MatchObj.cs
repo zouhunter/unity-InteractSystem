@@ -14,12 +14,12 @@ namespace WorldActionSystem
     {
         public bool autoMatch;
         public bool Matched { get { return obj != null; } }
-        public IMatchItem obj { get; private set; }
+        public PickUpAbleElement obj { get; private set; }
         void Awake()
         {
             gameObject.layer = Setting.matchPosLayer;
         }
-        public bool Attach(IMatchItem obj)
+        public bool Attach(PickUpAbleElement obj)
         {
             if (this.obj != null){
                 return false;
@@ -31,10 +31,10 @@ namespace WorldActionSystem
             }
         }
 
-        public IMatchItem Detach()
+        public PickUpAbleElement Detach()
         {
-            IMatchItem old = obj;
-            obj = default(IMatchItem);
+            PickUpAbleElement old = obj;
+            obj = default(PickUpAbleElement);
             return old;
         }
     }
