@@ -24,7 +24,6 @@ namespace WorldActionSystem
 
         public UnityAction onInstallOkEvent;
         public UnityAction onUnInstallOkEvent;
-        InfoTextShow textShow;
 
         public UnityEvent onPickUp;
         public UnityEvent OnLayDown;
@@ -55,7 +54,6 @@ namespace WorldActionSystem
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
-            textShow = GetComponent<InfoTextShow>();
         }
         private void InitRender()
         {
@@ -166,7 +164,6 @@ namespace WorldActionSystem
         {
 #if !NoFunction
             if (OnLayDown != null) OnLayDown.Invoke();
-            if (textShow) textShow.enabled = true;
 
             DoPath(startPos, startRotation, () =>
             {
@@ -205,8 +202,6 @@ namespace WorldActionSystem
         public void OnPickUp()
         {
             if (onPickUp != null) onPickUp.Invoke();
-
-            if (textShow) textShow.enabled = false;
             StopTween();
         }
 

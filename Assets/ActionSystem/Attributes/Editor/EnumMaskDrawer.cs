@@ -10,7 +10,6 @@ namespace WorldActionSystem
     [CustomPropertyDrawer(typeof(EnumMaskAttribute))]
     public class EnumMaskDrawer : PropertyDrawer
     {
-
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType == SerializedPropertyType.Enum)
