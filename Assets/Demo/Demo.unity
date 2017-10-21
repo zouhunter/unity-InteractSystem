@@ -928,6 +928,10 @@ Prefab:
       propertyPath: commandType
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 11499726, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
+      propertyPath: commandType
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
   m_IsPrefabParent: 0
