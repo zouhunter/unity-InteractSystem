@@ -238,11 +238,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22495252, guid: 9187ae35e3f11a243ba21e563fbe1c0f, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 108.99182
+      value: 110.19283
       objectReference: {fileID: 0}
     - target: {fileID: 22495252, guid: 9187ae35e3f11a243ba21e563fbe1c0f, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 31.607628
+      value: 31.955921
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9187ae35e3f11a243ba21e563fbe1c0f, type: 2}
@@ -907,6 +907,26 @@ Prefab:
     - target: {fileID: 11457590, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
       propertyPath: prefabList.Array.data[0].instanceID
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 134674, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11420180, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
+      propertyPath: commandType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11457214, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
+      propertyPath: commandType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11432672, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
+      propertyPath: commandType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11450320, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}
+      propertyPath: commandType
+      value: 16
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 44aa9ce9c1957c34a901078815b0e48e, type: 2}

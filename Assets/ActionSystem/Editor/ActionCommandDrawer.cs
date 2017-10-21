@@ -39,9 +39,6 @@ namespace WorldActionSystem
             onBeforeActiveProp = serializedObject.FindProperty("onBeforeActive");
             onBeforeUnDoProp = serializedObject.FindProperty("onBeforeUnDo");
             onBeforePlayEndProp = serializedObject.FindProperty("onBeforePlayEnd");
-
-            SwitchDrawing();
-            Warning();
         }
 
 
@@ -52,6 +49,8 @@ namespace WorldActionSystem
             if (Selection.gameObjects.Length == 1)
             {
                 serializedObject.Update();
+                ModifyType();
+                SwitchDrawing();
                 DrawOptionDatas();
                 DrawEvents();
                 serializedObject.ApplyModifiedProperties();
@@ -60,8 +59,6 @@ namespace WorldActionSystem
 
         private void DrawOptionDatas()
         {
-            SwitchDrawing();
-
             EditorGUILayout.PropertyField(commandTypeProp);
 
             if (drawLineInfo)
@@ -111,40 +108,57 @@ namespace WorldActionSystem
             }
         }
 
-        private void Warning()
+        private bool ModifyType()
         {
             var cmd = target as ActionCommand;
             var actionObjs = cmd.GetComponentsInChildren<ActionObj>(true);
             string err = "";
-            foreach (var item in actionObjs)
+            if (actionObjs != null)
             {
-                if (item is ClickObj && !activeCommands.Contains(ControllerType.Click))
+                foreach (var item in actionObjs)
                 {
-                    err = cmd.name + " have no ctrl of " + ControllerType.Click;
-                }
-                else if (item is RotObj && !activeCommands.Contains(ControllerType.Rotate))
-                {
-                    err = cmd.name + " have no ctrl of " + ControllerType.Rotate;
-                }
-                else if (item is InstallObj && !activeCommands.Contains(ControllerType.Install))
-                {
-                    err = cmd.name + " have no ctrl of " + ControllerType.Install;
-                }
-                else if (item is MatchObj && !activeCommands.Contains(ControllerType.Match))
-                {
-                    err = cmd.name + " have no ctrl of " + ControllerType.Match;
-                }
-                else if (item is ConnectObj && !activeCommands.Contains(ControllerType.Connect))
-                {
-                    err = cmd.name + " have no ctrl of " + ControllerType.Connect;
+                    if (item is ClickObj && !ContainsType(ControllerType.Click) )
+                    {
+                        err = cmd.name + " add ctrl of " + ControllerType.Click;
+                        commandTypeProp.intValue |= (int)ControllerType.Click;
+                    }
+                    else if (item is RotObj && !ContainsType(ControllerType.Rotate))
+                    {
+                        err = cmd.name + " add ctrl of " + ControllerType.Rotate;
+                        commandTypeProp.intValue |= (int)ControllerType.Rotate;
+                    }
+                    else if (item is InstallObj && !ContainsType(ControllerType.Install))
+                    {
+                        err = cmd.name + " add ctrl of " + ControllerType.Install;
+                        commandTypeProp.intValue |= (int)ControllerType.Install;
+                    }
+                    else if (item is MatchObj && !ContainsType(ControllerType.Match))
+                    {
+                        err = cmd.name + " add ctrl of " + ControllerType.Match;
+                        commandTypeProp.intValue |= (int)ControllerType.Match;
+                    }
+                    else if (item is ConnectObj && !ContainsType(ControllerType.Connect))
+                    {
+                        err = cmd.name + " add ctrl of " + ControllerType.Connect;
+                        commandTypeProp.intValue |= (int)ControllerType.Connect;
+                    }
                 }
             }
 
+
             if (!String.IsNullOrEmpty(err))
             {
-                Debug.LogError(err, target);
+                Debug.Log(err, target);
+                return true;
             }
+            return false;
         }
+
+        private bool ContainsType(ControllerType target)
+        {
+            return ((ControllerType)commandTypeProp.intValue & target) == target;
+        }
+
         private void DrawEvents()
         {
             EditorGUILayout.PropertyField(onBeforeActiveProp);
