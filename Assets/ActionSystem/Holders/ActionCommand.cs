@@ -53,24 +53,41 @@ namespace WorldActionSystem
         private bool completed;
         protected virtual void Awake()
         {
+            RegistActionObjs();
+            WorpCameraID();
+        }
+        private void RegistActionObjs()
+        {
+            ///只操作第一层活动的对象
             var first = new List<IActionObj>();
-            foreach (Transform item in transform){
-                if(item.gameObject.activeSelf){
-                    var action = item.GetComponent<IActionObj>();
-                    if(action != null){
-                        first.Add(action);
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var item = transform.GetChild(i);
+                if (item.gameObject.activeSelf)
+                {
+                    var actions = item.GetComponents<IActionObj>();
+                    if (actions != null)
+                    {
+                        first.AddRange(actions);
                     }
                 }
             }
+
             actionObjs = first.ToArray();
-            if(string.IsNullOrEmpty( _cameraID))
+        }
+
+        private void WorpCameraID()
+        {
+            if (string.IsNullOrEmpty(_cameraID))
             {
                 var node = GetComponentInChildren<CameraNode>();
-                if(node != null){
+                if (node != null)
+                {
                     _cameraID = node.name;
                 }
             }
         }
+
         public void RegistComplete(StepComplete stepComplete)
         {
             this.stepComplete = stepComplete;
@@ -181,10 +198,8 @@ namespace WorldActionSystem
 
         public void OnEndExecute()
         {
-            CameraController.SetViewCamera(()=> {
-                onBeforePlayEnd.Invoke(StepName);
-                if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
-            });
+            onBeforePlayEnd.Invoke(StepName);
+            if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
         }
 
         public virtual void UnDoExecute()
@@ -192,10 +207,7 @@ namespace WorldActionSystem
             started = false;
             completed = false;
             onBeforeUnDo.Invoke(StepName);
-
-            CameraController.SetViewCamera(()=> {
-                if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
-            });
+            if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
         }
 
      

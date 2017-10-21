@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
     public class ClickObj : ActionObj
     {
         public float autoCompleteTime = 2;

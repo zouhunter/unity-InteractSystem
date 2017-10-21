@@ -43,6 +43,7 @@ namespace WorldActionSystem
                 return Vector3.zero;
             }
         }
+        public float autoCompleteTime = 2f;
         private float currAngle;
         private List<Vector3> _lines = new List<Vector3>();
         private LineRenderer lineRender;
@@ -169,10 +170,10 @@ namespace WorldActionSystem
         {
             var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
             var start = transform.rotation;
-            for (float timer = 0; timer < 1f; timer += Time.deltaTime)
+            for (float timer = 0; timer < autoCompleteTime; timer += Time.deltaTime)
             {
                 yield return null;
-                transform.rotation = Quaternion.Lerp(start, target, timer);
+                transform.rotation = Quaternion.Lerp(start, target, timer/autoCompleteTime);
             }
             callBack();
         }

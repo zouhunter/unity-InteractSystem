@@ -23,15 +23,11 @@ namespace WorldActionSystem
         private string resonwhy;
         private float distence;
         private List<MatchObj> matchObjs;
-        private bool isForceAuto;
-        private ElementController elementCtrl { get; set; }
-        private List<PickUpAbleElement> usedElements = new List<PickUpAbleElement>();
-        public MatchCtrl(float distence, MatchObj[] matchObjs, ElementController elementCtrl)
+        public MatchCtrl(float distence, MatchObj[] matchObjs)
         {
             highLight = new ShaderHighLight();
             this.distence = distence;
             this.matchObjs = new List<MatchObj>(matchObjs);
-            this.elementCtrl = elementCtrl;
         }
 
         #region 鼠标操作事件
@@ -76,6 +72,7 @@ namespace WorldActionSystem
                 if (pickedUpObj != null && !pickedUpObj.Installed)
                 {
                     pickedUp = true;
+                    pickedUpObj.OnPickUp();
 
                     if (!PickUpedIsMatch())
                     {
@@ -178,14 +175,14 @@ namespace WorldActionSystem
             {
                 matchPos.Attach(pickedUpObj);
                 pickedUpObj.QuickMoveTo(matchPos.gameObject);
-                matchPos.OnEndExecute();
-                pickedUpObj = null;
+                matchPos.TryEndExecute();
             }
             else
             {
                 if (UserError != null) UserError(resonwhy);
+                pickedUpObj.NormalMoveBack();
             }
-
+            pickedUpObj = null;
             pickedUp = false;
             matchAble = false;
         }
@@ -205,19 +202,10 @@ namespace WorldActionSystem
                 pickedUpObj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
             }
         }
-        #endregion
-
-        #region Surch MatchObj
 
         private List<MatchObj> GetNotMatchedPosList()
         {
             var list = matchObjs.FindAll(x => !x.Matched);
-            return list;
-
-        }
-        private List<MatchObj> GetNeedAutoMatchObjList()
-        {
-            var list = matchObjs.FindAll(x => x.autoMatch);
             return list;
 
         }
@@ -227,96 +215,19 @@ namespace WorldActionSystem
         }
         #endregion
 
-
-        public void OnEndInstallElement(PickUpAbleElement element)
-        {
-            bool allComplete = true;
-            foreach (var item in matchObjs)
-            {
-                if (isForceAuto)
-                {
-                    allComplete &= item.Matched;
-                    if (!item.Complete)
-                    {
-                        //强制结束
-                        item.OnEndExecute();
-                    }
-                }
-                else
-                {
-                    allComplete &= item.Matched;
-                    allComplete &= item.Complete;
-                }
-            }
-            if (allComplete)
-            {
-                OnEndExecute();
-            }
-        }
-
-        /// <summary>
-        /// 快速安装 列表 
-        /// </summary>
-        /// <param name="posList"></param>
-        public void QuickMatchObjListObjects(List<MatchObj> posList)
-        {
-            MatchObj pos;
-            for (int i = 0; i < posList.Count; i++)
-            {
-                pos = posList[i];
-                if (pos != null)
-                {
-                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
-                    obj.QuickMoveTo(pos.gameObject);
-                    pos.Attach(obj);
-                }
-            }
-        }
-
         public void OnStartExecute(bool forceAuto)
         {
-            this.isForceAuto = forceAuto;
             SetStartNotify();
-            List<MatchObj> posList = null;
-            if (forceAuto)
-            {
-                posList = GetNotMatchedPosList();
-            }
-            else
-            {
-                posList = GetNeedAutoMatchObjList();
-            }
-
-            MatchObj pos;
-            for (int i = 0; i < posList.Count; i++)
-            {
-                pos = posList[i];
-                var obj = ElementController.GetUnInstalledObj(pos.name);
-                pos.Attach(obj);
-                obj.NormalMoveTo(pos.gameObject);
-            }
-            pickedUp = false;
         }
 
         public void OnEndExecute()
         {
             SetCompleteNotify();
-            List<MatchObj> posList = GetNotMatchedPosList();
-            QuickMatchObjListObjects(posList);
         }
 
         public void OnUnDoExecute()
         {
             SetCompleteNotify();
-            foreach (var item in matchObjs)
-            {
-                if (item.Matched)
-                {
-                    var ele = item.Detach();
-                    ele.NormalMoveBack();
-                    item.OnUnDoExecute();
-                }
-            }
         }
 
         /// <summary>

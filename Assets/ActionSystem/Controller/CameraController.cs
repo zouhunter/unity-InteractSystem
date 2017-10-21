@@ -26,7 +26,11 @@ namespace WorldActionSystem
                 viewCamera = GetComponentInChildren<Camera>(true);
             }
             mainCamera = Camera.main;
-            SetTransform(viewCamera.transform, mainCamera.transform);
+            if(mainCamera != null)
+            {
+                SetTransform(viewCamera.transform, mainCamera.transform);
+            }
+            else { Debug.LogError("场景没有主摄像机"); }
             viewCamera.gameObject.SetActive(mainCamera == null);
         }
         public static void RegistNode(CameraNode node)
@@ -38,33 +42,41 @@ namespace WorldActionSystem
         }
         public static void SetViewCamera(UnityAction onComplete,string id = null)
         {
-            CameraController.onComplete = onComplete;
-            StopCoroutine();
-            var node = cameraNodes.Find(x =>x != null && x.ID == id);
-            if (node != currentNode)
+            if(Setting.usedetailcamera)
             {
-                if (node == null)//移动到主摄像机
+                StopCoroutine();
+                CameraController.onComplete = onComplete;
+                var node = cameraNodes.Find(x => x != null && x.ID == id);
+                if (node != currentNode)
                 {
-                    coroutine= Instence.StartCoroutine(MoveCameraToMainCamera());
+                    if (node == null)//移动到主摄像机
+                    {
+                        coroutine = Instence.StartCoroutine(MoveCameraToMainCamera());
+                    }
+                    else //移动到新坐标
+                    {
+                        coroutine = Instence.StartCoroutine(MoveCameraToNode(node));
+                    }
+                    currentNode = node;
                 }
-                else //移动到新坐标
+                else
                 {
-                    coroutine= Instence.StartCoroutine(MoveCameraToNode(node));
+                    OnStepComplete();
                 }
-                currentNode = node;
             }
             else
             {
-                viewCamera.gameObject.SetActive(false);
-                mainCamera.gameObject.SetActive(true);
-                viewCamera.transform.SetParent(viewCameraParent);
-                OnStepComplete();
+                if(onComplete != null) onComplete.Invoke();
             }
         }
 
         internal static Camera GetViewCamera(string cameraID)
         {
-            if(string.IsNullOrEmpty(cameraID))
+            if(!Setting.usedetailcamera)
+            {
+                return mainCamera;
+            }
+            else if(string.IsNullOrEmpty(cameraID))
             {
                 return mainCamera;
             }
@@ -80,11 +92,7 @@ namespace WorldActionSystem
 
         static IEnumerator MoveCameraToMainCamera()
         {
-            if(mainCamera == null)
-            {
-                yield break;
-            }
-            else
+            if(mainCamera != null)
             {
                 var startPos = viewCamera.transform.position;
                 var startRot = viewCamera.transform.rotation;
@@ -132,7 +140,6 @@ namespace WorldActionSystem
             if(coroutine != null)
             {
                 Instence.StopCoroutine(coroutine);
-                OnStepComplete();//结束上一步骤
                 coroutine = null;
             }
         }
@@ -143,8 +150,12 @@ namespace WorldActionSystem
         }
         private static void OnStepComplete()
         {
-            if (onComplete != null) onComplete.Invoke();
-            onComplete = null;
+            if (onComplete != null)
+            {
+                Debug.Log("Camera CallBack " + DateTime.Now.ToString("mm:ss"));
+                onComplete.Invoke();
+                onComplete = null;
+            }
         }
     }
 

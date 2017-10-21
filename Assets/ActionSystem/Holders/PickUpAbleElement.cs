@@ -175,6 +175,8 @@ namespace WorldActionSystem
         }
         public void QuickMoveBack()
         {
+            if (OnLayDown != null) OnLayDown.Invoke();
+
             transform.eulerAngles = startRotation;
             transform.position = startPos;
             if (onUnInstallOkEvent != null)

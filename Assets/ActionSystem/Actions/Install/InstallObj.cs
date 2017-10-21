@@ -13,19 +13,61 @@ namespace WorldActionSystem
     /// <summary>
     /// 模拟安装坐标功能
     /// </summary>
-    public class InstallObj :ActionObj
+    public class InstallObj : ActionObj
     {
         public bool autoInstall;
         public bool Installed { get { return obj != null; } }
         public PickUpAbleElement obj { get; private set; }
 
-        void Awake(){
+        void Awake()
+        {
             gameObject.layer = Setting.installPosLayer;
+            ElementController.onInstall += OnInstallComplete;
         }
 
+        private void OnDestroy()
+        {
+            ElementController.onInstall -= OnInstallComplete;
+        }
+
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            if (auto || autoInstall)//查找安装点并安装后结束
+            {
+                PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                Attach(obj);
+                obj.NormalInstall(gameObject);
+            }
+        }
+        public override void OnEndExecute()
+        {
+            base.OnEndExecute();
+            if (!Installed)
+            {
+                PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                Attach(obj);
+                obj.QuickInstall(gameObject);
+            }
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            if (Installed)
+            {
+                var obj = Detach();
+                obj.QuickUnInstall();
+            }
+        }
+        private void OnInstallComplete(PickUpAbleElement obj)
+        {
+            if (obj == this.obj) {
+                TryEndExecute();
+            }
+        }
         public bool Attach(PickUpAbleElement obj)
         {
-            if(this.obj != null)
+            if (this.obj != null)
             {
                 return false;
             }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCtrl:IActionCtroller
+    public class InstallCtrl : IActionCtroller
     {
         public bool Active { get; private set; }
         public UnityAction<string> UserError { get; set; }
@@ -22,15 +22,12 @@ namespace WorldActionSystem
         private string resonwhy;
         private float distence;
         private List<InstallObj> installObjs = new List<InstallObj>();
-        private ElementController elementCtrl { get; set; }
-        private bool isForceAuto;
 
-        public InstallCtrl(float distence, InstallObj[] installObjs,ElementController elementCtrl)
+        public InstallCtrl(float distence, InstallObj[] installObjs)
         {
             highLight = new ShaderHighLight();
             this.distence = distence;
             this.installObjs.AddRange(installObjs);
-            this.elementCtrl = elementCtrl;
         }
 
         #region 鼠标操作事件
@@ -72,7 +69,6 @@ namespace WorldActionSystem
                 {
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
-
                     if (!PickUpedCanInstall())
                     {
                         if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
@@ -166,7 +162,8 @@ namespace WorldActionSystem
             if (installAble)
             {
                 var status = installPos.Attach(pickedUpObj);
-                if (status){
+                if (status)
+                {
                     pickedUpObj.QuickInstall(installPos.gameObject);
                 }
                 installPos.TryEndExecute();
@@ -200,93 +197,10 @@ namespace WorldActionSystem
                 pickedUpObj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
             }
         }
-        #endregion
-
-        public void OnOneElementEndInstall(PickUpAbleElement element)
-        {
-            bool allComplete = true;
-            foreach (var item in installObjs)
-            {
-                if(isForceAuto)
-                {
-                    allComplete &= item.Installed;
-                    if (!item.Complete)
-                    {
-                        //强制结束
-                        item.OnEndExecute();
-                    }
-                }
-                else
-                {
-                    allComplete &= item.Installed;
-                    allComplete &= item.Complete;
-                }
-              
-            }
-            if(allComplete)
-            {
-                OnEndExecute();
-            }
-        }
-
-        /// <summary>
-        /// 自动安装部分需要进行自动安装的零件
-        /// </summary>
-        /// <param name="stepName"></param>
-        public void AutoInstallWhenNeed(bool forceAuto)
-        {
-            List<InstallObj> posList = null;
-            if (forceAuto)
-            {
-                posList = GetNotInstalledPosList();
-            }
-            else
-            {
-                posList = GetNeedAutoInstallObjList();
-            }
-
-            if (posList != null)
-            {
-                InstallObjListObjects(posList);
-            }
-
-            pickedUp = false;
-        }
-
-        private void InstallObjListObjects(List<InstallObj> posList)
-        {
-            InstallObj pos;
-            for (int i = 0; i < posList.Count; i++)
-            {
-                pos = posList[i];
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
-                pos.Attach(obj);
-                obj.NormalInstall(pos.gameObject);
-            }
-        }
-        /// <summary>
-        /// uninstll
-        /// </summary>
-        /// <param name="posList"></param>
-        public void UnInstallObjListObjects(List<InstallObj> posList)
-        {
-            InstallObj pos;
-            for (int i = 0; i < posList.Count; i++)
-            {
-                pos = posList[i];
-                var obj = pos.Detach();
-                obj.NormalUnInstall();
-            }
-        }
 
         private List<InstallObj> GetNotInstalledPosList()
         {
             var list = installObjs.FindAll(x => !x.Installed);
-            return list;
-        }
-        private List<InstallObj> GetNeedAutoInstallObjList()
-        {
-            var list = installObjs.FindAll(x => x.autoInstall);
             return list;
         }
         private bool HaveInstallObjInstalled(InstallObj obj)
@@ -297,41 +211,19 @@ namespace WorldActionSystem
         {
             return installObjs.Contains(obj) && obj.Started;
         }
-        
+        #endregion
 
         public void OnStartExecute(bool forceauto)
         {
-            this.isForceAuto = forceauto;
             SetStartNotify();
-            AutoInstallWhenNeed(forceauto);
         }
         public void OnEndExecute()
         {
             SetCompleteNotify();
-            List<InstallObj> posList = GetNotInstalledPosList();
-            for (int i = 0; i < posList.Count; i++)
-            {
-                var pos = posList[i];
-                if (pos != null && !pos.Installed)
-                {
-                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(pos.name);
-                    obj.QuickInstall(pos.gameObject);
-                    pos.Attach(obj);
-                }
-            }
         }
         public void OnUnDoExecute()
         {
             SetCompleteNotify();
-            foreach (var item in installObjs)
-            {
-                if (item.Installed)
-                {
-                    var obj = item.Detach();
-                    obj.QuickUnInstall();
-                    item.OnUnDoExecute();
-                }
-            }
         }
 
         /// <summary>
@@ -343,7 +235,7 @@ namespace WorldActionSystem
             var keyList = new List<string>();
             foreach (var pos in posList)
             {
-                if(!keyList.Contains(pos.name))
+                if (!keyList.Contains(pos.name))
                 {
                     keyList.Add(pos.name);
                     List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);

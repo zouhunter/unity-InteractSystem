@@ -24,7 +24,8 @@ namespace WorldActionSystem
         }
         private void InitController()
         {
-            var viewCamera = CameraController.GetViewCamera(trigger.CameraID);
+            var viewCamera = CameraController.GetViewCamera(trigger.CameraID); 
+           
             Debug.Assert(viewCamera);
             if ((commandType & ControllerType.Click) == ControllerType.Click)
             {
@@ -44,17 +45,15 @@ namespace WorldActionSystem
             if ((commandType & ControllerType.Match) == ControllerType.Match)
             {
                 var matchObjs = Array.ConvertAll<IActionObj, MatchObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
-                var matchCtrl = new MatchCtrl(trigger.hitDistence, matchObjs,trigger.ElementCtrl);
+                var matchCtrl = new MatchCtrl(trigger.hitDistence, matchObjs);
                 matchCtrl.UserError = trigger.UserError;
-                ElementController.onInstall += matchCtrl.OnEndInstallElement;
                 commandList.Add(matchCtrl);
             }
             if ((commandType & ControllerType.Install) == ControllerType.Install)
             {
                 var installObjs = Array.ConvertAll<IActionObj, InstallObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
-                var installCtrl = new InstallCtrl(trigger.hitDistence, installObjs, trigger.ElementCtrl);
+                var installCtrl = new InstallCtrl(trigger.hitDistence, installObjs);
                 installCtrl.UserError = trigger.UserError;
-                ElementController.onInstall += installCtrl.OnOneElementEndInstall;
                 commandList.Add(installCtrl);
             }
             if ((commandType & ControllerType.Rotate) == ControllerType.Rotate)

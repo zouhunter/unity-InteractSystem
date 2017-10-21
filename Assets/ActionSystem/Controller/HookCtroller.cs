@@ -27,6 +27,7 @@ namespace WorldActionSystem
             if(!_started)
             {
                 _started = true;
+                _complete = false;
                 this.isForceAuto = forceAuto;
                 ChargeQueueIDs();
                 ExecuteAStep(isForceAuto);
@@ -45,6 +46,7 @@ namespace WorldActionSystem
             }
             queueID.Sort();
         }
+
         public virtual void OnEndExecute()
         {
             if (!_complete)
@@ -79,14 +81,19 @@ namespace WorldActionSystem
 
         private void OnCommandObjComplete(int id)
         {
-            var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == id && !x.Complete);
-            if (notComplete.Length == 0)
+            if(!Complete)
             {
-                if (!ExecuteAStep(isForceAuto))
+                var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == id && !x.Complete);
+                if (notComplete.Length == 0)
                 {
-                    trigger.OnEndExecute();
+                    if (!ExecuteAStep(isForceAuto))
+                    {
+                        OnEndExecute();
+                        trigger.OnEndExecute();
+                    }
                 }
             }
+           
         }
 
         protected bool ExecuteAStep(bool auto)
@@ -101,6 +108,7 @@ namespace WorldActionSystem
                     foreach (ActionHook item in neetActive)
                     {
                         item.onEndExecute = OnCommandObjComplete;
+                        Debug.Log("On Execute " + item.name + "of " + id);
                         item.OnStartExecute(isForceAuto);
                     }
                 }
