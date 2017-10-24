@@ -18,7 +18,7 @@ namespace WorldActionSystem
         public bool Started { get { return _started; } }
 
         protected bool auto;
-        [SerializeField,Range(0,10)]
+        [SerializeField, Range(0, 10)]
         private int queueID;
         public int QueueID
         {
@@ -27,46 +27,41 @@ namespace WorldActionSystem
                 return queueID;
             }
         }
-        [SerializeField]
-        protected GameObject viewObj;
-        [SerializeField]
-        protected Color highLightColor = Color.green;
+
         public UnityAction<int> onEndExecute { get; set; }
         public UnityEvent onBeforeStart;
         public UnityEvent onBeforeUnDo;
         public UnityEvent onBeforeComplete;
-        private IHighLightItems highLighter;
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
+        private AngleCtroller angleCtrl { get { return AngleCtroller.Instance; } }
+
         protected virtual void Start()
         {
-            InitRender();
             hooks = GetComponentsInChildren<ActionHook>(false);
             if (hooks.Length > 0)
             {
                 hookCtrl = new HookCtroller(this);
-                Debug.Log(name + "registHooks :" + hooks.Length);
+                //Debug.Log(name + "registHooks :" + hooks.Length);
             }
             gameObject.SetActive(startActive);
+
         }
         protected virtual void Update()
         {
             if (Started && Complete) return;
 
-            if(Started && !Complete)
+            if (!Setting.highLightNotice) return;
+
+            if (Started && !Complete)
             {
-                if (Setting.highLightNotice) highLighter.HighLightTarget(viewObj, highLightColor);
+                if (angleCtrl) angleCtrl.Notice(transform);
             }
             else
             {
-                if (Setting.highLightNotice) highLighter.UnHighLightTarget(viewObj);
+                if (angleCtrl) angleCtrl.UnNotice(transform);
             }
-        }
-        private void InitRender()
-        {
-            if (viewObj == null) viewObj = gameObject;
-            highLighter = new ShaderHighLight();
         }
 
         public virtual void OnStartExecute(bool auto = false)
@@ -110,12 +105,10 @@ namespace WorldActionSystem
 
         public virtual void OnEndExecute()
         {
-            Debug.Log("onEndExecute" + name);
+            //Debug.Log("onEndExecute" + name);
 
             if (!_complete)
             {
-                if (Setting.highLightNotice) highLighter.UnHighLightTarget(viewObj);
-
                 onBeforeComplete.Invoke();
                 _started = true;
                 _complete = true;
@@ -128,6 +121,8 @@ namespace WorldActionSystem
                 {
                     hookCtrl.OnEndExecute();
                 }
+
+                if (angleCtrl) angleCtrl.UnNotice(transform);
             }
             else
             {
@@ -135,16 +130,22 @@ namespace WorldActionSystem
             }
 
         }
+
         public virtual void OnUnDoExecute()
         {
             _started = false;
             _complete = false;
 
             gameObject.SetActive(startActive);
+
+            if (angleCtrl) angleCtrl.UnNotice(transform);
+
             if (hooks.Length > 0)
             {
                 hookCtrl.OnUnDoExecute();
             }
+
         }
+
     }
 }

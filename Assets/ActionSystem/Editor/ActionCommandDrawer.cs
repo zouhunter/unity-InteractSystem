@@ -19,6 +19,7 @@ namespace WorldActionSystem
         SerializedProperty lineMaterialProp;
         SerializedProperty hitDistenceProp;
         SerializedProperty pointDistenceProp;
+        SerializedProperty elementDistenceProp;
 
         SerializedProperty onBeforeActiveProp;
         SerializedProperty onBeforeUnDoProp;
@@ -26,11 +27,13 @@ namespace WorldActionSystem
 
         bool drawLineInfo;
         bool drawHitDistence;
+        bool drawElementDistence;
         List<ControllerType> activeCommands = new List<ControllerType>();
 
         private void OnEnable()
         {
             commandTypeProp = serializedObject.FindProperty("commandType");
+            elementDistenceProp = serializedObject.FindProperty("elementDistence");
             lineWightProp = serializedObject.FindProperty("lineWight");
             lineMaterialProp = serializedObject.FindProperty("lineMaterial");
             hitDistenceProp = serializedObject.FindProperty("hitDistence");
@@ -65,12 +68,17 @@ namespace WorldActionSystem
             {
                 EditorGUILayout.PropertyField(lineWightProp);
                 EditorGUILayout.PropertyField(lineMaterialProp);
-                EditorGUILayout.PropertyField(hitDistenceProp);
                 EditorGUILayout.PropertyField(pointDistenceProp);
             }
             if (drawHitDistence)
             {
+                EditorGUILayout.PropertyField(hitDistenceProp);
                 EditorGUILayout.PropertyField(pointDistenceProp);
+            }
+
+            if(drawElementDistence)
+            {
+                EditorGUILayout.PropertyField(elementDistenceProp);
             }
 
         }
@@ -78,6 +86,7 @@ namespace WorldActionSystem
         {
             drawLineInfo = false;
             drawHitDistence = false;
+            drawElementDistence = false;
             activeCommands.Clear();
             var type = (ControllerType)commandTypeProp.intValue;
             if ((type & ControllerType.Click) == ControllerType.Click)
@@ -93,11 +102,13 @@ namespace WorldActionSystem
             }
             if ((type & ControllerType.Install) == ControllerType.Install)
             {
+                drawElementDistence = true;
                 drawHitDistence = true;
                 activeCommands.Add(ControllerType.Install);
             }
             if ((type & ControllerType.Match) == ControllerType.Match)
             {
+                drawElementDistence = true;
                 drawHitDistence = true;
                 activeCommands.Add(ControllerType.Match);
             }

@@ -75,11 +75,11 @@ namespace WorldActionSystem
             index++;
             if (index < commandList.Count)
             {
-                Debug.Log("Execute:" + index + "->continue StartExecute");
+                //Debug.Log("Execute:" + index + "->continue StartExecute");
                 commandList[index].StartExecute(forceAuto);
                 return true;
             }
-            Debug.Log("Execute:" + index + "->EndExecute");
+            //Debug.Log("Execute:" + index + "->EndExecute");
             return false;
         }
 

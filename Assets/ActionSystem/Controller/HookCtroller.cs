@@ -108,7 +108,7 @@ namespace WorldActionSystem
                     foreach (ActionHook item in neetActive)
                     {
                         item.onEndExecute = OnCommandObjComplete;
-                        Debug.Log("On Execute " + item.name + "of " + id);
+                        //Debug.Log("On Execute " + item.name + "of " + id);
                         item.OnStartExecute(isForceAuto);
                     }
                 }

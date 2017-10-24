@@ -18,7 +18,7 @@ namespace WorldActionSystem
         internal static int installTime = 4;
         internal static bool highLightOpen = true;
         internal static bool highLightNotice = true;
-        internal static bool usedetailcamera = true;//使用专用相机
+        internal static bool useOperateCamera = true;//使用专用相机
     }
 }
 

@@ -39,6 +39,8 @@ namespace WorldActionSystem
         [HideInInspector]
         public float hitDistence = 10;
         [HideInInspector]
+        public float elementDistence = 4;
+        [HideInInspector]
         public float pointDistence = 0.1f;
         #endregion
 
@@ -161,10 +163,10 @@ namespace WorldActionSystem
             {
                 started = true;
                 onBeforeActive.Invoke(StepName);
-
-                CameraController.SetViewCamera(() => {
+                CameraController.SetViewCamera(() =>
+                {
                     coroutineCtrl.OnStartExecute(forceAuto);
-                }, _cameraID);
+                }, (Setting.useOperateCamera || commandType == 0) ? _cameraID : null);
 
                 return true;
             }
@@ -179,7 +181,7 @@ namespace WorldActionSystem
         /// </summary>
         public virtual bool EndExecute()
         {
-            Debug.Log("EndExecute", gameObject);
+            //Debug.Log("EndExecute", gameObject);
 
             if (!completed)
             {

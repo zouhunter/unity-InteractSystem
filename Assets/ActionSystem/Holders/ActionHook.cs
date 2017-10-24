@@ -32,7 +32,7 @@ namespace WorldActionSystem
 
         public virtual void OnStartExecute(bool auto = false)
         {
-            Debug.Log("onStart Execute Hook :" + name,gameObject);
+            //Debug.Log("onStart Execute Hook :" + name,gameObject);
             this.auto = auto;
             if (!_started)
             {

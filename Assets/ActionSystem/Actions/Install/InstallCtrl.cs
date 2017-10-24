@@ -20,13 +20,16 @@ namespace WorldActionSystem
         private RaycastHit[] hits;
         private bool installAble;
         private string resonwhy;
-        private float distence;
+        private float hitDistence;
         private List<InstallObj> installObjs = new List<InstallObj>();
-
-        public InstallCtrl(float distence, InstallObj[] installObjs)
+        private float elementDistence;
+        private Camera viewCamera;
+        public InstallCtrl(Camera viewCamera,float hitDistence,float elementDistence, InstallObj[] installObjs)
         {
             highLight = new ShaderHighLight();
-            this.distence = distence;
+            this.hitDistence = hitDistence;
+            this.viewCamera = viewCamera;
+            this.elementDistence = elementDistence;
             this.installObjs.AddRange(installObjs);
         }
 
@@ -40,7 +43,7 @@ namespace WorldActionSystem
             else if (pickedUp)
             {
                 UpdateInstallState();
-                MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
+                MoveWithMouse(elementDistence += Input.GetAxis("Mouse ScrollWheel"));
             }
         }
 
@@ -61,14 +64,15 @@ namespace WorldActionSystem
         /// </summary>
         void SelectAnElement()
         {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100, (1 << Setting.pickUpElementLayer)))
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
                 if (pickedUpObj != null && !pickedUpObj.Installed)
                 {
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
+                    elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
                     if (!PickUpedCanInstall())
                     {
                         if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
@@ -98,8 +102,8 @@ namespace WorldActionSystem
 
         public void UpdateInstallState()
         {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, 100, (1 << Setting.installPosLayer));
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
+            hits = Physics.RaycastAll(ray, hitDistence, (1 << Setting.installPosLayer));
             if (hits != null || hits.Length > 0)
             {
                 bool hited = false;
@@ -158,7 +162,7 @@ namespace WorldActionSystem
         /// </summary>
         void TryInstallObject()
         {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (installAble)
             {
                 var status = installPos.Attach(pickedUpObj);
@@ -187,14 +191,14 @@ namespace WorldActionSystem
         /// </summary>
         void MoveWithMouse(float dis)
         {
-            disRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(disRay, out disHit, dis, 1 << Setting.obstacleLayer))
             {
                 pickedUpObj.transform.position = disHit.point;
             }
             else
             {
-                pickedUpObj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
+                pickedUpObj.transform.position = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
             }
         }
 

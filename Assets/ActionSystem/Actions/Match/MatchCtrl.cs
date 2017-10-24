@@ -21,12 +21,16 @@ namespace WorldActionSystem
         private RaycastHit disHit;
         private bool matchAble;
         private string resonwhy;
-        private float distence;
+        private float hitDistence;
+        private float pickDistence;
         private List<MatchObj> matchObjs;
-        public MatchCtrl(float distence, MatchObj[] matchObjs)
+        private Camera viewCamera;
+        public MatchCtrl(Camera viewCamera, float hitDistence, float pickDistence, MatchObj[] matchObjs)
         {
             highLight = new ShaderHighLight();
-            this.distence = distence;
+            this.viewCamera = viewCamera;
+            this.hitDistence = hitDistence;
+            this.pickDistence = pickDistence;
             this.matchObjs = new List<MatchObj>(matchObjs);
         }
 
@@ -40,7 +44,7 @@ namespace WorldActionSystem
             else if (pickedUp)
             {
                 UpdateMatchState();
-                MoveWithMouse(distence += Input.GetAxis("Mouse ScrollWheel"));
+                MoveWithMouse(pickDistence += Input.GetAxis("Mouse ScrollWheel"));
             }
 
         }
@@ -65,18 +69,20 @@ namespace WorldActionSystem
         /// </summary>
         private void SelectAnElement()
         {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100, (1 << Setting.pickUpElementLayer)))
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
                 if (pickedUpObj != null && !pickedUpObj.Installed)
                 {
-                    pickedUp = true;
                     pickedUpObj.OnPickUp();
+                    pickedUp = true;
+                    pickDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
 
                     if (!PickUpedIsMatch())
                     {
                         if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
+
                     }
                     else
                     {
@@ -109,8 +115,8 @@ namespace WorldActionSystem
         /// </summary>
         public void UpdateMatchState()
         {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, 100, (1 << Setting.matchPosLayer));
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
+            hits = Physics.RaycastAll(ray, hitDistence, (1 << Setting.matchPosLayer));
             if (hits != null || hits.Length > 0)
             {
                 bool hited = false;
@@ -170,7 +176,7 @@ namespace WorldActionSystem
         private void TryMatchObject()
         {
             if (highLight != null) highLight.UnHighLightTarget(pickedUpObj.Render);
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (matchAble)
             {
                 matchPos.Attach(pickedUpObj);
@@ -192,14 +198,14 @@ namespace WorldActionSystem
         /// </summary>
         void MoveWithMouse(float dis)
         {
-            disRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(disRay, out disHit, dis, 1 << Setting.obstacleLayer))
             {
                 pickedUpObj.transform.position = disHit.point;
             }
             else
             {
-                pickedUpObj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
+                pickedUpObj.transform.position = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
             }
         }
 

@@ -7,30 +7,46 @@ using System;
 
 namespace WorldActionSystem
 {
-    internal class CameraController:MonoBehaviour
+    internal class CameraController : MonoBehaviour
     {
         private static List<CameraNode> cameraNodes = new List<CameraNode>();
         public static Camera viewCamera { get; set; }
-        private static Camera mainCamera { get;set;}
+        private static Camera mainCamera { get; set; }
         private static CameraNode currentNode;
         private static Camera activeCamera { get; set; }
         private static Transform viewCameraParent;
         private static Coroutine coroutine;
         public static CameraController Instence { get; private set; }
         private static UnityAction onComplete;
+        private static ViewCamera _cameraView;
+        private static ViewCamera cameraView
+        {
+            get
+            {
+                if (_cameraView == null)
+                {
+                    _cameraView = viewCamera.GetComponent<ViewCamera>();
+                }
+                return _cameraView;
+            }
+        }
         public void Awake()
         {
             Instence = this;
             viewCameraParent = transform;
-            if (viewCamera == null) {
+            if (viewCamera == null)
+            {
                 viewCamera = GetComponentInChildren<Camera>(true);
             }
             mainCamera = Camera.main;
-            if(mainCamera != null)
+            if (mainCamera != null)
             {
-                SetTransform(viewCamera.transform, mainCamera.transform);
+                SetTransform(mainCamera.transform);
             }
-            else { Debug.LogError("场景没有主摄像机"); }
+            else
+            {
+                Debug.LogError("场景没有主摄像机");
+            }
             viewCamera.gameObject.SetActive(mainCamera == null);
         }
         public static void RegistNode(CameraNode node)
@@ -40,47 +56,40 @@ namespace WorldActionSystem
                 cameraNodes.Add(node);
             }
         }
-        public static void SetViewCamera(UnityAction onComplete,string id = null)
+        public static void SetViewCamera(UnityAction onComplete, string id = null)
         {
-            if(Setting.usedetailcamera)
+            StopCoroutine();
+            CameraController.onComplete = onComplete;
+            var node = cameraNodes.Find(x => x != null && x.ID == id);
+            if (node != currentNode || node == null)
             {
-                StopCoroutine();
-                CameraController.onComplete = onComplete;
-                var node = cameraNodes.Find(x => x != null && x.ID == id);
-                if (node != currentNode)
+                if (node == null)//移动到主摄像机
                 {
-                    if (node == null)//移动到主摄像机
-                    {
-                        coroutine = Instence.StartCoroutine(MoveCameraToMainCamera());
-                    }
-                    else //移动到新坐标
-                    {
-                        coroutine = Instence.StartCoroutine(MoveCameraToNode(node));
-                    }
-                    currentNode = node;
+                    coroutine = Instence.StartCoroutine(MoveCameraToMainCamera());
                 }
-                else
+                else //移动到新坐标
                 {
-                    OnStepComplete();
+                    coroutine = Instence.StartCoroutine(MoveCameraToNode(node));
                 }
+                currentNode = node;
             }
             else
             {
-                if(onComplete != null) onComplete.Invoke();
+                OnStepComplete();
             }
         }
 
         internal static Camera GetViewCamera(string cameraID)
         {
-            if(!Setting.usedetailcamera)
+            if (!Setting.useOperateCamera)
             {
                 return mainCamera;
             }
-            else if(string.IsNullOrEmpty(cameraID))
+            else if (string.IsNullOrEmpty(cameraID))
             {
                 return mainCamera;
             }
-            else if (cameraNodes.Find(x=>x.ID == cameraID))
+            else if (cameraNodes.Find(x => x.ID == cameraID))
             {
                 return viewCamera;
             }
@@ -92,7 +101,7 @@ namespace WorldActionSystem
 
         static IEnumerator MoveCameraToMainCamera()
         {
-            if(mainCamera != null)
+            if (mainCamera != null)
             {
                 var startPos = viewCamera.transform.position;
                 var startRot = viewCamera.transform.rotation;
@@ -102,7 +111,8 @@ namespace WorldActionSystem
                     viewCamera.transform.rotation = Quaternion.Lerp(startRot, mainCamera.transform.rotation, i);
                     yield return null;
                 }
-                SetTransform(viewCamera.transform, mainCamera.transform);
+
+                SetTransform(mainCamera.transform);
 
                 viewCamera.gameObject.SetActive(false);
                 mainCamera.gameObject.SetActive(true);
@@ -112,32 +122,43 @@ namespace WorldActionSystem
         }
         static IEnumerator MoveCameraToNode(CameraNode target)
         {
-            if(mainCamera != null)
+            if (mainCamera != null)
             {
                 viewCamera.gameObject.SetActive(true);
                 mainCamera.gameObject.SetActive(false);
             }
+            cameraView.enabled = false;
 
             var startPos = viewCamera.transform.position;
             var startRot = viewCamera.transform.rotation;
-            for (float i = 0; i < target.LerpTime; i +=Time.deltaTime)
+            for (float i = 0; i < target.LerpTime; i += Time.deltaTime)
             {
                 viewCamera.transform.position = Vector3.Lerp(startPos, target.transform.position, i);
                 viewCamera.transform.rotation = Quaternion.Lerp(startRot, target.transform.rotation, i);
                 yield return null;
             }
-            SetTransform(viewCamera.transform, target.transform);
+
             viewCamera.transform.SetParent(target.transform);
+            SetCameraInfo(target);
             OnStepComplete();
         }
-        private static void SetTransform(Transform obj,Transform target)
+        private static void SetTransform(Transform target)
         {
-            obj.position = target.position;
-            obj.rotation = target.rotation;
+            cameraView.SetSelf(target.transform.position, target.transform.rotation);
+        }
+        private static void SetCameraInfo(CameraNode target)
+        {
+            if (target.MoveAble)
+            {
+                cameraView.enabled = true;
+                cameraView.distence = target.Distence;
+                cameraView.SetSelf(target.transform.position, target.Rotation);
+            }
+            cameraView.targetView = target.CameraField;
         }
         private static void StopCoroutine()
         {
-            if(coroutine != null)
+            if (coroutine != null)
             {
                 Instence.StopCoroutine(coroutine);
                 coroutine = null;
@@ -152,7 +173,7 @@ namespace WorldActionSystem
         {
             if (onComplete != null)
             {
-                Debug.Log("Camera CallBack " + DateTime.Now.ToString("mm:ss"));
+                //Debug.Log("Camera CallBack " + DateTime.Now.ToString("mm:ss"));
                 onComplete.Invoke();
                 onComplete = null;
             }

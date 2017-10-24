@@ -15,14 +15,16 @@ public class ActionObjBinding : MonoBehaviour {
         actionObj.onBeforeComplete.AddListener(OnBeforeComplete);
         actionObj.onBeforeUnDo.AddListener(OnBeforeUnDo);
     }
-    protected virtual void OnBeforeActive()
+    private void OnDestroy()
     {
+        if (actionObj)
+        {
+            actionObj.onBeforeStart.RemoveListener(OnBeforeActive);
+            actionObj.onBeforeComplete.RemoveListener(OnBeforeComplete);
+            actionObj.onBeforeUnDo.RemoveListener(OnBeforeUnDo);
+        }
     }
-    protected virtual void OnBeforeComplete()
-    {
-    }
-    protected virtual void OnBeforeUnDo()
-    {
-
-    }
+    protected virtual void OnBeforeActive() { }
+    protected virtual void OnBeforeComplete() { }
+    protected virtual void OnBeforeUnDo() { }
 }

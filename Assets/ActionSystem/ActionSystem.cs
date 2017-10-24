@@ -238,6 +238,7 @@ namespace WorldActionSystem
         private void OnDestroy()
         {
             ElementController.Clean();
+            EventController.Clean();
         }
     }
 

@@ -45,14 +45,14 @@ namespace WorldActionSystem
             if ((commandType & ControllerType.Match) == ControllerType.Match)
             {
                 var matchObjs = Array.ConvertAll<IActionObj, MatchObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
-                var matchCtrl = new MatchCtrl(trigger.hitDistence, matchObjs);
+                var matchCtrl = new MatchCtrl(viewCamera, trigger.hitDistence,trigger.elementDistence, matchObjs);
                 matchCtrl.UserError = trigger.UserError;
                 commandList.Add(matchCtrl);
             }
             if ((commandType & ControllerType.Install) == ControllerType.Install)
             {
                 var installObjs = Array.ConvertAll<IActionObj, InstallObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
-                var installCtrl = new InstallCtrl(trigger.hitDistence, installObjs);
+                var installCtrl = new InstallCtrl(viewCamera, trigger.hitDistence, trigger.elementDistence, installObjs);
                 installCtrl.UserError = trigger.UserError;
                 commandList.Add(installCtrl);
             }

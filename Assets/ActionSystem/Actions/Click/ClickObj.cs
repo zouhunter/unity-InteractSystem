@@ -10,7 +10,13 @@ namespace WorldActionSystem
     {
         public float autoCompleteTime = 2;
         private Coroutine waitCoroutine;
-        public GameObject ViewObj { get { return viewObj; } }
+        [HideInInspector]
+        public UnityEvent onMouseDown;
+        [HideInInspector]
+        public UnityEvent onMouseEnter;
+        [HideInInspector]
+        public UnityEvent onMouseExit;
+
         protected override void Start()
         {
             base.Start();
@@ -48,6 +54,19 @@ namespace WorldActionSystem
                 StopCoroutine(waitCoroutine);
                 waitCoroutine = null;
             }
+        }
+        
+        public void OnMouseDown()
+        {
+            onMouseDown.Invoke();
+        }
+        public void OnMouseEnter()
+        {
+            onMouseEnter.Invoke();
+        }
+        public void OnMouseExit()
+        {
+            onMouseExit.Invoke();
         }
     }
 
