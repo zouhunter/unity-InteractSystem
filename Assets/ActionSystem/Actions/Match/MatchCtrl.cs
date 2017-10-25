@@ -275,6 +275,7 @@ namespace WorldActionSystem
                     for (int j = 0; j < listObjs.Count; j++)
                     {
                         listObjs[j].QuickMoveBack();
+                        listObjs[j].StepComplete();
                     }
                 }
             }
