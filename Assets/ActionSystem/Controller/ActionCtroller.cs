@@ -160,6 +160,7 @@ namespace WorldActionSystem
                 var id = queueID[0];
                 queueID.RemoveAt(0);
                 var neetActive = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Started);
+                if (neetActive.Length == 0) return false;
                 if (isForceAuto)
                 {
                     hookList.Clear();
@@ -179,11 +180,15 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    foreach (var item in neetActive)
+                    CameraController.SetViewCamera(() =>
                     {
-                        var obj = item;
-                        TryStartAction(obj);
-                    }
+                        foreach (var item in neetActive)
+                        {
+                            var obj = item;
+                            TryStartAction(obj);
+                        }
+                    }, GetCameraID(neetActive[neetActive.Length - 1]));
+                    
                 }
                 return true;
             }
@@ -195,7 +200,10 @@ namespace WorldActionSystem
             if(actionQueue.Count > 0)
             {
                 var actionObj = actionQueue.Dequeue();
-                TryStartAction(actionObj);
+                CameraController.SetViewCamera(() =>
+                {
+                    TryStartAction(actionObj);
+                },GetCameraID(actionObj));
             }
             ///最后执行hook
             if (actionQueue.Count == 0)
@@ -208,15 +216,11 @@ namespace WorldActionSystem
         }
         private void TryStartAction(IActionObj obj)
         {
-            //Debug.Log("TryStartAction:" + obj);
-            CameraController.SetViewCamera(() =>
+            if (!obj.Started)
             {
-                if (!obj.Started)
-                {
-                    obj.onEndExecute = OnCommandObjComplete;
-                    obj.OnStartExecute(isForceAuto);
-                }
-            }, GetCameraID(obj));
+                obj.onEndExecute = OnCommandObjComplete;
+                obj.OnStartExecute(isForceAuto);
+            }
         }
 
         private string GetCameraID(IActionObj obj)

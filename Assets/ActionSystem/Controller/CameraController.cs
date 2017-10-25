@@ -149,7 +149,6 @@ namespace WorldActionSystem
                 viewCamera.transform.rotation = Quaternion.Lerp(startRot, target.transform.rotation, i);
                 yield return null;
             }
-            Projects.Log("SetCameraInfo:" + target.name);
 
             viewCamera.transform.SetParent(target.transform);
             SetCameraInfo(target);
@@ -185,7 +184,6 @@ namespace WorldActionSystem
         {
             if (onComplete != null)
             {
-                Projects.Log("Camera CallBack ");
                 onComplete.Invoke();
                 onComplete = null;
                 lastCoroutine = null;
