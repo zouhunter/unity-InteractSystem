@@ -12,7 +12,6 @@ namespace WorldActionSystem
     public class ShaderHighLight : IHighLightItems
     {
 #if !NoFunction
-        private bool isOn { get { return Setting.highLightOpen; } }
         private float freq = 1;
         public Dictionary<GameObject, Highlighter> highlightDic = new Dictionary<GameObject, Highlighter>();
 #endif
@@ -20,7 +19,6 @@ namespace WorldActionSystem
         {
             if (go == null) return;
 #if !NoFunction
-            if (!isOn) return;
             Highlighter highlighter;
             if (!highlightDic.ContainsKey(go.gameObject))
             {
@@ -40,7 +38,6 @@ namespace WorldActionSystem
         {
             if (go == null) return;
 #if !NoFunction
-            if (!isOn) return;
             Highlighter highlighter;
             if (!highlightDic.ContainsKey(go))
             {

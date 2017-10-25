@@ -239,6 +239,7 @@ namespace WorldActionSystem
         {
             ElementController.Clean();
             EventController.Clean();
+            Setting.ResetDefult();
         }
     }
 

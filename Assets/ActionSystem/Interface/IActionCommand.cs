@@ -11,6 +11,8 @@ namespace WorldActionSystem
     public interface IActionCommand
     {
         string StepName { get; }
+        bool Startd { get; }
+        bool Completed { get; }
         bool StartExecute(bool forceAuto);
         bool EndExecute();
         void OnEndExecute();

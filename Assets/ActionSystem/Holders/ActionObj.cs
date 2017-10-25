@@ -16,7 +16,6 @@ namespace WorldActionSystem
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
-
         protected bool auto;
         [SerializeField, Range(0, 10)]
         private int queueID;
@@ -27,7 +26,9 @@ namespace WorldActionSystem
                 return queueID;
             }
         }
-
+        [SerializeField]
+        private string _cameraID = CameraController.defultID;
+        public string CameraID { get { return _cameraID; } }
         public UnityAction<int> onEndExecute { get; set; }
         public UnityEvent onBeforeStart;
         public UnityEvent onBeforeUnDo;
@@ -47,12 +48,24 @@ namespace WorldActionSystem
             }
             gameObject.SetActive(startActive);
 
+            WorpCameraID();
+        }
+        private void WorpCameraID()
+        {
+            if (string.IsNullOrEmpty(_cameraID))
+            {
+                var node = GetComponentInChildren<CameraNode>();
+                if (node != null)
+                {
+                    _cameraID = node.name;
+                }
+            }
         }
         protected virtual void Update()
         {
             if (Started && Complete) return;
 
-            if (!Setting.highLightNotice) return;
+            if (!Setting.angleNotice || this is AnimObj) return;
 
             if (Started && !Complete)
             {

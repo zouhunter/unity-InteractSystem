@@ -11,6 +11,7 @@ namespace WorldActionSystem
         int QueueID { get; }
         bool Complete { get; }
         bool Started { get; }
+        string CameraID { get; }
 
         UnityAction<int> onEndExecute { get; set; }
 

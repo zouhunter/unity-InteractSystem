@@ -19,12 +19,11 @@ namespace WorldActionSystem
         private LineRenderer line;
         private float pointDistence;
         private float hitDistence;
-        private Camera objCamera { get; set; }
+        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
-        public ConnectCtrl(Camera viewCamera,LineRenderer lineRender, ConnectObj[] objs, Material lineMaterial, float lineWight, float hitDistence, float pointDistence)
+        public ConnectCtrl(LineRenderer lineRender, ConnectObj[] objs, Material lineMaterial, float lineWight, float hitDistence, float pointDistence)
         {
             this.objs = objs;
-            this.objCamera = viewCamera;
             this.hitDistence = hitDistence;
             this.pointDistence = pointDistence;
             this.line = lineRender;
@@ -73,7 +72,7 @@ namespace WorldActionSystem
 
         private bool TryHitNode(out Collider collider)
         {
-            ray = objCamera.ScreenPointToRay(Input.mousePosition);
+            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, hitDistence, 1 << Setting.connectItemLayer))
             {
                 if (onHoverItem != null) onHoverItem(hit.collider);
@@ -96,7 +95,7 @@ namespace WorldActionSystem
             }
             else
             {
-                ray = objCamera.ScreenPointToRay(Input.mousePosition);
+                ray = viewCamera.ScreenPointToRay(Input.mousePosition);
                 Vector3 hitPosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, firstCollider.transform.position, ray.direction);
                 if (positons.Count > 0)
                 {

@@ -14,6 +14,8 @@ namespace WorldActionSystem
         protected bool isForceAuto;
         private ControllerType commandType { get { return trigger.commandType; } }
         private List<IActionCtroller> commandList = new List<IActionCtroller>();
+        private Queue<ActionObj> actionQueue = new Queue<ActionObj>();
+        private List<ActionHook> hookList = new List<ActionHook>();
         protected Coroutine coroutine;
         public ActionCtroller(ActionCommand trigger)
         {
@@ -24,12 +26,9 @@ namespace WorldActionSystem
         }
         private void InitController()
         {
-            var viewCamera = CameraController.GetViewCamera(trigger.CameraID); 
-           
-            Debug.Assert(viewCamera);
             if ((commandType & ControllerType.Click) == ControllerType.Click)
             {
-                var clickCtrl = new ClickContrller(viewCamera);
+                var clickCtrl = new ClickContrller();
                 clickCtrl.UserError = trigger.UserError;
                 commandList.Add(clickCtrl);
             }
@@ -38,27 +37,27 @@ namespace WorldActionSystem
                 var lineRender = trigger.GetComponent<LineRenderer>();
                 if (lineRender == null) lineRender = trigger.gameObject.AddComponent<LineRenderer>();
                 var objs = Array.ConvertAll<IActionObj, ConnectObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
-                var connectCtrl = new ConnectCtrl(viewCamera, lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
+                var connectCtrl = new ConnectCtrl(lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
                 connectCtrl.onError = trigger.UserError;
                 commandList.Add(connectCtrl);
             }
             if ((commandType & ControllerType.Match) == ControllerType.Match)
             {
                 var matchObjs = Array.ConvertAll<IActionObj, MatchObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
-                var matchCtrl = new MatchCtrl(viewCamera, trigger.hitDistence,trigger.elementDistence, matchObjs);
+                var matchCtrl = new MatchCtrl(trigger.hitDistence, trigger.elementDistence, matchObjs);
                 matchCtrl.UserError = trigger.UserError;
                 commandList.Add(matchCtrl);
             }
             if ((commandType & ControllerType.Install) == ControllerType.Install)
             {
                 var installObjs = Array.ConvertAll<IActionObj, InstallObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
-                var installCtrl = new InstallCtrl(viewCamera, trigger.hitDistence, trigger.elementDistence, installObjs);
+                var installCtrl = new InstallCtrl(trigger.hitDistence, trigger.elementDistence, installObjs);
                 installCtrl.UserError = trigger.UserError;
                 commandList.Add(installCtrl);
             }
             if ((commandType & ControllerType.Rotate) == ControllerType.Rotate)
             {
-                var rotAnimCtrl = new RotateAnimController(viewCamera,trigger.hitDistence);
+                var rotAnimCtrl = new RotateAnimController(trigger.hitDistence);
                 rotAnimCtrl.UserError = trigger.UserError;
                 commandList.Add(rotAnimCtrl);
             }
@@ -67,7 +66,7 @@ namespace WorldActionSystem
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            ExecuteAStep(isForceAuto);
+            ExecuteAStep();
             if (coroutine == null)
             {
                 coroutine = trigger.StartCoroutine(Update());
@@ -79,6 +78,8 @@ namespace WorldActionSystem
         }
         private void ChargeQueueIDs()
         {
+            actionQueue.Clear();
+            hookList.Clear();
             queueID.Clear();
             foreach (var item in actionObjs)
             {
@@ -103,7 +104,7 @@ namespace WorldActionSystem
                     item.OnEndExecute();
                 }
             }
-          
+
             StopUpdateAction();
         }
 
@@ -141,32 +142,112 @@ namespace WorldActionSystem
             var notComplete = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Complete);
             if (notComplete.Length == 0)
             {
-                if (!ExecuteAStep(isForceAuto))
+                if (!ExecuteAStep())
                 {
-                    trigger.Complete();
+                    if (!trigger.Completed) trigger.Complete();
                 }
+            }
+            else if(actionQueue.Count > 0)//正在循环执行
+            {
+                QueueExectueActions();
             }
         }
 
-        protected bool ExecuteAStep(bool auto)
+        protected bool ExecuteAStep()
         {
             if (queueID.Count > 0)
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id);
-                if (neetActive.Length > 0)
+                var neetActive = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Started);
+                if (isForceAuto)
+                {
+                    hookList.Clear();
+                    actionQueue.Clear();
+                    foreach (var item in neetActive)
+                    {
+                        if(item is ActionObj)
+                        {
+                            actionQueue.Enqueue(item as ActionObj);
+                        }
+                        else /*if(item is ActionHook)*/
+                        {
+                            hookList.Add(item as ActionHook);
+                        }
+                    }
+                    QueueExectueActions();
+                }
+                else
                 {
                     foreach (var item in neetActive)
                     {
-                        item.onEndExecute = OnCommandObjComplete;
-                        item.OnStartExecute(isForceAuto);
+                        var obj = item;
+                        TryStartAction(obj);
                     }
                 }
-
                 return true;
             }
             return false;
+        }
+
+        protected void QueueExectueActions()
+        {
+            if(actionQueue.Count > 0)
+            {
+                var actionObj = actionQueue.Dequeue();
+                TryStartAction(actionObj);
+            }
+            ///最后执行hook
+            if (actionQueue.Count == 0)
+            {
+                foreach (var item in hookList)
+                {
+                    TryStartAction(item);
+                }
+            }
+        }
+        private void TryStartAction(IActionObj obj)
+        {
+            //Debug.Log("TryStartAction:" + obj);
+            CameraController.SetViewCamera(() =>
+            {
+                if (!obj.Started)
+                {
+                    obj.onEndExecute = OnCommandObjComplete;
+                    obj.OnStartExecute(isForceAuto);
+                }
+            }, GetCameraID(obj));
+        }
+
+        private string GetCameraID(IActionObj obj)
+        {
+            //不需要改变相机状态的钩子
+            if (obj is ActionHook)
+            {
+                return null;
+            }
+            //忽略匹配相机
+            else if (Setting.ignoreMatch && obj is MatchObj)
+            {
+                return null;
+            }
+            //除要求使用特殊相机或是动画步骤,都用主摄像机
+            else if (Setting.useOperateCamera || commandType == 0)
+            {
+                if (string.IsNullOrEmpty(obj.CameraID))
+                {
+                    return trigger.CameraID;
+                }
+                else
+                {
+                    return obj.CameraID;
+                }
+            }
+            //默认是主相机
+            else
+            {
+                return CameraController.defultID;
+            }
         }
 
         private void ForEachAction(UnityEngine.Events.UnityAction<IActionCtroller> OnRetive)

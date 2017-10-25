@@ -14,10 +14,10 @@ namespace WorldActionSystem
         private RaycastHit hit;
         private Ray ray;
         private float distence = 10;
-        private Camera viewCamera;
-        public RotateAnimController(Camera viewCamera, float distence)
+        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
+
+        public RotateAnimController(float distence)
         {
-            this.viewCamera = viewCamera;
             this.distence = distence;
         }
 

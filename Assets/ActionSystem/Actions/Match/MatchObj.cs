@@ -33,8 +33,17 @@ namespace WorldActionSystem
             if (auto || autoMatch)//查找安装点并安装后结束
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+
                 Attach(obj);
-                obj.NormalMoveTo(gameObject);
+
+                if (Setting.ignoreMatch)
+                {
+                    obj.QuickMoveTo(gameObject);
+                }
+                else
+                {
+                    obj.NormalMoveTo(gameObject);
+                }
             }
         }
         public override void OnEndExecute()
@@ -44,16 +53,13 @@ namespace WorldActionSystem
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
                 Attach(obj);
-                obj.QuickMoveTo(gameObject);
             }
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            if (Matched)
-            {
-                var obj = Detach();
-                obj.QuickMoveBack();
+            if (Matched){
+                Detach();
             }
         }
         private void OnInstallComplete(PickUpAbleElement obj)

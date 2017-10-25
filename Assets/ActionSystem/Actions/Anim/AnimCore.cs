@@ -16,7 +16,7 @@ namespace WorldActionSystem
         private Coroutine coroutine;
         private void Awake()
         {
-            if (anim == null) anim = GetComponent<Animation>();
+            if (anim == null) anim = GetComponentInChildren<Animation>();
             if (string.IsNullOrEmpty(animName)) animName = anim.clip.name;
         }
         void Init(UnityAction onAutoPlayEnd)

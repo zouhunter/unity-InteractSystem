@@ -14,7 +14,7 @@ namespace WorldActionSystem
         protected bool _started;
         public bool Started { get { return _started; } }
         protected bool auto;
-        [SerializeField,Range(0,10)]
+        [SerializeField, Range(0, 10)]
         private int queueID;
         public int QueueID
         {
@@ -23,10 +23,11 @@ namespace WorldActionSystem
                 return queueID;
             }
         }
+        public string CameraID { get { return null; } }
         protected bool autoComplete = true;
         protected float autoTime = 2;
         Coroutine coroutine;
-        
+
 
         public UnityAction<int> onEndExecute { get; set; }
 
@@ -58,11 +59,14 @@ namespace WorldActionSystem
             {
                 _started = true;
                 _complete = true;
-                if (onEndExecute != null) {
+                if (onEndExecute != null)
+                {
                     onEndExecute.Invoke(queueID);
                 }
-                if (autoComplete && coroutine != null){
+                if (autoComplete && coroutine != null)
+                {
                     StopCoroutine(coroutine);
+                    coroutine = null;
                 }
             }
             else
@@ -76,8 +80,10 @@ namespace WorldActionSystem
         {
             _started = false;
             _complete = false;
-            if (autoComplete && coroutine != null){
+            if (autoComplete && coroutine != null)
+            {
                 StopCoroutine(coroutine);
+                coroutine = null;
             }
         }
     }

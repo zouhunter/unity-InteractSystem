@@ -15,9 +15,7 @@ namespace WorldActionSystem
         private static CameraNode currentNode;
         private static Camera activeCamera { get; set; }
         private static Transform viewCameraParent;
-        private static Coroutine coroutine;
         public static CameraController Instence { get; private set; }
-        private static UnityAction onComplete;
         private static ViewCamera _cameraView;
         private static ViewCamera cameraView
         {
@@ -30,21 +28,37 @@ namespace WorldActionSystem
                 return _cameraView;
             }
         }
+        internal static Camera ActiveCamera
+        {
+            get
+            {
+                if (!Setting.useOperateCamera || viewCamera == null)
+                {
+                    return mainCamera;
+                }
+                else
+                {
+                    return viewCamera;
+                }
+            }
+
+        }
+        internal const string defultID = "defult";
+        private static Coroutine lastCoroutine;
+        private static UnityAction lastAction;
         public void Awake()
         {
             Instence = this;
+        }
+        private void Start()
+        {
             viewCameraParent = transform;
-            if (viewCamera == null)
-            {
+            if (viewCamera == null){
                 viewCamera = GetComponentInChildren<Camera>(true);
             }
+
             mainCamera = Camera.main;
-            if (mainCamera != null)
-            {
-                SetTransform(mainCamera.transform);
-            }
-            else
-            {
+            if (mainCamera == null){
                 Debug.LogError("场景没有主摄像机");
             }
             viewCamera.gameObject.SetActive(mainCamera == null);
@@ -58,48 +72,41 @@ namespace WorldActionSystem
         }
         public static void SetViewCamera(UnityAction onComplete, string id = null)
         {
-            StopCoroutine();
-            CameraController.onComplete = onComplete;
-            var node = cameraNodes.Find(x => x != null && x.ID == id);
-            if (node != currentNode || node == null)
+            if(lastAction != null)
             {
-                if (node == null)//移动到主摄像机
-                {
-                    coroutine = Instence.StartCoroutine(MoveCameraToMainCamera());
-                }
-                else //移动到新坐标
-                {
-                    coroutine = Instence.StartCoroutine(MoveCameraToNode(node));
-                }
-                currentNode = node;
+                StopLastCoroutine();
             }
+
+            if (id == null)
+            {
+                OnStepComplete(onComplete);
+            }
+
+            else if (id == defultID)
+            {
+                lastAction = onComplete;
+                lastCoroutine = Instence.StartCoroutine(MoveCameraToMainCamera(onComplete));
+            }
+
             else
             {
-                OnStepComplete();
+                var node = cameraNodes.Find(x => x != null && x.ID == id);
+                if(node == null || node == currentNode)
+                {
+                    OnStepComplete(onComplete);
+                }
+                else 
+                {
+                    currentNode = node;
+                    lastAction = onComplete;
+                    lastCoroutine = Instence.StartCoroutine(MoveCameraToNode(node, onComplete));
+                }
             }
         }
 
-        internal static Camera GetViewCamera(string cameraID)
-        {
-            if (!Setting.useOperateCamera)
-            {
-                return mainCamera;
-            }
-            else if (string.IsNullOrEmpty(cameraID))
-            {
-                return mainCamera;
-            }
-            else if (cameraNodes.Find(x => x.ID == cameraID))
-            {
-                return viewCamera;
-            }
-            else
-            {
-                return mainCamera;
-            }
-        }
+        
 
-        static IEnumerator MoveCameraToMainCamera()
+        static IEnumerator MoveCameraToMainCamera(UnityAction onComplete)
         {
             if (mainCamera != null)
             {
@@ -118,15 +125,20 @@ namespace WorldActionSystem
                 mainCamera.gameObject.SetActive(true);
                 viewCamera.transform.SetParent(viewCameraParent);
             }
-            OnStepComplete();//
+            OnStepComplete(onComplete);//
         }
-        static IEnumerator MoveCameraToNode(CameraNode target)
+        static IEnumerator MoveCameraToNode(CameraNode target,UnityAction onComplete)
         {
             if (mainCamera != null)
             {
-                viewCamera.gameObject.SetActive(true);
+                if (!viewCamera.gameObject.activeSelf){
+                    SetTransform(mainCamera.transform);
+                    viewCamera.gameObject.SetActive(true);
+                }
                 mainCamera.gameObject.SetActive(false);
             }
+
+            
             cameraView.enabled = false;
 
             var startPos = viewCamera.transform.position;
@@ -137,10 +149,11 @@ namespace WorldActionSystem
                 viewCamera.transform.rotation = Quaternion.Lerp(startRot, target.transform.rotation, i);
                 yield return null;
             }
+            Projects.Log("SetCameraInfo:" + target.name);
 
             viewCamera.transform.SetParent(target.transform);
             SetCameraInfo(target);
-            OnStepComplete();
+            OnStepComplete(onComplete);
         }
         private static void SetTransform(Transform target)
         {
@@ -156,26 +169,27 @@ namespace WorldActionSystem
             }
             cameraView.targetView = target.CameraField;
         }
-        private static void StopCoroutine()
+        public void OnDestroy()
         {
-            if (coroutine != null)
-            {
-                Instence.StopCoroutine(coroutine);
-                coroutine = null;
-            }
-        }
-        private void OnDestroy()
-        {
-            onComplete = null;
             cameraNodes.Clear();
         }
-        private static void OnStepComplete()
+        private static void StopLastCoroutine()
+        {
+            if(lastCoroutine != null)
+            {
+                Instence.StopCoroutine(lastCoroutine);
+                OnStepComplete(lastAction);
+            }
+        }
+        private static void OnStepComplete(UnityAction onComplete)
         {
             if (onComplete != null)
             {
-                //Debug.Log("Camera CallBack " + DateTime.Now.ToString("mm:ss"));
+                Projects.Log("Camera CallBack ");
                 onComplete.Invoke();
                 onComplete = null;
+                lastCoroutine = null;
+                lastAction = null;
             }
         }
     }

@@ -27,7 +27,6 @@ namespace WorldActionSystem
 
         public UnityEvent onPickUp;
         public UnityEvent OnLayDown;
-        public UnityEvent OnInstallEnd;
 
         public UnityEvent onStepActive;
         public UnityEvent onStepComplete;
@@ -44,7 +43,7 @@ namespace WorldActionSystem
         private int smooth = 50;
 #endif
         private IHighLightItems highLighter;
-
+        private bool actived;
 #if !NoFunction
         void Start()
         {
@@ -93,6 +92,7 @@ namespace WorldActionSystem
         /// <param name="target"></param>
         public void NormalInstall(GameObject target)
         {
+            StopTween();
 #if !NoFunction
             if (!Installed)
             {
@@ -109,6 +109,8 @@ namespace WorldActionSystem
         }
         public void NormalMoveTo(GameObject target)
         {
+            StopTween();
+
 #if !NoFunction
             DoPath(target.transform.position, target.transform.eulerAngles, () =>
             {
@@ -119,6 +121,8 @@ namespace WorldActionSystem
         }
         public void QuickMoveTo(GameObject target)
         {
+            StopTween();
+
             transform.position = target.transform.position;
             transform.rotation = target.transform.rotation;
 
@@ -132,7 +136,6 @@ namespace WorldActionSystem
         /// <param name="target"></param>
         public void QuickInstall(GameObject target)
         {
-            if (OnInstallEnd != null) OnInstallEnd.Invoke();
             StopTween();
             if (!Installed)
             {
@@ -147,6 +150,7 @@ namespace WorldActionSystem
 
         public void NormalUnInstall()
         {
+            StopTween();
 #if !NoFunction
             if (Installed)
             {
@@ -162,6 +166,7 @@ namespace WorldActionSystem
         }
         public void NormalMoveBack()
         {
+            StopTween();
 #if !NoFunction
             if (OnLayDown != null) OnLayDown.Invoke();
 
@@ -175,12 +180,16 @@ namespace WorldActionSystem
         }
         public void QuickMoveBack()
         {
+            StopTween();
+
             if (OnLayDown != null) OnLayDown.Invoke();
 
             transform.eulerAngles = startRotation;
             transform.position = startPos;
+
             if (onUnInstallOkEvent != null)
                 onUnInstallOkEvent();
+
             StepUnDo();
         }
 
@@ -203,8 +212,10 @@ namespace WorldActionSystem
 
         public void OnPickUp()
         {
-            if (onPickUp != null) onPickUp.Invoke();
             StopTween();
+
+            if (onPickUp != null)
+                onPickUp.Invoke();
         }
 
         /// <summary>
@@ -212,8 +223,7 @@ namespace WorldActionSystem
         /// </summary>
         public void StepActive()
         {
-            if (Setting.highLightNotice) highLighter.HighLightTarget(m_render, highLightColor);
-
+            actived = true;
             onStepActive.Invoke();
             gameObject.SetActive(true);
         }
@@ -222,8 +232,7 @@ namespace WorldActionSystem
         /// </summary>
         public void StepComplete()
         {
-            if (Setting.highLightNotice) highLighter.UnHighLightTarget(m_render);
-
+            actived = false;
             onStepComplete.Invoke();
             gameObject.SetActive(endActive);
         }
@@ -232,21 +241,27 @@ namespace WorldActionSystem
         /// </summary>
         public void StepUnDo()
         {
-            if (Setting.highLightNotice) highLighter.UnHighLightTarget(m_render);
+            actived = false;
             onStepUnDo.Invoke();
             gameObject.SetActive(startActive);
         }
-        public void OnPickDown()
+
+        private void Update()
         {
-#if !NoFunction
-            move = transform.DOMove(startPos, animTime).SetAutoKill(true);
-#endif
+            if (!Setting.highLightNotice) return;
+            if(actived)
+            {
+                highLighter.HighLightTarget(m_render, highLightColor);
+            }
+            else
+            {
+                highLighter.UnHighLightTarget(m_render);
+            }
         }
 
         private void StopTween()
         {
 #if !NoFunction
-
             move.Pause();
             move.Kill(true);
 #endif
@@ -256,6 +271,10 @@ namespace WorldActionSystem
         {
             if (renderer != null)
                 m_render = renderer;
+        }
+        void OnDestroy()
+        {
+            StopTween();
         }
     }
 

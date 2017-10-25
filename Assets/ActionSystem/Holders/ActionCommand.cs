@@ -10,20 +10,19 @@ namespace WorldActionSystem
     {
         [SerializeField]
         private string _stepName;
-        [SerializeField,Range(0, 10)]
+        [SerializeField, Range(0, 10)]
         private int _queueID;
         public int QueueID { get { return _queueID; } }
         [SerializeField]
-        private string _cameraID;
+        private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
         public string StepName { get { return _stepName; } }
+        public bool Startd { get { return started; } }
+        public bool Completed { get { return completed; } }
         private UserError userErr { get; set; }
         private StepComplete stepComplete { get; set; }
-        private CameraController cameraCtrl { get; set; }
-        private ElementController elementCtrl { get; set; }
         public IActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
-
         protected ActionCtroller coroutineCtrl;
 
         protected IActionObj[] actionObjs;
@@ -31,9 +30,9 @@ namespace WorldActionSystem
         public ControllerType commandType;
 
         #region 可选参数配制
-     
+
         [HideInInspector]
-        public float     lineWight = 0.1f;
+        public float lineWight = 0.1f;
         [HideInInspector]
         public Material lineMaterial;
         [HideInInspector]
@@ -58,6 +57,17 @@ namespace WorldActionSystem
             RegistActionObjs();
             WorpCameraID();
         }
+        private void WorpCameraID()
+        {
+            if (string.IsNullOrEmpty(_cameraID))
+            {
+                var node = GetComponentInChildren<CameraNode>();
+                if (node != null)
+                {
+                    _cameraID = node.name;
+                }
+            }
+        }
         private void RegistActionObjs()
         {
             ///只操作第一层活动的对象
@@ -78,18 +88,6 @@ namespace WorldActionSystem
             actionObjs = first.ToArray();
         }
 
-        private void WorpCameraID()
-        {
-            if (string.IsNullOrEmpty(_cameraID))
-            {
-                var node = GetComponentInChildren<CameraNode>();
-                if (node != null)
-                {
-                    _cameraID = node.name;
-                }
-            }
-        }
-
         public void RegistComplete(StepComplete stepComplete)
         {
             this.stepComplete = stepComplete;
@@ -98,8 +96,6 @@ namespace WorldActionSystem
         public void RegistAsOperate(UserError userErr)
         {
             this.userErr = userErr;
-            this.elementCtrl = elementCtrl;
-            this.cameraCtrl = cameraCtrl;
         }
         public int CompareTo(ActionCommand other)
         {
@@ -115,18 +111,6 @@ namespace WorldActionSystem
             {
                 return 1;
             }
-        }
-
-        internal ElementController ElementCtrl
-        {
-            get
-            {
-                return elementCtrl;
-            }
-        }
-        internal CameraController CameraCtrl
-        {
-            get { return cameraCtrl; }
         }
 
         internal void UserError(string err)
@@ -162,11 +146,10 @@ namespace WorldActionSystem
             if (!started)
             {
                 started = true;
+
                 onBeforeActive.Invoke(StepName);
-                CameraController.SetViewCamera(() =>
-                {
-                    coroutineCtrl.OnStartExecute(forceAuto);
-                }, (Setting.useOperateCamera || commandType == 0) ? _cameraID : null);
+
+                coroutineCtrl.OnStartExecute(forceAuto);
 
                 return true;
             }
@@ -212,7 +195,7 @@ namespace WorldActionSystem
             if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
         }
 
-     
+
     }
 }
 

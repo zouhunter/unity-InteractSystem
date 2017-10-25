@@ -24,11 +24,11 @@ namespace WorldActionSystem
         private float hitDistence;
         private float pickDistence;
         private List<MatchObj> matchObjs;
-        private Camera viewCamera;
-        public MatchCtrl(Camera viewCamera, float hitDistence, float pickDistence, MatchObj[] matchObjs)
+        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
+
+        public MatchCtrl(float hitDistence, float pickDistence, MatchObj[] matchObjs)
         {
             highLight = new ShaderHighLight();
-            this.viewCamera = viewCamera;
             this.hitDistence = hitDistence;
             this.pickDistence = pickDistence;
             this.matchObjs = new List<MatchObj>(matchObjs);
@@ -181,7 +181,6 @@ namespace WorldActionSystem
             {
                 matchPos.Attach(pickedUpObj);
                 pickedUpObj.QuickMoveTo(matchPos.gameObject);
-                matchPos.TryEndExecute();
             }
             else
             {

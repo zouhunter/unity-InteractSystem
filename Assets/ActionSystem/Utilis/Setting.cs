@@ -16,9 +16,18 @@ namespace WorldActionSystem
         internal const int connectItemLayer = 12;
         internal static int obstacleLayer = 13;
         internal static int installTime = 4;
-        internal static bool highLightOpen = true;
-        internal static bool highLightNotice = true;
+        internal static bool highLightNotice = true;//高亮提示
+        internal static bool angleNotice = true;//箭头提示
         internal static bool useOperateCamera = true;//使用专用相机
+        internal static bool ignoreMatch = false;//
+
+        internal static void ResetDefult()
+        {
+            highLightNotice = true;
+            useOperateCamera = true;
+            ignoreMatch = false;
+            angleNotice = true;
+        }
     }
 }
 

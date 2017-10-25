@@ -23,12 +23,11 @@ namespace WorldActionSystem
         private float hitDistence;
         private List<InstallObj> installObjs = new List<InstallObj>();
         private float elementDistence;
-        private Camera viewCamera;
-        public InstallCtrl(Camera viewCamera,float hitDistence,float elementDistence, InstallObj[] installObjs)
+        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
+        public InstallCtrl(float hitDistence,float elementDistence, InstallObj[] installObjs)
         {
             highLight = new ShaderHighLight();
             this.hitDistence = hitDistence;
-            this.viewCamera = viewCamera;
             this.elementDistence = elementDistence;
             this.installObjs.AddRange(installObjs);
         }
@@ -254,6 +253,7 @@ namespace WorldActionSystem
                 }
             }
         }
+
         /// <summary>
         /// 结束指定步骤
         /// </summary>

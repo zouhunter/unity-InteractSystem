@@ -15,17 +15,10 @@ namespace WorldActionSystem
         private ClickObj hitObj;
         private Vector3 screenPoint;
         private float distence = 10;
-        private Camera viewCamera;
-        //private IHighLightItems highLight;
+        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
         private GameObject lastSelected;
 
         public UnityAction<string> UserError { get; set; }
-
-        public ClickContrller(Camera viewCamera)
-        {
-            this. viewCamera = viewCamera;
-            //highLight = new ShaderHighLight();
-        }
 
         void OnBtnClicked(ClickObj obj)
         {
@@ -41,23 +34,18 @@ namespace WorldActionSystem
             {
                 obj.TryEndExecute();
             }
-            //highLight.UnHighLightTarget(obj.ViewObj);
         }
 
         void OnHoverBtn(ClickObj obj)
         {
             if (obj == null) return;
-            //if (lastSelected == obj.ViewObj) return;
             OnHoverNothing();
-            //highLight.HighLightTarget(obj.ViewObj, obj.Started && !obj.Complete ? Color.green : Color.red);
-            //lastSelected = obj.ViewObj;
         }
 
         void OnHoverNothing()
         {
             if (lastSelected != null)
             {
-                //highLight.UnHighLightTarget(lastSelected);
                 lastSelected = null;
             }
         }

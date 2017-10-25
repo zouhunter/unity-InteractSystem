@@ -12,6 +12,20 @@ namespace WorldActionSystem
     {
         private int index;
         public string StepName { get; private set; }
+        public bool Startd
+        {
+            get
+            {
+                return started;
+            }
+        }
+        public bool Completed
+        {
+            get
+            {
+                return completed;
+            }
+        }
         private IList<IActionCommand> commandList;
         private bool forceAuto;
         private bool started;
