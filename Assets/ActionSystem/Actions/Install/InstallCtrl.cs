@@ -165,11 +165,9 @@ namespace WorldActionSystem
             if (installAble)
             {
                 var status = installPos.Attach(pickedUpObj);
-                if (status)
-                {
+                if (status){
                     pickedUpObj.QuickInstall(installPos.gameObject);
                 }
-                installPos.TryEndExecute();
             }
             else
             {
