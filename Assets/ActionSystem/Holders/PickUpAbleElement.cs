@@ -105,12 +105,10 @@ namespace WorldActionSystem
                 this.target = target;
             }
 #endif
-            StepComplete();
         }
         public void NormalMoveTo(GameObject target)
         {
             StopTween();
-
 #if !NoFunction
             DoPath(target.transform.position, target.transform.eulerAngles, () =>
             {
@@ -145,7 +143,6 @@ namespace WorldActionSystem
                     onInstallOkEvent();
                 this.target = target;
             }
-            StepComplete();
         }
 
         public void NormalUnInstall()
@@ -162,7 +159,6 @@ namespace WorldActionSystem
                 target = null;
             }
 #endif
-            StepUnDo();
         }
         public void NormalMoveBack()
         {
@@ -176,7 +172,6 @@ namespace WorldActionSystem
                     onUnInstallOkEvent();
             });
 #endif
-            StepUnDo();
         }
         public void QuickMoveBack()
         {
@@ -189,8 +184,6 @@ namespace WorldActionSystem
 
             if (onUnInstallOkEvent != null)
                 onUnInstallOkEvent();
-
-            StepUnDo();
         }
 
         public void QuickUnInstall()
@@ -207,7 +200,6 @@ namespace WorldActionSystem
                     onUnInstallOkEvent();
             }
 #endif
-            StepUnDo();
         }
 
         public void OnPickUp()
@@ -224,8 +216,8 @@ namespace WorldActionSystem
         public void StepActive()
         {
             actived = true;
-            onStepActive.Invoke();
             gameObject.SetActive(true);
+            onStepActive.Invoke();
         }
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
@@ -233,8 +225,8 @@ namespace WorldActionSystem
         public void StepComplete()
         {
             actived = false;
-            onStepComplete.Invoke();
             gameObject.SetActive(endActive);
+            onStepComplete.Invoke();
         }
         /// <summary>
         /// 步骤重置(没有用到的元素)
@@ -242,8 +234,8 @@ namespace WorldActionSystem
         public void StepUnDo()
         {
             actived = false;
-            onStepUnDo.Invoke();
             gameObject.SetActive(startActive);
+            onStepUnDo.Invoke();
         }
 
         private void Update()
