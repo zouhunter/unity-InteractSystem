@@ -9,12 +9,14 @@ namespace WorldActionSystem
     public class ElementController
     {
         public static event UnityAction<PickUpAbleElement> onInstall;
+        public static event UnityAction<PickUpAbleElement> onUnInstall;
         private static Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
 
         public static void Clean()
         {
             objectList.Clear();
             onInstall = null;
+            onUnInstall = null;
         }
 
         /// <summary>
@@ -34,6 +36,10 @@ namespace WorldActionSystem
 
             obj.onInstallOkEvent = ()=> {
                 if (onInstall != null) onInstall.Invoke(obj);
+            };
+            obj.onUnInstallOkEvent = () =>
+            {
+                if (onUnInstall != null) onUnInstall.Invoke(obj);
             };
         }
         

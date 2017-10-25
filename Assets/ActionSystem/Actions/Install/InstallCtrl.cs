@@ -67,35 +67,17 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
-                if (pickedUpObj != null && !pickedUpObj.Installed)
+                if (pickedUpObj != null)
                 {
+                    if (pickedUpObj.Installed){
+                        pickedUpObj.NormalUnInstall();
+                    }
+
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
                     elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
-                    if (!PickUpedCanInstall())
-                    {
-                        if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
-                    }
-                    else
-                    {
-                        if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.cyan);
-                    }
                 }
             }
-        }
-
-        private bool PickUpedCanInstall()
-        {
-            bool canInstall = false;
-            List<InstallObj> poss = GetNotInstalledPosList();
-            for (int i = 0; i < poss.Count; i++)
-            {
-                if (!HaveInstallObjInstalled(poss[i]) && IsInstallStep(poss[i]) && pickedUpObj.name == poss[i].name)
-                {
-                    canInstall = true;
-                }
-            }
-            return canInstall;
         }
 
 

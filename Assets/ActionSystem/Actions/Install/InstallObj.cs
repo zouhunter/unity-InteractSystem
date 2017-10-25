@@ -23,11 +23,13 @@ namespace WorldActionSystem
         {
             gameObject.layer = Setting.installPosLayer;
             ElementController.onInstall += OnInstallComplete;
+            ElementController.onUnInstall += OnUnInstallComplete;
         }
 
         private void OnDestroy()
         {
             ElementController.onInstall -= OnInstallComplete;
+            ElementController.onUnInstall -= OnUnInstallComplete;
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -63,6 +65,16 @@ namespace WorldActionSystem
         {
             if (obj == this.obj) {
                 TryEndExecute();
+            }
+        }
+
+        private void OnUnInstallComplete(PickUpAbleElement obj)
+        {
+            if(Installed && this.obj == obj)
+            {
+                this.obj = null;
+                OnUnDoExecute();
+                OnStartExecute(auto);
             }
         }
         public bool Attach(PickUpAbleElement obj)
