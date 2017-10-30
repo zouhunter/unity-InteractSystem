@@ -54,19 +54,24 @@ namespace WorldActionSystem
         /// </summary>
         public void EndPlay()
         {
-            if (state) state.normalizedTime = 1f;
-            if (state) state.normalizedSpeed = 0;
+            SetCurrentAnim(1);
             if (coroutine != null) StopCoroutine(coroutine);
             coroutine = null;
         }
         public void UnDoPlay()
         {
-            if (state) state.normalizedTime = 0f;
-            if (state) state.speed = 0;
+            SetCurrentAnim(0);
             if (coroutine != null) StopCoroutine(coroutine);
             coroutine = null;
         }
-
+        private void SetCurrentAnim(float time)
+        {
+            anim.clip = anim.GetClip(animName);
+            state = anim[animName];
+            state.normalizedTime = time;
+            state.speed = 0;
+            anim.Play();
+        }
 
     }
 }

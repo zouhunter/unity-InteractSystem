@@ -18,6 +18,7 @@ namespace WorldActionSystem
         {
             if (!noticeAuto) return;
             if (actionObj.Complete) return;
+
             if (actionObj.Started & !actionObj.Complete)
             {
                 SetElementState(true);
@@ -27,14 +28,14 @@ namespace WorldActionSystem
                 SetElementState(false);
             }
         }
-        protected override void OnBeforeActive()
+        protected override void OnBeforeActive(bool forceAuto)
         {
             if (noticeAuto)
             {
                 SetElementState(true);
             }
         }
-        protected override void OnBeforeComplete()
+        protected override void OnBeforeComplete(bool force)
         {
             if (noticeAuto)
             {

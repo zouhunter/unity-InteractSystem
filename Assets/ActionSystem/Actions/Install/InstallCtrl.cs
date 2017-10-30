@@ -24,6 +24,7 @@ namespace WorldActionSystem
         private List<InstallObj> installObjs = new List<InstallObj>();
         private float elementDistence;
         private Camera viewCamera { get { return CameraController.ActiveCamera; } }
+        private bool activeNotice { get { return Setting.highLightNotice; } }
         public InstallCtrl(float hitDistence,float elementDistence, InstallObj[] installObjs)
         {
             highLight = new ShaderHighLight();
@@ -67,17 +68,35 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
-                if (pickedUpObj != null)
+                if (pickedUpObj != null && !pickedUpObj.Installed)
                 {
-                    if (pickedUpObj.Installed){
-                        pickedUpObj.NormalUnInstall();
-                    }
-
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
                     elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
+                    if (!PickUpedCanInstall())
+                    {
+                        if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
+                    }
+                    else 
+                    {
+                        if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.cyan);
+                    }
                 }
             }
+        }
+
+        private bool PickUpedCanInstall()
+        {
+            bool canInstall = false;
+            List<InstallObj> poss = GetNotInstalledPosList();
+            for (int i = 0; i < poss.Count; i++)
+            {
+                if (!HaveInstallObjInstalled(poss[i]) && IsInstallStep(poss[i]) && pickedUpObj.name == poss[i].name)
+                {
+                    canInstall = true;
+                }
+            }
+            return canInstall;
         }
 
 
@@ -129,12 +148,12 @@ namespace WorldActionSystem
             if (installAble)
             {
                 //可安装显示绿色
-                if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.green);
+                if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.green);
             }
             else
             {
                 //不可安装红色
-                if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.red);
+                if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.red);
             }
         }
 
@@ -147,9 +166,11 @@ namespace WorldActionSystem
             if (installAble)
             {
                 var status = installPos.Attach(pickedUpObj);
-                if (status){
+                if (status)
+                {
                     pickedUpObj.QuickInstall(installPos.gameObject);
                 }
+                installPos.OnEndExecute(false);
             }
             else
             {
@@ -159,7 +180,7 @@ namespace WorldActionSystem
 
             pickedUp = false;
             installAble = false;
-            if (highLight != null) highLight.UnHighLightTarget(pickedUpObj.Render);
+            if (activeNotice) highLight.UnHighLightTarget(pickedUpObj.Render);
         }
 
         private Ray disRay;
@@ -202,11 +223,11 @@ namespace WorldActionSystem
         }
         public void OnEndExecute()
         {
-            SetCompleteNotify();
+            SetCompleteNotify(false);
         }
         public void OnUnDoExecute()
         {
-            SetCompleteNotify();
+            SetCompleteNotify(true);
         }
 
         /// <summary>
@@ -238,7 +259,7 @@ namespace WorldActionSystem
         /// 结束指定步骤
         /// </summary>
         /// <param name="poss"></param>
-        private void SetCompleteNotify()
+        private void SetCompleteNotify(bool undo)
         {
             var keyList = new List<string>();
             foreach (var pos in installObjs)
@@ -249,13 +270,13 @@ namespace WorldActionSystem
                     if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
-                        if (listObjs[j].Installed)
+                        if (!listObjs[j].Installed && undo)
                         {
-                            listObjs[j].StepComplete();
+                            listObjs[j].StepUnDo();
                         }
                         else
                         {
-                            listObjs[j].StepUnDo();
+                            listObjs[j].StepComplete();
                         }
                     }
                 }

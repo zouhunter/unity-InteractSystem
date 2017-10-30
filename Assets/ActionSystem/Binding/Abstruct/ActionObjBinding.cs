@@ -24,7 +24,7 @@ public class ActionObjBinding : MonoBehaviour {
             actionObj.onBeforeUnDo.RemoveListener(OnBeforeUnDo);
         }
     }
-    protected virtual void OnBeforeActive() { }
-    protected virtual void OnBeforeComplete() { }
+    protected virtual void OnBeforeActive(bool forceAuto) { }
+    protected virtual void OnBeforeComplete(bool force) { }
     protected virtual void OnBeforeUnDo() { }
 }

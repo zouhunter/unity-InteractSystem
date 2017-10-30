@@ -41,14 +41,14 @@ namespace WorldActionSystem
             }
         }
 
-        protected override void OnBeforeActive()
+        protected override void OnBeforeActive(bool forceAuto)
         {
             if (noticeAuto)
             {
                 HighLight();
             }
         }
-        protected override void OnBeforeComplete()
+        protected override void OnBeforeComplete(bool force)
         {
             if (noticeAuto)
             {

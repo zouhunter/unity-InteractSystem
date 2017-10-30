@@ -69,7 +69,7 @@ namespace WorldActionSystem
 #endif
             gameObject.layer = Setting.rotateItemLayer;
             comparer = new FloatComparer(deviation);
-            if (render == null) render = GetComponent<Renderer>();
+            if (render == null) render = GetComponentInChildren<Renderer>();
         }
         private bool Flash()
         {
@@ -163,10 +163,10 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(forceauto);
             transform.rotation = startRot;
-            if (forceauto) StartCoroutine(AutoRotateTo(TryEndExecute));
+            if (forceauto) StartCoroutine(AutoRotateTo());
         }
 
-        private IEnumerator AutoRotateTo(UnityAction callBack)
+        private IEnumerator AutoRotateTo()
         {
             var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
             var start = transform.rotation;
@@ -175,7 +175,7 @@ namespace WorldActionSystem
                 yield return null;
                 transform.rotation = Quaternion.Lerp(start, target, timer/autoCompleteTime);
             }
-            callBack();
+            OnEndExecute(false);
         }
 
         public override void OnUnDoExecute()

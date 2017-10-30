@@ -13,10 +13,10 @@ namespace WorldActionSystem
         bool Started { get; }
         string CameraID { get; }
 
-        UnityAction<int> onEndExecute { get; set; }
+        UnityAction onEndExecute { get; set; }
 
         void OnUnDoExecute();
-        void OnEndExecute();
+        void OnEndExecute(bool force);
         void OnStartExecute(bool isForceAuto);
     }
 }

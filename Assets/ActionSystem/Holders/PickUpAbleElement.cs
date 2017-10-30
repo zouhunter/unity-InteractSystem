@@ -64,7 +64,7 @@ namespace WorldActionSystem
             posList = new List<Vector3>();
             rotList = new List<Vector3>();
             var player = FindObjectOfType<Camera>().transform;
-            var midPos = player.transform.position + player.transform.forward * 4f;
+            var midPos = player.transform.position + player.transform.forward * Setting.elementFoward;
             var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
             for (int i = 0; i < smooth; i++)
             {
@@ -105,10 +105,12 @@ namespace WorldActionSystem
                 this.target = target;
             }
 #endif
+            StepComplete();
         }
         public void NormalMoveTo(GameObject target)
         {
             StopTween();
+
 #if !NoFunction
             DoPath(target.transform.position, target.transform.eulerAngles, () =>
             {
@@ -116,6 +118,7 @@ namespace WorldActionSystem
                     onInstallOkEvent();
             });
 #endif
+            StepComplete();
         }
         public void QuickMoveTo(GameObject target)
         {
@@ -126,6 +129,8 @@ namespace WorldActionSystem
 
             if (onInstallOkEvent != null)
                 onInstallOkEvent();
+
+            StepComplete();
         }
 
         /// <summary>
@@ -143,6 +148,7 @@ namespace WorldActionSystem
                     onInstallOkEvent();
                 this.target = target;
             }
+            StepComplete();
         }
 
         public void NormalUnInstall()
@@ -216,8 +222,8 @@ namespace WorldActionSystem
         public void StepActive()
         {
             actived = true;
-            gameObject.SetActive(true);
             onStepActive.Invoke();
+            gameObject.SetActive(true);
         }
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
@@ -225,8 +231,8 @@ namespace WorldActionSystem
         public void StepComplete()
         {
             actived = false;
-            gameObject.SetActive(endActive);
             onStepComplete.Invoke();
+            gameObject.SetActive(endActive);
         }
         /// <summary>
         /// 步骤重置(没有用到的元素)
@@ -234,8 +240,8 @@ namespace WorldActionSystem
         public void StepUnDo()
         {
             actived = false;
-            gameObject.SetActive(startActive);
             onStepUnDo.Invoke();
+            gameObject.SetActive(startActive);
         }
 
         private void Update()

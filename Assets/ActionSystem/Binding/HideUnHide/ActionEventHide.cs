@@ -9,7 +9,7 @@ namespace WorldActionSystem
     /// 在一个触发器时间内触发关闭和打开
     /// 或 打开或关闭事件
     /// </summary>
-    public class ActionHide : ActionObjBinding
+    public class ActionEventHide : ActionObjBinding
     {
         public string key;
         public bool reverse;
@@ -25,11 +25,11 @@ namespace WorldActionSystem
                 actionObj.onBeforeComplete.RemoveListener(OnBeforeComplete);
             }
         }
-        protected override void OnBeforeActive()
+        protected override void OnBeforeActive(bool forceAuto)
         {
             SetElementState(reverse);
         }
-        protected override void OnBeforeComplete()
+        protected override void OnBeforeComplete(bool force)
         {
             SetElementState(!reverse);
         }

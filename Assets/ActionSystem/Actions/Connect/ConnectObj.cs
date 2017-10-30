@@ -104,7 +104,7 @@ namespace WorldActionSystem
             }
             if (allConnected)
             {
-                TryEndExecute();
+                OnEndExecute(false);
             }
         }
 

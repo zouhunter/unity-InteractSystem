@@ -23,13 +23,11 @@ namespace WorldActionSystem
         {
             gameObject.layer = Setting.installPosLayer;
             ElementController.onInstall += OnInstallComplete;
-            ElementController.onUnInstall += OnUnInstallComplete;
         }
 
         private void OnDestroy()
         {
             ElementController.onInstall -= OnInstallComplete;
-            ElementController.onUnInstall -= OnUnInstallComplete;
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -39,12 +37,20 @@ namespace WorldActionSystem
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
                 Attach(obj);
-                obj.NormalInstall(gameObject);
+
+                if (!Setting.ignoreInstall)
+                {
+                    obj.NormalInstall(gameObject);
+                }
+                else
+                {
+                    obj.QuickInstall(gameObject);
+                }
             }
         }
-        public override void OnEndExecute()
+        public override void OnEndExecute(bool force)
         {
-            base.OnEndExecute();
+            base.OnEndExecute(force);
             if (!Installed)
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
@@ -54,6 +60,8 @@ namespace WorldActionSystem
         }
         public override void OnUnDoExecute()
         {
+            Debug.Log("UnDo:" + name);
+
             base.OnUnDoExecute();
             if (Installed)
             {
@@ -63,18 +71,9 @@ namespace WorldActionSystem
         }
         private void OnInstallComplete(PickUpAbleElement obj)
         {
-            if (obj == this.obj) {
-                TryEndExecute();
-            }
-        }
-
-        private void OnUnInstallComplete(PickUpAbleElement obj)
-        {
-            if(Installed && this.obj == obj)
+            if (obj == this.obj)
             {
-                this.obj = null;
-                OnUnDoExecute();
-                OnStartExecute(auto);
+               OnEndExecute(false);
             }
         }
         public bool Attach(PickUpAbleElement obj)

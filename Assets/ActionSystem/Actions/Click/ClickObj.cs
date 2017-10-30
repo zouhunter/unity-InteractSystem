@@ -35,11 +35,11 @@ namespace WorldActionSystem
         IEnumerator WaitClose()
         {
             yield return new WaitForSeconds(autoCompleteTime);
-            TryEndExecute();
+            OnEndExecute(false);
         }
-        public override void OnEndExecute()
+        public override void OnEndExecute(bool force)
         {
-            base.OnEndExecute();
+            base.OnEndExecute(force);
             if (auto && waitCoroutine != null)
             {
                 StopCoroutine(waitCoroutine);

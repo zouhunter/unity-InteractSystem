@@ -80,7 +80,7 @@ namespace WorldActionSystem
 
                 if (selectedObj.TryMarchRot())
                 {
-                    selectedObj.OnEndExecute();
+                    selectedObj.OnEndExecute(false);
                 }
             }
         }

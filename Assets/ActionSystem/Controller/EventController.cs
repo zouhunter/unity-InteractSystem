@@ -13,7 +13,7 @@ namespace WorldActionSystem
     /// track the instances that we hand out.
     /// </summary>
     /// <typeparam name="T">The type of object in the pool.</typeparam>
-    public sealed class ObjectPool<T>
+    internal sealed class ObjectPool<T>
         where T : new()
     {
         /// <summary>
@@ -180,13 +180,13 @@ namespace WorldActionSystem
             }
         }
     }
-    public interface IEventItem
+    internal interface IEventItem
     {
         object Action { get; }
         void Release();
     }
 
-    public class EventItem : IEventItem
+    internal class EventItem : IEventItem
     {
         public UnityAction action;
         public object Action
@@ -207,7 +207,7 @@ namespace WorldActionSystem
         }
     }
 
-    public class EventItem<T> : IEventItem
+    internal class EventItem<T> : IEventItem
     {
         public UnityAction<T> action;
         public object Action
@@ -228,11 +228,11 @@ namespace WorldActionSystem
         }
     }
 
-    public static class EventController
+    internal static class EventController
     {
         private static IDictionary<string, List<IEventItem>> m_observerMap;
 
-        public static UnityEngine.Events.UnityAction<string> MessageNotHandled;
+        public static UnityAction<string> MessageNotHandled { get; set; }
 
         static EventController()
         {

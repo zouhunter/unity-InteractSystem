@@ -46,9 +46,9 @@ namespace WorldActionSystem
                 }
             }
         }
-        public override void OnEndExecute()
+        public override void OnEndExecute(bool force)
         {
-            base.OnEndExecute();
+            base.OnEndExecute(force);
             if (!Matched)
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
@@ -66,7 +66,7 @@ namespace WorldActionSystem
         {
             if (obj == this.obj)
             {
-                TryEndExecute();
+               OnEndExecute(false);
             }
         }
         public bool Attach(PickUpAbleElement obj)
