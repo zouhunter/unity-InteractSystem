@@ -29,25 +29,30 @@ namespace WorldActionSystem
         [SerializeField]
         private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
-        public UnityAction<int> onEndExecute { get; set; }
-        public UnityEvent onBeforeStart;
+        public Transform anglePos;
+        public UnityAction onEndExecute { get; set; }
+        public Toggle.ToggleEvent onBeforeStart;
+        public Toggle.ToggleEvent onBeforeComplete;
         public UnityEvent onBeforeUnDo;
-        public UnityEvent onBeforeComplete;
+
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
-        private AngleCtroller angleCtrl { get { return AngleCtroller.Instance; } }
-
+        protected AngleCtroller angleCtrl { get { return AngleCtroller.Instance; } }
+        public static bool log = true;
+        protected bool notice;
         protected virtual void Start()
         {
             hooks = GetComponentsInChildren<ActionHook>(false);
             if (hooks.Length > 0)
             {
                 hookCtrl = new HookCtroller(this);
-                //Debug.Log(name + "registHooks :" + hooks.Length);
             }
             gameObject.SetActive(startActive);
-
+            if (anglePos == null)
+            {
+                anglePos = transform;
+            }
             WorpCameraID();
         }
         private void WorpCameraID()
@@ -63,99 +68,118 @@ namespace WorldActionSystem
         }
         protected virtual void Update()
         {
-            if (Started && Complete) return;
+            if (Complete||!Started) return;
 
             if (!Setting.angleNotice || this is AnimObj) return;
 
-            if (Started && !Complete)
+            if (notice)
             {
-                if (angleCtrl) angleCtrl.Notice(transform);
+                if (angleCtrl) angleCtrl.Notice(anglePos);
             }
             else
             {
-                if (angleCtrl) angleCtrl.UnNotice(transform);
+                if (angleCtrl) angleCtrl.UnNotice(anglePos);
             }
+
         }
 
         public virtual void OnStartExecute(bool auto = false)
         {
+            if (log) Debug.Log("OnStartExecute:" + this);
             this.auto = auto;
             if (!_started)
             {
-                onBeforeStart.Invoke();
+                onBeforeStart.Invoke(auto);
                 _started = true;
                 _complete = false;
+                notice = true;
                 gameObject.SetActive(true);
             }
             else
             {
-                Debug.Log("already started", gameObject);
+                Debug.LogError("already started", gameObject);
             }
         }
 
-        public virtual void TryEndExecute()
+        public virtual void OnEndExecute(bool force)
         {
-            if (hooks.Length > 0)
+            if (angleCtrl) angleCtrl.UnNotice(anglePos);
+            notice = false;
+
+            if (force)
             {
-                if (hookCtrl.Complete)
-                {
-                    OnEndExecute();
-                }
-                else if (!hookCtrl.Started)
-                {
-                    hookCtrl.OnStartExecute(auto);
-                }
-                else
-                {
-                    Debug.Log("wait:" + name);
-                }
+                if (!Complete) CoreEndExecute(true);
             }
             else
             {
-                OnEndExecute();
+                if (hooks.Length > 0)
+                {
+                    if (hookCtrl.Complete)
+                    {
+                        if (!Complete) CoreEndExecute(false);
+                    }
+                    else if (!hookCtrl.Started)
+                    {
+                        hookCtrl.OnStartExecute(auto);
+                    }
+                    else
+                    {
+                        Debug.Log("wait:" + name);
+                    }
+                }
+                else
+                {
+                    if (!Complete) CoreEndExecute(false);
+                }
             }
         }
 
-        public virtual void OnEndExecute()
+        private void CoreEndExecute(bool force)
         {
-            //Debug.Log("onEndExecute" + name);
+            if (log) Debug.Log("OnEndExecute:" + this + ":" + force, this);
 
             if (!_complete)
             {
-                onBeforeComplete.Invoke();
+                onBeforeComplete.Invoke(force);
+                notice = false;
                 _started = true;
                 _complete = true;
                 gameObject.SetActive(endActive);
                 if (onEndExecute != null)
                 {
-                    onEndExecute.Invoke(queueID);
+                    onEndExecute.Invoke();
                 }
                 if (hooks.Length > 0)
                 {
                     hookCtrl.OnEndExecute();
                 }
-
-                if (angleCtrl) angleCtrl.UnNotice(transform);
             }
             else
             {
-                Debug.Log("already completed", gameObject);
+                Debug.LogError("already completed", gameObject);
             }
-
         }
 
         public virtual void OnUnDoExecute()
         {
-            _started = false;
-            _complete = false;
-
-            gameObject.SetActive(startActive);
-
-            if (angleCtrl) angleCtrl.UnNotice(transform);
-
-            if (hooks.Length > 0)
+            if(_started) 
             {
-                hookCtrl.OnUnDoExecute();
+                _started = false;
+                _complete = false;
+                notice = false;
+                onBeforeUnDo.Invoke();
+
+                gameObject.SetActive(startActive);
+                if (angleCtrl) angleCtrl.UnNotice(anglePos);
+
+                if (hooks.Length > 0)
+                {
+                    hookCtrl.OnUnDoExecute();
+                }
+            }
+            else
+            {
+                Debug.LogError(this + "allready undo");
             }
 
         }

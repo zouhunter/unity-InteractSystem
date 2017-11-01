@@ -15,18 +15,19 @@ namespace WorldActionSystem
     /// </summary>
     public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem,IOutSideRegisterRender
     {
-        public int animTime { get { return Setting.installTime; } }
+        public int animTime { get { return Setting.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool endActive = true;//如果是false,则完成后将进行隐藏
         public bool Installed { get { return target != null; } }
+        public virtual string Name { get { return name; } }
+
         private GameObject target;
         public Renderer Render { get { return m_render; } }
-
         public UnityAction onInstallOkEvent;
         public UnityAction onUnInstallOkEvent;
 
         public UnityEvent onPickUp;
-        public UnityEvent OnLayDown;
+        public UnityEvent onnLayDown;
 
         public UnityEvent onStepActive;
         public UnityEvent onStepComplete;
@@ -37,15 +38,15 @@ namespace WorldActionSystem
         [SerializeField]
         protected Color highLightColor = Color.green;
 #if !NoFunction
-        private Vector3 startRotation;
-        private Vector3 startPos;
-        private Tweener move;
-        private int smooth = 50;
+        protected Vector3 startRotation;
+        protected Vector3 startPos;
+        protected Tweener move;
+        protected int smooth = 50;
 #endif
-        private IHighLightItems highLighter;
-        private bool actived;
+        protected IHighLightItems highLighter;
+        protected bool actived;
 #if !NoFunction
-        void Start()
+        protected virtual void Start()
         {
             ElementController.RegistElement(this);
             InitRender();
@@ -54,17 +55,17 @@ namespace WorldActionSystem
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
         }
-        private void InitRender()
+        protected virtual void InitRender()
         {
             if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
             highLighter = new ShaderHighLight();
         }
-        private void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
+        protected virtual void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
         {
             posList = new List<Vector3>();
             rotList = new List<Vector3>();
             var player = FindObjectOfType<Camera>().transform;
-            var midPos = player.transform.position + player.transform.forward * 4f;
+            var midPos = player.transform.position + player.transform.forward * Setting.elementFoward;
             var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
             for (int i = 0; i < smooth; i++)
             {
@@ -74,7 +75,7 @@ namespace WorldActionSystem
             }
         }
 
-        private void DoPath(Vector3 end, Vector3 endRot, TweenCallback onComplete)
+        protected virtual void DoPath(Vector3 end, Vector3 endRot, TweenCallback onComplete)
         {
             List<Vector3> poss;
             List<Vector3> rots;
@@ -90,7 +91,7 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public void NormalInstall(GameObject target)
+        public virtual void NormalInstall(GameObject target)
         {
             StopTween();
 #if !NoFunction
@@ -101,23 +102,26 @@ namespace WorldActionSystem
                 {
                     if (onInstallOkEvent != null)
                         onInstallOkEvent();
+                    StepComplete();
                 });
                 this.target = target;
             }
 #endif
         }
-        public void NormalMoveTo(GameObject target)
+        public virtual void NormalMoveTo(GameObject target)
         {
             StopTween();
+
 #if !NoFunction
             DoPath(target.transform.position, target.transform.eulerAngles, () =>
             {
                 if (onInstallOkEvent != null)
                     onInstallOkEvent();
+                StepComplete();
             });
 #endif
         }
-        public void QuickMoveTo(GameObject target)
+        public virtual void QuickMoveTo(GameObject target)
         {
             StopTween();
 
@@ -126,13 +130,15 @@ namespace WorldActionSystem
 
             if (onInstallOkEvent != null)
                 onInstallOkEvent();
+
+            StepComplete();
         }
 
         /// <summary>
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public void QuickInstall(GameObject target)
+        public virtual void QuickInstall(GameObject target)
         {
             StopTween();
             if (!Installed)
@@ -143,9 +149,10 @@ namespace WorldActionSystem
                     onInstallOkEvent();
                 this.target = target;
             }
+            StepComplete();
         }
 
-        public void NormalUnInstall()
+        public virtual void NormalUnInstall()
         {
             StopTween();
 #if !NoFunction
@@ -160,11 +167,11 @@ namespace WorldActionSystem
             }
 #endif
         }
-        public void NormalMoveBack()
+        public virtual void NormalMoveBack()
         {
             StopTween();
 #if !NoFunction
-            if (OnLayDown != null) OnLayDown.Invoke();
+            if (onnLayDown != null) onnLayDown.Invoke();
 
             DoPath(startPos, startRotation, () =>
             {
@@ -173,11 +180,11 @@ namespace WorldActionSystem
             });
 #endif
         }
-        public void QuickMoveBack()
+        public virtual void QuickMoveBack()
         {
             StopTween();
 
-            if (OnLayDown != null) OnLayDown.Invoke();
+            if (onnLayDown != null) onnLayDown.Invoke();
 
             transform.eulerAngles = startRotation;
             transform.position = startPos;
@@ -186,7 +193,7 @@ namespace WorldActionSystem
                 onUnInstallOkEvent();
         }
 
-        public void QuickUnInstall()
+        public virtual void QuickUnInstall()
         {
 #if !NoFunction
             StopTween();
@@ -202,7 +209,7 @@ namespace WorldActionSystem
 #endif
         }
 
-        public void OnPickUp()
+        public virtual void OnPickUp()
         {
             StopTween();
 
@@ -213,32 +220,32 @@ namespace WorldActionSystem
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
         /// </summary>
-        public void StepActive()
+        public virtual void StepActive()
         {
             actived = true;
-            gameObject.SetActive(true);
             onStepActive.Invoke();
+            gameObject.SetActive(true);
         }
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
         /// </summary>
-        public void StepComplete()
+        public virtual void StepComplete()
         {
             actived = false;
-            gameObject.SetActive(endActive);
             onStepComplete.Invoke();
+            gameObject.SetActive(endActive);
         }
         /// <summary>
         /// 步骤重置(没有用到的元素)
         /// </summary>
-        public void StepUnDo()
+        public virtual void StepUnDo()
         {
             actived = false;
-            gameObject.SetActive(startActive);
             onStepUnDo.Invoke();
+            gameObject.SetActive(startActive);
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (!Setting.highLightNotice) return;
             if(actived)
@@ -251,7 +258,7 @@ namespace WorldActionSystem
             }
         }
 
-        private void StopTween()
+        protected virtual void StopTween()
         {
 #if !NoFunction
             move.Pause();
@@ -259,12 +266,12 @@ namespace WorldActionSystem
 #endif
         }
 
-        public void RegisterRenderer(Renderer renderer)
+        public virtual void RegisterRenderer(Renderer renderer)
         {
             if (renderer != null)
                 m_render = renderer;
         }
-        void OnDestroy()
+        protected virtual void OnDestroy()
         {
             StopTween();
         }

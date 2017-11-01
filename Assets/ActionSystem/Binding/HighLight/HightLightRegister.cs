@@ -18,7 +18,7 @@ namespace WorldActionSystem
 
         private string highLight { get { return "HighLightObjects"; } }
         private string unhighLight { get { return "UnHighLightObjects"; } }
-
+        private bool activeHighLight { get { return Setting.highLightNotice; } }
         private List<Highlighter> highlighters = new List<Highlighter>();
         private void Start()
         {
@@ -52,6 +52,8 @@ namespace WorldActionSystem
 
         public void HighLightGameObjects(string key)
         {
+            if (!activeHighLight) return;
+
             if (this.key == key)
             {
                 for (int i = 0; i < highlighters.Count; i++)
@@ -67,6 +69,8 @@ namespace WorldActionSystem
         }
         public void UnHighLightGameObjects(string key)
         {
+            if (!activeHighLight) return;
+
             if (this.key == key)
             {
                 for (int i = 0; i < highlighters.Count; i++)

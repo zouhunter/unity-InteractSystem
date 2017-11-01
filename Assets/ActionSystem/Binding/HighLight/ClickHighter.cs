@@ -23,6 +23,8 @@ namespace WorldActionSystem
         }
         private void OnEnterClickObj()
         {
+            if (!Setting.highLightNotice) return;
+
             if (clickObj.Started && !clickObj.Complete)
             {
                 color = temp;

@@ -8,6 +8,7 @@ namespace WorldActionSystem
 {
     public static class Setting
     {
+        internal const int elementFoward = 1;
         internal const int pickUpElementLayer = 8;
         internal const int installPosLayer = 9;
         internal const int matchPosLayer = 14;
@@ -15,11 +16,13 @@ namespace WorldActionSystem
         internal const int clickItemLayer = 11;
         internal const int connectItemLayer = 12;
         internal static int obstacleLayer = 13;
-        internal static int installTime = 4;
+        internal static int ropeNodeLayer = 14;
+        internal static int autoExecuteTime = 3;
         internal static bool highLightNotice = true;//高亮提示
         internal static bool angleNotice = true;//箭头提示
         internal static bool useOperateCamera = true;//使用专用相机
         internal static bool ignoreMatch = false;//
+        internal static bool ignoreInstall = false;
 
         internal static void ResetDefult()
         {
@@ -27,6 +30,7 @@ namespace WorldActionSystem
             useOperateCamera = true;
             ignoreMatch = false;
             angleNotice = true;
+            ignoreInstall = false;
         }
     }
 }

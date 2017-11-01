@@ -11,12 +11,19 @@ namespace WorldActionSystem
         int QueueID { get; }
         bool Complete { get; }
         bool Started { get; }
+        /// <summary>
+        /// 相机id:
+        /// 1.defult  -> 主摄像机
+        /// 2.null    -> 不改变相机状态
+        /// 3.自定义  -> 移动
+        /// 4.没找到  -> 主摄像机
+        /// </summary>
         string CameraID { get; }
 
-        UnityAction<int> onEndExecute { get; set; }
+        UnityAction onEndExecute { get; set; }
 
         void OnUnDoExecute();
-        void OnEndExecute();
+        void OnEndExecute(bool force);
         void OnStartExecute(bool isForceAuto);
     }
 }

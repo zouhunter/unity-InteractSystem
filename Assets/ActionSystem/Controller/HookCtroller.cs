@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
+
     public class HookCtroller 
     {
         protected bool _complete;
@@ -12,13 +13,13 @@ namespace WorldActionSystem
         protected bool _started;
         public bool Started { get { return _started; } }
 
-        protected ActionObj trigger { get; set; }
+        protected ActionObj actionObj { get; set; }
         protected List<int> queueID = new List<int>();
         protected ActionHook[] hooks { get; set; }
         protected bool isForceAuto;
         public HookCtroller(ActionObj trigger)
         {
-            this.trigger = trigger;
+            this.actionObj = trigger;
             hooks = trigger.Hooks;
         }
 
@@ -55,9 +56,13 @@ namespace WorldActionSystem
                 _started = true;
                 foreach (var item in hooks)
                 {
+                    if(!item.Started)
+                    {
+                        item.OnStartExecute(isForceAuto);
+                    }
                     if (!item.Complete)
                     {
-                        item.OnEndExecute();
+                        item.OnEndExecute(true);
                     }
                 }
             }
@@ -79,17 +84,20 @@ namespace WorldActionSystem
             }
         }
 
-        private void OnCommandObjComplete(int id)
+        private void OnCommandObjComplete(IActionObj obj)
         {
             if(!Complete)
             {
-                var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == id && !x.Complete);
+                var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == obj.QueueID && !x.Complete);
                 if (notComplete.Length == 0)
                 {
                     if (!ExecuteAStep(isForceAuto))
                     {
                         OnEndExecute();
-                        trigger.OnEndExecute();
+                        if(!actionObj.Complete)
+                        {
+                            actionObj.OnEndExecute(false);
+                        }
                     }
                 }
             }
@@ -107,7 +115,8 @@ namespace WorldActionSystem
                 {
                     foreach (ActionHook item in neetActive)
                     {
-                        item.onEndExecute = OnCommandObjComplete;
+                        var obj = item;
+                        item.onEndExecute =()=> OnCommandObjComplete(obj);
                         //Debug.Log("On Execute " + item.name + "of " + id);
                         item.OnStartExecute(isForceAuto);
                     }

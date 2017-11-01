@@ -10,6 +10,7 @@ namespace WorldActionSystem
 
     public interface IActionCommand
     {
+        ActionCtroller ActionCtrl { get; }
         string StepName { get; }
         bool Startd { get; }
         bool Completed { get; }

@@ -33,6 +33,7 @@ namespace WorldActionSystem
         private void InitConnectObj(Material lineMaterial, float lineWight)
         {
 #if UNITY_5_6_OR_NEWER
+            line.textureMode = LineTextureMode.Tile;
             line.positionCount = 1;
             line.startWidth = lineWight;
             line.endWidth = lineWight * 0.8f;
@@ -66,6 +67,9 @@ namespace WorldActionSystem
                 {
                     positons.Clear();
                     positons.Add(firstCollider.transform.position);
+                    foreach (var item in objs){
+                        item.TrySelectFirstCollider(firstCollider);
+                    }
                 }
             }
         }
@@ -79,7 +83,8 @@ namespace WorldActionSystem
                 if (Input.GetMouseButtonDown(0))
                 {
                     collider = hit.collider;
-                    if (onSelectItem != null) onSelectItem(collider);
+                    if (onSelectItem != null)
+                        onSelectItem(collider);
                     return true;
                 }
             }
@@ -97,20 +102,22 @@ namespace WorldActionSystem
             {
                 ray = viewCamera.ScreenPointToRay(Input.mousePosition);
                 Vector3 hitPosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, firstCollider.transform.position, ray.direction);
-                if (positons.Count > 0)
+
+                if (positons.Count > 1)
                 {
-                    if (Vector3.Distance(positons[positons.Count - 1], hitPosition) > pointDistence)
-                    {
-                        positons.Add(hitPosition);
+                    positons[1] = hitPosition;
+                }
+                else
+                {
+                    positons.Add(hitPosition);
+                }
 #if UNITY_5_6_OR_NEWER
-                    line.positionCount = positons.Count;
+                line.positionCount = positons.Count;
 
 #else
                         line.SetVertexCount(positons.Count);
 #endif
-                        line.SetPositions(positons.ToArray());
-                    }
-                }
+                line.SetPositions(positons.ToArray());
             }
 
         }
@@ -123,8 +130,7 @@ namespace WorldActionSystem
             bool canConnect = false;
             foreach (var item in objs)
             {
-                if (item.TryConnectNode(collider, firstCollider))
-                {
+                if (item.TryConnectNode(collider, firstCollider)){
                     canConnect = true;
                     break;
                 }

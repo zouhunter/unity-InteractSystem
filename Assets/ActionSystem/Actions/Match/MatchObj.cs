@@ -13,6 +13,7 @@ namespace WorldActionSystem
     public class MatchObj : ActionObj
     {
         public bool autoMatch;
+        public bool ignorePass;
         public bool Matched { get { return obj != null; } }
         public PickUpAbleElement obj { get; private set; }
 
@@ -36,7 +37,7 @@ namespace WorldActionSystem
 
                 Attach(obj);
 
-                if (Setting.ignoreMatch)
+                if (Setting.ignoreMatch && !ignorePass)
                 {
                     obj.QuickMoveTo(gameObject);
                 }
@@ -46,9 +47,9 @@ namespace WorldActionSystem
                 }
             }
         }
-        public override void OnEndExecute()
+        public override void OnEndExecute(bool force)
         {
-            base.OnEndExecute();
+            base.OnEndExecute(force);
             if (!Matched)
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
@@ -66,7 +67,7 @@ namespace WorldActionSystem
         {
             if (obj == this.obj)
             {
-                TryEndExecute();
+               OnEndExecute(false);
             }
         }
         public bool Attach(PickUpAbleElement obj)

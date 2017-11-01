@@ -227,12 +227,12 @@ namespace WorldActionSystem
 
         public void OnEndExecute()
         {
-            SetCompleteNotify();
+            SetCompleteNotify(false);
         }
 
         public void OnUnDoExecute()
         {
-            SetCompleteNotify();
+            SetCompleteNotify(true);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace WorldActionSystem
         /// 结束指定步骤
         /// </summary>
         /// <param name="poss"></param>
-        private void SetCompleteNotify()
+        private void SetCompleteNotify(bool undo)
         {
             var keyList = new List<string>();
             foreach (var pos in matchObjs)
@@ -274,8 +274,16 @@ namespace WorldActionSystem
                     if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
+                        if (listObjs[j].Installed) continue;
                         listObjs[j].QuickMoveBack();
-                        listObjs[j].StepComplete();
+                        if(undo)
+                        {
+                            listObjs[j].StepUnDo();
+                        }
+                        else
+                        {
+                            listObjs[j].StepComplete();
+                        }
                     }
                 }
             }

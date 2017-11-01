@@ -13,7 +13,6 @@ namespace WorldActionSystem
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
-        protected bool auto;
         [SerializeField, Range(0, 10)]
         private int queueID;
         public int QueueID
@@ -24,54 +23,55 @@ namespace WorldActionSystem
             }
         }
         public string CameraID { get { return null; } }
-        protected bool autoComplete = true;
+        protected abstract bool autoComplete { get; }
         protected float autoTime = 2;
         Coroutine coroutine;
-
-
-        public UnityAction<int> onEndExecute { get; set; }
-
-        public virtual void OnStartExecute(bool auto = false)
+        public UnityAction onEndExecute { get; set; }
+        public Toggle.ToggleEvent OnEndExecuted;
+        public static bool log = false;
+        public virtual void OnStartExecute(bool auto)
         {
-            //Debug.Log("onStart Execute Hook :" + name,gameObject);
-            this.auto = auto;
+            if(log) Debug.Log("onStart Execute Hook :" + this,gameObject);
             if (!_started)
             {
                 _started = true;
                 _complete = false;
                 gameObject.SetActive(true);
-                if (autoComplete && coroutine == null)
+                if (autoComplete && coroutine == null && gameObject.activeInHierarchy) {
                     coroutine = StartCoroutine(AutoComplete());
+                }
             }
             else
             {
-                Debug.Log("already started" + name, gameObject);
+                Debug.LogError("already started" + name, gameObject);
             }
         }
         protected virtual IEnumerator AutoComplete()
         {
             yield return new WaitForSeconds(autoTime);
-            OnEndExecute();
+            OnEndExecute(false);
         }
-        public virtual void OnEndExecute()
+        public virtual void OnEndExecute(bool force)
         {
+            if (log) Debug.Log("onEnd Execute Hook :" + this + ":" + force, gameObject);
             if (!_complete)
             {
                 _started = true;
                 _complete = true;
                 if (onEndExecute != null)
                 {
-                    onEndExecute.Invoke(queueID);
+                    onEndExecute.Invoke();
                 }
                 if (autoComplete && coroutine != null)
                 {
                     StopCoroutine(coroutine);
                     coroutine = null;
                 }
+                OnEndExecuted.Invoke(force);
             }
             else
             {
-                Debug.Log("already completed" + name, gameObject);
+                Debug.LogError("already completed" + this, gameObject);
             }
 
         }

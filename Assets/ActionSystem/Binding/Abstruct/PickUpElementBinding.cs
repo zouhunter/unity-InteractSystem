@@ -13,7 +13,7 @@ public class PickUpElementBinding : MonoBehaviour {
     {
         pickUpElement = GetComponent<PickUpAbleElement>();
         pickUpElement.onPickUp.AddListener(OnPickUp);
-        pickUpElement.OnLayDown.AddListener(OnLayDown);
+        pickUpElement.onnLayDown.AddListener(OnLayDown);
     }
     protected virtual void OnPickUp()
     {

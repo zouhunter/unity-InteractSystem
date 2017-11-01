@@ -32,7 +32,7 @@ namespace WorldActionSystem
             }
             if (obj.Started && !obj.Complete)
             {
-                obj.TryEndExecute();
+                obj.OnEndExecute(false);
             }
         }
 

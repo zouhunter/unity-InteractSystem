@@ -26,10 +26,21 @@ namespace WorldActionSystem
                 return completed;
             }
         }
+
+        public ActionCtroller ActionCtrl
+        {
+            get
+            {
+                return currentCmd.ActionCtrl;
+            }
+        }
+
         private IList<IActionCommand> commandList;
         private bool forceAuto;
         private bool started;
         private bool completed;
+        private IActionCommand currentCmd;
+        private bool log = false;
 
         public SequencesCommand(string stepName, IList<IActionCommand> commandList)
         {
@@ -42,8 +53,9 @@ namespace WorldActionSystem
             if(!started)
             {
                 started = true;
+                index = 0;
                 this.forceAuto = forceAuto;
-                commandList[index].StartExecute(forceAuto);
+                ContinueExecute();
                 return true;
             }
             else
@@ -61,7 +73,12 @@ namespace WorldActionSystem
                 completed = true;
                 foreach (var item in commandList)
                 {
-                    item.EndExecute();
+                    if(!item.Startd){
+                        item.StartExecute(forceAuto);
+                    }
+                    if(!item.Completed){
+                        item.EndExecute();
+                    }
                 }
                 OnEndExecute();
                 return true;
@@ -80,20 +97,22 @@ namespace WorldActionSystem
             index = 0;
             foreach (var item in commandList)
             {
-                item.UnDoExecute();
+                if(item.Startd){
+                    item.UnDoExecute();
+                }
             }
         }
 
         internal bool ContinueExecute()
         {
-            index++;
             if (index < commandList.Count)
             {
-                //Debug.Log("Execute:" + index + "->continue StartExecute");
-                commandList[index].StartExecute(forceAuto);
+                if(log) Debug.Log("Execute:" + index + "->continue StartExecute");
+                currentCmd = commandList[index++];
+                currentCmd.StartExecute(forceAuto);
                 return true;
             }
-            //Debug.Log("Execute:" + index + "->EndExecute");
+            if (log) Debug.Log("Execute:" + index + "->EndExecute");
             return false;
         }
 

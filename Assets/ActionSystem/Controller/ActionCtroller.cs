@@ -16,7 +16,9 @@ namespace WorldActionSystem
         private List<IActionCtroller> commandList = new List<IActionCtroller>();
         private Queue<ActionObj> actionQueue = new Queue<ActionObj>();
         private List<ActionHook> hookList = new List<ActionHook>();
+        private List<IActionObj> startedActions = new List<IActionObj>();
         protected Coroutine coroutine;
+        public static bool log = false;
         public ActionCtroller(ActionCommand trigger)
         {
             this.trigger = trigger;
@@ -35,7 +37,9 @@ namespace WorldActionSystem
             if ((commandType & ControllerType.Connect) == ControllerType.Connect)
             {
                 var lineRender = trigger.GetComponent<LineRenderer>();
-                if (lineRender == null) lineRender = trigger.gameObject.AddComponent<LineRenderer>();
+                if (lineRender == null){
+                    lineRender = trigger.gameObject.AddComponent<LineRenderer>();
+                }
                 var objs = Array.ConvertAll<IActionObj, ConnectObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
                 var connectCtrl = new ConnectCtrl(lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
                 connectCtrl.onError = trigger.UserError;
@@ -66,15 +70,13 @@ namespace WorldActionSystem
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            ExecuteAStep();
-            if (coroutine == null)
-            {
+            if (coroutine == null){
                 coroutine = trigger.StartCoroutine(Update());
             }
-            ForEachAction((ctrl) =>
-            {
+            ForEachAction((ctrl) => {
                 ctrl.OnStartExecute(forceAuto);
             });
+            ExecuteAStep();
         }
         private void ChargeQueueIDs()
         {
@@ -92,6 +94,7 @@ namespace WorldActionSystem
         }
         public virtual void OnEndExecute()
         {
+            CompleteQueues();
             ForEachAction((ctrl) =>
             {
                 ctrl.OnEndExecute();
@@ -99,9 +102,13 @@ namespace WorldActionSystem
 
             foreach (var item in actionObjs)
             {
+                if(!item.Started)
+                {
+                    item.OnStartExecute(isForceAuto);
+                }
                 if (!item.Complete)
                 {
-                    item.OnEndExecute();
+                    item.OnEndExecute(true);
                 }
             }
 
@@ -110,18 +117,18 @@ namespace WorldActionSystem
 
         public virtual void OnUnDoExecute()
         {
+            UnDoQueues();
             ChargeQueueIDs();
-            foreach (var item in actionObjs)
-            {
-                if (item.Started)
+           
+            ForEachAction((ctrl) =>{
+                ctrl.OnUnDoExecute();
+            });
+            foreach (var item in actionObjs){
+                if(item.Started)
                 {
                     item.OnUnDoExecute();
                 }
             }
-            ForEachAction((ctrl) =>
-            {
-                ctrl.OnUnDoExecute();
-            });
             StopUpdateAction();
         }
 
@@ -129,22 +136,23 @@ namespace WorldActionSystem
         {
             while (true)
             {
-                ForEachAction((ctrl) =>
-                {
+                ForEachAction((ctrl) => {
                     ctrl.Update();
                 });
                 yield return null;
             }
         }
 
-        private void OnCommandObjComplete(int id)
+        private void OnCommandObjComplete(IActionObj obj)
         {
-            var notComplete = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Complete);
+            startedActions.Remove(obj);
+            var notComplete = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == obj.QueueID && !x.Complete);
             if (notComplete.Length == 0)
             {
                 if (!ExecuteAStep())
                 {
-                    if (!trigger.Completed) trigger.Complete();
+                    if (!trigger.Completed)
+                        trigger.Complete();
                 }
             }
             else if(actionQueue.Count > 0)//正在循环执行
@@ -153,6 +161,59 @@ namespace WorldActionSystem
             }
         }
 
+        public void CompleteOneStarted()
+        {
+            if(startedActions.Count > 0)
+            {
+                var action = startedActions[0];
+                startedActions.RemoveAt(0);
+                action.OnEndExecute(true);
+            }
+            else
+            {
+                Debug.Log("startedActions.Count == 0");
+            }
+        }
+        private void CompleteQueues()
+        {
+            while (actionQueue.Count > 0)
+            {
+                var action = actionQueue.Dequeue();
+                if (!action.Complete)
+                {
+                    action.OnEndExecute(true);
+                }
+            }
+            while (hookList.Count > 0)
+            {
+                var hook = hookList[0];
+                hookList.RemoveAt(0);
+                if (!hook.Complete)
+                {
+                    hook.OnEndExecute(true);
+                }
+            }
+        }
+        private void UnDoQueues()
+        {
+            while (actionQueue.Count > 0)
+            {
+                var action = actionQueue.Dequeue();
+                if (action.Started){
+                    action.OnUnDoExecute();
+                }
+            }
+            while (hookList.Count > 0)
+            {
+                var hook = hookList[0];
+                    hookList.RemoveAt(0);
+                if (hook.Started)
+                {
+                    hook.OnUnDoExecute();
+                }
+            }
+
+        }
         protected bool ExecuteAStep()
         {
             if (queueID.Count > 0)
@@ -160,7 +221,6 @@ namespace WorldActionSystem
                 var id = queueID[0];
                 queueID.RemoveAt(0);
                 var neetActive = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Started);
-                if (neetActive.Length == 0) return false;
                 if (isForceAuto)
                 {
                     hookList.Clear();
@@ -174,21 +234,18 @@ namespace WorldActionSystem
                         else /*if(item is ActionHook)*/
                         {
                             hookList.Add(item as ActionHook);
+                            startedActions.Add(item);
                         }
                     }
                     QueueExectueActions();
                 }
                 else
                 {
-                    CameraController.SetViewCamera(() =>
+                    foreach (var item in neetActive)
                     {
-                        foreach (var item in neetActive)
-                        {
-                            var obj = item;
-                            TryStartAction(obj);
-                        }
-                    }, GetCameraID(neetActive[neetActive.Length - 1]));
-                    
+                        var obj = item;
+                        TryStartAction(obj);
+                    }
                 }
                 return true;
             }
@@ -200,28 +257,54 @@ namespace WorldActionSystem
             if(actionQueue.Count > 0)
             {
                 var actionObj = actionQueue.Dequeue();
-                CameraController.SetViewCamera(() =>
-                {
-                    TryStartAction(actionObj);
-                },GetCameraID(actionObj));
+                if(log) Debug.Log("QueueExectueActions" + actionObj);
+                TryStartAction(actionObj);
             }
             ///最后执行hook
             if (actionQueue.Count == 0)
             {
-                foreach (var item in hookList)
+                while (hookList.Count > 0)
                 {
+                    var item = hookList[0];
+                    hookList.RemoveAt(0);
                     TryStartAction(item);
                 }
             }
         }
         private void TryStartAction(IActionObj obj)
         {
+            if(log) Debug.Log("Start A Step:" + obj);
+            if(!obj.Started)
+            {
+                if(obj.CameraID == null)
+                {
+                    StartAction(obj);
+                }
+                else
+                {
+                    CameraController.SetViewCamera(() =>
+                    {
+                        StartAction(obj);
+                    }, GetCameraID(obj));
+                }
+            }
+            else
+            {
+                Debug.LogError(obj + " allready started");
+            }
+           
+        }
+
+        private void StartAction(IActionObj obj)
+        {
             if (!obj.Started)
             {
-                obj.onEndExecute = OnCommandObjComplete;
+                obj.onEndExecute = () => OnCommandObjComplete(obj);
                 obj.OnStartExecute(isForceAuto);
+                startedActions.Add(obj);
             }
         }
+
 
         private string GetCameraID(IActionObj obj)
         {
@@ -231,12 +314,16 @@ namespace WorldActionSystem
                 return null;
             }
             //忽略匹配相机
-            else if (Setting.ignoreMatch && obj is MatchObj)
+            else if (Setting.ignoreMatch && obj is MatchObj && !(obj as MatchObj).ignorePass)
+            {
+                return null;
+            }
+            else if(Setting.ignoreInstall && obj is InstallObj && !(obj as InstallObj).ignorePass)
             {
                 return null;
             }
             //除要求使用特殊相机或是动画步骤,都用主摄像机
-            else if (Setting.useOperateCamera || commandType == 0)
+            else if (Setting.useOperateCamera || obj is AnimObj)
             {
                 if (string.IsNullOrEmpty(obj.CameraID))
                 {
@@ -264,7 +351,7 @@ namespace WorldActionSystem
 
         private void StopUpdateAction()
         {
-
+            CameraController.StopLastCoroutine();
             if (coroutine != null)
             {
                 trigger.StopCoroutine(coroutine);

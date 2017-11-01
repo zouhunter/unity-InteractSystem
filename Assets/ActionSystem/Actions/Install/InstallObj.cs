@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Internal;
 #if !NoFunction
 using DG.Tweening;
 #endif
@@ -16,6 +17,7 @@ namespace WorldActionSystem
     public class InstallObj : ActionObj
     {
         public bool autoInstall;
+        public bool ignorePass;//反忽略
         public bool Installed { get { return obj != null; } }
         public PickUpAbleElement obj { get; private set; }
 
@@ -39,12 +41,20 @@ namespace WorldActionSystem
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
                 Attach(obj);
-                obj.NormalInstall(gameObject);
+
+                if (Setting.ignoreInstall && !ignorePass)
+                {
+                    obj.QuickInstall(gameObject);
+                }
+                else
+                {
+                    obj.NormalInstall(gameObject);
+                }
             }
         }
-        public override void OnEndExecute()
+        public override void OnEndExecute(bool force)
         {
-            base.OnEndExecute();
+            base.OnEndExecute(force);
             if (!Installed)
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
@@ -54,6 +64,8 @@ namespace WorldActionSystem
         }
         public override void OnUnDoExecute()
         {
+            Debug.Log("UnDo:" + name);
+
             base.OnUnDoExecute();
             if (Installed)
             {
@@ -63,8 +75,9 @@ namespace WorldActionSystem
         }
         private void OnInstallComplete(PickUpAbleElement obj)
         {
-            if (obj == this.obj) {
-                TryEndExecute();
+            if (obj == this.obj)
+            {
+               OnEndExecute(false);
             }
         }
 

@@ -24,7 +24,7 @@ namespace WorldActionSystem
         public IActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
         protected ActionCtroller coroutineCtrl;
-
+        public ActionCtroller ActionCtrl { get { return coroutineCtrl; } }
         protected IActionObj[] actionObjs;
         [EnumMask, HideInInspector]
         public ControllerType commandType;
@@ -97,6 +97,7 @@ namespace WorldActionSystem
         {
             this.userErr = userErr;
         }
+
         public int CompareTo(ActionCommand other)
         {
             if (other.QueueID > QueueID)
@@ -192,7 +193,8 @@ namespace WorldActionSystem
             started = false;
             completed = false;
             onBeforeUnDo.Invoke(StepName);
-            if (coroutineCtrl != null) coroutineCtrl.OnUnDoExecute();
+            if (coroutineCtrl != null)
+                coroutineCtrl.OnUnDoExecute();
         }
 
 

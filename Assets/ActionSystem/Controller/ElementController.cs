@@ -24,22 +24,21 @@ namespace WorldActionSystem
         /// </summary>
         public static void RegistElement(PickUpAbleElement item)
         {
-            var obj = item;
-            if (objectList.ContainsKey(obj.name))
+            if (objectList.ContainsKey((string)item.Name))
             {
-                objectList[obj.name].Add(obj);
+                objectList[(string)item.Name].Add((PickUpAbleElement)item);
             }
             else
             {
-                objectList[obj.name] = new List<PickUpAbleElement>() { obj };
+                objectList[(string)item.Name] = new System.Collections.Generic.List<PickUpAbleElement>() { item };
             }
 
-            obj.onInstallOkEvent = ()=> {
-                if (onInstall != null) onInstall.Invoke(obj);
+            item.onInstallOkEvent = () => {
+                if (onInstall != null) onInstall.Invoke((PickUpAbleElement)item);
             };
-            obj.onUnInstallOkEvent = () =>
+            item.onUnInstallOkEvent = () =>
             {
-                if (onUnInstall != null) onUnInstall.Invoke(obj);
+                if (onUnInstall != null) onUnInstall.Invoke((PickUpAbleElement)item);
             };
         }
         

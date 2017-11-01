@@ -48,12 +48,16 @@ namespace WorldActionSystem
         private IEnumerator DelyPlay()
         {
             yield return new WaitForSeconds(delyTime);
-            if (animPlayer != null) animPlayer.Play(speed, TryEndExecute);
+            if (animPlayer != null) animPlayer.Play(speed, OnAnimPlayCallBack);
+        }
+        private void OnAnimPlayCallBack()
+        {
+            OnEndExecute(false);
         }
 
-        public override void OnEndExecute()
+        public override void OnEndExecute(bool force)
         {
-            base.OnEndExecute();
+            base.OnEndExecute(force);
             if (delyPlay != null) StopCoroutine(delyPlay);
             if (animPlayer != null) animPlayer.EndPlay();
         }
