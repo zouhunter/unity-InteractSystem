@@ -17,26 +17,21 @@ namespace WorldActionSystem
 
         SerializedProperty lineWightProp;
         SerializedProperty lineMaterialProp;
-        SerializedProperty hitDistenceProp;
         SerializedProperty pointDistenceProp;
-        SerializedProperty elementDistenceProp;
 
         SerializedProperty onBeforeActiveProp;
         SerializedProperty onBeforeUnDoProp;
         SerializedProperty onBeforePlayEndProp;
 
         bool drawLineInfo;
-        bool drawHitDistence;
-        bool drawElementDistence;
+        bool drawPointDistence;
         List<ControllerType> activeCommands = new List<ControllerType>();
 
         private void OnEnable()
         {
             commandTypeProp = serializedObject.FindProperty("commandType");
-            elementDistenceProp = serializedObject.FindProperty("elementDistence");
             lineWightProp = serializedObject.FindProperty("lineWight");
             lineMaterialProp = serializedObject.FindProperty("lineMaterial");
-            hitDistenceProp = serializedObject.FindProperty("hitDistence");
             pointDistenceProp = serializedObject.FindProperty("pointDistence");
 
             onBeforeActiveProp = serializedObject.FindProperty("onBeforeActive");
@@ -70,52 +65,42 @@ namespace WorldActionSystem
                 EditorGUILayout.PropertyField(lineMaterialProp);
                 EditorGUILayout.PropertyField(pointDistenceProp);
             }
-            if (drawHitDistence)
+            if (drawPointDistence)
             {
-                EditorGUILayout.PropertyField(hitDistenceProp);
                 EditorGUILayout.PropertyField(pointDistenceProp);
             }
-
-            if(drawElementDistence)
-            {
-                EditorGUILayout.PropertyField(elementDistenceProp);
-            }
-
         }
         private void SwitchDrawing()
         {
             drawLineInfo = false;
-            drawHitDistence = false;
-            drawElementDistence = false;
+            drawPointDistence = false;
             activeCommands.Clear();
             var type = (ControllerType)commandTypeProp.intValue;
             if ((type & ControllerType.Click) == ControllerType.Click)
             {
-                drawHitDistence = true;
                 activeCommands.Add(ControllerType.Click);
             }
             if ((type & ControllerType.Connect) == ControllerType.Connect)
             {
-                drawHitDistence = true;
+                drawPointDistence = true;
                 drawLineInfo = true;
                 activeCommands.Add(ControllerType.Connect);
             }
             if ((type & ControllerType.Install) == ControllerType.Install)
             {
-                drawElementDistence = true;
-                drawHitDistence = true;
                 activeCommands.Add(ControllerType.Install);
             }
             if ((type & ControllerType.Match) == ControllerType.Match)
             {
-                drawElementDistence = true;
-                drawHitDistence = true;
                 activeCommands.Add(ControllerType.Match);
             }
             if ((type & ControllerType.Rotate) == ControllerType.Rotate)
             {
-                drawHitDistence = true;
                 activeCommands.Add(ControllerType.Rotate);
+            }
+            if((type & ControllerType.Rope) == ControllerType.Rope)
+            {
+                activeCommands.Add(ControllerType.Rope);
             }
         }
 
@@ -152,6 +137,11 @@ namespace WorldActionSystem
                     {
                         err = cmd.name + " add ctrl of " + ControllerType.Connect;
                         commandTypeProp.intValue |= (int)ControllerType.Connect;
+                    }
+                    else if (item is RopeObj && !ContainsType(ControllerType.Rope))
+                    {
+                        err = cmd.name + " add ctrl of " + ControllerType.Rope;
+                        commandTypeProp.intValue |= (int)ControllerType.Rope;
                     }
                 }
             }

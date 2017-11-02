@@ -41,29 +41,36 @@ namespace WorldActionSystem
                     lineRender = trigger.gameObject.AddComponent<LineRenderer>();
                 }
                 var objs = Array.ConvertAll<IActionObj, ConnectObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
-                var connectCtrl = new ConnectCtrl(lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.hitDistence, trigger.pointDistence);
+                var connectCtrl = new ConnectCtrl(lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.pointDistence);
                 connectCtrl.onError = trigger.UserError;
                 commandList.Add(connectCtrl);
             }
             if ((commandType & ControllerType.Match) == ControllerType.Match)
             {
                 var matchObjs = Array.ConvertAll<IActionObj, MatchObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
-                var matchCtrl = new MatchCtrl(trigger.hitDistence, trigger.elementDistence, matchObjs);
+                var matchCtrl = new MatchCtrl( matchObjs);
                 matchCtrl.UserError = trigger.UserError;
                 commandList.Add(matchCtrl);
             }
             if ((commandType & ControllerType.Install) == ControllerType.Install)
             {
                 var installObjs = Array.ConvertAll<IActionObj, InstallObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
-                var installCtrl = new InstallCtrl(trigger.hitDistence, trigger.elementDistence, installObjs);
+                var installCtrl = new InstallCtrl(installObjs);
                 installCtrl.UserError = trigger.UserError;
                 commandList.Add(installCtrl);
             }
             if ((commandType & ControllerType.Rotate) == ControllerType.Rotate)
             {
-                var rotAnimCtrl = new RotateAnimController(trigger.hitDistence);
+                var rotAnimCtrl = new RotateAnimController();
                 rotAnimCtrl.UserError = trigger.UserError;
                 commandList.Add(rotAnimCtrl);
+            }
+            if((commandType & ControllerType.Rope) == ControllerType.Rope)
+            {
+                var ropeObjs = Array.ConvertAll<IActionObj, RopeObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is RopeObj), x => x as RopeObj);
+                var ropCtrl = new RopeController(ropeObjs);
+                ropCtrl.UserError = trigger.UserError;
+                commandList.Add(ropCtrl);
             }
         }
 

@@ -34,7 +34,6 @@ namespace WorldActionSystem
         public Toggle.ToggleEvent onBeforeStart;
         public Toggle.ToggleEvent onBeforeComplete;
         public UnityEvent onBeforeUnDo;
-
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;

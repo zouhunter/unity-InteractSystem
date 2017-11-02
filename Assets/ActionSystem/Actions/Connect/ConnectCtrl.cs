@@ -18,13 +18,12 @@ namespace WorldActionSystem
         private Collider firstCollider;
         private LineRenderer line;
         private float pointDistence;
-        private float hitDistence;
+        private float hitDistence { get { return Setting.hitDistence; } }
         private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
-        public ConnectCtrl(LineRenderer lineRender, ConnectObj[] objs, Material lineMaterial, float lineWight, float hitDistence, float pointDistence)
+        public ConnectCtrl(LineRenderer lineRender, ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence)
         {
             this.objs = objs;
-            this.hitDistence = hitDistence;
             this.pointDistence = pointDistence;
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);

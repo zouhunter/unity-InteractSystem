@@ -13,13 +13,9 @@ namespace WorldActionSystem
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
-        private float distence = 10;
-        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
+        private float distence { get { return Setting.hitDistence; } }
 
-        public RotateAnimController(float distence)
-        {
-            this.distence = distence;
-        }
+        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
         public void Update()
         {

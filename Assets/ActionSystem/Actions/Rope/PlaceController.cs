@@ -1,38 +1,63 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+
 namespace WorldActionSystem
 {
-
-    public class InstallCtrl : IActionCtroller
+    public abstract class PlaceItem : ActionObj
     {
-        public bool Active { get; private set; }
+        public virtual string Name { get { return name; } }
+        public virtual GameObject Go { get { return gameObject; } }
+        public virtual bool AlreadyPlaced { get { return obj != null; } }
+        public abstract int layer { get; }
+        public virtual PickUpAbleElement obj { get; protected set; }
+        public virtual void Attach(PickUpAbleElement obj)
+        {
+            this.obj = obj;
+        }
+        public virtual PickUpAbleElement Detach()
+        {
+            PickUpAbleElement old = obj;
+            obj = default(PickUpAbleElement);
+            return old;
+        }
+        protected virtual void Awake()
+        {
+            gameObject.layer = layer;
+        }
+    }
+
+    public abstract class PlaceController : IActionCtroller
+    {
         public UnityAction<string> UserError { get; set; }
-        IHighLightItems highLight;
-        private PickUpAbleElement pickedUpObj;
-        private bool pickedUp;
-        private InstallObj installPos;
-        private Ray ray;
-        private RaycastHit hit;
-        private RaycastHit[] hits;
-        private bool installAble;
-        private string resonwhy;
-        private float hitDistence { get { return Setting.hitDistence; } }
-        private List<InstallObj> installObjs = new List<InstallObj>();
-        private float elementDistence;
-        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
-        private bool activeNotice { get { return Setting.highLightNotice; } }
-        public InstallCtrl( InstallObj[] installObjs)
+        protected IHighLightItems highLight;
+        protected PickUpAbleElement pickedUpObj;
+        protected bool pickedUp;
+        protected PlaceItem installPos;
+        protected Ray ray;
+        protected RaycastHit hit;
+        protected RaycastHit[] hits;
+        protected bool installAble;
+        protected string resonwhy;
+        protected float hitDistence { get { return Setting.hitDistence; } }
+        protected List<PlaceItem> placeitems = new List<PlaceItem>();
+        protected Camera viewCamera { get { return CameraController.ActiveCamera; } }
+        protected bool activeNotice { get { return Setting.highLightNotice; } }
+        protected Ray disRay;
+        protected RaycastHit disHit;
+        protected float elementDistence;
+        protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
+
+        public PlaceController(PlaceItem[] placeitems)
         {
             highLight = new ShaderHighLight();
-            this.installObjs.AddRange(installObjs);
+            this.placeitems.AddRange(placeitems);
         }
 
         #region 鼠标操作事件
-        public void Update()
+        public virtual void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -40,12 +65,12 @@ namespace WorldActionSystem
             }
             else if (pickedUp)
             {
-                UpdateInstallState();
+                UpdatePlaceState();
                 MoveWithMouse(elementDistence += Input.GetAxis("Mouse ScrollWheel"));
             }
         }
 
-        private void OnLeftMouseClicked()
+        protected virtual void OnLeftMouseClicked()
         {
             if (!pickedUp)
             {
@@ -53,7 +78,7 @@ namespace WorldActionSystem
             }
             else
             {
-                TryInstallObject();
+                TryPlaceObject();
             }
         }
 
@@ -71,7 +96,6 @@ namespace WorldActionSystem
                     if (pickedUpObj.Installed){
                         pickedUpObj.NormalUnInstall();
                     }
-
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
                     elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
@@ -79,10 +103,10 @@ namespace WorldActionSystem
             }
         }
 
-        public void UpdateInstallState()
+        public void UpdatePlaceState()
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, hitDistence, (1 << Setting.installPosLayer));
+            hits = Physics.RaycastAll(ray, hitDistence, PlacePoslayerMask);
             if (hits != null || hits.Length > 0)
             {
                 bool hited = false;
@@ -91,30 +115,8 @@ namespace WorldActionSystem
                     if (hits[i].collider.name == pickedUpObj.name)
                     {
                         hited = true;
-                        installPos = hits[i].collider.GetComponent<InstallObj>();
-                        if (installPos == null)
-                        {
-                            Debug.LogError("【配制错误】:零件未挂InstallObj脚本");
-                        }
-                        else if (!IsInstallStep(installPos))
-                        {
-                            installAble = false;
-                            resonwhy = "操作顺序错误";
-                        }
-                        else if (HaveInstallObjInstalled(installPos))
-                        {
-                            installAble = false;
-                            resonwhy = "已经安装";
-                        }
-                        else if (pickedUpObj.name != installPos.name)
-                        {
-                            installAble = false;
-                            resonwhy = "零件不匹配";
-                        }
-                        else
-                        {
-                            installAble = true;
-                        }
+                        installPos = hits[i].collider.GetComponent<PlaceItem>();
+                        installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
                     }
                 }
                 if (!hited)
@@ -139,21 +141,16 @@ namespace WorldActionSystem
         /// <summary>
         /// 尝试安装元素
         /// </summary>
-        void TryInstallObject()
+        void TryPlaceObject()
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (installAble)
             {
-                var status = installPos.Attach(pickedUpObj);
-                if (status)
-                {
-                    pickedUpObj.QuickInstall(installPos.gameObject);
-                }
-                installPos.OnEndExecute(false);
+                PlaceObject(installPos, pickedUpObj);
             }
             else
             {
-                pickedUpObj.NormalMoveBack();
+                PlaceWrong(pickedUpObj);
                 UserError(resonwhy);
             }
 
@@ -162,8 +159,11 @@ namespace WorldActionSystem
             if (activeNotice) highLight.UnHighLightTarget(pickedUpObj.Render);
         }
 
-        private Ray disRay;
-        private RaycastHit disHit;
+        protected abstract bool CanPlace(PlaceItem placeItem, PickUpAbleElement element, out string why);
+
+        protected abstract void PlaceObject(PlaceItem pos, PickUpAbleElement pickup);
+
+        protected abstract void PlaceWrong(PickUpAbleElement pickup);
 
         /// <summary>
         /// 跟随鼠标
@@ -181,19 +181,6 @@ namespace WorldActionSystem
             }
         }
 
-        private List<InstallObj> GetNotInstalledPosList()
-        {
-            var list = installObjs.FindAll(x => !x.Installed);
-            return list;
-        }
-        private bool HaveInstallObjInstalled(InstallObj obj)
-        {
-            return obj.Installed;
-        }
-        private bool IsInstallStep(InstallObj obj)
-        {
-            return installObjs.Contains(obj) && obj.Started;
-        }
         #endregion
 
         public void OnStartExecute(bool forceauto)
@@ -214,15 +201,14 @@ namespace WorldActionSystem
         /// </summary>
         private void SetStartNotify()
         {
-            List<InstallObj> posList = GetNotInstalledPosList();
             var keyList = new List<string>();
-            foreach (var pos in posList)
+            foreach (var pos in placeitems)
             {
-                if (!keyList.Contains(pos.name))
+                if (!keyList.Contains(pos.Name))
                 {
-                    keyList.Add(pos.name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    keyList.Add(pos.Name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+                    if (listObjs == null) throw new UnityException("元素配制错误:没有:" + pos.Name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
                         if (!listObjs[j].Installed)
@@ -241,12 +227,12 @@ namespace WorldActionSystem
         private void SetCompleteNotify(bool undo)
         {
             var keyList = new List<string>();
-            foreach (var pos in installObjs)
+            foreach (var pos in placeitems)
             {
-                if (!keyList.Contains(pos.name))
+                if (!keyList.Contains(pos.Name))
                 {
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+                    if (listObjs == null) throw new UnityException("元素配制错误:没有:" + pos.Name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
                         if (!listObjs[j].Installed && undo)
@@ -262,5 +248,4 @@ namespace WorldActionSystem
             }
         }
     }
-
 }

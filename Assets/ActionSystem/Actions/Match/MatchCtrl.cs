@@ -21,16 +21,14 @@ namespace WorldActionSystem
         private RaycastHit disHit;
         private bool matchAble;
         private string resonwhy;
-        private float hitDistence;
+        private float hitDistence { get { return Setting.hitDistence; } }
         private float pickDistence;
         private List<MatchObj> matchObjs;
         private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
-        public MatchCtrl(float hitDistence, float pickDistence, MatchObj[] matchObjs)
+        public MatchCtrl(MatchObj[] matchObjs)
         {
             highLight = new ShaderHighLight();
-            this.hitDistence = hitDistence;
-            this.pickDistence = pickDistence;
             this.matchObjs = new List<MatchObj>(matchObjs);
         }
 

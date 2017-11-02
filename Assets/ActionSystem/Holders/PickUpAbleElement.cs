@@ -20,7 +20,6 @@ namespace WorldActionSystem
         public bool endActive = true;//如果是false,则完成后将进行隐藏
         public bool Installed { get { return target != null; } }
         public virtual string Name { get { return name; } }
-
         private GameObject target;
         public Renderer Render { get { return m_render; } }
         public UnityAction onInstallOkEvent;
@@ -45,6 +44,7 @@ namespace WorldActionSystem
 #endif
         protected IHighLightItems highLighter;
         protected bool actived;
+        public bool Started { get { return actived; } }
 #if !NoFunction
         protected virtual void Start()
         {
@@ -104,7 +104,7 @@ namespace WorldActionSystem
                         onInstallOkEvent();
                     StepComplete();
                 });
-                this.target = target;
+                Attach(target);
             }
 #endif
         }
@@ -147,7 +147,7 @@ namespace WorldActionSystem
                 transform.rotation = target.transform.rotation;
                 if (onInstallOkEvent != null)
                     onInstallOkEvent();
-                this.target = target;
+                Attach(target);
             }
             StepComplete();
         }
@@ -163,7 +163,7 @@ namespace WorldActionSystem
                     if (onUnInstallOkEvent != null)
                         onUnInstallOkEvent();
                 });
-                target = null;
+                Detach();
             }
 #endif
         }
@@ -205,6 +205,7 @@ namespace WorldActionSystem
                 target = null;
                 if (onUnInstallOkEvent != null)
                     onUnInstallOkEvent();
+                Detach();
             }
 #endif
         }
@@ -248,6 +249,7 @@ namespace WorldActionSystem
         protected virtual void Update()
         {
             if (!Setting.highLightNotice) return;
+            if (m_render == null) return;
             if(actived)
             {
                 highLighter.HighLightTarget(m_render, highLightColor);
@@ -265,7 +267,16 @@ namespace WorldActionSystem
             move.Kill(true);
 #endif
         }
-
+        protected virtual void Attach(GameObject target)
+        {
+            this.target = target;
+        }
+        protected virtual GameObject Detach()
+        {
+            var old = target;
+            target = null;
+            return old;
+        }
         public virtual void RegisterRenderer(Renderer renderer)
         {
             if (renderer != null)

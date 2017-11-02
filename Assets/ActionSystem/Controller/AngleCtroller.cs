@@ -36,13 +36,20 @@ namespace WorldActionSystem {
             }
         }
 
-        public void Notice(Transform target)
+        public void Notice(Transform target,bool update = false)
         {
             if (!Setting.highLightNotice) return;
 
             if (!actived.ContainsKey(target))
             {
                 actived.Add(target, GetAnAngle(target));
+            }
+            else
+            {
+                if(update)
+                {
+                    CopyTranform(actived[target].transform, target);
+                }
             }
         }
 

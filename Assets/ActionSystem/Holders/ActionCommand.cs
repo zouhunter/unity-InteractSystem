@@ -36,10 +36,6 @@ namespace WorldActionSystem
         [HideInInspector]
         public Material lineMaterial;
         [HideInInspector]
-        public float hitDistence = 10;
-        [HideInInspector]
-        public float elementDistence = 4;
-        [HideInInspector]
         public float pointDistence = 0.1f;
         #endregion
 
