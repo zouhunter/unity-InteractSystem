@@ -38,14 +38,19 @@ namespace WorldActionSystem
         }
         private Transform angleTemp;
         private Coroutine antoCoroutine;
+        private bool innerRopeItem;
 
         protected override void Awake()
         {
             base.Awake();
             TryAutoRegistRopeItem();
             RegistNodes();
-            ElementController.onInstall += OnInstallComplete;
-            ElementController.onUnInstall += OnUnInstallComplete;
+            if (!innerRopeItem)
+            {
+                ElementController.onInstall += OnInstallComplete;
+                ElementController.onUnInstall += OnUnInstallComplete;
+            }
+
         }
         protected override void Start()
         {
@@ -55,16 +60,19 @@ namespace WorldActionSystem
 
         private void OnDestroy()
         {
-            ElementController.onInstall -= OnInstallComplete;
-            ElementController.onUnInstall -= OnUnInstallComplete;
+            if (!innerRopeItem)
+            {
+                ElementController.onInstall -= OnInstallComplete;
+                ElementController.onUnInstall -= OnUnInstallComplete;
+            }
         }
 
         private void OnInstallComplete(PickUpAbleElement obj)
         {
             if (obj == this.obj)
             {
+                ropeItem.RegistNodesInstallPos();
                 //提示一个接头点
-
                 if (auto)
                 {
                     antoCoroutine = StartCoroutine(AutoInstallAllRopeNode());
@@ -192,11 +200,18 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            if (auto)
+            if (innerRopeItem)
             {
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
-                Attach(obj);
-                obj.NormalInstall(gameObject);
+                OnInstallComplete(obj);
+            }
+            else 
+            {
+                if(auto)
+                {
+                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                    Attach(obj);
+                    obj.NormalInstall(gameObject);
+                }
             }
         }
         public override void OnUnDoExecute()
@@ -206,10 +221,17 @@ namespace WorldActionSystem
             if (AlreadyPlaced)
             {
                 var ropeItem = this.ropeItem;
-                var obj = Detach();
-                obj.QuickUnInstall();
+                if (!innerRopeItem)
+                {
+                    var obj = Detach();
+                    obj.QuickUnInstall();
+                    ropeItem.QuickUnInstallAllRopeNode();
+                }
+                else
+                {
+                    ropeItem.PickDownAllCollider();
+                }
                 anglePos = angleTemp;
-                ropeItem.QuickUnInstallAllRopeNode();
             }
             connected.Clear();
         }
@@ -219,9 +241,12 @@ namespace WorldActionSystem
             if (antoCoroutine != null) StopCoroutine(antoCoroutine);
             if (!AlreadyPlaced)
             {
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
-                Attach(obj);
-                obj.QuickInstall(gameObject);
+                if (!innerRopeItem)
+                {
+                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                    Attach(obj);
+                    obj.QuickInstall(gameObject);
+                }
             }
             ropeItem.QuickInstallRopeNodes(ropeNode);
             connected = new List<Collider>(ropeNode);
@@ -251,7 +276,9 @@ namespace WorldActionSystem
         {
             if (ropeItem)
             {
-                ropeItem.QuickMoveTo(gameObject);
+                innerRopeItem = true;
+                Attach(obj);
+                obj.QuickInstall(gameObject);
             }
         }
 

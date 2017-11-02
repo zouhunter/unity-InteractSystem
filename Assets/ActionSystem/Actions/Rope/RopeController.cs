@@ -54,17 +54,25 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.ropeNodeLayer)))
             {
                 var ropeItem = hit.collider.GetComponentInParent<RopeItem>();
-                if (ropeItem != null && ropeItem.Installed && ropeObj.obj == ropeItem)//正在进行操作
+                if (ropeItem != null && ropeItem.Installed)//正在进行操作
                 {
-                    ropeObj.OnPickupCollider(hit.collider);
-                    this.ropeItem = ropeItem;
-                    pickUpedRopeNode = hit.collider;
-                    Debug.Log("Select: " + pickUpedRopeNode);
-
-                    elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
+                    if (ropeObj == null)
+                    {
+                        installPos = ropeObjs.Find(x => x.obj == ropeItem);
+                        pickedUpObj = ropeItem;
+                    }
+                    if (ropeObj != null)
+                    {
+                        ropeObj.OnPickupCollider(hit.collider);
+                        this.ropeItem = ropeItem;
+                        pickUpedRopeNode = hit.collider;
+                        Debug.Log("Select: " + pickUpedRopeNode);
+                        elementDistence = Vector3.Distance(viewCamera.transform.position, ropeItem.transform.position);
+                    }
                 }
             }
         }
+
         private void UpdateInstallRopeNode()
         {
             if(Input.GetMouseButtonDown(0))

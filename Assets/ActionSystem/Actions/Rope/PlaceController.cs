@@ -91,7 +91,7 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
             {
                 pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
-                if (pickedUpObj != null)
+                if (pickedUpObj != null && pickedUpObj.Started)
                 {
                     if (pickedUpObj.Installed){
                         pickedUpObj.NormalUnInstall();

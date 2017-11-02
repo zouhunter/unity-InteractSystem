@@ -14,7 +14,6 @@ namespace WorldActionSystem
         private Vector3[] ropeNodesInstallPos;
         private Vector3[] ropeNodesStartPos;
         private List<int> lockId = new List<int>();
-
         private void Awake()
         {
             ropeNodesStartPos = new Vector3[ropeNode.Count];
@@ -24,13 +23,8 @@ namespace WorldActionSystem
                 ropeNode[i].gameObject.layer = Setting.ropeNodeLayer;
             }
         }
-        public override void StepComplete()
-        {
-            base.StepComplete();
-            RegistNodesInstallPos();
-        }
 
-        private void RegistNodesInstallPos()
+        public void RegistNodesInstallPos()
         {
             ropeNodesInstallPos = new Vector3[ropeNode.Count];
             for (int i = 0; i < ropeNodesInstallPos.Length; i++)
