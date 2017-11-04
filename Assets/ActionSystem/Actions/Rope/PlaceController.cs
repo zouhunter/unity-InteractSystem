@@ -23,33 +23,38 @@ namespace WorldActionSystem
         protected virtual void Awake()
         {
             gameObject.layer = layer;
+            ElementController.onInstall += OnInstallComplete;
+            ElementController.onUnInstall += OnUnInstallComplete;
+
+            onBeforeStart.AddListener((auto) =>
+            {
+                ElementController.ActiveElements(Name);
+            });
+            onBeforeComplete.AddListener((force) =>
+            {
+                ElementController.CompleteElements(Name, false);
+            });
+            onBeforeUnDo.AddListener(()=> {
+                ElementController.CompleteElements(Name, true);
+            });
+        }
+        protected virtual void OnDestroy()
+        {
+            ElementController.onInstall -= OnInstallComplete;
+            ElementController.onUnInstall -= OnUnInstallComplete;
         }
 
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            ElementController.onInstall += OnInstallComplete;
-            ElementController.onUnInstall -= OnUnInstallComplete;
-            SetStartNotify();
-            if(auto || autoInstall)
+            if (auto || autoInstall)
             {
                 OnAutoInstall();
             }
         }
         protected abstract void OnAutoInstall();
 
-        public override void OnUnDoExecute()
-        {
-            base.OnUnDoExecute();
-            SetComplete(true);
-        }
-        public override void OnEndExecute(bool force)
-        {
-            base.OnEndExecute(force);
-            SetComplete(false);
-            ElementController.onInstall -= OnInstallComplete;
-            ElementController.onUnInstall += OnUnInstallComplete;
-        }
+   
 
         public virtual void Attach(PickUpAbleElement obj)
         {
@@ -64,38 +69,6 @@ namespace WorldActionSystem
             obj = default(PickUpAbleElement);
             return old;
         }
-
-        protected virtual void SetStartNotify()
-        {
-            var objs = ElementController.GetElements(Name);
-            for (int i = 0; i < objs.Count; i++)
-            {
-                if(!objs[i].Started && !objs[i].Installed)
-                {
-                    objs[i].StepActive();
-                }
-            }
-        }
-        protected virtual void SetComplete(bool undo)
-        {
-            var objs = ElementController.GetElements(Name);
-            for (int i = 0; i < objs.Count; i++)
-            {
-                if (objs[i].Started)
-                { 
-                    if (undo)
-                    {
-                        obj.StepUnDo();
-                    }
-                    else
-                    {
-                        obj.StepComplete();
-                    }
-                }
-            }
-          
-        }
-
     }
 
     public abstract class PlaceController : IActionCtroller
@@ -163,7 +136,8 @@ namespace WorldActionSystem
                 if (pickedUpObj != null && pickedUpObj.Started)
                 {
                     this.pickedUpObj = pickedUpObj;
-                    if (pickedUpObj.Installed){
+                    if (pickedUpObj.Installed)
+                    {
                         pickedUpObj.NormalUnInstall();
                     }
                     pickedUpObj.OnPickUp();
@@ -253,6 +227,6 @@ namespace WorldActionSystem
         }
 
         #endregion
-      
+
     }
 }

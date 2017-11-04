@@ -11,6 +11,7 @@ namespace WorldActionSystem
         public static event UnityAction<PickUpAbleElement> onInstall;
         public static event UnityAction<PickUpAbleElement> onUnInstall;
         private static Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
+        private static List<string> lockQueue = new List<string>();
 
         public static void Clean()
         {
@@ -79,6 +80,48 @@ namespace WorldActionSystem
                 }
             }
             throw new Exception("配制错误,缺少" + elementName);
+        }
+
+        public static void ActiveElements(string elementName)
+        {
+            if(!lockQueue.Contains(elementName))
+            {
+                var objs = ElementController.GetElements(elementName);
+                for (int i = 0; i < objs.Count; i++)
+                {
+                    if (!objs[i].Started && !objs[i].Installed)
+                    {
+                        objs[i].StepActive();
+                    }
+                }
+            }
+            lockQueue.Add(elementName);
+            Debug.Log("Add");
+        }
+        public static void CompleteElements(string elementName,bool undo)
+        {
+            lockQueue.Remove(elementName);
+            Debug.Log("Remove");
+            if (!lockQueue.Contains(elementName))
+            {
+                var objs = ElementController.GetElements(elementName);
+                for (int i = 0; i < objs.Count; i++)
+                {
+                    if (objs[i].Started)
+                    {
+                        if (undo)
+                        {
+                            objs[i].StepUnDo();
+                        }
+                        else
+                        {
+                            objs[i].StepComplete();
+                        }
+                    }
+                }
+            }
+            
+            
         }
     }
 
