@@ -23,8 +23,6 @@ namespace WorldActionSystem
         protected virtual void Awake()
         {
             gameObject.layer = layer;
-            ElementController.onInstall += OnInstallComplete;
-            ElementController.onUnInstall += OnUnInstallComplete;
 
             onBeforeStart.AddListener((auto) =>
             {
@@ -40,27 +38,37 @@ namespace WorldActionSystem
         }
         protected virtual void OnDestroy()
         {
-            ElementController.onInstall -= OnInstallComplete;
-            ElementController.onUnInstall -= OnUnInstallComplete;
         }
 
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
+            ElementController.onInstall += OnInstallComplete;
             if (auto || autoInstall)
             {
                 OnAutoInstall();
             }
         }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            ElementController.onInstall -= OnInstallComplete;
+            ElementController.onUnInstall += OnUnInstallComplete;
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            ElementController.onUnInstall -= OnUnInstallComplete;
+        }
         protected abstract void OnAutoInstall();
-
-   
-
+        
         public virtual void Attach(PickUpAbleElement obj)
         {
             this.obj = obj;
         }
+
         protected abstract void OnInstallComplete(PickUpAbleElement arg0);
+
         protected abstract void OnUnInstallComplete(PickUpAbleElement arg0);
 
         public virtual PickUpAbleElement Detach()

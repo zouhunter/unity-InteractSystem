@@ -66,22 +66,7 @@ namespace WorldActionSystem
         }
         private void RegistActionObjs()
         {
-            ///只操作第一层活动的对象
-            var first = new List<IActionObj>();
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var item = transform.GetChild(i);
-                if (item.gameObject.activeSelf)
-                {
-                    var actions = item.GetComponents<IActionObj>();
-                    if (actions != null)
-                    {
-                        first.AddRange(actions);
-                    }
-                }
-            }
-
-            actionObjs = first.ToArray();
+            actionObjs = GetComponentsInChildren<IActionObj>(true);
         }
 
         public void RegistComplete(StepComplete stepComplete)

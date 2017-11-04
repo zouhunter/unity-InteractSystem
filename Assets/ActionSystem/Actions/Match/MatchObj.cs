@@ -44,6 +44,8 @@ namespace WorldActionSystem
     
         protected override void OnAutoInstall()
         {
+            var obj = ElementController.GetUnInstalledObj(Name);
+            Attach(obj);
             if (Setting.ignoreMatch && !ignorePass)
             {
                 if (!completeMoveBack)
@@ -66,15 +68,17 @@ namespace WorldActionSystem
 
         protected override void OnInstallComplete(PickUpAbleElement arg0)
         {
-            if (obj == this.obj && Started && !Complete)
-            {
+            if (arg0 == this.obj && Started && !Complete){
                 OnEndExecute(false);
             }
         }
 
         protected override void OnUnInstallComplete(PickUpAbleElement arg0)
         {
-            
+            if(arg0 == this.obj && Started)
+            {
+                arg0.StepUnDo();
+            }
         }
     }
 }
