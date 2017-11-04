@@ -12,38 +12,39 @@ namespace WorldActionSystem
     public class ActionEventHide : ActionObjBinding
     {
         public string key;
-        public bool reverse;
-
+        public bool activeOnComplete;
+        public bool activeOnStart;
+        
+        private string resetKey { get { return "HideResetObjects"; } }
         private string hideKey { get { return "HideObjects"; } }
         private string showKey { get { return "UnHideObjects"; } }
 
-        private void OnDestroy()
-        {
-            if (actionObj)
-            {
-                actionObj.onBeforeStart.RemoveListener(OnBeforeActive);
-                actionObj.onBeforeComplete.RemoveListener(OnBeforeComplete);
-            }
-        }
+
         protected override void OnBeforeActive(bool forceAuto)
         {
-            SetElementState(reverse);
-        }
-        protected override void OnBeforeComplete(bool force)
-        {
-            SetElementState(!reverse);
-        }
-
-        private void SetElementState(bool open)
-        {
-            if (open)
+            if(activeOnStart)
             {
-                EventController.NotifyObserver<string>(showKey, key);
+                EventController.NotifyObserver(showKey, key);
             }
             else
             {
-                EventController.NotifyObserver<string>(hideKey, key);
+                EventController.NotifyObserver(hideKey, key);
             }
+        }
+        protected override void OnBeforeComplete(bool force)
+        {
+            if (activeOnComplete)
+            {
+                EventController.NotifyObserver(showKey, key);
+            }
+            else
+            {
+                EventController.NotifyObserver(hideKey, key);
+            }
+        }
+        protected override void OnBeforeUnDo()
+        {
+            EventController.NotifyObserver(resetKey, key);
         }
 
     }

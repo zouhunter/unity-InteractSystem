@@ -143,11 +143,18 @@ namespace WorldActionSystem
             if (!started)
             {
                 started = true;
-
                 onBeforeActive.Invoke(StepName);
-
-                coroutineCtrl.OnStartExecute(forceAuto);
-
+                if(Setting.useOperateCamera && actionObjs.Length > 0 && actionObjs[0] is ActionHook && !string.IsNullOrEmpty(CameraID))
+                {
+                    CameraController.SetViewCamera(() =>
+                    {
+                        coroutineCtrl.OnStartExecute(forceAuto);
+                    }, CameraID);
+                }
+                else
+                {
+                    coroutineCtrl.OnStartExecute(forceAuto);
+                }
                 return true;
             }
             else

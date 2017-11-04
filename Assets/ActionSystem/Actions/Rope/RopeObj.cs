@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class RopeObj : PlaceItem
+    public class RopeObj : PlaceObj
     {
         [SerializeField]
         private List<Collider> ropeNode = new List<Collider>();
@@ -43,7 +43,6 @@ namespace WorldActionSystem
         protected override void Awake()
         {
             base.Awake();
-            TryAutoRegistRopeItem();
             RegistNodes();
             if (!innerRopeItem)
             {
@@ -58,17 +57,10 @@ namespace WorldActionSystem
             angleTemp = anglePos;
         }
 
-        private void OnDestroy()
+        protected override void OnInstallComplete(PickUpAbleElement obj)
         {
-            if (!innerRopeItem)
-            {
-                ElementController.onInstall -= OnInstallComplete;
-                ElementController.onUnInstall -= OnUnInstallComplete;
-            }
-        }
+            if (innerRopeItem) return;
 
-        private void OnInstallComplete(PickUpAbleElement obj)
-        {
             if (obj == this.obj)
             {
                 ropeItem.RegistNodesInstallPos();
@@ -117,6 +109,7 @@ namespace WorldActionSystem
                         angleCtrl.UnNotice(anglePos);
                         anglePos = collider.transform;
                         Debug.Log("Notice:" + anglePos);
+                        break;
                     }
                 }
             }
@@ -184,36 +177,45 @@ namespace WorldActionSystem
             return havePos;
         }
 
-        private void OnUnInstallComplete(PickUpAbleElement obj)
+        protected override void OnUnInstallComplete(PickUpAbleElement obj)
         {
+            if (innerRopeItem) return;
+
             if (AlreadyPlaced && this.obj == obj)
             {
+                if (!innerRopeItem)
+                {
+                    Detach();
+                }
                 if (ropeItem != null)
                 {
                     ropeItem.QuickUnInstallAllRopeNode();
                 }
-                Detach();
+
                 connected.Clear();
             }
 
         }
+
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
+            TryAutoRegistRopeItem();
             if (innerRopeItem)
             {
                 OnInstallComplete(obj);
             }
-            else 
+            else
             {
-                if(auto)
+                if (auto)
                 {
-                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
                     Attach(obj);
                     obj.NormalInstall(gameObject);
                 }
             }
         }
+
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
@@ -235,6 +237,7 @@ namespace WorldActionSystem
             }
             connected.Clear();
         }
+
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
@@ -243,14 +246,16 @@ namespace WorldActionSystem
             {
                 if (!innerRopeItem)
                 {
-                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
                     Attach(obj);
                     obj.QuickInstall(gameObject);
                 }
             }
             ropeItem.QuickInstallRopeNodes(ropeNode);
+            ropeItem.StepComplete();
             connected = new List<Collider>(ropeNode);
         }
+
         /// <summary>
         /// 利用控制器放置元素
         /// </summary>
@@ -274,11 +279,16 @@ namespace WorldActionSystem
         /// </summary>
         private void TryAutoRegistRopeItem()
         {
-            if (ropeItem)
+            if (ropeItem && !innerRopeItem)
             {
                 innerRopeItem = true;
                 Attach(obj);
                 obj.QuickInstall(gameObject);
+            }
+
+            if (ropeItem)
+            {
+                ropeItem.StepActive();
             }
         }
 

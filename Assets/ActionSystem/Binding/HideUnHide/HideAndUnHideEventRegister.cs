@@ -14,20 +14,32 @@ namespace WorldActionSystem
         private string key;
         [SerializeField]
         private List<GameObject> m_Objs;
-
+        private string resetKey { get { return "HideResetObjects"; } }
         private string hideKey { get { return "HideObjects"; } }
         private string showKey { get { return "UnHideObjects"; } }
 
+        private bool[] startStates;
+
+        protected void Awake()
+        {
+            startStates = new bool[m_Objs.Count];
+            for (int i = 0; i < startStates.Length; i++)
+            {
+                startStates[i] = m_Objs[i].activeSelf;
+            }
+        }
         private void Start()
         {
             EventController.AddDelegate<string>(hideKey, HideGameObjects);
             EventController.AddDelegate<string>(showKey, UnHideGameObjects);
+            EventController.AddDelegate<string>(resetKey, ResetGameObjects);
         }
 
         private void OnDestroy()
         {
             EventController.RemoveDelegate<string>(hideKey, HideGameObjects);
             EventController.RemoveDelegate<string>(showKey, UnHideGameObjects);
+            EventController.RemoveDelegate<string>(resetKey, ResetGameObjects);
         }
 
         public void HideGameObjects(string key)
@@ -45,11 +57,27 @@ namespace WorldActionSystem
         {
             if (this.key == key)
             {
-                for (int i = 0; i < m_Objs.Count; i++)
+                SetElementState(true);
+            }
+        }
+        public void ResetGameObjects(string key)
+        {
+            if(this.key == key)
+            {
+                for (int i = 0; i < startStates.Length; i++)
                 {
-                    m_Objs[i].SetActive(true);
+                    m_Objs[i].SetActive(startStates[i]);
                 }
             }
         }
+
+        private void SetElementState(bool statu)
+        {
+            for (int i = 0; i < startStates.Length; i++)
+            {
+                m_Objs[i].SetActive(statu);
+            }
+        }
+
     }
 }

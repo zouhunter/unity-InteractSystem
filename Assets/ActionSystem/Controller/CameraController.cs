@@ -59,10 +59,12 @@ namespace WorldActionSystem
         internal const string defultID = "defult";
         private static Coroutine lastCoroutine;
         private static UnityAction lastAction;
+        public static event UnityAction<Transform> onCameraMoveTo;
         public void Awake()
         {
             Instence = this;
         }
+
         private void Start()
         {
             viewCameraParent = transform;
@@ -76,7 +78,12 @@ namespace WorldActionSystem
             {
                 Debug.LogError("场景没有主摄像机");
             }
+
             viewCamera.gameObject.SetActive(mainCamera == null);
+        }
+        private void OnMainCameraCallBack()
+        {
+            if (lastAction != null) lastAction.Invoke();
         }
         public static void RegistNode(CameraNode node)
         {
@@ -91,12 +98,10 @@ namespace WorldActionSystem
             {
                 StopLastCoroutine();
             }
-
             if (id == null)
             {
                 OnStepComplete(onComplete);
             }
-
             else if (id == defultID)
             {
                 currentNode = null;
@@ -174,8 +179,14 @@ namespace WorldActionSystem
             }
             viewCamera.transform.SetParent(target.transform);
             SetCameraInfo(target);
+
             currentNode = target;
+
             OnStepComplete(onComplete);
+
+            if (onCameraMoveTo != null){
+                onCameraMoveTo.Invoke(target.transform);
+            }
         }
         private static void SetTransform(Transform target)
         {
@@ -190,6 +201,10 @@ namespace WorldActionSystem
                 cameraView.distence = target.Distence;
                 cameraView.SetSelf(target.transform.position, target.Rotation);
             }
+            else
+            {
+                cameraView.enabled = false;
+            }
             cameraView.targetView = target.CameraField;
         }
         public void OnDestroy()
@@ -200,11 +215,10 @@ namespace WorldActionSystem
         }
         public static void StopLastCoroutine()
         {
-            if (lastCoroutine != null)
-            {
+            if (lastCoroutine != null) {
                 Instence.StopCoroutine(lastCoroutine);
-                OnStepComplete(lastAction);
             }
+            OnStepComplete(lastAction);
         }
         private static void OnStepComplete(UnityAction onComplete)
         {

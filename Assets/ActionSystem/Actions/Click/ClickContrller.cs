@@ -24,11 +24,11 @@ namespace WorldActionSystem
         {
             if (!obj.Started)
             {
-                UserError("不可点击" + obj.name);
+                UserError("不可点击" + obj.Name);
             }
             else if (obj.Complete)
             {
-                UserError("已经结束点击" + obj.name);
+                UserError("已经结束点击" + obj.Name);
             }
             if (obj.Started && !obj.Complete)
             {

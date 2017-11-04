@@ -10,9 +10,12 @@ namespace WorldActionSystem
 {
     public class ActionObj : MonoBehaviour, IActionObj
     {
+        [SerializeField]
+        public string _name;
         public bool startActive;
         public bool endActive;
         protected bool _complete;
+        public string Name { get { return _name; } }
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
@@ -42,6 +45,7 @@ namespace WorldActionSystem
         protected bool notice;
         protected virtual void Start()
         {
+            if (string.IsNullOrEmpty(_name)) _name = name;
             hooks = GetComponentsInChildren<ActionHook>(false);
             if (hooks.Length > 0)
             {
@@ -123,7 +127,7 @@ namespace WorldActionSystem
                     }
                     else
                     {
-                        Debug.Log("wait:" + name);
+                        Debug.Log("wait:" + Name);
                     }
                 }
                 else

@@ -332,7 +332,7 @@ namespace WorldActionSystem
             //除要求使用特殊相机或是动画步骤,都用主摄像机
             else if (Setting.useOperateCamera || obj is AnimObj)
             {
-                if (string.IsNullOrEmpty(obj.CameraID))
+                if(string.IsNullOrEmpty(obj.CameraID))
                 {
                     return trigger.CameraID;
                 }

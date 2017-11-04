@@ -100,7 +100,7 @@ namespace WorldActionSystem
             List<MatchObj> poss = GetNotMatchedPosList();
             for (int i = 0; i < poss.Count; i++)
             {
-                if (poss[i].obj == null && IsMatchStep(poss[i]) && pickedUpObj.name == poss[i].name)
+                if (poss[i].obj == null && IsMatchStep(poss[i]) && pickedUpObj.name == poss[i].Name)
                 {
                     canInstall = true;
                 }
@@ -138,7 +138,7 @@ namespace WorldActionSystem
                             matchAble = false;
                             resonwhy = "已经触发结束";
                         }
-                        else if (matchPos.name != pickedUpObj.name)
+                        else if (matchPos.Name != pickedUpObj.name)
                         {
                             matchAble = false;
                             resonwhy = "零件不匹配";
@@ -220,17 +220,17 @@ namespace WorldActionSystem
 
         public void OnStartExecute(bool forceAuto)
         {
-            SetStartNotify();
+            //SetStartNotify();
         }
 
         public void OnEndExecute()
         {
-            SetCompleteNotify(false);
+            //SetCompleteNotify(false);
         }
 
         public void OnUnDoExecute()
         {
-            SetCompleteNotify(true);
+            //SetCompleteNotify(true);
         }
 
         /// <summary>
@@ -241,11 +241,11 @@ namespace WorldActionSystem
             var keyList = new List<string>();
             foreach (var pos in matchObjs)
             {
-                if (!keyList.Contains(pos.name))
+                if (!keyList.Contains(pos.Name))
                 {
-                    keyList.Add(pos.name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    keyList.Add(pos.Name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
                         if (!listObjs[j].Installed)
@@ -265,15 +265,17 @@ namespace WorldActionSystem
             var keyList = new List<string>();
             foreach (var pos in matchObjs)
             {
-                if (!keyList.Contains(pos.name))
+                if (!keyList.Contains(pos.Name))
                 {
-                    keyList.Add(pos.name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    keyList.Add(pos.Name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
                         if (listObjs[j].Installed) continue;
+
                         listObjs[j].QuickMoveBack();
+
                         if(undo)
                         {
                             listObjs[j].StepUnDo();

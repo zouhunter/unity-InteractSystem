@@ -13,14 +13,17 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem,IOutSideRegisterRender
+    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IOutSideRegisterRender
     {
+        public string _name;
         public int animTime { get { return Setting.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
-        public bool endActive = true;//如果是false,则完成后将进行隐藏
         public bool Installed { get { return target != null; } }
-        public virtual string Name { get { return name; } }
+        public virtual string Name { get { return _name; } }
         private GameObject target;
+        public bool StraightMove { get; set; }
+        public bool IgnoreMiddle { get; set; }
+        public Transform Passby { get; set; }
         public Renderer Render { get { return m_render; } }
         public UnityAction onInstallOkEvent;
         public UnityAction onUnInstallOkEvent;
@@ -48,6 +51,7 @@ namespace WorldActionSystem
 #if !NoFunction
         protected virtual void Start()
         {
+            if (string.IsNullOrEmpty(_name)) _name = name;
             ElementController.RegistElement(this);
             InitRender();
             gameObject.layer = Setting.pickUpElementLayer;
@@ -60,19 +64,49 @@ namespace WorldActionSystem
             if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
             highLighter = new ShaderHighLight();
         }
+
+       
         protected virtual void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
         {
             posList = new List<Vector3>();
             rotList = new List<Vector3>();
-            var player = FindObjectOfType<Camera>().transform;
-            var midPos = player.transform.position + player.transform.forward * Setting.elementFoward;
-            var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
-            for (int i = 0; i < smooth; i++)
+            Vector3 midPos = Vector3.zero;
+
+            if (Passby != null)
             {
-                float curr = (i + 0f) / (smooth - 1);
-                posList.Add(Bezier.CalculateBezierPoint(curr, transform.position, midPos, end));
-                rotList.Add(Bezier.CalculateBezierPoint(curr, transform.eulerAngles, midRot, endRot));
+                midPos = Passby.position;
             }
+            else
+            {
+                var player = FindObjectOfType<Camera>().transform;
+                midPos = player.transform.position + player.transform.forward * Setting.elementFoward;
+            }
+
+            var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
+            if (StraightMove || IgnoreMiddle)
+            {
+                posList.Add(transform.position);
+                rotList.Add(transform.eulerAngles);
+
+                if (!IgnoreMiddle)
+                {
+                    posList.Add(midPos);
+                    rotList.Add(midRot);
+                }
+
+                posList.Add(end);
+                rotList.Add(endRot);
+            }
+            else
+            {
+                for (int i = 0; i < smooth; i++)
+                {
+                    float curr = (i + 0f) / (smooth - 1);
+                    posList.Add(Bezier.CalculateBezierPoint(curr, transform.position, midPos, end));
+                    rotList.Add(Bezier.CalculateBezierPoint(curr, transform.eulerAngles, midRot, endRot));
+                }
+            }
+
         }
 
         protected virtual void DoPath(Vector3 end, Vector3 endRot, TweenCallback onComplete)
@@ -91,7 +125,7 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(GameObject target)
+        public virtual void NormalInstall(GameObject target, bool complete = true)
         {
             StopTween();
 #if !NoFunction
@@ -102,13 +136,13 @@ namespace WorldActionSystem
                 {
                     if (onInstallOkEvent != null)
                         onInstallOkEvent();
-                    StepComplete();
+                    if (complete) StepComplete();
                 });
                 Attach(target);
             }
 #endif
         }
-        public virtual void NormalMoveTo(GameObject target)
+        public virtual void NormalMoveTo(GameObject target, bool complete = true)
         {
             StopTween();
 
@@ -117,11 +151,11 @@ namespace WorldActionSystem
             {
                 if (onInstallOkEvent != null)
                     onInstallOkEvent();
-                StepComplete();
+                if (complete) StepComplete();
             });
 #endif
         }
-        public virtual void QuickMoveTo(GameObject target)
+        public virtual void QuickMoveTo(GameObject target, bool complete = true)
         {
             StopTween();
 
@@ -131,14 +165,14 @@ namespace WorldActionSystem
             if (onInstallOkEvent != null)
                 onInstallOkEvent();
 
-            StepComplete();
+            if (complete) StepComplete();
         }
 
         /// <summary>
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(GameObject target)
+        public virtual void QuickInstall(GameObject target, bool complete = true)
         {
             StopTween();
             if (!Installed)
@@ -149,7 +183,7 @@ namespace WorldActionSystem
                     onInstallOkEvent();
                 Attach(target);
             }
-            StepComplete();
+            if (complete) StepComplete();
         }
 
         public virtual void NormalUnInstall()
@@ -218,6 +252,11 @@ namespace WorldActionSystem
                 onPickUp.Invoke();
         }
 
+        internal void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
         /// </summary>
@@ -234,7 +273,6 @@ namespace WorldActionSystem
         {
             actived = false;
             onStepComplete.Invoke();
-            gameObject.SetActive(endActive);
         }
         /// <summary>
         /// 步骤重置(没有用到的元素)
@@ -250,7 +288,7 @@ namespace WorldActionSystem
         {
             if (!Setting.highLightNotice) return;
             if (m_render == null) return;
-            if(actived)
+            if (actived)
             {
                 highLighter.HighLightTarget(m_render, highLightColor);
             }

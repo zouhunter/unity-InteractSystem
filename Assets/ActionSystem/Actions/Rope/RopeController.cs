@@ -25,9 +25,9 @@ namespace WorldActionSystem
         private RopeItem ropeItem;
         private Collider pickUpedRopeNode;
         private bool pickDownAble;
-        public RopeController(PlaceItem[] placeitems) : base(placeitems)
+        public RopeController(PlaceObj[] placeitems) : base(placeitems)
         {
-            ropeObjs =new List<RopeObj>( Array.ConvertAll<PlaceItem, RopeObj>(placeitems, x => x as RopeObj));
+            ropeObjs = new List<RopeObj>(Array.ConvertAll<PlaceObj, RopeObj>(placeitems, x => x as RopeObj));
         }
 
         public override void Update()
@@ -67,7 +67,8 @@ namespace WorldActionSystem
                         this.ropeItem = ropeItem;
                         pickUpedRopeNode = hit.collider;
                         Debug.Log("Select: " + pickUpedRopeNode);
-                        elementDistence = Vector3.Distance(viewCamera.transform.position, ropeItem.transform.position);
+
+                        elementDistence = Vector3.Distance(viewCamera.transform.position, pickUpedRopeNode.transform.position);
                     }
                 }
             }
@@ -75,7 +76,7 @@ namespace WorldActionSystem
 
         private void UpdateInstallRopeNode()
         {
-            if(Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 TryPlaceNode();
             }
@@ -105,7 +106,7 @@ namespace WorldActionSystem
                     }
                 }
             }
-          
+
         }
         private void RopeNodeMoveWithMouse(float distence)
         {
@@ -117,12 +118,12 @@ namespace WorldActionSystem
                     ropeItem.PickDownCollider(pickUpedRopeNode);
                     pickUpedRopeNode = null;
                     ropeItem = null;
-                    
+
                 }
             }
             else
             {
-                var pos = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distence));
+                var pos = disRay.GetPoint(elementDistence);
                 if (!ropeItem.TryMoveToPos(pickUpedRopeNode, pos))
                 {
                     ropeItem.PickDownCollider(pickUpedRopeNode);
@@ -149,10 +150,10 @@ namespace WorldActionSystem
             pickDownAble = false;
         }
 
-        private bool CanPlaceNode(RopeObj ropeObj, RopeItem ropeItem,Collider collider,out string resonwhy)
+        private bool CanPlaceNode(RopeObj ropeObj, RopeItem ropeItem, Collider collider, out string resonwhy)
         {
             resonwhy = null;
-            if(this.ropeObj != ropeObj)
+            if (this.ropeObj != ropeObj)
             {
                 resonwhy = "目标点非当前步骤";
             }
@@ -160,15 +161,15 @@ namespace WorldActionSystem
             {
                 resonwhy = "目标点父级没有挂RopeObj脚本";
             }
-            else if(ropeObj.Connected)
+            else if (ropeObj.Connected)
             {
                 resonwhy = "目标点已经完成连接";
             }
-            else if(ropeObj.obj != ropeItem)
+            else if (ropeObj.obj != ropeItem)
             {
                 resonwhy = "对象不匹配";
             }
-            else if(!ropeObj.CanInstallCollider(collider))
+            else if (!ropeObj.CanInstallCollider(collider))
             {
                 resonwhy = "坐标点已经占用";
             }
@@ -186,7 +187,7 @@ namespace WorldActionSystem
             ropeItem.PickDownCollider(collider);
         }
 
-        protected override bool CanPlace(PlaceItem placeItem, PickUpAbleElement element, out string why)
+        protected override bool CanPlace(PlaceObj placeItem, PickUpAbleElement element, out string why)
         {
             if (placeItem == null || !(placeItem is RopeObj))
             {
@@ -208,7 +209,7 @@ namespace WorldActionSystem
                 installAble = false;
                 why = "目标点已经放置";
             }
-            else if (element.name != placeItem.name)
+            else if (element.name != placeItem.Name)
             {
                 installAble = false;
                 why = "名称不匹配";
@@ -221,10 +222,10 @@ namespace WorldActionSystem
             return installAble;
         }
 
-        protected override void PlaceObject(PlaceItem pos, PickUpAbleElement element)
+        protected override void PlaceObject(PlaceObj pos, PickUpAbleElement element)
         {
             installPos.Attach(pickedUpObj);
-            element.QuickInstall(installPos.gameObject);
+            element.QuickInstall(installPos.gameObject, false);
             RopeObj ropeObj = (pos as RopeObj);
             RopeItem ropeItem = element as RopeItem;
             ropeObj.TryRegistRopeItem(ropeItem);
@@ -232,7 +233,14 @@ namespace WorldActionSystem
 
         protected override void PlaceWrong(PickUpAbleElement pickup)
         {
-            pickedUpObj.NormalMoveBack();
+            if (ropeObj.obj == pickup)
+            {
+                pickedUpObj.QuickInstall(ropeObj.gameObject, false);
+            }
+            else
+            {
+                pickedUpObj.NormalMoveBack();
+            }
         }
     }
 }

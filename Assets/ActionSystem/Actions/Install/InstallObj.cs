@@ -14,24 +14,15 @@ namespace WorldActionSystem
     /// <summary>
     /// 模拟安装坐标功能
     /// </summary>
-    public class InstallObj : ActionObj
+    public class InstallObj : PlaceObj
     {
-        public bool autoInstall;
-        public bool ignorePass;//反忽略
-        public bool Installed { get { return obj != null; } }
-        public PickUpAbleElement obj { get; private set; }
-
-        void Awake()
+        public bool hideonInstall;
+        public override int layer
         {
-            gameObject.layer = Setting.installPosLayer;
-            ElementController.onInstall += OnInstallComplete;
-            ElementController.onUnInstall += OnUnInstallComplete;
-        }
-
-        private void OnDestroy()
-        {
-            ElementController.onInstall -= OnInstallComplete;
-            ElementController.onUnInstall -= OnUnInstallComplete;
+            get
+            {
+               return Setting.installPosLayer;
+            }
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -39,15 +30,25 @@ namespace WorldActionSystem
             base.OnStartExecute(auto);
             if (auto || autoInstall)//查找安装点并安装后结束
             {
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
                 Attach(obj);
 
                 if (Setting.ignoreInstall && !ignorePass)
                 {
-                    obj.QuickInstall(gameObject);
+                    if(!hideonInstall)
+                    {
+                        obj.QuickInstall(gameObject);
+                    }
+                    else
+                    {
+                        OnInstallComplete(obj);
+                    }
                 }
                 else
                 {
+                    obj.StraightMove = straightMove;
+                    obj.IgnoreMiddle = ignoreMiddle;
+                    obj.Passby = passBy; 
                     obj.NormalInstall(gameObject);
                 }
             }
@@ -55,60 +56,48 @@ namespace WorldActionSystem
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
-            if (!Installed)
+            if (!AlreadyPlaced)
             {
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(name);
+                PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
                 Attach(obj);
                 obj.QuickInstall(gameObject);
+                obj.StepComplete();
+            }
+
+            if(hideonInstall)
+            {
+                obj.Hide();
             }
         }
         public override void OnUnDoExecute()
         {
-            Debug.Log("UnDo:" + name);
+            Debug.Log("UnDo:" + Name);
 
             base.OnUnDoExecute();
-            if (Installed)
+            if (AlreadyPlaced)
             {
                 var obj = Detach();
                 obj.QuickUnInstall();
-            }
-        }
-        private void OnInstallComplete(PickUpAbleElement obj)
-        {
-            if (obj == this.obj)
-            {
-               OnEndExecute(false);
+                obj.StepUnDo();
             }
         }
 
-        private void OnUnInstallComplete(PickUpAbleElement obj)
+        protected override void OnInstallComplete(PickUpAbleElement obj)
         {
-            if(Installed && this.obj == obj)
+            if (obj == this.obj){
+               OnEndExecute(false);
+            }
+        }
+        protected override void OnUnInstallComplete(PickUpAbleElement obj)
+        {
+            if(AlreadyPlaced && this.obj == obj)
             {
                 this.obj = null;
                 OnUnDoExecute();
                 OnStartExecute(auto);
             }
         }
-        public bool Attach(PickUpAbleElement obj)
-        {
-            if (this.obj != null)
-            {
-                return false;
-            }
-            else
-            {
-                this.obj = obj;
-                return true;
-            }
-        }
-
-        public PickUpAbleElement Detach()
-        {
-            PickUpAbleElement old = obj;
-            obj = null;
-            return old;
-        }
+     
     }
 
 }

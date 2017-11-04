@@ -8,7 +8,6 @@ namespace WorldActionSystem
 {
     public static class Setting
     {
-        internal const int elementFoward = 1;
         internal const int pickUpElementLayer = 8;
         internal const int installPosLayer = 9;
         internal const int matchPosLayer = 15;
@@ -20,6 +19,7 @@ namespace WorldActionSystem
         internal static int ropeNodeLayer = 14;
         internal static int autoExecuteTime = 3;
         internal static int hitDistence = 20;
+        internal const int elementFoward = 1;
         internal static bool highLightNotice = true;//高亮提示
         internal static bool angleNotice = true;//箭头提示
         internal static bool useOperateCamera = true;//使用专用相机

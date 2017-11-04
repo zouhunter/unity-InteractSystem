@@ -13,8 +13,14 @@ namespace WorldActionSystem
         public List<Collider> ropeNode;
         private Vector3[] ropeNodesInstallPos;
         private Vector3[] ropeNodesStartPos;
-        private List<int> lockId = new List<int>();
+        private List<Collider> ropeList = new List<Collider>();
+        private List<float> lengthList = new List<float>();
         private void Awake()
+        {
+            RegestRopeList();
+            RecordStartPosAndSetLayer();
+        }
+        private void RecordStartPosAndSetLayer()
         {
             ropeNodesStartPos = new Vector3[ropeNode.Count];
             for (int i = 0; i < ropeNodesStartPos.Length; i++)
@@ -22,6 +28,16 @@ namespace WorldActionSystem
                 ropeNodesStartPos[i] = ropeNode[i].transform.position;
                 ropeNode[i].gameObject.layer = Setting.ropeNodeLayer;
             }
+        }
+        private void RegestRopeList()
+        {
+            ropeList.Add(rope.RopeStart.GetComponent<BoxCollider>());
+            for (int i = 0; i < rope.RopeNodes.Count; i++)
+            {
+                ropeList.Add(rope.RopeNodes[i].goNode.GetComponent<BoxCollider>());
+                lengthList.Add(rope.RopeNodes[i].fLength);
+            }
+            
         }
 
         public void RegistNodesInstallPos()
@@ -41,52 +57,28 @@ namespace WorldActionSystem
         /// <returns></returns>
         public bool TryMoveToPos(Collider collider, Vector3 pos)
         {
-            if (rope.RopeNodes.Count <= 1) return false;
-            var id = rope.RopeNodes.FindIndex(x => x.goNode == collider.gameObject);
+            if (rope.RopeNodes.Count == 0) return false;
+            var id = ropeList.IndexOf(collider);
             if (id != -1)
             {
-                if (id == 0)
+                bool canMove = true;
+                var lastid = id - 1;
+                var nextid = id + 1;
+                if(lastid >= 0)
                 {
-                    var node1 = rope.RopeNodes[id + 1];
-                    var node0 = rope.RopeNodes[0];
-                    var b1 = Vector3.Distance(pos, node1.goNode.transform.position) < node1.fLength;
-                    var b2 = Vector3.Distance(pos, rope.RopeStart.transform.position) < node0.fLength;
-                    if (b1 && b2)
-                    {
-                        collider.transform.position = pos;
-                        return true;
-                    }
+                    var lastNode = ropeList[lastid];
+                    canMove  &= Vector3.Distance(pos, lastNode.transform.position) < lengthList[lastid];
                 }
-                else if (id == rope.RopeNodes.Count - 1)
+                if (nextid < ropeList.Count)
                 {
-                    var node1 = rope.RopeNodes[id - 1];
-                    if (Vector3.Distance(pos, node1.goNode.transform.position) < node1.fLength)
-                    {
-                        collider.transform.position = pos;
-                        return true;
-                    }
+                    var nextNode = ropeList[nextid];
+                    canMove &= Vector3.Distance(pos, nextNode.transform.position) < lengthList[id];
                 }
-                else
-                {
-                    var node1 = rope.RopeNodes[id + 1];
-                    var node0 = rope.RopeNodes[id];
-                    var b1 = Vector3.Distance(pos, node1.goNode.transform.position) < node1.fLength;
-                    var b2 = Vector3.Distance(pos, node0.goNode.transform.position) < node0.fLength;
-                    if (b1 && b2)
-                    {
-                        collider.transform.position = pos;
-                        return true;
-                    }
-                }
-            }
-            else if(collider.gameObject == rope.RopeStart)
-            {
-                var node1 = rope.RopeNodes[0];
-                if (Vector3.Distance(pos, node1.goNode.transform.position) < node1.fLength)
+                if(canMove)
                 {
                     collider.transform.position = pos;
-                    return true;
                 }
+                return canMove;
             }
             return false;
         }

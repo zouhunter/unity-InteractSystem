@@ -13,32 +13,42 @@ namespace WorldActionSystem
     public class CommandEventHide : ActionCommandBinding
     {
         public string key;
-        public bool reverse;
 
+        public bool activeOnComplete;
+        public bool activeOnStart;
+
+        private string resetKey { get { return "HideResetObjects"; } }
         private string hideKey { get { return "HideObjects"; } }
         private string showKey { get { return "UnHideObjects"; } }
 
 
         protected override void OnBeforeActive(string step)
         {
-            SetElementState(reverse);
-        }
-        protected override void OnBeforePlayEnd(string step)
-        {
-            SetElementState(!reverse);
-        }
-
-        private void SetElementState(bool open)
-        {
-            if (open)
+            if (activeOnStart)
             {
-                EventController.NotifyObserver<string>(showKey, key);
+                EventController.NotifyObserver(showKey, key);
             }
             else
             {
-                EventController.NotifyObserver<string>(hideKey, key);
+                EventController.NotifyObserver(hideKey, key);
             }
         }
+        protected override void OnBeforePlayEnd(string step)
+        {
+            if (activeOnComplete)
+            {
+                EventController.NotifyObserver(showKey, key);
+            }
+            else
+            {
+                EventController.NotifyObserver(hideKey, key);
+            }
+        }
+        protected override void OnBeforeUnDo(string step)
+        {
+            EventController.NotifyObserver(resetKey, key);
+        }
+
 
     }
 }

@@ -106,7 +106,7 @@ namespace WorldActionSystem
                             installAble = false;
                             resonwhy = "已经安装";
                         }
-                        else if (pickedUpObj.name != installPos.name)
+                        else if (pickedUpObj.name != installPos.Name)
                         {
                             installAble = false;
                             resonwhy = "零件不匹配";
@@ -144,12 +144,15 @@ namespace WorldActionSystem
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (installAble)
             {
-                var status = installPos.Attach(pickedUpObj);
-                if (status)
-                {
+                if(!installPos.AlreadyPlaced){
+                    installPos.Attach(pickedUpObj);
                     pickedUpObj.QuickInstall(installPos.gameObject);
+                    installPos.OnEndExecute(false);
                 }
-                installPos.OnEndExecute(false);
+                else
+                {
+                    Debug.LogError("AlreadyPlaced");
+                }
             }
             else
             {
@@ -183,12 +186,12 @@ namespace WorldActionSystem
 
         private List<InstallObj> GetNotInstalledPosList()
         {
-            var list = installObjs.FindAll(x => !x.Installed);
+            var list = installObjs.FindAll(x => !x.AlreadyPlaced);
             return list;
         }
         private bool HaveInstallObjInstalled(InstallObj obj)
         {
-            return obj.Installed;
+            return obj.AlreadyPlaced;
         }
         private bool IsInstallStep(InstallObj obj)
         {
@@ -218,11 +221,11 @@ namespace WorldActionSystem
             var keyList = new List<string>();
             foreach (var pos in posList)
             {
-                if (!keyList.Contains(pos.name))
+                if (!keyList.Contains(pos.Name))
                 {
-                    keyList.Add(pos.name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    keyList.Add(pos.Name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
                         if (!listObjs[j].Installed)
@@ -243,10 +246,10 @@ namespace WorldActionSystem
             var keyList = new List<string>();
             foreach (var pos in installObjs)
             {
-                if (!keyList.Contains(pos.name))
+                if (!keyList.Contains(pos.Name))
                 {
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.name);
+                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
                     for (int j = 0; j < listObjs.Count; j++)
                     {
                         if (!listObjs[j].Installed && undo)

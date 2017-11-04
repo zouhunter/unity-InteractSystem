@@ -3,29 +3,49 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace WorldActionSystem
 {
-    public abstract class PlaceItem : ActionObj
+    public abstract class PlaceObj : ActionObj
     {
-        public virtual string Name { get { return name; } }
+        public bool autoInstall;//自动安装
+        public bool ignorePass;//反忽略
+        public Transform passBy;//路过
+        public bool straightMove;//直线移动
+        public bool ignoreMiddle;//忽略中间点
         public virtual GameObject Go { get { return gameObject; } }
         public virtual bool AlreadyPlaced { get { return obj != null; } }
         public abstract int layer { get; }
         public virtual PickUpAbleElement obj { get; protected set; }
+        public bool pickUpAble;
+        protected virtual void Awake()
+        {
+            gameObject.layer = layer;
+            ElementController.onInstall += OnInstallComplete;
+            ElementController.onUnInstall += OnUnInstallComplete;
+        }
+        protected virtual void OnDestroy()
+        {
+            ElementController.onInstall -= OnInstallComplete;
+            ElementController.onUnInstall -= OnUnInstallComplete;
+        }
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+
+        }
         public virtual void Attach(PickUpAbleElement obj)
         {
             this.obj = obj;
         }
+        protected abstract void OnInstallComplete(PickUpAbleElement arg0);
+        protected abstract void OnUnInstallComplete(PickUpAbleElement arg0);
         public virtual PickUpAbleElement Detach()
         {
             PickUpAbleElement old = obj;
             obj = default(PickUpAbleElement);
             return old;
-        }
-        protected virtual void Awake()
-        {
-            gameObject.layer = layer;
         }
     }
 
@@ -35,14 +55,14 @@ namespace WorldActionSystem
         protected IHighLightItems highLight;
         protected PickUpAbleElement pickedUpObj;
         protected bool pickedUp;
-        protected PlaceItem installPos;
+        protected PlaceObj installPos;
         protected Ray ray;
         protected RaycastHit hit;
         protected RaycastHit[] hits;
         protected bool installAble;
         protected string resonwhy;
         protected float hitDistence { get { return Setting.hitDistence; } }
-        protected List<PlaceItem> placeitems = new List<PlaceItem>();
+        protected List<PlaceObj> placeitems = new List<PlaceObj>();
         protected Camera viewCamera { get { return CameraController.ActiveCamera; } }
         protected bool activeNotice { get { return Setting.highLightNotice; } }
         protected Ray disRay;
@@ -50,7 +70,7 @@ namespace WorldActionSystem
         protected float elementDistence;
         protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
 
-        public PlaceController(PlaceItem[] placeitems)
+        public PlaceController(PlaceObj[] placeitems)
         {
             highLight = new ShaderHighLight();
             this.placeitems.AddRange(placeitems);
@@ -90,9 +110,10 @@ namespace WorldActionSystem
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
             {
-                pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
+                var pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
                 if (pickedUpObj != null && pickedUpObj.Started)
                 {
+                    this.pickedUpObj = pickedUpObj;
                     if (pickedUpObj.Installed){
                         pickedUpObj.NormalUnInstall();
                     }
@@ -115,7 +136,7 @@ namespace WorldActionSystem
                     if (hits[i].collider.name == pickedUpObj.name)
                     {
                         hited = true;
-                        installPos = hits[i].collider.GetComponent<PlaceItem>();
+                        installPos = hits[i].collider.GetComponent<PlaceObj>();
                         installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
                     }
                 }
@@ -159,9 +180,9 @@ namespace WorldActionSystem
             if (activeNotice) highLight.UnHighLightTarget(pickedUpObj.Render);
         }
 
-        protected abstract bool CanPlace(PlaceItem placeItem, PickUpAbleElement element, out string why);
+        protected abstract bool CanPlace(PlaceObj placeItem, PickUpAbleElement element, out string why);
 
-        protected abstract void PlaceObject(PlaceItem pos, PickUpAbleElement pickup);
+        protected abstract void PlaceObject(PlaceObj pos, PickUpAbleElement pickup);
 
         protected abstract void PlaceWrong(PickUpAbleElement pickup);
 
