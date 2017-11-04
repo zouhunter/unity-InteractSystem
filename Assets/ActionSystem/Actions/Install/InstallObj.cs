@@ -25,37 +25,10 @@ namespace WorldActionSystem
             }
         }
 
-        public override void OnStartExecute(bool auto = false)
-        {
-            base.OnStartExecute(auto);
-            if (auto || autoInstall)//查找安装点并安装后结束
-            {
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
-                Attach(obj);
-
-                if (Setting.ignoreInstall && !ignorePass)
-                {
-                    if(!hideonInstall)
-                    {
-                        obj.QuickInstall(gameObject);
-                    }
-                    else
-                    {
-                        OnInstallComplete(obj);
-                    }
-                }
-                else
-                {
-                    obj.StraightMove = straightMove;
-                    obj.IgnoreMiddle = ignoreMiddle;
-                    obj.Passby = passBy; 
-                    obj.NormalInstall(gameObject);
-                }
-            }
-        }
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
+
             if (!AlreadyPlaced)
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
@@ -69,6 +42,7 @@ namespace WorldActionSystem
                 obj.Hide();
             }
         }
+
         public override void OnUnDoExecute()
         {
             Debug.Log("UnDo:" + Name);
@@ -88,6 +62,7 @@ namespace WorldActionSystem
                OnEndExecute(false);
             }
         }
+
         protected override void OnUnInstallComplete(PickUpAbleElement obj)
         {
             if(AlreadyPlaced && this.obj == obj)
@@ -97,7 +72,31 @@ namespace WorldActionSystem
                 OnStartExecute(auto);
             }
         }
-     
+
+        protected override void OnAutoInstall()
+        {
+            PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
+            Attach(obj);
+            obj.StepActive();
+            if (Setting.ignoreInstall && !ignorePass)
+            {
+                if (!hideonInstall)
+                {
+                    obj.QuickInstall(gameObject);
+                }
+                else
+                {
+                    OnInstallComplete(obj);
+                }
+            }
+            else
+            {
+                obj.StraightMove = straightMove;
+                obj.IgnoreMiddle = ignoreMiddle;
+                obj.Passby = passBy;
+                obj.NormalInstall(gameObject);
+            }
+        }
     }
 
 }

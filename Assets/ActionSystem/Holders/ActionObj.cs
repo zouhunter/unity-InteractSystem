@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-    public class ActionObj : MonoBehaviour, IActionObj
+    public abstract class ActionObj : MonoBehaviour, IActionObj
     {
         [SerializeField]
         public string _name;

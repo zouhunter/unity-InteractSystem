@@ -44,12 +44,6 @@ namespace WorldActionSystem
         {
             base.Awake();
             RegistNodes();
-            if (!innerRopeItem)
-            {
-                ElementController.onInstall += OnInstallComplete;
-                ElementController.onUnInstall += OnUnInstallComplete;
-            }
-
         }
         protected override void Start()
         {
@@ -209,9 +203,7 @@ namespace WorldActionSystem
             {
                 if (auto)
                 {
-                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
-                    Attach(obj);
-                    obj.NormalInstall(gameObject);
+                  
                 }
             }
         }
@@ -312,6 +304,14 @@ namespace WorldActionSystem
                 }
             }
             SelectOneRopeNode();
+        }
+
+        protected override void OnAutoInstall()
+        {
+            PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
+            Attach(obj);
+            obj.NormalInstall(gameObject);
+            ///获取脚本
         }
     }
 }

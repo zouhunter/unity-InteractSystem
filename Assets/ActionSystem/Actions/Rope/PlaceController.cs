@@ -19,34 +19,83 @@ namespace WorldActionSystem
         public abstract int layer { get; }
         public virtual PickUpAbleElement obj { get; protected set; }
         public bool pickUpAble;
+
         protected virtual void Awake()
         {
             gameObject.layer = layer;
-            ElementController.onInstall += OnInstallComplete;
-            ElementController.onUnInstall += OnUnInstallComplete;
         }
-        protected virtual void OnDestroy()
-        {
-            ElementController.onInstall -= OnInstallComplete;
-            ElementController.onUnInstall -= OnUnInstallComplete;
-        }
+
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-
+            ElementController.onInstall += OnInstallComplete;
+            ElementController.onUnInstall -= OnUnInstallComplete;
+            SetStartNotify();
+            if(auto || autoInstall)
+            {
+                OnAutoInstall();
+            }
         }
+        protected abstract void OnAutoInstall();
+
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            SetComplete(true);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            SetComplete(false);
+            ElementController.onInstall -= OnInstallComplete;
+            ElementController.onUnInstall += OnUnInstallComplete;
+        }
+
         public virtual void Attach(PickUpAbleElement obj)
         {
             this.obj = obj;
         }
         protected abstract void OnInstallComplete(PickUpAbleElement arg0);
         protected abstract void OnUnInstallComplete(PickUpAbleElement arg0);
+
         public virtual PickUpAbleElement Detach()
         {
             PickUpAbleElement old = obj;
             obj = default(PickUpAbleElement);
             return old;
         }
+
+        protected virtual void SetStartNotify()
+        {
+            var objs = ElementController.GetElements(Name);
+            for (int i = 0; i < objs.Count; i++)
+            {
+                if(!objs[i].Started && !objs[i].Installed)
+                {
+                    objs[i].StepActive();
+                }
+            }
+        }
+        protected virtual void SetComplete(bool undo)
+        {
+            var objs = ElementController.GetElements(Name);
+            for (int i = 0; i < objs.Count; i++)
+            {
+                if (objs[i].Started)
+                { 
+                    if (undo)
+                    {
+                        obj.StepUnDo();
+                    }
+                    else
+                    {
+                        obj.StepComplete();
+                    }
+                }
+            }
+          
+        }
+
     }
 
     public abstract class PlaceController : IActionCtroller
@@ -62,7 +111,7 @@ namespace WorldActionSystem
         protected bool installAble;
         protected string resonwhy;
         protected float hitDistence { get { return Setting.hitDistence; } }
-        protected List<PlaceObj> placeitems = new List<PlaceObj>();
+        //protected List<PlaceObj> placeitems = new List<PlaceObj>();
         protected Camera viewCamera { get { return CameraController.ActiveCamera; } }
         protected bool activeNotice { get { return Setting.highLightNotice; } }
         protected Ray disRay;
@@ -70,10 +119,10 @@ namespace WorldActionSystem
         protected float elementDistence;
         protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
 
-        public PlaceController(PlaceObj[] placeitems)
+        public PlaceController(/*PlaceObj[] placeitems*/)
         {
             highLight = new ShaderHighLight();
-            this.placeitems.AddRange(placeitems);
+            //this.placeitems.AddRange(placeitems);
         }
 
         #region 鼠标操作事件
@@ -121,6 +170,7 @@ namespace WorldActionSystem
                     pickedUp = true;
                     elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
                 }
+
             }
         }
 
@@ -203,70 +253,6 @@ namespace WorldActionSystem
         }
 
         #endregion
-
-        public void OnStartExecute(bool forceauto)
-        {
-            SetStartNotify();
-        }
-        public void OnEndExecute()
-        {
-            SetCompleteNotify(false);
-        }
-        public void OnUnDoExecute()
-        {
-            SetCompleteNotify(true);
-        }
-
-        /// <summary>
-        /// 将可安装元素全部显示出来
-        /// </summary>
-        private void SetStartNotify()
-        {
-            var keyList = new List<string>();
-            foreach (var pos in placeitems)
-            {
-                if (!keyList.Contains(pos.Name))
-                {
-                    keyList.Add(pos.Name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
-                    if (listObjs == null) throw new UnityException("元素配制错误:没有:" + pos.Name);
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (!listObjs[j].Installed)
-                        {
-                            listObjs[j].StepActive();
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 结束指定步骤
-        /// </summary>
-        /// <param name="poss"></param>
-        private void SetCompleteNotify(bool undo)
-        {
-            var keyList = new List<string>();
-            foreach (var pos in placeitems)
-            {
-                if (!keyList.Contains(pos.Name))
-                {
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
-                    if (listObjs == null) throw new UnityException("元素配制错误:没有:" + pos.Name);
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (!listObjs[j].Installed && undo)
-                        {
-                            listObjs[j].StepUnDo();
-                        }
-                        else
-                        {
-                            listObjs[j].StepComplete();
-                        }
-                    }
-                }
-            }
-        }
+      
     }
 }

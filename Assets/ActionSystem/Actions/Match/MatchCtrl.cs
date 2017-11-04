@@ -23,13 +23,11 @@ namespace WorldActionSystem
         private string resonwhy;
         private float hitDistence { get { return Setting.hitDistence; } }
         private float pickDistence;
-        private List<MatchObj> matchObjs;
         private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
-        public MatchCtrl(MatchObj[] matchObjs)
+        public MatchCtrl()
         {
             highLight = new ShaderHighLight();
-            this.matchObjs = new List<MatchObj>(matchObjs);
         }
 
         #region 鼠标操作事件
@@ -76,16 +74,6 @@ namespace WorldActionSystem
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
                     pickDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
-
-                    if (!PickUpedIsMatch())
-                    {
-                        if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.yellow);
-
-                    }
-                    else
-                    {
-                        if (highLight != null) highLight.HighLightTarget(pickedUpObj.Render, Color.cyan);
-                    }
                 }
             }
         }
@@ -94,19 +82,19 @@ namespace WorldActionSystem
         ///匹配
         /// </summary>
         /// <returns></returns>
-        private bool PickUpedIsMatch()
-        {
-            bool canInstall = false;
-            List<MatchObj> poss = GetNotMatchedPosList();
-            for (int i = 0; i < poss.Count; i++)
-            {
-                if (poss[i].obj == null && IsMatchStep(poss[i]) && pickedUpObj.name == poss[i].Name)
-                {
-                    canInstall = true;
-                }
-            }
-            return canInstall;
-        }
+        //private bool PickUpedIsMatch()
+        //{
+            //bool canInstall = false;
+            //List<MatchObj> poss = GetNotMatchedPosList();
+            //for (int i = 0; i < poss.Count; i++)
+            //{
+            //    if (poss[i].obj == null && IsMatchStep(poss[i]) && pickedUpObj.name == poss[i].Name)
+            //    {
+            //        canInstall = true;
+            //    }
+            //}
+            //return canInstall;
+        //}
 
         /// <summary>
         /// 更新匹配状态
@@ -128,7 +116,7 @@ namespace WorldActionSystem
                         {
                             Debug.LogError("【配制错误】:零件未挂MatchObj脚本");
                         }
-                        else if (!IsMatchStep(matchPos))
+                        else if (!matchPos.Started)
                         {
                             matchAble = false;
                             resonwhy = "操作顺序错误";
@@ -206,88 +194,63 @@ namespace WorldActionSystem
             }
         }
 
-        private List<MatchObj> GetNotMatchedPosList()
-        {
-            var list = matchObjs.FindAll(x => !x.Matched);
-            return list;
-
-        }
-        private bool IsMatchStep(MatchObj obj)
-        {
-            return matchObjs.Contains(obj);
-        }
         #endregion
-
-        public void OnStartExecute(bool forceAuto)
-        {
-            //SetStartNotify();
-        }
-
-        public void OnEndExecute()
-        {
-            //SetCompleteNotify(false);
-        }
-
-        public void OnUnDoExecute()
-        {
-            //SetCompleteNotify(true);
-        }
 
         /// <summary>
         /// 将可安装元素全部显示出来
         /// </summary>
-        private void SetStartNotify()
-        {
-            var keyList = new List<string>();
-            foreach (var pos in matchObjs)
-            {
-                if (!keyList.Contains(pos.Name))
-                {
-                    keyList.Add(pos.Name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (!listObjs[j].Installed)
-                        {
-                            listObjs[j].StepActive();
-                        }
-                    }
-                }
-            }
-        }
+        //private void SetStartNotify()
+        //{
+        //    var keyList = new List<string>();
+        //    foreach (var pos in matchObjs)
+        //    {
+        //        if (!keyList.Contains(pos.Name))
+        //        {
+        //            keyList.Add(pos.Name);
+        //            List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+        //            if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
+        //            for (int j = 0; j < listObjs.Count; j++)
+        //            {
+        //                if (!listObjs[j].Installed)
+        //                {
+        //                    listObjs[j].StepActive();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
         /// <summary>
         /// 结束指定步骤
         /// </summary>
         /// <param name="poss"></param>
-        private void SetCompleteNotify(bool undo)
-        {
-            var keyList = new List<string>();
-            foreach (var pos in matchObjs)
-            {
-                if (!keyList.Contains(pos.Name))
-                {
-                    keyList.Add(pos.Name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (listObjs[j].Installed) continue;
+        //private void SetCompleteNotify(bool undo)
+        //{
+        //    var keyList = new List<string>();
+        //    foreach (var pos in matchObjs)
+        //    {
+        //        if (!keyList.Contains(pos.Name))
+        //        {
+        //            keyList.Add(pos.Name);
+        //            List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
+        //            if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
+        //            for (int j = 0; j < listObjs.Count; j++)
+        //            {
+        //                if (listObjs[j].Installed) continue;
 
-                        listObjs[j].QuickMoveBack();
+        //                listObjs[j].QuickMoveBack();
 
-                        if(undo)
-                        {
-                            listObjs[j].StepUnDo();
-                        }
-                        else
-                        {
-                            listObjs[j].StepComplete();
-                        }
-                    }
-                }
-            }
-        }
+        //                if(undo)
+        //                {
+        //                    listObjs[j].StepUnDo();
+        //                }
+        //                else
+        //                {
+        //                    listObjs[j].StepComplete();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 
 }

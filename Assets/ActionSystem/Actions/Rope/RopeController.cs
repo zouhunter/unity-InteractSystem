@@ -25,7 +25,7 @@ namespace WorldActionSystem
         private RopeItem ropeItem;
         private Collider pickUpedRopeNode;
         private bool pickDownAble;
-        public RopeController(PlaceObj[] placeitems) : base(placeitems)
+        public RopeController(PlaceObj[] placeitems)
         {
             ropeObjs = new List<RopeObj>(Array.ConvertAll<PlaceObj, RopeObj>(placeitems, x => x as RopeObj));
         }

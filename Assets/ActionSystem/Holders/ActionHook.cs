@@ -7,7 +7,18 @@ using System;
 
 namespace WorldActionSystem
 {
-    public abstract class ActionHook : MonoBehaviour, IActionObj
+    public interface IActionHook
+    {
+        int QueueID { get; }
+        bool Complete { get; }
+        bool Started { get; }
+        UnityAction onEndExecute { get; set; }
+        void OnUnDoExecute();
+        void OnEndExecute(bool force);
+        void OnStartExecute(bool isForceAuto);
+    }
+
+    public abstract class ActionHook : MonoBehaviour, IActionHook
     {
         protected bool _complete;
         public bool Complete { get { return _complete; } }

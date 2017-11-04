@@ -1,0 +1,48 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Audio;
+using UnityEngine.Events;
+using UnityEngine.Sprites;
+using UnityEngine.Scripting;
+using UnityEngine.Assertions;
+using UnityEngine.EventSystems;
+using UnityEngine.Assertions.Must;
+using UnityEngine.Assertions.Comparers;
+using System.Collections;
+namespace WorldActionSystem
+{
+    public sealed class AutoObj : ActionObj
+    {
+        [SerializeField]
+        private float autoCompleteTime;
+        public Coroutine autocoroutine;
+
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            autocoroutine = StartCoroutine(AutoComplete());
+        }
+
+        IEnumerator AutoComplete()
+        {
+            yield return new WaitForSeconds(autoCompleteTime);
+            OnEndExecute(false);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            if(autocoroutine != null)
+            {
+                StopCoroutine(autocoroutine);
+            }
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            if (autocoroutine != null)
+            {
+                StopCoroutine(autocoroutine);
+            }
+        }
+    }
+}

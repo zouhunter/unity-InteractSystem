@@ -15,7 +15,7 @@ namespace WorldActionSystem
 
         protected ActionObj actionObj { get; set; }
         protected List<int> queueID = new List<int>();
-        protected ActionHook[] hooks { get; set; }
+        protected IActionHook[] hooks { get; set; }
         protected bool isForceAuto;
         public HookCtroller(ActionObj trigger)
         {
@@ -84,11 +84,11 @@ namespace WorldActionSystem
             }
         }
 
-        private void OnCommandObjComplete(IActionObj obj)
+        private void OnCommandObjComplete(IActionHook obj)
         {
             if(!Complete)
             {
-                var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == obj.QueueID && !x.Complete);
+                var notComplete = Array.FindAll<IActionHook>(hooks, x => (x as IActionHook).QueueID == obj.QueueID && !x.Complete);
                 if (notComplete.Length == 0)
                 {
                     if (!ExecuteAStep(isForceAuto))
@@ -110,7 +110,7 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == id);
+                var neetActive = Array.FindAll<IActionHook>(hooks, x => (x as IActionHook).QueueID == id);
                 if (neetActive.Length > 0)
                 {
                     foreach (ActionHook item in neetActive)

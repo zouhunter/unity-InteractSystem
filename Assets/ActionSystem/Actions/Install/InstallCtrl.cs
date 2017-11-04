@@ -7,262 +7,52 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCtrl : IActionCtroller
+    public class InstallCtrl : PlaceController
     {
         public bool Active { get; private set; }
-        public UnityAction<string> UserError { get; set; }
-        IHighLightItems highLight;
-        private PickUpAbleElement pickedUpObj;
-        private bool pickedUp;
-        private InstallObj installPos;
-        private Ray ray;
-        private RaycastHit hit;
-        private RaycastHit[] hits;
-        private bool installAble;
-        private string resonwhy;
-        private float hitDistence { get { return Setting.hitDistence; } }
-        private List<InstallObj> installObjs = new List<InstallObj>();
-        private float elementDistence;
-        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
-        private bool activeNotice { get { return Setting.highLightNotice; } }
-        public InstallCtrl( InstallObj[] installObjs)
-        {
-            highLight = new ShaderHighLight();
-            this.installObjs.AddRange(installObjs);
-        }
 
-        #region 鼠标操作事件
-        public void Update()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                OnLeftMouseClicked();
-            }
-            else if (pickedUp)
-            {
-                UpdateInstallState();
-                MoveWithMouse(elementDistence += Input.GetAxis("Mouse ScrollWheel"));
-            }
-        }
+        protected override int PlacePoslayerMask { get { return 1 << Setting.installPosLayer; } }
 
-        private void OnLeftMouseClicked()
+        protected override bool CanPlace(PlaceObj placeObj, PickUpAbleElement element, out string why)
         {
-            if (!pickedUp)
+            why = null;
+            var canplace = true;
+            if (placeObj == null)
             {
-                SelectAnElement();
+                Debug.LogError("【配制错误】:零件未挂InstallObj脚本");
+            }
+            else if (!placeObj.Started)
+            {
+                canplace = false;
+                why = "操作顺序错误";
+            }
+            else if (placeObj.AlreadyPlaced)
+            {
+                canplace = false;
+                why = "已经安装";
+            }
+            else if (element.name != placeObj.Name)
+            {
+                canplace = false;
+                why = "零件不匹配";
             }
             else
             {
-                TryInstallObject();
+                canplace = true;
             }
+            return canplace;
         }
 
-        /// <summary>
-        /// 在未屏幕锁的情况下选中一个没有元素
-        /// </summary>
-        void SelectAnElement()
+        protected override void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
         {
-            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
-            {
-                pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
-                if (pickedUpObj != null)
-                {
-                    if (pickedUpObj.Installed){
-                        pickedUpObj.NormalUnInstall();
-                    }
-
-                    pickedUpObj.OnPickUp();
-                    pickedUp = true;
-                    elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
-                }
-            }
+            pos.Attach(pickup);
+            pickup.QuickInstall(pos.gameObject);
+            pos.OnEndExecute(false);
         }
 
-        public void UpdateInstallState()
+        protected override void PlaceWrong(PickUpAbleElement pickup)
         {
-            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, hitDistence, (1 << Setting.installPosLayer));
-            if (hits != null || hits.Length > 0)
-            {
-                bool hited = false;
-                for (int i = 0; i < hits.Length; i++)
-                {
-                    if (hits[i].collider.name == pickedUpObj.name)
-                    {
-                        hited = true;
-                        installPos = hits[i].collider.GetComponent<InstallObj>();
-                        if (installPos == null)
-                        {
-                            Debug.LogError("【配制错误】:零件未挂InstallObj脚本");
-                        }
-                        else if (!IsInstallStep(installPos))
-                        {
-                            installAble = false;
-                            resonwhy = "操作顺序错误";
-                        }
-                        else if (HaveInstallObjInstalled(installPos))
-                        {
-                            installAble = false;
-                            resonwhy = "已经安装";
-                        }
-                        else if (pickedUpObj.name != installPos.Name)
-                        {
-                            installAble = false;
-                            resonwhy = "零件不匹配";
-                        }
-                        else
-                        {
-                            installAble = true;
-                        }
-                    }
-                }
-                if (!hited)
-                {
-                    installAble = false;
-                    resonwhy = "零件放置位置不正确";
-                }
-            }
-
-            if (installAble)
-            {
-                //可安装显示绿色
-                if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.green);
-            }
-            else
-            {
-                //不可安装红色
-                if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.red);
-            }
-        }
-
-        /// <summary>
-        /// 尝试安装元素
-        /// </summary>
-        void TryInstallObject()
-        {
-            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (installAble)
-            {
-                if(!installPos.AlreadyPlaced){
-                    installPos.Attach(pickedUpObj);
-                    pickedUpObj.QuickInstall(installPos.gameObject);
-                    installPos.OnEndExecute(false);
-                }
-                else
-                {
-                    Debug.LogError("AlreadyPlaced");
-                }
-            }
-            else
-            {
-                pickedUpObj.NormalMoveBack();
-                UserError(resonwhy);
-            }
-
-            pickedUp = false;
-            installAble = false;
-            if (activeNotice) highLight.UnHighLightTarget(pickedUpObj.Render);
-        }
-
-        private Ray disRay;
-        private RaycastHit disHit;
-
-        /// <summary>
-        /// 跟随鼠标
-        /// </summary>
-        void MoveWithMouse(float dis)
-        {
-            disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(disRay, out disHit, dis, 1 << Setting.obstacleLayer))
-            {
-                pickedUpObj.transform.position = disHit.point;
-            }
-            else
-            {
-                pickedUpObj.transform.position = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
-            }
-        }
-
-        private List<InstallObj> GetNotInstalledPosList()
-        {
-            var list = installObjs.FindAll(x => !x.AlreadyPlaced);
-            return list;
-        }
-        private bool HaveInstallObjInstalled(InstallObj obj)
-        {
-            return obj.AlreadyPlaced;
-        }
-        private bool IsInstallStep(InstallObj obj)
-        {
-            return installObjs.Contains(obj) && obj.Started;
-        }
-        #endregion
-
-        public void OnStartExecute(bool forceauto)
-        {
-            SetStartNotify();
-        }
-        public void OnEndExecute()
-        {
-            SetCompleteNotify(false);
-        }
-        public void OnUnDoExecute()
-        {
-            SetCompleteNotify(true);
-        }
-
-        /// <summary>
-        /// 将可安装元素全部显示出来
-        /// </summary>
-        private void SetStartNotify()
-        {
-            List<InstallObj> posList = GetNotInstalledPosList();
-            var keyList = new List<string>();
-            foreach (var pos in posList)
-            {
-                if (!keyList.Contains(pos.Name))
-                {
-                    keyList.Add(pos.Name);
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (!listObjs[j].Installed)
-                        {
-                            listObjs[j].StepActive();
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 结束指定步骤
-        /// </summary>
-        /// <param name="poss"></param>
-        private void SetCompleteNotify(bool undo)
-        {
-            var keyList = new List<string>();
-            foreach (var pos in installObjs)
-            {
-                if (!keyList.Contains(pos.Name))
-                {
-                    List<PickUpAbleElement> listObjs = ElementController.GetElements(pos.Name);
-                    if (listObjs == null) throw new Exception("元素配制错误:没有:" + pos.Name);
-                    for (int j = 0; j < listObjs.Count; j++)
-                    {
-                        if (!listObjs[j].Installed && undo)
-                        {
-                            listObjs[j].StepUnDo();
-                        }
-                        else
-                        {
-                            listObjs[j].StepComplete();
-                        }
-                    }
-                }
-            }
+            pickedUpObj.NormalMoveBack();
         }
     }
 

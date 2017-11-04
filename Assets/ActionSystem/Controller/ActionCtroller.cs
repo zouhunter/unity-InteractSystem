@@ -15,7 +15,7 @@ namespace WorldActionSystem
         private ControllerType commandType { get { return trigger.commandType; } }
         private List<IActionCtroller> commandList = new List<IActionCtroller>();
         private Queue<ActionObj> actionQueue = new Queue<ActionObj>();
-        private List<ActionHook> hookList = new List<ActionHook>();
+        //private List<ActionHook> hookList = new List<ActionHook>();
         private List<IActionObj> startedActions = new List<IActionObj>();
         protected Coroutine coroutine;
         public static bool log = false;
@@ -47,15 +47,13 @@ namespace WorldActionSystem
             }
             if ((commandType & ControllerType.Match) == ControllerType.Match)
             {
-                var matchObjs = Array.ConvertAll<IActionObj, MatchObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is MatchObj), x => x as MatchObj);
-                var matchCtrl = new MatchCtrl( matchObjs);
+                var matchCtrl = new MatchCtrl();
                 matchCtrl.UserError = trigger.UserError;
                 commandList.Add(matchCtrl);
             }
             if ((commandType & ControllerType.Install) == ControllerType.Install)
             {
-                var installObjs = Array.ConvertAll<IActionObj, InstallObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is InstallObj), x => x as InstallObj);
-                var installCtrl = new InstallCtrl(installObjs);
+                var installCtrl = new InstallCtrl();
                 installCtrl.UserError = trigger.UserError;
                 commandList.Add(installCtrl);
             }
@@ -67,8 +65,8 @@ namespace WorldActionSystem
             }
             if((commandType & ControllerType.Rope) == ControllerType.Rope)
             {
-                var ropeObjs = Array.ConvertAll<IActionObj, RopeObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is RopeObj), x => x as RopeObj);
-                var ropCtrl = new RopeController(ropeObjs);
+                var objs = Array.ConvertAll<IActionObj, PlaceObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is PlaceObj), x => x as PlaceObj);
+                var ropCtrl = new RopeController(objs);
                 ropCtrl.UserError = trigger.UserError;
                 commandList.Add(ropCtrl);
             }
@@ -80,15 +78,15 @@ namespace WorldActionSystem
             if (coroutine == null){
                 coroutine = trigger.StartCoroutine(Update());
             }
-            ForEachAction((ctrl) => {
-                ctrl.OnStartExecute(forceAuto);
-            });
+            //ForEachAction((ctrl) => {
+            //    ctrl.OnStartExecute(forceAuto);
+            //});
             ExecuteAStep();
         }
         private void ChargeQueueIDs()
         {
             actionQueue.Clear();
-            hookList.Clear();
+            //hookList.Clear();
             queueID.Clear();
             foreach (var item in actionObjs)
             {
@@ -102,10 +100,10 @@ namespace WorldActionSystem
         public virtual void OnEndExecute()
         {
             CompleteQueues();
-            ForEachAction((ctrl) =>
-            {
-                ctrl.OnEndExecute();
-            });
+            //ForEachAction((ctrl) =>
+            //{
+            //    ctrl.OnEndExecute();
+            //});
 
             foreach (var item in actionObjs)
             {
@@ -127,9 +125,9 @@ namespace WorldActionSystem
             UnDoQueues();
             ChargeQueueIDs();
            
-            ForEachAction((ctrl) =>{
-                ctrl.OnUnDoExecute();
-            });
+            //ForEachAction((ctrl) =>{
+            //    ctrl.OnUnDoExecute();
+            //});
             foreach (var item in actionObjs){
                 if(item.Started)
                 {
@@ -191,15 +189,15 @@ namespace WorldActionSystem
                     action.OnEndExecute(true);
                 }
             }
-            while (hookList.Count > 0)
-            {
-                var hook = hookList[0];
-                hookList.RemoveAt(0);
-                if (!hook.Complete)
-                {
-                    hook.OnEndExecute(true);
-                }
-            }
+            //while (hookList.Count > 0)
+            //{
+            //    var hook = hookList[0];
+            //    hookList.RemoveAt(0);
+            //    if (!hook.Complete)
+            //    {
+            //        hook.OnEndExecute(true);
+            //    }
+            //}
         }
         private void UnDoQueues()
         {
@@ -210,15 +208,15 @@ namespace WorldActionSystem
                     action.OnUnDoExecute();
                 }
             }
-            while (hookList.Count > 0)
-            {
-                var hook = hookList[0];
-                    hookList.RemoveAt(0);
-                if (hook.Started)
-                {
-                    hook.OnUnDoExecute();
-                }
-            }
+            //while (hookList.Count > 0)
+            //{
+            //    var hook = hookList[0];
+            //        hookList.RemoveAt(0);
+            //    if (hook.Started)
+            //    {
+            //        hook.OnUnDoExecute();
+            //    }
+            //}
 
         }
         protected bool ExecuteAStep()
@@ -230,7 +228,7 @@ namespace WorldActionSystem
                 var neetActive = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Started);
                 if (isForceAuto)
                 {
-                    hookList.Clear();
+                    //hookList.Clear();
                     actionQueue.Clear();
                     foreach (var item in neetActive)
                     {
@@ -240,7 +238,7 @@ namespace WorldActionSystem
                         }
                         else /*if(item is ActionHook)*/
                         {
-                            hookList.Add(item as ActionHook);
+                            //hookList.Add(item as ActionHook);
                             startedActions.Add(item);
                         }
                     }
@@ -268,15 +266,15 @@ namespace WorldActionSystem
                 TryStartAction(actionObj);
             }
             ///最后执行hook
-            if (actionQueue.Count == 0)
-            {
-                while (hookList.Count > 0)
-                {
-                    var item = hookList[0];
-                    hookList.RemoveAt(0);
-                    TryStartAction(item);
-                }
-            }
+            //if (actionQueue.Count == 0)
+            //{
+            //    while (hookList.Count > 0)
+            //    {
+            //        var item = hookList[0];
+            //        hookList.RemoveAt(0);
+            //        TryStartAction(item);
+            //    }
+            //}
         }
         private void TryStartAction(IActionObj obj)
         {
