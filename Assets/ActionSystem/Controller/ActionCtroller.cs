@@ -75,15 +75,11 @@ namespace WorldActionSystem
             if (coroutine == null){
                 coroutine = trigger.StartCoroutine(Update());
             }
-            //ForEachAction((ctrl) => {
-            //    ctrl.OnStartExecute(forceAuto);
-            //});
             ExecuteAStep();
         }
         private void ChargeQueueIDs()
         {
             actionQueue.Clear();
-            //hookList.Clear();
             queueID.Clear();
             foreach (var item in actionObjs)
             {
@@ -97,11 +93,6 @@ namespace WorldActionSystem
         public virtual void OnEndExecute()
         {
             CompleteQueues();
-            //ForEachAction((ctrl) =>
-            //{
-            //    ctrl.OnEndExecute();
-            //});
-
             foreach (var item in actionObjs)
             {
                 if(!item.Started)
@@ -122,9 +113,6 @@ namespace WorldActionSystem
             UnDoQueues();
             ChargeQueueIDs();
            
-            //ForEachAction((ctrl) =>{
-            //    ctrl.OnUnDoExecute();
-            //});
             foreach (var item in actionObjs){
                 if(item.Started)
                 {
@@ -186,15 +174,6 @@ namespace WorldActionSystem
                     action.OnEndExecute(true);
                 }
             }
-            //while (hookList.Count > 0)
-            //{
-            //    var hook = hookList[0];
-            //    hookList.RemoveAt(0);
-            //    if (!hook.Complete)
-            //    {
-            //        hook.OnEndExecute(true);
-            //    }
-            //}
         }
         private void UnDoQueues()
         {
@@ -205,16 +184,6 @@ namespace WorldActionSystem
                     action.OnUnDoExecute();
                 }
             }
-            //while (hookList.Count > 0)
-            //{
-            //    var hook = hookList[0];
-            //        hookList.RemoveAt(0);
-            //    if (hook.Started)
-            //    {
-            //        hook.OnUnDoExecute();
-            //    }
-            //}
-
         }
         protected bool ExecuteAStep()
         {
@@ -262,33 +231,16 @@ namespace WorldActionSystem
                 if(log) Debug.Log("QueueExectueActions" + actionObj);
                 TryStartAction(actionObj);
             }
-            ///最后执行hook
-            //if (actionQueue.Count == 0)
-            //{
-            //    while (hookList.Count > 0)
-            //    {
-            //        var item = hookList[0];
-            //        hookList.RemoveAt(0);
-            //        TryStartAction(item);
-            //    }
-            //}
         }
         private void TryStartAction(IActionObj obj)
         {
             if(log) Debug.Log("Start A Step:" + obj);
             if(!obj.Started)
             {
-                if(obj.CameraID == null)
+                CameraController.SetViewCamera(() =>
                 {
                     StartAction(obj);
-                }
-                else
-                {
-                    CameraController.SetViewCamera(() =>
-                    {
-                        StartAction(obj);
-                    }, GetCameraID(obj));
-                }
+                }, GetCameraID(obj));
             }
             else
             {
@@ -310,13 +262,8 @@ namespace WorldActionSystem
 
         private string GetCameraID(IActionObj obj)
         {
-            //不需要改变相机状态的钩子
-            if (obj is ActionHook)
-            {
-                return null;
-            }
             //忽略匹配相机
-            else if (Setting.ignoreMatch && obj is MatchObj && !(obj as MatchObj).ignorePass)
+           if (Setting.ignoreMatch && obj is MatchObj && !(obj as MatchObj).ignorePass)
             {
                 return null;
             }

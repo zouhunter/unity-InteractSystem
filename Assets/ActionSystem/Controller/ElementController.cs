@@ -56,6 +56,7 @@ namespace WorldActionSystem
             }
             else
             {
+                throw new Exception("配制错误,缺少" + elementName);
                 return null;
             }
         }
@@ -88,7 +89,6 @@ namespace WorldActionSystem
             if(actived == null)
             {
                 var objs = ElementController.GetElements(element.Name);
-                Debug.Assert(objs!= null);
                 for (int i = 0; i < objs.Count; i++)
                 {
                     if (!objs[i].Started && !objs[i].HaveBinding)

@@ -15,11 +15,13 @@ namespace WorldActionSystem
         private Vector3[] ropeNodesStartPos;
         private List<Collider> ropeList = new List<Collider>();
         private List<float> lengthList = new List<float>();
+
         private void Awake()
         {
             RegestRopeList();
             RecordStartPosAndSetLayer();
         }
+
         private void RecordStartPosAndSetLayer()
         {
             ropeNodesStartPos = new Vector3[ropeNode.Count];
@@ -29,6 +31,7 @@ namespace WorldActionSystem
                 ropeNode[i].gameObject.layer = Setting.ropeNodeLayer;
             }
         }
+
         private void RegestRopeList()
         {
             ropeList.Add(rope.RopeStart.GetComponent<BoxCollider>());
@@ -42,13 +45,13 @@ namespace WorldActionSystem
 
         public void RegistNodesInstallPos()
         {
+            Debug.Log("RegistNodesInstallPos");
             ropeNodesInstallPos = new Vector3[ropeNode.Count];
             for (int i = 0; i < ropeNodesInstallPos.Length; i++)
             {
                 ropeNodesInstallPos[i] = ropeNode[i].transform.position;
             }
         }
-
         /// <summary>
         /// 防止线被拉太长
         /// </summary>
@@ -86,6 +89,7 @@ namespace WorldActionSystem
         /// </summary>
         public void PickDownCollider(Collider collider)
         {
+            Debug.Assert(collider != null);
             var id = ropeNode.IndexOf(collider);
             collider.transform.position = ropeNodesInstallPos[id];
         }
@@ -105,6 +109,7 @@ namespace WorldActionSystem
                 ropeNode[i].transform.position = ropeNodesStartPos[i];
             }
         }
+
         internal void QuickInstallRopeNodes(List<Collider> ropeNode)
         {
             foreach (var target in ropeNode)

@@ -10,10 +10,11 @@ using DG.Tweening;
 #endif
 namespace WorldActionSystem
 {
+
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IOutSideRegisterRender
+    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IPlaceItem, IRuntimeActive
     {
         public string _name;
         public int animTime { get { return Setting.autoExecuteTime; } }
@@ -162,8 +163,12 @@ namespace WorldActionSystem
                 Binding(target);
                 transform.position = target.transform.position;
                 transform.rotation = target.transform.rotation;
-                
                 if (!binding) UnBinding();
+                OnInstallComplete(complete);
+            }
+            else
+            {
+                Debug.LogError(this +"HaveBinding:" + BindingObj);
             }
         }
 
@@ -219,8 +224,8 @@ namespace WorldActionSystem
             {
                 onPickUp.Invoke();
             }
-            QuickUnInstall();
         }
+
 
         public virtual void OnPickDown()
         {
@@ -249,6 +254,7 @@ namespace WorldActionSystem
             actived = false;
             onStepComplete.Invoke();
         }
+
         /// <summary>
         /// 步骤重置(没有用到的元素)
         /// </summary>
@@ -294,11 +300,9 @@ namespace WorldActionSystem
         }
         protected virtual void OnUnInstallComplete()
         {
-            gameObject.SetActive(startActive);
             if (onUnInstallOkEvent != null)
                 onUnInstallOkEvent();
         }
-
         protected virtual void Binding(PlaceObj target)
         {
             this.target = target;
@@ -309,11 +313,7 @@ namespace WorldActionSystem
             target = null;
             return old;
         }
-        public virtual void RegisterRenderer(Renderer renderer)
-        {
-            if (renderer != null)
-                m_render = renderer;
-        }
+       
         protected virtual void OnDestroy()
         {
             StopTween();

@@ -14,6 +14,7 @@ namespace WorldActionSystem
     public class RopeController : PlaceController
     {
         private RopeObj ropeObj { get { return installPos as RopeObj; } }
+
         protected override int PlacePoslayerMask
         {
             get
@@ -28,8 +29,6 @@ namespace WorldActionSystem
         public override void Update()
         {
             base.Update();
-
-
             if (ropeItem == null || pickUpedRopeNode == null)
             {
                 if (Input.GetMouseButtonDown(0))
@@ -90,7 +89,6 @@ namespace WorldActionSystem
                         {
                             hited = true;
                             var ropeObj = hits[i].collider.GetComponentInParent<RopeObj>();
-                            //var placeRopeNodePos = hits[i].collider;
                             pickDownAble = CanPlaceNode(ropeObj, ropeItem, pickUpedRopeNode, out resonwhy);
                         }
                     }
@@ -219,22 +217,19 @@ namespace WorldActionSystem
 
         protected override void PlaceObject(PlaceObj pos, PickUpAbleElement element)
         {
-            installPos.Attach(pickedUpObj);
-            element.QuickInstall(installPos, false);
-            RopeObj ropeObj = (pos as RopeObj);
-            RopeItem ropeItem = element as RopeItem;
-            ropeObj.TryRegistRopeItem(ropeItem);
+            pos.Attach(element);
+            element.QuickInstall(installPos, false,true);
         }
 
         protected override void PlaceWrong(PickUpAbleElement pickup)
         {
-            if (ropeObj.obj == pickup)
+            if (pickup.BindingObj != null)
             {
-                pickedUpObj.QuickInstall(ropeObj, false);
+                pickup.QuickInstall(ropeObj, false);
             }
             else
             {
-                pickedUpObj.NormalUnInstall();
+                pickup.NormalUnInstall();
             }
         }
     }

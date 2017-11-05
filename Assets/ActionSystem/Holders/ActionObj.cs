@@ -30,7 +30,7 @@ namespace WorldActionSystem
             }
         }
         [SerializeField]
-        private string _cameraID = CameraController.defultID;
+        private string _cameraID;
         public string CameraID { get { return _cameraID; } }
         public Transform anglePos;
         public UnityAction onEndExecute { get; set; }

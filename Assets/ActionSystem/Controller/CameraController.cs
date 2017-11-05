@@ -98,7 +98,7 @@ namespace WorldActionSystem
             {
                 StopLastCoroutine();
             }
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 OnStepComplete(onComplete);
             }

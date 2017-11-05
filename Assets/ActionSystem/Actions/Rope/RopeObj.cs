@@ -9,25 +9,12 @@ namespace WorldActionSystem
 {
     public class RopeObj : PlaceObj
     {
+        public bool completeHide;
         [SerializeField]
         private List<Collider> ropeNode = new List<Collider>();
-
-        private float autoTime { get { return Setting.autoExecuteTime; } }
         private List<Collider> connected = new List<Collider>();
-        private RopeItem ropeItem;
+        private RopeItem ropeItem { get { return obj as RopeItem;  } set { obj = value; } }
         public bool Connected { get { return connected.Count == ropeNode.Count; } }
-        public override PickUpAbleElement obj
-        {
-            get
-            {
-                return ropeItem;
-            }
-            protected set
-            {
-                ropeItem = value as RopeItem;
-            }
-        }
-
         public override int layer
         {
             get
@@ -37,12 +24,12 @@ namespace WorldActionSystem
         }
         private Transform angleTemp;
         private Coroutine antoCoroutine;
-        private bool innerRopeItem;
 
         protected override void Awake()
         {
             base.Awake();
             RegistNodes();
+            hideOnInstall = false;//强制不可以隐藏
         }
         protected override void Start()
         {
@@ -52,11 +39,11 @@ namespace WorldActionSystem
 
         protected override void OnInstallComplete(PickUpAbleElement obj)
         {
-            if (innerRopeItem) return;
-
+            Debug.Log("OnInstallComplete");
             if (obj == this.obj)
             {
                 ropeItem.RegistNodesInstallPos();
+
                 //提示一个接头点
                 if (auto)
                 {
@@ -68,6 +55,20 @@ namespace WorldActionSystem
                 }
             }
         }
+
+        protected override void OnUnInstallComplete(PickUpAbleElement obj)
+        {
+            if (AlreadyPlaced && this.obj == obj)
+            {
+                if (ropeItem != null){
+                    ropeItem.QuickUnInstallAllRopeNode();
+                }
+                Detach();
+                connected.Clear();
+            }
+
+        }
+
         private IEnumerator AutoInstallAllRopeNode()
         {
             Collider current;
@@ -84,6 +85,7 @@ namespace WorldActionSystem
                 connected.Add(currentTarget);
             }
         }
+
         private void SelectOneRopeNode()
         {
             Debug.Assert(ropeItem);
@@ -107,6 +109,7 @@ namespace WorldActionSystem
                 }
             }
         }
+
         private Collider SelectOneRopeNode(out Collider target)
         {
             Debug.Assert(ropeItem);
@@ -170,43 +173,6 @@ namespace WorldActionSystem
             return havePos;
         }
 
-        protected override void OnUnInstallComplete(PickUpAbleElement obj)
-        {
-            if (innerRopeItem) return;
-
-            if (AlreadyPlaced && this.obj == obj)
-            {
-                if (!innerRopeItem)
-                {
-                    Detach();
-                }
-                if (ropeItem != null)
-                {
-                    ropeItem.QuickUnInstallAllRopeNode();
-                }
-
-                connected.Clear();
-            }
-
-        }
-
-        public override void OnStartExecute(bool auto = false)
-        {
-            base.OnStartExecute(auto);
-            TryAutoRegistRopeItem();
-            if (innerRopeItem)
-            {
-                OnInstallComplete(obj);
-            }
-            else
-            {
-                if (auto)
-                {
-                  
-                }
-            }
-        }
-
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
@@ -214,16 +180,11 @@ namespace WorldActionSystem
             if (AlreadyPlaced)
             {
                 var ropeItem = this.ropeItem;
-                if (!innerRopeItem)
-                {
-                    var obj = Detach();
-                    obj.QuickUnInstall();
-                    ropeItem.QuickUnInstallAllRopeNode();
-                }
-                else
-                {
-                    ropeItem.PickDownAllCollider();
-                }
+                var obj = Detach();
+                obj.QuickUnInstall();
+                if (completeHide)
+                    obj.gameObject.SetActive(true);
+                ropeItem.QuickUnInstallAllRopeNode();
                 anglePos = angleTemp;
             }
             connected.Clear();
@@ -232,57 +193,23 @@ namespace WorldActionSystem
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
+
             if (antoCoroutine != null) StopCoroutine(antoCoroutine);
+
             if (!AlreadyPlaced)
             {
-                if (!innerRopeItem)
-                {
-                    PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
-                    Attach(obj);
-                    obj.QuickInstall(this);
-                }
+                PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
+                Attach(obj);
+                obj.QuickInstall(this,true,true);
             }
+
             ropeItem.QuickInstallRopeNodes(ropeNode);
-            ropeItem.StepComplete();
+
+            if (completeHide)
+                ropeItem.gameObject.SetActive(false);
+
             connected = new List<Collider>(ropeNode);
         }
-
-        /// <summary>
-        /// 利用控制器放置元素
-        /// </summary>
-        /// <param name="ropeItem"></param>
-        /// <returns></returns>
-        public bool TryRegistRopeItem(RopeItem ropeItem)
-        {
-            if (this.ropeItem == null && ropeItem != null)
-            {
-                this.ropeItem = ropeItem;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 支持提前放置好元素
-        /// </summary>
-        private void TryAutoRegistRopeItem()
-        {
-            if (ropeItem && !innerRopeItem)
-            {
-                innerRopeItem = true;
-                Attach(obj);
-                obj.QuickInstall(this);
-            }
-
-            if (ropeItem)
-            {
-                ropeItem.StepActive();
-            }
-        }
-
 
         private void RegistNodes()
         {
@@ -311,7 +238,6 @@ namespace WorldActionSystem
             PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
             Attach(obj);
             obj.NormalInstall(this);
-            ///获取脚本
         }
     }
 }
