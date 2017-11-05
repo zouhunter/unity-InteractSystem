@@ -29,7 +29,7 @@ namespace WorldActionSystem
             }
 
             if (completeMoveBack){
-                this.obj.QuickMoveBack();
+                this.obj.QuickUnInstall();
             }
         }
 
@@ -38,7 +38,7 @@ namespace WorldActionSystem
             base.OnUnDoExecute();
             if (Matched){
                var obj = Detach();
-                obj.QuickMoveBack();
+                obj.QuickUnInstall();
             }
         }
     
@@ -50,7 +50,7 @@ namespace WorldActionSystem
             {
                 if (!completeMoveBack)
                 {
-                    obj.QuickMoveTo(gameObject);
+                    obj.QuickInstall(this,true,false);
                 }
                 else
                 {
@@ -59,10 +59,7 @@ namespace WorldActionSystem
             }
             else
             {
-                obj.StraightMove = straightMove;
-                obj.IgnoreMiddle = ignoreMiddle;
-                obj.Passby = passBy;
-                obj.NormalMoveTo(gameObject, false);
+                obj.NormalInstall(this, false,false);
             }
         }
 

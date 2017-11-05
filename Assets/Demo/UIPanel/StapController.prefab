@@ -2424,7 +2424,7 @@ MonoBehaviour:
   skipAStap: {fileID: 11480624}
   skipMutiStap: {fileID: 11429484}
   toEnd: {fileID: 11435698}
-  notice: {fileID: 0}
+  notice: {fileID: 11486166}
   autoNext: {fileID: 11413884}
   autoPlay: {fileID: 11472070}
   textShow: {fileID: 11422206}
@@ -2441,6 +2441,8 @@ MonoBehaviour:
   - step: user
   - step: connect
   - step: match
+  - step: rope
+  - step: group
 --- !u!114 &11494706
 MonoBehaviour:
   m_ObjectHideFlags: 1

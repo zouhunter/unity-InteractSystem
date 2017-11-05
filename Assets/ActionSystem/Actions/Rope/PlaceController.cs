@@ -14,11 +14,12 @@ namespace WorldActionSystem
         public Transform passBy;//路过
         public bool straightMove;//直线移动
         public bool ignoreMiddle;//忽略中间点
+        public bool hideOnInstall;//安装完后隐藏
+
         public virtual GameObject Go { get { return gameObject; } }
         public virtual bool AlreadyPlaced { get { return obj != null; } }
         public abstract int layer { get; }
         public virtual PickUpAbleElement obj { get; protected set; }
-        public bool pickUpAble;
 
         protected virtual void Awake()
         {
@@ -26,14 +27,14 @@ namespace WorldActionSystem
 
             onBeforeStart.AddListener((auto) =>
             {
-                ElementController.ActiveElements(Name);
+                ElementController.ActiveElements(this);
             });
             onBeforeComplete.AddListener((force) =>
             {
-                ElementController.CompleteElements(Name, false);
+                ElementController.CompleteElements(this, false);
             });
             onBeforeUnDo.AddListener(()=> {
-                ElementController.CompleteElements(Name, true);
+                ElementController.CompleteElements(this, true);
             });
         }
         protected virtual void OnDestroy()
@@ -92,7 +93,6 @@ namespace WorldActionSystem
         protected bool installAble;
         protected string resonwhy;
         protected float hitDistence { get { return Setting.hitDistence; } }
-        //protected List<PlaceObj> placeitems = new List<PlaceObj>();
         protected Camera viewCamera { get { return CameraController.ActiveCamera; } }
         protected bool activeNotice { get { return Setting.highLightNotice; } }
         protected Ray disRay;
@@ -100,10 +100,9 @@ namespace WorldActionSystem
         protected float elementDistence;
         protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
 
-        public PlaceController(/*PlaceObj[] placeitems*/)
+        public PlaceController()
         {
             highLight = new ShaderHighLight();
-            //this.placeitems.AddRange(placeitems);
         }
 
         #region 鼠标操作事件
@@ -144,7 +143,7 @@ namespace WorldActionSystem
                 if (pickedUpObj != null && pickedUpObj.Started)
                 {
                     this.pickedUpObj = pickedUpObj;
-                    if (pickedUpObj.Installed)
+                    if (pickedUpObj.HaveBinding)
                     {
                         pickedUpObj.NormalUnInstall();
                     }

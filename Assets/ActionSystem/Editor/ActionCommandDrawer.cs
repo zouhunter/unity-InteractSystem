@@ -17,14 +17,14 @@ namespace WorldActionSystem
 
         SerializedProperty lineWightProp;
         SerializedProperty lineMaterialProp;
-        SerializedProperty pointDistenceProp;
+        //SerializedProperty pointDistenceProp;
 
         SerializedProperty onBeforeActiveProp;
         SerializedProperty onBeforeUnDoProp;
         SerializedProperty onBeforePlayEndProp;
 
         bool drawLineInfo;
-        bool drawPointDistence;
+        //bool drawPointDistence;
         List<ControllerType> activeCommands = new List<ControllerType>();
 
         private void OnEnable()
@@ -32,7 +32,7 @@ namespace WorldActionSystem
             commandTypeProp = serializedObject.FindProperty("commandType");
             lineWightProp = serializedObject.FindProperty("lineWight");
             lineMaterialProp = serializedObject.FindProperty("lineMaterial");
-            pointDistenceProp = serializedObject.FindProperty("pointDistence");
+            //pointDistenceProp = serializedObject.FindProperty("pointDistence");
 
             onBeforeActiveProp = serializedObject.FindProperty("onBeforeActive");
             onBeforeUnDoProp = serializedObject.FindProperty("onBeforeUnDo");
@@ -63,17 +63,17 @@ namespace WorldActionSystem
             {
                 EditorGUILayout.PropertyField(lineWightProp);
                 EditorGUILayout.PropertyField(lineMaterialProp);
-                EditorGUILayout.PropertyField(pointDistenceProp);
+                //EditorGUILayout.PropertyField(pointDistenceProp);
             }
-            if (drawPointDistence)
-            {
-                EditorGUILayout.PropertyField(pointDistenceProp);
-            }
+            //if (drawPointDistence)
+            //{
+            //    EditorGUILayout.PropertyField(pointDistenceProp);
+            //}
         }
         private void SwitchDrawing()
         {
             drawLineInfo = false;
-            drawPointDistence = false;
+            //drawPointDistence = false;
             activeCommands.Clear();
             var type = (ControllerType)commandTypeProp.intValue;
             if ((type & ControllerType.Click) == ControllerType.Click)
@@ -82,7 +82,7 @@ namespace WorldActionSystem
             }
             if ((type & ControllerType.Connect) == ControllerType.Connect)
             {
-                drawPointDistence = true;
+                //drawPointDistence = true;
                 drawLineInfo = true;
                 activeCommands.Add(ControllerType.Connect);
             }

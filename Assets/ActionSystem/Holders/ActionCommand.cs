@@ -35,8 +35,6 @@ namespace WorldActionSystem
         public float lineWight = 0.1f;
         [HideInInspector]
         public Material lineMaterial;
-        [HideInInspector]
-        public float pointDistence = 0.1f;
         #endregion
 
         [HideInInspector]

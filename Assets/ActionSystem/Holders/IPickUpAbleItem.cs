@@ -3,7 +3,6 @@
     internal interface IPickUpAbleItem
     {
         void OnPickUp();
-        void QuickMoveBack();
-        void NormalMoveBack();
+        void OnPickDown();
     }
 }

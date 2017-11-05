@@ -16,7 +16,6 @@ namespace WorldActionSystem
     /// </summary>
     public class InstallObj : PlaceObj
     {
-        public bool hideonInstall;
         public override int layer
         {
             get
@@ -33,13 +32,8 @@ namespace WorldActionSystem
             {
                 PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
                 Attach(obj);
-                obj.QuickInstall(gameObject);
+                obj.QuickInstall(this);
                 obj.StepComplete();
-            }
-
-            if(hideonInstall)
-            {
-                obj.Hide();
             }
         }
 
@@ -80,9 +74,9 @@ namespace WorldActionSystem
             obj.StepActive();
             if (Setting.ignoreInstall && !ignorePass)
             {
-                if (!hideonInstall)
+                if (!hideOnInstall)
                 {
-                    obj.QuickInstall(gameObject);
+                    obj.QuickInstall(this);
                 }
                 else
                 {
@@ -91,10 +85,7 @@ namespace WorldActionSystem
             }
             else
             {
-                obj.StraightMove = straightMove;
-                obj.IgnoreMiddle = ignoreMiddle;
-                obj.Passby = passBy;
-                obj.NormalInstall(gameObject);
+                obj.NormalInstall(this);
             }
         }
     }

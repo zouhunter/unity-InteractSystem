@@ -18,18 +18,17 @@ namespace WorldActionSystem
         public string _name;
         public int animTime { get { return Setting.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
-        public bool Installed { get { return target != null; } }
+        public bool HaveBinding { get { return target != null; } }
         public virtual string Name { get { return _name; } }
-        private GameObject target;
-        public bool StraightMove { get; set; }
-        public bool IgnoreMiddle { get; set; }
-        public Transform Passby { get; set; }
+
+        public bool Started { get { return actived; } }
+
         public Renderer Render { get { return m_render; } }
         public UnityAction onInstallOkEvent;
         public UnityAction onUnInstallOkEvent;
 
         public UnityEvent onPickUp;
-        public UnityEvent onnLayDown;
+        public UnityEvent onLayDown;
 
         public UnityEvent onStepActive;
         public UnityEvent onStepComplete;
@@ -47,7 +46,14 @@ namespace WorldActionSystem
 #endif
         protected IHighLightItems highLighter;
         protected bool actived;
-        public bool Started { get { return actived; } }
+
+        protected PlaceObj target;
+        public PlaceObj BindingObj { get { return target; } }
+        protected bool hideOnInstall { get { return target? target.hideOnInstall:false; } }//
+        protected bool StraightMove { get { return target ? target.straightMove:false ; } }
+        protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
+        protected Transform Passby { get { return target?target.passBy:null; } }
+
 #if !NoFunction
         protected virtual void Start()
         {
@@ -59,13 +65,13 @@ namespace WorldActionSystem
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
         }
+
         protected virtual void InitRender()
         {
             if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
             highLighter = new ShaderHighLight();
         }
 
-       
         protected virtual void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
         {
             posList = new List<Vector3>();
@@ -125,136 +131,105 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(GameObject target, bool complete = true)
+        public virtual void NormalInstall(PlaceObj target, bool complete = true,bool binding = true)
         {
             StopTween();
 #if !NoFunction
-            if (!Installed)
+            if (!HaveBinding)
             {
-                //transform.rotation = target.transform.rotation;
+                Binding(target);
                 DoPath(target.transform.position, target.transform.eulerAngles, () =>
                 {
-                    if (onInstallOkEvent != null)
-                        onInstallOkEvent();
-                    if (complete) StepComplete();
+                    OnInstallComplete(complete);
                 });
-                Attach(target);
+                if(!binding)
+                {
+                    UnBinding();
+                }
             }
 #endif
-        }
-        public virtual void NormalMoveTo(GameObject target, bool complete = true)
-        {
-            StopTween();
-
-#if !NoFunction
-            DoPath(target.transform.position, target.transform.eulerAngles, () =>
-            {
-                if (onInstallOkEvent != null)
-                    onInstallOkEvent();
-                if (complete) StepComplete();
-            });
-#endif
-        }
-        public virtual void QuickMoveTo(GameObject target, bool complete = true)
-        {
-            StopTween();
-
-            transform.position = target.transform.position;
-            transform.rotation = target.transform.rotation;
-
-            if (onInstallOkEvent != null)
-                onInstallOkEvent();
-
-            if (complete) StepComplete();
         }
 
         /// <summary>
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(GameObject target, bool complete = true)
+        public virtual void QuickInstall(PlaceObj target, bool complete = true,bool binding = true)
         {
             StopTween();
-            if (!Installed)
+            if (!HaveBinding)
             {
+                Binding(target);
                 transform.position = target.transform.position;
                 transform.rotation = target.transform.rotation;
-                if (onInstallOkEvent != null)
-                    onInstallOkEvent();
-                Attach(target);
+                
+                if (!binding) UnBinding();
             }
-            if (complete) StepComplete();
         }
 
+        /// <summary>
+        /// 卸载
+        /// </summary>
         public virtual void NormalUnInstall()
         {
             StopTween();
 #if !NoFunction
-            if (Installed)
-            {
-                DoPath(startPos, startRotation, () =>
-                {
-                    if (onUnInstallOkEvent != null)
-                        onUnInstallOkEvent();
-                });
-                Detach();
-            }
-#endif
-        }
-        public virtual void NormalMoveBack()
-        {
-            StopTween();
-#if !NoFunction
-            if (onnLayDown != null) onnLayDown.Invoke();
 
             DoPath(startPos, startRotation, () =>
             {
-                if (onUnInstallOkEvent != null)
-                    onUnInstallOkEvent();
+                OnUnInstallComplete();
             });
+
+            if (HaveBinding)
+            {
+                UnBinding();
+            }
 #endif
         }
-        public virtual void QuickMoveBack()
-        {
-            StopTween();
 
-            if (onnLayDown != null) onnLayDown.Invoke();
-
-            transform.eulerAngles = startRotation;
-            transform.position = startPos;
-
-            if (onUnInstallOkEvent != null)
-                onUnInstallOkEvent();
-        }
-
+        /// <summary>
+        /// 快速卸载
+        /// </summary>
         public virtual void QuickUnInstall()
         {
 #if !NoFunction
             StopTween();
-            if (Installed)
+            move.Pause();
+            transform.eulerAngles = startRotation;
+            transform.position = startPos;
+            target = null;
+
+            OnUnInstallComplete();
+
+            if (HaveBinding)
             {
-                move.Pause();
-                transform.eulerAngles = startRotation;
-                transform.position = startPos;
-                target = null;
-                if (onUnInstallOkEvent != null)
-                    onUnInstallOkEvent();
-                Detach();
+                UnBinding();
             }
 #endif
         }
 
+        /// <summary>
+        /// 拿起事件
+        /// </summary>
         public virtual void OnPickUp()
         {
             StopTween();
 
             if (onPickUp != null)
+            {
                 onPickUp.Invoke();
+            }
+            QuickUnInstall();
         }
 
-        internal void Hide()
+        public virtual void OnPickDown()
         {
-            gameObject.SetActive(false);
+            StopTween();
+            if(onLayDown != null)
+            {
+                onLayDown.Invoke();
+            }
+            NormalUnInstall();
         }
 
         /// <summary>
@@ -305,11 +280,30 @@ namespace WorldActionSystem
             move.Kill(true);
 #endif
         }
-        protected virtual void Attach(GameObject target)
+
+        protected virtual void OnInstallComplete(bool complete)
+        {
+            if(hideOnInstall){
+                gameObject.SetActive(false);
+            }
+
+            if (onInstallOkEvent != null)
+                onInstallOkEvent();
+
+            if (complete) StepComplete();
+        }
+        protected virtual void OnUnInstallComplete()
+        {
+            gameObject.SetActive(startActive);
+            if (onUnInstallOkEvent != null)
+                onUnInstallOkEvent();
+        }
+
+        protected virtual void Binding(PlaceObj target)
         {
             this.target = target;
         }
-        protected virtual GameObject Detach()
+        protected virtual PlaceObj UnBinding()
         {
             var old = target;
             target = null;

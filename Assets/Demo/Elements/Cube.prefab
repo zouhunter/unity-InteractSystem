@@ -88,14 +88,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ede9def9b1c7454fa41a2a6dcd1c4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: 
   startActive: 1
-  endActive: 1
   onPickUp:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  onnLayDown:
+  onLayDown:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,

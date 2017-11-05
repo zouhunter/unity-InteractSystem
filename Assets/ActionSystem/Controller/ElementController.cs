@@ -11,7 +11,7 @@ namespace WorldActionSystem
         public static event UnityAction<PickUpAbleElement> onInstall;
         public static event UnityAction<PickUpAbleElement> onUnInstall;
         private static Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
-        private static List<string> lockQueue = new List<string>();
+        private static List<PlaceObj> lockQueue = new List<PlaceObj>();
 
         public static void Clean()
         {
@@ -73,7 +73,7 @@ namespace WorldActionSystem
             {
                 for (int i = 0; i < listObj.Count; i++)
                 {
-                    if (!listObj[i].Installed)
+                    if (!listObj[i].HaveBinding)
                     {
                         return listObj[i];
                     }
@@ -82,29 +82,32 @@ namespace WorldActionSystem
             throw new Exception("配制错误,缺少" + elementName);
         }
 
-        public static void ActiveElements(string elementName)
+        public static void ActiveElements(PlaceObj element)
         {
-            if(!lockQueue.Contains(elementName))
+            var actived = lockQueue.Find(x => x.Name == element.name);
+            if(actived == null)
             {
-                var objs = ElementController.GetElements(elementName);
+                var objs = ElementController.GetElements(element.Name);
+                Debug.Assert(objs!= null);
                 for (int i = 0; i < objs.Count; i++)
                 {
-                    if (!objs[i].Started && !objs[i].Installed)
+                    if (!objs[i].Started && !objs[i].HaveBinding)
                     {
                         objs[i].StepActive();
                     }
                 }
             }
-            lockQueue.Add(elementName);
+            lockQueue.Add(element);
             Debug.Log("Add");
         }
-        public static void CompleteElements(string elementName,bool undo)
+        public static void CompleteElements(PlaceObj element,bool undo)
         {
-            lockQueue.Remove(elementName);
+            lockQueue.Remove(element);
             Debug.Log("Remove");
-            if (!lockQueue.Contains(elementName))
+            var active = lockQueue.Find(x => x.Name == element.Name);
+            if (active == null)
             {
-                var objs = ElementController.GetElements(elementName);
+                var objs = ElementController.GetElements(element.Name);
                 for (int i = 0; i < objs.Count; i++)
                 {
                     if (objs[i].Started)

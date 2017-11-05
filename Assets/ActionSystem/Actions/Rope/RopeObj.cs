@@ -11,10 +11,9 @@ namespace WorldActionSystem
     {
         [SerializeField]
         private List<Collider> ropeNode = new List<Collider>();
+
         private float autoTime { get { return Setting.autoExecuteTime; } }
         private List<Collider> connected = new List<Collider>();
-
-        [SerializeField]
         private RopeItem ropeItem;
         public bool Connected { get { return connected.Count == ropeNode.Count; } }
         public override PickUpAbleElement obj
@@ -240,7 +239,7 @@ namespace WorldActionSystem
                 {
                     PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
                     Attach(obj);
-                    obj.QuickInstall(gameObject);
+                    obj.QuickInstall(this);
                 }
             }
             ropeItem.QuickInstallRopeNodes(ropeNode);
@@ -275,7 +274,7 @@ namespace WorldActionSystem
             {
                 innerRopeItem = true;
                 Attach(obj);
-                obj.QuickInstall(gameObject);
+                obj.QuickInstall(this);
             }
 
             if (ropeItem)
@@ -283,6 +282,7 @@ namespace WorldActionSystem
                 ropeItem.StepActive();
             }
         }
+
 
         private void RegistNodes()
         {
@@ -310,7 +310,7 @@ namespace WorldActionSystem
         {
             PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
             Attach(obj);
-            obj.NormalInstall(gameObject);
+            obj.NormalInstall(this);
             ///获取脚本
         }
     }

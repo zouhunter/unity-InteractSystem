@@ -8,23 +8,22 @@ namespace WorldActionSystem
 {
     public class ConnectCtrl : IActionCtroller
     {
-        private ConnectObj[] objs;
         public UnityAction<string> onError;
         public UnityAction<Collider> onSelectItem;
         public UnityAction<Collider> onHoverItem;
         private List<Vector3> positons = new List<Vector3>();
         private Ray ray;
         private RaycastHit hit;
+        private ConnectObj connectObj;
         private Collider firstCollider;
         private LineRenderer line;
-        private float pointDistence;
+        //private float pointDistence;
         private float hitDistence { get { return Setting.hitDistence; } }
         private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
-        public ConnectCtrl(LineRenderer lineRender, ConnectObj[] objs, Material lineMaterial, float lineWight, float pointDistence)
+        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight)
         {
-            this.objs = objs;
-            this.pointDistence = pointDistence;
+            //this.pointDistence = pointDistence;
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);
         }
@@ -66,9 +65,8 @@ namespace WorldActionSystem
                 {
                     positons.Clear();
                     positons.Add(firstCollider.transform.position);
-                    foreach (var item in objs){
-                        item.TrySelectFirstCollider(firstCollider);
-                    }
+                    connectObj = firstCollider.GetComponentInParent<ConnectObj>();
+                    connectObj.TrySelectFirstCollider(firstCollider);
                 }
             }
         }
@@ -127,12 +125,9 @@ namespace WorldActionSystem
             string element1 = firstCollider.name;
             string element2 = collider.name;
             bool canConnect = false;
-            foreach (var item in objs)
+            if (connectObj.TryConnectNode(collider, firstCollider))
             {
-                if (item.TryConnectNode(collider, firstCollider)){
-                    canConnect = true;
-                    break;
-                }
+                canConnect = true;
             }
             ClearLineRender();
             if (!canConnect && onError != null) onError.Invoke(string.Format("{0}和{1}两点不需要连接", element1, element2));

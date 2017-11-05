@@ -3341,7 +3341,7 @@ public class UltimateRope : MonoBehaviour
       jointLimit.bounciness = 0.0f;
 
       JointDrive jointDrive = new JointDrive();
-      jointDrive.mode = JointDriveMode.Position;
+      //jointDrive.mode = JointDriveMode.Position;
       jointDrive.positionSpring = LinkJointSpringValue;
       jointDrive.positionDamper = LinkJointDamperValue;
       jointDrive.maximumForce = LinkJointMaxForceValue;

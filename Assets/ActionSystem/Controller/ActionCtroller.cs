@@ -14,8 +14,7 @@ namespace WorldActionSystem
         protected bool isForceAuto;
         private ControllerType commandType { get { return trigger.commandType; } }
         private List<IActionCtroller> commandList = new List<IActionCtroller>();
-        private Queue<ActionObj> actionQueue = new Queue<ActionObj>();
-        //private List<ActionHook> hookList = new List<ActionHook>();
+        private Queue<IActionObj> actionQueue = new Queue<IActionObj>();
         private List<IActionObj> startedActions = new List<IActionObj>();
         protected Coroutine coroutine;
         public static bool log = false;
@@ -40,8 +39,7 @@ namespace WorldActionSystem
                 if (lineRender == null){
                     lineRender = trigger.gameObject.AddComponent<LineRenderer>();
                 }
-                var objs = Array.ConvertAll<IActionObj, ConnectObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is ConnectObj), x => x as ConnectObj);
-                var connectCtrl = new ConnectCtrl(lineRender, objs, trigger.lineMaterial, trigger.lineWight, trigger.pointDistence);
+                var connectCtrl = new ConnectCtrl(lineRender, trigger.lineMaterial, trigger.lineWight);
                 connectCtrl.onError = trigger.UserError;
                 commandList.Add(connectCtrl);
             }
@@ -65,8 +63,7 @@ namespace WorldActionSystem
             }
             if((commandType & ControllerType.Rope) == ControllerType.Rope)
             {
-                var objs = Array.ConvertAll<IActionObj, PlaceObj>(Array.FindAll<IActionObj>(trigger.ActionObjs, x => x is PlaceObj), x => x as PlaceObj);
-                var ropCtrl = new RopeController(objs);
+                var ropCtrl = new RopeController();
                 ropCtrl.UserError = trigger.UserError;
                 commandList.Add(ropCtrl);
             }

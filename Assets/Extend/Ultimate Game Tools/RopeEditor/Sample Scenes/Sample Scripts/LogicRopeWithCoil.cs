@@ -15,7 +15,7 @@ public class LogicRopeWithCoil : MonoBehaviour
 
     void OnGUI()
     {
-        LogicGlobal.GlobalGUI();
+        ////LogicGlobal.GlobalGUI();
         GUILayout.Label("Rope test (Procedural rope with additional coil)");
         GUILayout.Label("Use the keys i and o to extend the rope");
     }

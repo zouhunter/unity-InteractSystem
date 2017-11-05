@@ -17,7 +17,7 @@ public class LogicBreakableRopes : MonoBehaviour
 
     void OnGUI()
     {
-        LogicGlobal.GlobalGUI();
+        ////LogicGlobal.GlobalGUI();
         GUILayout.Label("Breakable rope test (procedural rope and linkedobjects rope with breakable properties and notifications set)");
         GUILayout.Label("Move the mouse while holding down the left button to move the camera");
         GUILayout.Label("Use the spacebar to shoot balls and aim for the ropes to break them");

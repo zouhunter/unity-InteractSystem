@@ -13,7 +13,6 @@ namespace WorldActionSystem
     /// </summary>
     public class RopeController : PlaceController
     {
-        private List<RopeObj> ropeObjs;
         private RopeObj ropeObj { get { return installPos as RopeObj; } }
         protected override int PlacePoslayerMask
         {
@@ -25,10 +24,6 @@ namespace WorldActionSystem
         private RopeItem ropeItem;
         private Collider pickUpedRopeNode;
         private bool pickDownAble;
-        public RopeController(PlaceObj[] placeitems)
-        {
-            ropeObjs = new List<RopeObj>(Array.ConvertAll<PlaceObj, RopeObj>(placeitems, x => x as RopeObj));
-        }
 
         public override void Update()
         {
@@ -54,11 +49,11 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.ropeNodeLayer)))
             {
                 var ropeItem = hit.collider.GetComponentInParent<RopeItem>();
-                if (ropeItem != null && ropeItem.Installed)//正在进行操作
+                if (ropeItem != null && ropeItem.HaveBinding)//正在进行操作
                 {
-                    if (ropeObj == null)
+                    if (ropeObj == null && ropeItem)
                     {
-                        installPos = ropeObjs.Find(x => x.obj == ropeItem);
+                        installPos = ropeItem.BindingObj.GetComponent<RopeObj>();//.Find(x => x.obj == ropeItem);
                         pickedUpObj = ropeItem;
                     }
                     if (ropeObj != null)
@@ -95,7 +90,7 @@ namespace WorldActionSystem
                         {
                             hited = true;
                             var ropeObj = hits[i].collider.GetComponentInParent<RopeObj>();
-                            var placeRopeNodePos = hits[i].collider;
+                            //var placeRopeNodePos = hits[i].collider;
                             pickDownAble = CanPlaceNode(ropeObj, ropeItem, pickUpedRopeNode, out resonwhy);
                         }
                     }
@@ -225,7 +220,7 @@ namespace WorldActionSystem
         protected override void PlaceObject(PlaceObj pos, PickUpAbleElement element)
         {
             installPos.Attach(pickedUpObj);
-            element.QuickInstall(installPos.gameObject, false);
+            element.QuickInstall(installPos, false);
             RopeObj ropeObj = (pos as RopeObj);
             RopeItem ropeItem = element as RopeItem;
             ropeObj.TryRegistRopeItem(ropeItem);
@@ -235,11 +230,11 @@ namespace WorldActionSystem
         {
             if (ropeObj.obj == pickup)
             {
-                pickedUpObj.QuickInstall(ropeObj.gameObject, false);
+                pickedUpObj.QuickInstall(ropeObj, false);
             }
             else
             {
-                pickedUpObj.NormalMoveBack();
+                pickedUpObj.NormalUnInstall();
             }
         }
     }

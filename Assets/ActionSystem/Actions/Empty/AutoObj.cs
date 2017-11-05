@@ -13,8 +13,6 @@ namespace WorldActionSystem
 {
     public sealed class AutoObj : ActionObj
     {
-        [SerializeField]
-        private float autoCompleteTime;
         public Coroutine autocoroutine;
 
         public override void OnStartExecute(bool auto = false)
@@ -25,7 +23,7 @@ namespace WorldActionSystem
 
         IEnumerator AutoComplete()
         {
-            yield return new WaitForSeconds(autoCompleteTime);
+            yield return null;
             OnEndExecute(false);
         }
         public override void OnEndExecute(bool force)
