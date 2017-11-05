@@ -8,16 +8,13 @@ namespace WorldActionSystem
 {
     public class ElementController
     {
-        public static event UnityAction<PickUpAbleElement> onInstall;
-        public static event UnityAction<PickUpAbleElement> onUnInstall;
         private static Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
         private static List<PlaceObj> lockQueue = new List<PlaceObj>();
+        public static bool log = false;
 
         public static void Clean()
         {
             objectList.Clear();
-            onInstall = null;
-            onUnInstall = null;
         }
 
         /// <summary>
@@ -33,14 +30,6 @@ namespace WorldActionSystem
             {
                 objectList[(string)item.Name] = new System.Collections.Generic.List<PickUpAbleElement>() { item };
             }
-
-            item.onInstallOkEvent = () => {
-                if (onInstall != null) onInstall.Invoke((PickUpAbleElement)item);
-            };
-            item.onUnInstallOkEvent = () =>
-            {
-                if (onUnInstall != null) onUnInstall.Invoke((PickUpAbleElement)item);
-            };
         }
         
         /// <summary>
@@ -85,12 +74,15 @@ namespace WorldActionSystem
 
         public static void ActiveElements(PlaceObj element)
         {
+
             var actived = lockQueue.Find(x => x.Name == element.name);
             if(actived == null)
             {
                 var objs = ElementController.GetElements(element.Name);
                 for (int i = 0; i < objs.Count; i++)
                 {
+                  if(log)  Debug.Log("ActiveElements:" + element.Name +(!objs[i].Started && !objs[i].HaveBinding));
+
                     if (!objs[i].Started && !objs[i].HaveBinding)
                     {
                         objs[i].StepActive();
@@ -98,18 +90,19 @@ namespace WorldActionSystem
                 }
             }
             lockQueue.Add(element);
-            Debug.Log("Add");
         }
         public static void CompleteElements(PlaceObj element,bool undo)
         {
+
             lockQueue.Remove(element);
-            Debug.Log("Remove");
             var active = lockQueue.Find(x => x.Name == element.Name);
             if (active == null)
             {
                 var objs = ElementController.GetElements(element.Name);
                 for (int i = 0; i < objs.Count; i++)
                 {
+                    if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Started);
+
                     if (objs[i].Started)
                     {
                         if (undo)

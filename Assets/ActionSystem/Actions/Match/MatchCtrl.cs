@@ -46,7 +46,7 @@ namespace WorldActionSystem
         protected override void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
         {
             pos.Attach(pickedUpObj);
-            pickedUpObj.NormalInstall(pos, false, false);
+            pickedUpObj.QuickInstall(pos, false, false);
         }
 
         protected override void PlaceWrong(PickUpAbleElement pickup)

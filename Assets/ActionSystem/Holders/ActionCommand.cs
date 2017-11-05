@@ -64,7 +64,7 @@ namespace WorldActionSystem
         }
         private void RegistActionObjs()
         {
-            actionObjs = GetComponentsInChildren<IActionObj>(true);
+            actionObjs = GetComponentsInChildren<IActionObj>(false);
         }
 
         public void RegistComplete(StepComplete stepComplete)
@@ -127,17 +127,7 @@ namespace WorldActionSystem
             {
                 started = true;
                 onBeforeActive.Invoke(StepName);
-                if(Setting.useOperateCamera && actionObjs.Length > 0 && actionObjs[0] is ActionHook && !string.IsNullOrEmpty(CameraID))
-                {
-                    CameraController.SetViewCamera(() =>
-                    {
-                        coroutineCtrl.OnStartExecute(forceAuto);
-                    }, CameraID);
-                }
-                else
-                {
-                    coroutineCtrl.OnStartExecute(forceAuto);
-                }
+                coroutineCtrl.OnStartExecute(forceAuto);
                 return true;
             }
             else

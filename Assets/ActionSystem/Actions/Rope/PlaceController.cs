@@ -24,57 +24,52 @@ namespace WorldActionSystem
         protected virtual void Awake()
         {
             gameObject.layer = layer;
-
-            onBeforeStart.AddListener((auto) =>
-            {
-                ElementController.ActiveElements(this);
-            });
-            onBeforeComplete.AddListener((force) =>
-            {
-                ElementController.CompleteElements(this, false);
-            });
-            onBeforeUnDo.AddListener(()=> {
-                ElementController.CompleteElements(this, true);
-            });
+            onBeforeStart.AddListener(OnBeforeStart);
+            onBeforeComplete.AddListener(OnBeforeComplete);
+            onBeforeUnDo.AddListener(OnBeforeUnDo);
         }
-        protected virtual void OnDestroy()
+       protected virtual void OnBeforeStart(bool auto)
         {
+            ElementController.ActiveElements(this);
         }
-
+        protected virtual void OnBeforeComplete(bool force)
+        {
+            ElementController.CompleteElements(this, false);
+        }
+        protected virtual void OnBeforeUnDo()
+        {
+            ElementController.CompleteElements(this, true);
+        }
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            ElementController.onInstall += OnInstallComplete;
-            if (auto || autoInstall)
-            {
+            if (auto || autoInstall){
                 OnAutoInstall();
             }
         }
-        public override void OnEndExecute(bool force)
-        {
-            base.OnEndExecute(force);
-            ElementController.onInstall -= OnInstallComplete;
-            ElementController.onUnInstall += OnUnInstallComplete;
-        }
-        public override void OnUnDoExecute()
-        {
-            base.OnUnDoExecute();
-            ElementController.onUnInstall -= OnUnInstallComplete;
-        }
+
         protected abstract void OnAutoInstall();
         
         public virtual void Attach(PickUpAbleElement obj)
         {
+            if(this.obj != null) {
+                Detach();
+            }
+
             this.obj = obj;
+            obj.onInstallOkEvent += OnInstallComplete;
+            obj.onUnInstallOkEvent += OnUnInstallComplete;
         }
 
-        protected abstract void OnInstallComplete(PickUpAbleElement arg0);
+        protected virtual void OnInstallComplete() { }
 
-        protected abstract void OnUnInstallComplete(PickUpAbleElement arg0);
+        protected virtual void OnUnInstallComplete() { }
 
         public virtual PickUpAbleElement Detach()
         {
             PickUpAbleElement old = obj;
+            old.onInstallOkEvent -= OnInstallComplete;
+            old.onUnInstallOkEvent -= OnUnInstallComplete;
             obj = default(PickUpAbleElement);
             return old;
         }

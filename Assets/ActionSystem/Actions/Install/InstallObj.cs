@@ -50,21 +50,16 @@ namespace WorldActionSystem
             }
         }
 
-        protected override void OnInstallComplete(PickUpAbleElement obj)
+        protected override void OnInstallComplete()
         {
-            if (obj == this.obj){
-               OnEndExecute(false);
-            }
+            OnEndExecute(false);
         }
 
-        protected override void OnUnInstallComplete(PickUpAbleElement obj)
+        protected override void OnUnInstallComplete()
         {
-            if(AlreadyPlaced && this.obj == obj)
-            {
-                this.obj = null;
-                OnUnDoExecute();
-                OnStartExecute(auto);
-            }
+            this.obj = null;
+            OnUnDoExecute();
+            OnStartExecute(auto);
         }
 
         protected override void OnAutoInstall()
@@ -80,7 +75,7 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    OnInstallComplete(obj);
+                    OnInstallComplete();
                 }
             }
             else

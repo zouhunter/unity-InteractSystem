@@ -18,30 +18,21 @@ namespace WorldActionSystem
 
         public override int layer { get { return Setting.matchPosLayer; } }
 
-       
-        public override void OnEndExecute(bool force)
+        protected override void OnBeforeComplete(bool force)
         {
-            base.OnEndExecute(force);
-
-            if (!Matched){
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
-                Attach(obj);
-            }
-
-            if (completeMoveBack){
-                this.obj.QuickUnInstall();
-            }
-        }
-
-        public override void OnUnDoExecute()
-        {
-            base.OnUnDoExecute();
-            if (Matched){
-               var obj = Detach();
+            base.OnBeforeComplete(force);
+            if (Matched && completeMoveBack){
                 obj.QuickUnInstall();
             }
         }
-    
+        protected override void OnBeforeUnDo()
+        {
+            base.OnBeforeUnDo();
+            if (Matched){
+                var obj = Detach();
+                obj.QuickUnInstall();
+            }
+        }
         protected override void OnAutoInstall()
         {
             var obj = ElementController.GetUnInstalledObj(Name);
@@ -50,11 +41,11 @@ namespace WorldActionSystem
             {
                 if (!completeMoveBack)
                 {
-                    obj.QuickInstall(this,true,false);
+                    obj.QuickInstall(this,false,false);
                 }
                 else
                 {
-                    OnInstallComplete(obj);
+                    OnInstallComplete();
                 }
             }
             else
@@ -63,19 +54,9 @@ namespace WorldActionSystem
             }
         }
 
-        protected override void OnInstallComplete(PickUpAbleElement arg0)
+        protected override void OnInstallComplete()
         {
-            if (arg0 == this.obj && Started && !Complete){
-                OnEndExecute(false);
-            }
-        }
-
-        protected override void OnUnInstallComplete(PickUpAbleElement arg0)
-        {
-            if(arg0 == this.obj && Started)
-            {
-                arg0.StepUnDo();
-            }
+            OnEndExecute(false);
         }
     }
 }

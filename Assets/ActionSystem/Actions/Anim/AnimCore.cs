@@ -21,6 +21,7 @@ namespace WorldActionSystem
         }
         void Init(UnityAction onAutoPlayEnd)
         {
+            gameObject.SetActive(true);
             anim.playAutomatically = false;
             anim.wrapMode = WrapMode.Once;
             this.onAutoPlayEnd = onAutoPlayEnd;
@@ -41,7 +42,8 @@ namespace WorldActionSystem
             state.normalizedTime = 0f;
             state.speed = speed;
             anim.Play();
-            if (coroutine == null) coroutine = StartCoroutine(DelyStop());
+            if (coroutine == null)
+                coroutine = StartCoroutine(DelyStop());
         }
         IEnumerator DelyStop()
         {

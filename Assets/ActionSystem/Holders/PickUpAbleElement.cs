@@ -25,8 +25,8 @@ namespace WorldActionSystem
         public bool Started { get { return actived; } }
 
         public Renderer Render { get { return m_render; } }
-        public UnityAction onInstallOkEvent;
-        public UnityAction onUnInstallOkEvent;
+        public event UnityAction onInstallOkEvent;
+        public event UnityAction onUnInstallOkEvent;
 
         public UnityEvent onPickUp;
         public UnityEvent onLayDown;
@@ -163,7 +163,10 @@ namespace WorldActionSystem
                 Binding(target);
                 transform.position = target.transform.position;
                 transform.rotation = target.transform.rotation;
-                if (!binding) UnBinding();
+
+                if (!binding)
+                    UnBinding();
+
                 OnInstallComplete(complete);
             }
             else
@@ -183,12 +186,12 @@ namespace WorldActionSystem
             DoPath(startPos, startRotation, () =>
             {
                 OnUnInstallComplete();
-            });
 
-            if (HaveBinding)
-            {
-                UnBinding();
-            }
+                if (HaveBinding)
+                {
+                    UnBinding();
+                }
+            });
 #endif
         }
 

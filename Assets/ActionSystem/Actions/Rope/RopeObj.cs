@@ -37,7 +37,7 @@ namespace WorldActionSystem
             angleTemp = anglePos;
         }
 
-        protected override void OnInstallComplete(PickUpAbleElement obj)
+        protected override void OnInstallComplete()
         {
             Debug.Log("OnInstallComplete");
             if (obj == this.obj)
@@ -56,7 +56,7 @@ namespace WorldActionSystem
             }
         }
 
-        protected override void OnUnInstallComplete(PickUpAbleElement obj)
+        protected override void OnUnInstallComplete()
         {
             if (AlreadyPlaced && this.obj == obj)
             {
