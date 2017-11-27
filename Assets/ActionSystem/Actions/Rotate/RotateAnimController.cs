@@ -9,6 +9,8 @@ namespace WorldActionSystem
 
     public class RotateAnimController : IActionCtroller
     {
+        public  ControllerType CtrlType { get { return ControllerType.Rotate; } }
+
         public UnityAction<string> UserError { get; set; }
         private RotObj selectedObj;
         private RaycastHit hit;
@@ -72,12 +74,11 @@ namespace WorldActionSystem
 
             if (Input.GetMouseButtonUp(0))
             {
-                selectedObj.ClampAsync();
-
-                if (selectedObj.TryMarchRot())
-                {
-                    selectedObj.OnEndExecute(false);
-                }
+                selectedObj.ClampAsync(()=> {
+                    if (selectedObj.TryMarchRot()) {
+                        selectedObj.OnEndExecute(false);
+                    }
+                });               
             }
         }
         private bool IsInCercle(Vector3 pos)

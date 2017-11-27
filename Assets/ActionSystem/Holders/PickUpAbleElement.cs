@@ -47,7 +47,6 @@ namespace WorldActionSystem
 #endif
         protected IHighLightItems highLighter;
         protected bool actived;
-
         protected PlaceObj target;
         public PlaceObj BindingObj { get { return target; } }
         protected bool hideOnInstall { get { return target? target.hideOnInstall:false; } }//
@@ -55,9 +54,20 @@ namespace WorldActionSystem
         protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
         protected Transform Passby { get { return target?target.passBy:null; } }
 
+        public Collider Collider
+        {
+            get
+            {
+                return _collider;
+            }
+        }
+        protected Collider _collider;
+        protected bool tweening;
+        protected UnityAction tweenCompleteAction;
 #if !NoFunction
         protected virtual void Start()
         {
+            _collider = GetComponent<Collider>();
             if (string.IsNullOrEmpty(_name)) _name = name;
             ElementController.RegistElement(this);
             InitRender();
@@ -116,18 +126,27 @@ namespace WorldActionSystem
 
         }
 
-        protected virtual void DoPath(Vector3 end, Vector3 endRot, TweenCallback onComplete)
+        protected virtual void DoPath(Vector3 end, Vector3 endRot)
         {
             List<Vector3> poss;
             List<Vector3> rots;
             CreatePosList(end, endRot, out poss, out rots);
-            move = transform.DOPath(poss.ToArray(), animTime).OnComplete(onComplete).SetAutoKill(true);
+            tweening = true;
+            move = transform.DOPath(poss.ToArray(), animTime).OnComplete(OnTweenComplete).SetAutoKill(true);
             move.OnWaypointChange((x) =>
             {
                 transform.eulerAngles = rots[x];
             });
         }
 #endif
+        protected virtual void OnTweenComplete()
+        {
+            tweening = false;
+            if(tweenCompleteAction != null)
+            {
+                tweenCompleteAction.Invoke();
+            }
+        }
         /// <summary>
         /// 动画安装
         /// </summary>
@@ -139,11 +158,14 @@ namespace WorldActionSystem
             if (!HaveBinding)
             {
                 Binding(target);
-                DoPath(target.transform.position, target.transform.eulerAngles, () =>
-                {
+
+                tweenCompleteAction = () =>{
                     OnInstallComplete(complete);
-                });
-                if(!binding)
+                };
+
+                DoPath(target.transform.position, target.transform.eulerAngles);
+               
+                if (!binding)
                 {
                     UnBinding();
                 }
@@ -182,16 +204,13 @@ namespace WorldActionSystem
         {
             StopTween();
 #if !NoFunction
-
-            DoPath(startPos, startRotation, () =>
-            {
-                OnUnInstallComplete();
-
-                if (HaveBinding)
-                {
+            tweenCompleteAction = () => { 
+                if (HaveBinding){
                     UnBinding();
                 }
-            });
+                OnUnInstallComplete();
+            };
+            DoPath(startPos, startRotation);
 #endif
         }
 
@@ -207,12 +226,11 @@ namespace WorldActionSystem
             transform.position = startPos;
             target = null;
 
-            OnUnInstallComplete();
-
-            if (HaveBinding)
-            {
+            if (HaveBinding){
                 UnBinding();
             }
+
+            OnUnInstallComplete();
 #endif
         }
 
@@ -256,6 +274,10 @@ namespace WorldActionSystem
         {
             actived = false;
             onStepComplete.Invoke();
+            if(tweening){
+                StopTween();
+                OnTweenComplete();
+            }
         }
 
         /// <summary>
@@ -316,10 +338,9 @@ namespace WorldActionSystem
             target = null;
             return old;
         }
-       
         protected virtual void OnDestroy()
         {
-            StopTween();
+            move.Kill(false);
         }
     }
 

@@ -14,6 +14,13 @@ namespace WorldActionSystem
         {
             x, y, z
         }
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Rotate;
+            }
+        }
 
         public Color color = Color.green;
         public float triggerRadius = 1;
@@ -26,6 +33,9 @@ namespace WorldActionSystem
         public float flashSpeed = 1f;
         public bool highLight = true;
         public DirType dirType;
+        public bool completeMoveBack;
+        private Transform Trans { get { return transform; } }
+
 
         public Vector3 Direction
         {
@@ -34,11 +44,11 @@ namespace WorldActionSystem
                 switch (dirType)
                 {
                     case DirType.x:
-                        return -transform.right;
+                        return -Trans.right;
                     case DirType.y:
-                        return -transform.up;
+                        return -Trans.up;
                     case DirType.z:
-                        return -transform.forward;
+                        return -Trans.forward;
                 }
                 return Vector3.zero;
             }
@@ -57,7 +67,7 @@ namespace WorldActionSystem
         protected override void Start()
         {
             base.Start();
-            startRot = transform.rotation;
+            startRot = Trans.rotation;
             lineRender = gameObject.GetComponent<LineRenderer>();
             if (lineRender == null) lineRender = gameObject.AddComponent<LineRenderer>();
             lineRender.material = new Material(Shader.Find("Sprites/Default"));
@@ -105,7 +115,7 @@ namespace WorldActionSystem
             if (Flash())
             {
                 _lines.Clear();
-                AddCircle(transform.position, Direction, triggerRadius + flash, _lines);
+                AddCircle(Trans.position, Direction, triggerRadius + flash, _lines);
                 if (highLight)
                 {
                     DrawCircle(_lines, color);
@@ -162,26 +172,34 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool forceauto)
         {
             base.OnStartExecute(forceauto);
-            transform.rotation = startRot;
+            Trans.rotation = startRot;
             if (forceauto) StartCoroutine(AutoRotateTo());
         }
 
         private IEnumerator AutoRotateTo()
         {
             var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
-            var start = transform.rotation;
+            var start = Trans.rotation;
             for (float timer = 0; timer < autoCompleteTime; timer += Time.deltaTime)
             {
                 yield return null;
-                transform.rotation = Quaternion.Lerp(start, target, timer/autoCompleteTime);
+                Trans.rotation = Quaternion.Lerp(start, target, timer/autoCompleteTime);
             }
             OnEndExecute(false);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            if(completeMoveBack)
+            {
+                Trans.rotation = startRot;
+            }
         }
 
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            transform.rotation = startRot;
+            Trans.rotation = startRot;
             currAngle = 0;
         }
 
@@ -216,30 +234,33 @@ namespace WorldActionSystem
         {
             return comparer.Equals(currAngle, triggerAngle);
         }
-        public void ClampAsync()
+        public void ClampAsync(UnityAction onComplete)
         {
-            if(gameObject.activeInHierarchy) StartCoroutine(Clamp());
+            if(gameObject.activeInHierarchy)
+                StartCoroutine(Clamp(onComplete));
         }
-        private IEnumerator Clamp()
+        private IEnumerator Clamp(UnityAction onComplete)
         {
             if (currAngle > maxAngle || currAngle < minAngle)
             {
                 currAngle = Mathf.Clamp(currAngle, minAngle, maxAngle);
                 var target = Quaternion.Euler(Direction * currAngle) * startRot;
-                var start = transform.rotation;
+                var start = Trans.rotation;
                 for (float timer = 0; timer < 1f; timer += Time.deltaTime)
                 {
                     yield return new WaitForEndOfFrame();
-                    transform.rotation = Quaternion.Lerp(start, target, timer);
+                    Trans.rotation = Quaternion.Lerp(start, target, timer);
                 }
             }
+            if (onComplete != null) onComplete.Invoke();
         }
 
         public void Rotate(float amount)
         {
             currAngle += amount;
-            transform.Rotate(Direction, amount, Space.World);
+            Trans.Rotate(Direction, amount, Space.World);
         }
+
 
     }
 }

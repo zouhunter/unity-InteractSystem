@@ -32,7 +32,7 @@ namespace WorldActionSystem
         {
             state = anim[animName];
             animTime = state.length;
-            anim.cullingType = AnimationCullingType.BasedOnRenderers;
+            anim.cullingType = AnimationCullingType.AlwaysAnimate;
             anim.clip = anim.GetClip(animName);
         }
 

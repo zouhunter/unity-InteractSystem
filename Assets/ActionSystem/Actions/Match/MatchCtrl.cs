@@ -9,6 +9,12 @@ namespace WorldActionSystem
 
     public class MatchCtrl : PlaceController
     {
+        public MatchCtrl(UnityAction<IPlaceItem> onSelect) : base(onSelect)
+        {
+        }
+
+        public override ControllerType CtrlType { get { return ControllerType.Match; } }
+
         protected override int PlacePoslayerMask { get { return 1<< Setting.matchPosLayer; } }
 
         protected override bool CanPlace(PlaceObj matchPos, PickUpAbleElement element, out string why)

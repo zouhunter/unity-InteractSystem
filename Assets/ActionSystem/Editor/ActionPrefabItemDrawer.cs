@@ -18,6 +18,8 @@ namespace WorldActionSystem
         protected SerializedProperty instanceIDProp;
         protected SerializedProperty parentProp;
         protected SerializedProperty prefabProp;
+        protected SerializedProperty ignoreProp;
+
         protected void FindCommonPropertys(SerializedProperty property)
         {
             rematrixProp = property.FindPropertyRelative("rematrix");
@@ -26,6 +28,7 @@ namespace WorldActionSystem
             instanceIDProp = property.FindPropertyRelative("instanceID");
             parentProp = property.FindPropertyRelative("parent");
             containsCommandProp = property.FindPropertyRelative("containsCommand");
+            ignoreProp = property.FindPropertyRelative("ignore");
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -41,6 +44,7 @@ namespace WorldActionSystem
             }
             var rect = new Rect(position.x, position.y, position.width * 0.9f, EditorGUIUtility.singleLineHeight);
             var str = prefabProp.objectReferenceValue == null ? "" : prefabProp.objectReferenceValue.name;
+            GUI.contentColor = Color.cyan;
             if (GUI.Button(rect, str, EditorStyles.toolbarDropDown))
             {
                 property.isExpanded = !property.isExpanded;
@@ -53,6 +57,7 @@ namespace WorldActionSystem
                     ActionEditorUtility.SavePrefab(instanceIDProp, rematrixProp, matrixProp);
                 }
             }
+            GUI.contentColor = Color.white;
 
             InformationShow(rect);
 
@@ -117,6 +122,8 @@ namespace WorldActionSystem
             choiseRect.x += width;
             containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Command", containsCommandProp.boolValue);
             choiseRect.x += width;
+            ignoreProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "[Ignore]", ignoreProp.boolValue);
+            choiseRect.x += width;
             if (reparentProp.boolValue)
             {
                 tempRect.y += 1.5f * EditorGUIUtility.singleLineHeight;
@@ -154,7 +161,11 @@ namespace WorldActionSystem
                     GUI.color = new Color(0.5f, 0.8f, 0.3f);
                     EditorGUI.SelectableLabel(infoRect, "[c]");
                     infoRect.x += infoRect.width;
+                }
 
+                if(ignoreProp.boolValue)
+                {
+                    EditorGUI.HelpBox(rect, "", MessageType.Warning);
                 }
                 GUI.color = Color.white;
             }

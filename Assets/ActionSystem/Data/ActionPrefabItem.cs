@@ -34,11 +34,12 @@ namespace WorldActionSystem
             }
         }
         public bool containsCommand;
-        public bool reparent;
         public bool rematrix;
         public Matrix4x4 matrix;
+        public bool reparent;
         public Transform parent;
         public GameObject prefab;
+        public bool ignore;
         public int CompareTo(ActionPrefabItem other)
         {
             if (prefab == null || other.prefab == null) return 0;

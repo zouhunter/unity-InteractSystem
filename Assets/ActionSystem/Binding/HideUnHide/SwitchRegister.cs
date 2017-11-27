@@ -8,7 +8,7 @@ using WorldActionSystem;
 using HighlightingSystem;
 namespace WorldActionSystem
 {
-    public class HideAndUnHideEventRegister : MonoBehaviour
+    public class SwitchRegister : MonoBehaviour
     {
         [SerializeField]
         private string key;
@@ -23,8 +23,7 @@ namespace WorldActionSystem
         protected void Awake()
         {
             startStates = new bool[m_Objs.Count];
-            for (int i = 0; i < startStates.Length; i++)
-            {
+            for (int i = 0; i < startStates.Length; i++){
                 startStates[i] = m_Objs[i].activeSelf;
             }
         }

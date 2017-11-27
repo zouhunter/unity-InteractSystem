@@ -9,6 +9,6 @@ namespace WorldActionSystem
         Click = 1<<2,
         Rotate = 1<<3,
         Connect = 1<<4,
-        Rope = 1<<5
+        Rope = 1<<5,
     }
 }

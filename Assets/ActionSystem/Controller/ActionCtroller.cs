@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,67 +13,97 @@ namespace WorldActionSystem
         protected List<int> queueID = new List<int>();
         protected IActionObj[] actionObjs { get; set; }
         protected bool isForceAuto;
-        private ControllerType commandType { get { return trigger.commandType; } }
-        private List<IActionCtroller> commandList = new List<IActionCtroller>();
+        private ControllerType commandType = 0;
+        private ControllerType activeTypes = 0;
         private Queue<IActionObj> actionQueue = new Queue<IActionObj>();
         private List<IActionObj> startedActions = new List<IActionObj>();
+        private List<IActionCtroller> controllerList = new List<IActionCtroller>();
         protected Coroutine coroutine;
         public static bool log = false;
+        public UnityAction<IActionObj> onActionStart;
+
         public ActionCtroller(ActionCommand trigger)
         {
             this.trigger = trigger;
             actionObjs = trigger.ActionObjs;
             ChargeQueueIDs();
-            InitController();
-        }
-        private void InitController()
-        {
-            if ((commandType & ControllerType.Click) == ControllerType.Click)
+            if (!Setting.ignoreController)
             {
-                var clickCtrl = new ClickContrller();
-                clickCtrl.UserError = trigger.UserError;
-                commandList.Add(clickCtrl);
-            }
-            if ((commandType & ControllerType.Connect) == ControllerType.Connect)
-            {
-                var lineRender = trigger.GetComponent<LineRenderer>();
-                if (lineRender == null){
-                    lineRender = trigger.gameObject.AddComponent<LineRenderer>();
-                }
-                var connectCtrl = new ConnectCtrl(lineRender, trigger.lineMaterial, trigger.lineWight);
-                connectCtrl.onError = trigger.UserError;
-                commandList.Add(connectCtrl);
-            }
-            if ((commandType & ControllerType.Match) == ControllerType.Match)
-            {
-                var matchCtrl = new MatchCtrl();
-                matchCtrl.UserError = trigger.UserError;
-                commandList.Add(matchCtrl);
-            }
-            if ((commandType & ControllerType.Install) == ControllerType.Install)
-            {
-                var installCtrl = new InstallCtrl();
-                installCtrl.UserError = trigger.UserError;
-                commandList.Add(installCtrl);
-            }
-            if ((commandType & ControllerType.Rotate) == ControllerType.Rotate)
-            {
-                var rotAnimCtrl = new RotateAnimController();
-                rotAnimCtrl.UserError = trigger.UserError;
-                commandList.Add(rotAnimCtrl);
-            }
-            if((commandType & ControllerType.Rope) == ControllerType.Rope)
-            {
-                var ropCtrl = new RopeController();
-                ropCtrl.UserError = trigger.UserError;
-                commandList.Add(ropCtrl);
+                InitController();
             }
         }
 
+        private void InitController()
+        {
+            foreach (var item in actionObjs)
+            {
+                if((commandType & item.CtrlType) != item.CtrlType)
+                {
+                    commandType |= item.CtrlType;
+                    RegisterControllerByType(item.CtrlType);
+                }
+            }
+        }
+
+        private void RegisterControllerByType(ControllerType type)
+        {
+            switch (type)
+            {
+                case ControllerType.Install:
+                    var installCtrl = new InstallCtrl(OnPickUpObj);
+                    installCtrl.UserError = trigger.UserError;
+                    controllerList.Add(installCtrl);
+                    break;
+                case ControllerType.Match:
+                    var matchCtrl = new MatchCtrl(OnPickUpObj);
+                    matchCtrl.UserError = trigger.UserError;
+                    controllerList.Add(matchCtrl);
+                    break;
+                case ControllerType.Click:
+                    var clickCtrl = new ClickContrller();
+                    clickCtrl.UserError = trigger.UserError;
+                    controllerList.Add(clickCtrl);
+                    break;
+                case ControllerType.Rotate:
+                    var rotAnimCtrl = new RotateAnimController();
+                    rotAnimCtrl.UserError = trigger.UserError;
+                    controllerList.Add(rotAnimCtrl);
+                    break;
+                case ControllerType.Connect:
+                    var lineRender = trigger.GetComponent<LineRenderer>();
+                    if (lineRender == null){
+                        lineRender = trigger.gameObject.AddComponent<LineRenderer>();
+                    }
+                    var connectCtrl = new ConnectCtrl(lineRender, trigger.lineMaterial, trigger.lineWight);
+                    connectCtrl.onError = trigger.UserError;
+                    controllerList.Add(connectCtrl);
+                    break;
+                case ControllerType.Rope:
+                    var ropCtrl = new RopeController(OnPickUpObj);
+                    ropCtrl.UserError = trigger.UserError;
+                    controllerList.Add(ropCtrl);
+                    break;
+                default:
+                    break;
+            }
+        }
+        /// <summary>
+        /// 激活首要对象
+        /// </summary>
+        /// <param name="obj"></param>
+        public void OnPickUpObj(IPlaceItem obj)
+        {
+            var prio = startedActions.Find(x => x.Name == obj.Name);
+            if (prio != null)
+            {
+                startedActions.Remove(prio);
+                startedActions.Insert(0, prio);
+            }
+        }
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            if (coroutine == null){
+            if (coroutine == null && trigger.gameObject.activeInHierarchy){
                 coroutine = trigger.StartCoroutine(Update());
             }
             ExecuteAStep();
@@ -92,7 +123,9 @@ namespace WorldActionSystem
         }
         public virtual void OnEndExecute()
         {
+            StopUpdateAction(false);
             CompleteQueues();
+            Array.Sort(actionObjs);
             foreach (var item in actionObjs)
             {
                 if(!item.Started)
@@ -105,37 +138,41 @@ namespace WorldActionSystem
                 }
             }
 
-            StopUpdateAction();
         }
 
         public virtual void OnUnDoExecute()
         {
+            StopUpdateAction(true);
             UnDoQueues();
             ChargeQueueIDs();
-           
+            Array.Sort(actionObjs);
+            Array.Reverse(actionObjs);
             foreach (var item in actionObjs){
                 if(item.Started)
                 {
                     item.OnUnDoExecute();
                 }
             }
-            StopUpdateAction();
         }
 
         public virtual IEnumerator Update()
         {
             while (true)
             {
-                ForEachAction((ctrl) => {
-                    ctrl.Update();
-                });
+                foreach (var ctrl in controllerList)
+                {
+                    if((ctrl.CtrlType & activeTypes) == ctrl.CtrlType)
+                    {
+                        ctrl.Update();
+                    }
+                }
                 yield return null;
             }
         }
 
         private void OnCommandObjComplete(IActionObj obj)
         {
-            startedActions.Remove(obj);
+            OnStopAction(obj);
             var notComplete = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == obj.QueueID && !x.Complete);
             if (notComplete.Length == 0)
             {
@@ -156,12 +193,12 @@ namespace WorldActionSystem
             if(startedActions.Count > 0)
             {
                 var action = startedActions[0];
-                startedActions.RemoveAt(0);
+                OnStopAction(action);
                 action.OnEndExecute(true);
             }
             else
             {
-                Debug.Log("startedActions.Count == 0");
+               if(log) Debug.Log("startedActions.Count == 0");
             }
         }
         private void CompleteQueues()
@@ -194,18 +231,16 @@ namespace WorldActionSystem
                 var neetActive = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == id && !x.Started);
                 if (isForceAuto)
                 {
-                    //hookList.Clear();
                     actionQueue.Clear();
                     foreach (var item in neetActive)
                     {
-                        if(item is ActionObj)
+                        if(item.QueueInAuto)
                         {
                             actionQueue.Enqueue(item as ActionObj);
                         }
-                        else /*if(item is ActionHook)*/
+                        else
                         {
-                            //hookList.Add(item as ActionHook);
-                            startedActions.Add(item);
+                            TryStartAction(item);
                         }
                     }
                     QueueExectueActions();
@@ -237,6 +272,8 @@ namespace WorldActionSystem
             if(log) Debug.Log("Start A Step:" + obj);
             if(!obj.Started)
             {
+                if (onActionStart != null) onActionStart.Invoke(obj);
+
                 CameraController.SetViewCamera(() =>
                 {
                     StartAction(obj);
@@ -255,7 +292,31 @@ namespace WorldActionSystem
             {
                 obj.onEndExecute = () => OnCommandObjComplete(obj);
                 obj.OnStartExecute(isForceAuto);
-                startedActions.Add(obj);
+                OnStartAction(obj);
+            }
+        }
+
+        /// <summary>
+        /// 添加新的触发器
+        /// </summary>
+        /// <param name="action"></param>
+        private void OnStartAction(IActionObj action)
+        {
+            startedActions.Add(action);
+            activeTypes |= action.CtrlType;
+        }
+
+        /// <summary>
+        /// 移除触发器
+        /// </summary>
+        /// <param name="action"></param>
+        private void OnStopAction(IActionObj action)
+        {
+            startedActions.Remove(action);
+            activeTypes = 0;
+            foreach (var item in startedActions)
+            {
+                activeTypes |= item.CtrlType;
             }
         }
 
@@ -263,11 +324,11 @@ namespace WorldActionSystem
         private string GetCameraID(IActionObj obj)
         {
             //忽略匹配相机
-           if (Setting.ignoreMatch && obj is MatchObj && !(obj as MatchObj).ignorePass)
+           if (Setting.quickMoveElement && obj is MatchObj && !(obj as MatchObj).ignorePass)
             {
                 return null;
             }
-            else if(Setting.ignoreInstall && obj is InstallObj && !(obj as InstallObj).ignorePass)
+            else if(Setting.quickMoveElement && obj is InstallObj && !(obj as InstallObj).ignorePass)
             {
                 return null;
             }
@@ -289,18 +350,11 @@ namespace WorldActionSystem
                 return CameraController.defultID;
             }
         }
+       
 
-        private void ForEachAction(UnityEngine.Events.UnityAction<IActionCtroller> OnRetive)
+        private void StopUpdateAction(bool force)
         {
-            foreach (var item in commandList)
-            {
-                OnRetive(item);
-            }
-        }
-
-        private void StopUpdateAction()
-        {
-            CameraController.StopLastCoroutine();
+            CameraController.StopStarted(force);
             if (coroutine != null)
             {
                 trigger.StopCoroutine(coroutine);

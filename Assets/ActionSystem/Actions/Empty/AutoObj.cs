@@ -14,6 +14,13 @@ namespace WorldActionSystem
     public sealed class AutoObj : ActionObj
     {
         public Coroutine autocoroutine;
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return 0;
+            }
+        }
 
         public override void OnStartExecute(bool auto = false)
         {

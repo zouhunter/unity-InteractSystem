@@ -9,6 +9,12 @@ namespace WorldActionSystem
 
     public class InstallCtrl : PlaceController
     {
+        public InstallCtrl(UnityAction<IPlaceItem> onSelect) : base(onSelect)
+        {
+        }
+
+        public override ControllerType CtrlType { get { return ControllerType.Install; } }
+
         public bool Active { get; private set; }
 
         protected override int PlacePoslayerMask { get { return 1 << Setting.installPosLayer; } }

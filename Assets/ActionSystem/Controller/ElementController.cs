@@ -31,7 +31,7 @@ namespace WorldActionSystem
                 objectList[(string)item.Name] = new System.Collections.Generic.List<PickUpAbleElement>() { item };
             }
         }
-        
+
         /// <summary>
         /// 获取指定元素名的列表
         /// </summary>
@@ -39,23 +39,23 @@ namespace WorldActionSystem
         /// <returns></returns>
         public static List<PickUpAbleElement> GetElements(string elementName)
         {
-            if(objectList.ContainsKey(elementName))
+            if (objectList.ContainsKey(elementName))
             {
                 return objectList[elementName];
             }
             else
             {
-                throw new Exception("配制错误,缺少" + elementName);
+                Debug.LogWarning("配制错误,缺少" + elementName);
                 return null;
             }
         }
-        
+
         /// <summary>
         /// 找出一个没有安装的元素
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-         public static PickUpAbleElement GetUnInstalledObj(string elementName)
+        public static PickUpAbleElement GetUnInstalledObj(string elementName)
         {
             List<PickUpAbleElement> listObj;
 
@@ -76,12 +76,13 @@ namespace WorldActionSystem
         {
 
             var actived = lockQueue.Find(x => x.Name == element.name);
-            if(actived == null)
+            if (actived == null)
             {
                 var objs = ElementController.GetElements(element.Name);
+                if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {
-                  if(log)  Debug.Log("ActiveElements:" + element.Name +(!objs[i].Started && !objs[i].HaveBinding));
+                    if (log) Debug.Log("ActiveElements:" + element.Name + (!objs[i].Started && !objs[i].HaveBinding));
 
                     if (!objs[i].Started && !objs[i].HaveBinding)
                     {
@@ -91,7 +92,7 @@ namespace WorldActionSystem
             }
             lockQueue.Add(element);
         }
-        public static void CompleteElements(PlaceObj element,bool undo)
+        public static void CompleteElements(PlaceObj element, bool undo)
         {
 
             lockQueue.Remove(element);
@@ -99,6 +100,7 @@ namespace WorldActionSystem
             if (active == null)
             {
                 var objs = ElementController.GetElements(element.Name);
+                if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {
                     if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Started);
@@ -116,8 +118,8 @@ namespace WorldActionSystem
                     }
                 }
             }
-            
-            
+
+
         }
     }
 

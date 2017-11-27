@@ -76,6 +76,7 @@ namespace WorldActionSystem
             //drawPointDistence = false;
             activeCommands.Clear();
             var type = (ControllerType)commandTypeProp.intValue;
+
             if ((type & ControllerType.Click) == ControllerType.Click)
             {
                 activeCommands.Add(ControllerType.Click);
@@ -108,50 +109,49 @@ namespace WorldActionSystem
         {
             var cmd = target as ActionCommand;
             var actionObjs = cmd.GetComponentsInChildren<ActionObj>(true);
-            string err = "";
+            //string err = "";
             if (actionObjs != null)
             {
+                commandTypeProp.intValue = 0;
                 foreach (var item in actionObjs)
                 {
                     if (item is ClickObj && !ContainsType(ControllerType.Click) )
                     {
-                        err = cmd.name + " add ctrl of " + ControllerType.Click;
+                        //err = cmd.name + " add ctrl of " + ControllerType.Click;
                         commandTypeProp.intValue |= (int)ControllerType.Click;
                     }
                     else if (item is RotObj && !ContainsType(ControllerType.Rotate))
                     {
-                        err = cmd.name + " add ctrl of " + ControllerType.Rotate;
+                        //err = cmd.name + " add ctrl of " + ControllerType.Rotate;
                         commandTypeProp.intValue |= (int)ControllerType.Rotate;
                     }
                     else if (item is InstallObj && !ContainsType(ControllerType.Install))
                     {
-                        err = cmd.name + " add ctrl of " + ControllerType.Install;
+                        //err = cmd.name + " add ctrl of " + ControllerType.Install;
                         commandTypeProp.intValue |= (int)ControllerType.Install;
                     }
                     else if (item is MatchObj && !ContainsType(ControllerType.Match))
                     {
-                        err = cmd.name + " add ctrl of " + ControllerType.Match;
+                        //err = cmd.name + " add ctrl of " + ControllerType.Match;
                         commandTypeProp.intValue |= (int)ControllerType.Match;
                     }
                     else if (item is ConnectObj && !ContainsType(ControllerType.Connect))
                     {
-                        err = cmd.name + " add ctrl of " + ControllerType.Connect;
+                        //err = cmd.name + " add ctrl of " + ControllerType.Connect;
                         commandTypeProp.intValue |= (int)ControllerType.Connect;
                     }
                     else if (item is RopeObj && !ContainsType(ControllerType.Rope))
                     {
-                        err = cmd.name + " add ctrl of " + ControllerType.Rope;
+                        //err = cmd.name + " add ctrl of " + ControllerType.Rope;
                         commandTypeProp.intValue |= (int)ControllerType.Rope;
                     }
                 }
             }
-
-
-            if (!String.IsNullOrEmpty(err))
-            {
-                Debug.Log(err, target);
-                return true;
-            }
+            //if (!String.IsNullOrEmpty(err))
+            //{
+            //    Debug.Log(err, target);
+            //    return true;
+            //}
             return false;
         }
 

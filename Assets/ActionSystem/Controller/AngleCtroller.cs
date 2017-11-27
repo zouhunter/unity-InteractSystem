@@ -65,20 +65,28 @@ namespace WorldActionSystem {
                 angle = Instantiate(viewObj);
                 angle.transform.SetParent(transform);
                 Highlighter high = null;
-                if (!highLightDic.ContainsKey(angle))
+                if (!highLightDic.TryGetValue(angle,out high))
                 {
-                    high = angle.GetComponent<Highlighter>();
-                    if (high == null){
-                        high = angle.AddComponent<Highlighter>();
-                    }
+                    high = InitHighLighter(angle);
                     highLightDic.Add(angle, high);
                 }
                 high.On();
             }
+            CopyTranform(angle.transform, target);
             angle.SetActive(true);
             HighLighter(angle);
-            CopyTranform(angle.transform, target);
             return angle;
+        }
+
+        private static Highlighter InitHighLighter(GameObject angle)
+        {
+            Highlighter high = angle.GetComponent<Highlighter>();
+            if (high == null)
+            {
+                high = angle.AddComponent<Highlighter>();
+            }
+            high.SeeThroughOn();
+            return high;
         }
 
         public static void CopyTranform(Transform obj, Transform target)
@@ -97,6 +105,7 @@ namespace WorldActionSystem {
         private void HighLighter(GameObject angle)
         {
             highLightDic[angle].FlashingOn(Color.white, highLightColor);
+            highLightDic[angle].SeeThroughOn();
         }
         private void UnHighLighter(GameObject angle)
         {

@@ -14,11 +14,18 @@ namespace WorldActionSystem
         [Range(0.1f, 10f)]
         public float speed = 1;
         private Coroutine delyPlay;
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return 0;
+            }
+        }
 
         protected override void Start()
         {
             base.Start();
-            animPlayer = GetComponentInChildren<AnimPlayer>();
+            animPlayer = GetComponentInChildren<AnimPlayer>(true);
             if (animPlayer != null){
                 gameObject.SetActive(startActive);
             }
@@ -26,6 +33,7 @@ namespace WorldActionSystem
             {
                 gameObject.SetActive(true);
             }
+
         }
         
         public void RegisterOutSideAnim(AnimPlayer animPlayer)
@@ -42,6 +50,7 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool forceauto)
         {
             base.OnStartExecute(forceauto);
+            Debug.Assert(animPlayer != null);
             delyPlay = StartCoroutine(DelyPlay());
         }
 

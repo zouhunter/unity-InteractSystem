@@ -31,6 +31,7 @@ namespace WorldActionSystem
         {
             get
             {
+                if (currentCmd == null) return null;
                 return currentCmd.ActionCtrl;
             }
         }
@@ -46,6 +47,7 @@ namespace WorldActionSystem
         {
             StepName = stepName;
             this.commandList = commandList;
+            currentCmd = commandList[0];
         }
 
         public bool StartExecute(bool forceAuto)
@@ -95,9 +97,11 @@ namespace WorldActionSystem
             started = false;
             completed = false;
             index = 0;
-            foreach (var item in commandList)
+            for (int i = commandList.Count - 1; i >= 0; i--)
             {
-                if(item.Startd){
+                var item = commandList[i];
+                if (item.Startd)
+                {
                     item.UnDoExecute();
                 }
             }

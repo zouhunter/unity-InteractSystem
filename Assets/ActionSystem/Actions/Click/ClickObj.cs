@@ -9,6 +9,15 @@ namespace WorldActionSystem
     public class ClickObj : ActionObj
     {
         private float autoCompleteTime { get { return Setting.autoExecuteTime; } }
+
+        public override ControllerType CtrlType
+        {
+            get
+            {
+               return ControllerType.Click;
+            }
+        }
+
         private Coroutine waitCoroutine;
         [HideInInspector]
         public UnityEvent onMouseDown;

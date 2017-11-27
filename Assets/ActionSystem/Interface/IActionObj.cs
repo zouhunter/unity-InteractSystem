@@ -6,11 +6,14 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public interface IActionObj
+    public interface IActionObj: IComparable<IActionObj>
     {
+        string Name { get; }
         int QueueID { get; }
         bool Complete { get; }
         bool Started { get; }
+        bool QueueInAuto { get; }
+        ControllerType CtrlType { get; }
         /// <summary>
         /// 相机id:
         /// 1.defult  -> 主摄像机

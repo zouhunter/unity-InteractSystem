@@ -28,7 +28,7 @@ namespace WorldActionSystem
             onBeforeComplete.AddListener(OnBeforeComplete);
             onBeforeUnDo.AddListener(OnBeforeUnDo);
         }
-       protected virtual void OnBeforeStart(bool auto)
+        protected virtual void OnBeforeStart(bool auto)
         {
             ElementController.ActiveElements(this);
         }
@@ -43,17 +43,19 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            if (auto || autoInstall){
+            if (auto || autoInstall)
+            {
                 OnAutoInstall();
             }
         }
 
         protected abstract void OnAutoInstall();
-        
+
         public virtual void Attach(PickUpAbleElement obj)
         {
-            if(this.obj != null) {
-                Detach();
+            if (this.obj != null)
+            {
+                Debug.LogError(this + "allready attached");
             }
 
             this.obj = obj;
@@ -73,10 +75,13 @@ namespace WorldActionSystem
             obj = default(PickUpAbleElement);
             return old;
         }
+
+
     }
 
     public abstract class PlaceController : IActionCtroller
     {
+        public abstract ControllerType CtrlType { get; }
         public UnityAction<string> UserError { get; set; }
         protected IHighLightItems highLight;
         protected PickUpAbleElement pickedUpObj;
@@ -94,12 +99,13 @@ namespace WorldActionSystem
         protected RaycastHit disHit;
         protected float elementDistence;
         protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
-
-        public PlaceController()
+        private UnityAction<IPlaceItem> onSelect;
+        protected const float minDistence = 1f;
+        public PlaceController(UnityAction<IPlaceItem> onSelect)
         {
+            this.onSelect = onSelect;
             highLight = new ShaderHighLight();
         }
-
         #region 鼠标操作事件
         public virtual void Update()
         {
@@ -110,7 +116,13 @@ namespace WorldActionSystem
             else if (pickedUp)
             {
                 UpdatePlaceState();
-                MoveWithMouse(elementDistence += Input.GetAxis("Mouse ScrollWheel"));
+                elementDistence += Input.GetAxis("Mouse ScrollWheel");
+                MoveWithMouse();
+            }
+
+            if(elementDistence < minDistence)
+            {
+                elementDistence = minDistence;
             }
         }
 
@@ -135,15 +147,12 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
             {
                 var pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
-                if (pickedUpObj != null && pickedUpObj.Started)
+                if (pickedUpObj != null && !pickedUpObj.HaveBinding)
                 {
                     this.pickedUpObj = pickedUpObj;
-                    if (pickedUpObj.HaveBinding)
-                    {
-                        pickedUpObj.NormalUnInstall();
-                    }
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
+                    if(onSelect != null) onSelect.Invoke(pickedUpObj);
                     elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
                 }
 
@@ -152,24 +161,32 @@ namespace WorldActionSystem
 
         public void UpdatePlaceState()
         {
-            ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            hits = Physics.RaycastAll(ray, hitDistence, PlacePoslayerMask);
-            if (hits != null || hits.Length > 0)
+            if (!pickedUpObj.Started)
             {
-                bool hited = false;
-                for (int i = 0; i < hits.Length; i++)
+                resonwhy = "当前步骤无需该零件!";
+                installAble = false;
+            }
+            else
+            {
+                ray = viewCamera.ScreenPointToRay(Input.mousePosition);
+                hits = Physics.RaycastAll(ray, hitDistence, PlacePoslayerMask);
+                if (hits != null || hits.Length > 0)
                 {
-                    if (hits[i].collider.name == pickedUpObj.name)
+                    bool hited = false;
+                    for (int i = 0; i < hits.Length; i++)
                     {
-                        hited = true;
-                        installPos = hits[i].collider.GetComponent<PlaceObj>();
-                        installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
+                        if (hits[i].collider.name == pickedUpObj.name)
+                        {
+                            hited = true;
+                            installPos = hits[i].collider.GetComponent<PlaceObj>();
+                            installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
+                        }
                     }
-                }
-                if (!hited)
-                {
-                    installAble = false;
-                    resonwhy = "零件放置位置不正确";
+                    if (!hited)
+                    {
+                        installAble = false;
+                        resonwhy = "零件放置位置不正确";
+                    }
                 }
             }
 
@@ -184,6 +201,7 @@ namespace WorldActionSystem
                 if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.red);
             }
         }
+
 
         /// <summary>
         /// 尝试安装元素
@@ -215,20 +233,33 @@ namespace WorldActionSystem
         /// <summary>
         /// 跟随鼠标
         /// </summary>
-        void MoveWithMouse(float dis)
+        void MoveWithMouse()
         {
             disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(disRay, out disHit, dis, 1 << Setting.obstacleLayer))
+            if (Physics.Raycast(disRay, out disHit, elementDistence, 1 << Setting.obstacleLayer | 1<< Setting.placePosLayer | 1<< Setting.matchPosLayer | 1<< Setting.installPosLayer))
             {
-                pickedUpObj.transform.position = disHit.point;
+                pickedUpObj.transform.position = GetPositionFromHit();
             }
             else
             {
-                pickedUpObj.transform.position = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dis));
+                pickedUpObj.transform.position = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, elementDistence));
             }
+        }
+        /// <summary>
+        /// 利用射线获取对象移动坐标
+        /// </summary>
+        /// <returns></returns>
+        Vector3 GetPositionFromHit()
+        {
+            var normalPos = disHit.point;
+            var boundPos = pickedUpObj.Collider.ClosestPoint(normalPos);
+            var centerPos = pickedUpObj.transform.position;
+            var project = Vector3.Project(centerPos - boundPos, disRay.direction);
+            var targetPos = normalPos - project;
+            elementDistence -= Vector3.Distance(targetPos,pickedUpObj.transform.position);
+            return targetPos;
         }
 
         #endregion
-
     }
 }

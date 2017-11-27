@@ -9,16 +9,15 @@ namespace WorldActionSystem
     /// 在一个触发器时间内触发关闭和打开
     /// 或 打开或关闭事件
     /// </summary>
-    public class ActionEventHide : ActionObjBinding
+    public class ActionEventSwitch : ActionObjBinding
     {
         public string key;
-        public bool activeOnComplete;
         public bool activeOnStart;
+        public bool activeOnComplete;
         
         private string resetKey { get { return "HideResetObjects"; } }
         private string hideKey { get { return "HideObjects"; } }
         private string showKey { get { return "UnHideObjects"; } }
-
 
         protected override void OnBeforeActive(bool forceAuto)
         {

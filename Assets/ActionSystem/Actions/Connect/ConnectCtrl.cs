@@ -8,6 +8,13 @@ namespace WorldActionSystem
 {
     public class ConnectCtrl : IActionCtroller
     {
+        public ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Connect;
+            }
+        }
         public UnityAction<string> onError;
         public UnityAction<Collider> onSelectItem;
         public UnityAction<Collider> onHoverItem;

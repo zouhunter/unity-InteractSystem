@@ -7,8 +7,14 @@ using System;
 
 namespace WorldActionSystem
 {
+    public enum HookExecuteType
+    {
+        BeforeStart =1,
+        BeforeComplete=0
+    }
     public interface IActionHook
     {
+        //HookExecuteType ExecuteType { get; }
         int QueueID { get; }
         bool Complete { get; }
         bool Started { get; }
@@ -38,7 +44,7 @@ namespace WorldActionSystem
         protected float autoTime = 2;
         Coroutine coroutine;
         public UnityAction onEndExecute { get; set; }
-        public Toggle.ToggleEvent OnEndExecuted;
+        public Toggle.ToggleEvent onBeforeEndExecuted;
         public static bool log = false;
         public virtual void OnStartExecute(bool auto)
         {
@@ -48,6 +54,7 @@ namespace WorldActionSystem
                 _started = true;
                 _complete = false;
                 gameObject.SetActive(true);
+                //onBeforeStart.Invoke(auto);
                 if (autoComplete && coroutine == null && gameObject.activeInHierarchy) {
                     coroutine = StartCoroutine(AutoComplete());
                 }
@@ -60,15 +67,25 @@ namespace WorldActionSystem
         protected virtual IEnumerator AutoComplete()
         {
             yield return new WaitForSeconds(autoTime);
-            OnEndExecute(false);
+            if(!Complete) OnEndExecute(false);
         }
         public virtual void OnEndExecute(bool force)
+        {
+            if (!Complete)
+            {
+                CoreEndExecute(force);
+            }
+        }
+
+        public virtual void CoreEndExecute(bool force)
         {
             if (log) Debug.Log("onEnd Execute Hook :" + this + ":" + force, gameObject);
             if (!_complete)
             {
                 _started = true;
                 _complete = true;
+                onBeforeEndExecuted.Invoke(force);
+
                 if (onEndExecute != null)
                 {
                     onEndExecute.Invoke();
@@ -78,7 +95,6 @@ namespace WorldActionSystem
                     StopCoroutine(coroutine);
                     coroutine = null;
                 }
-                OnEndExecuted.Invoke(force);
             }
             else
             {

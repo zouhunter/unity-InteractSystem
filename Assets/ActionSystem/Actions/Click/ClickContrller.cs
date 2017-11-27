@@ -10,6 +10,13 @@ namespace WorldActionSystem
 {
     public class ClickContrller: IActionCtroller
     {
+        public ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Click;
+            }
+        }
         private RaycastHit hit;
         private Ray ray;
         private ClickObj hitObj;

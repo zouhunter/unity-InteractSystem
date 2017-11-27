@@ -11,7 +11,11 @@ namespace WorldActionSystem
 
     public class InstallAnim : MonoBehaviour, AnimPlayer
     {
-        public Vector3 startPos = new Vector3(5, 0, 0);
+        [SerializeField]
+        private Transform targetTrans;
+        private Vector3 targetPos;
+        [SerializeField]
+        private float time = 2f;
         private Vector3 initPos;
 #if !NoFunction
         public Tweener tween;
@@ -19,16 +23,19 @@ namespace WorldActionSystem
         private void Awake()
         {
             initPos = transform.position;
+            if(targetTrans != null){
+                targetPos = targetTrans.transform.position;
+            }
         }
 
         void Init(UnityAction onAutoPlayEnd)
         {
 #if !NoFunction
-            transform.position = initPos + startPos;
-            tween = transform.DOMove(initPos, 1).OnComplete(() =>
+            transform.position = initPos;
+            tween = transform.DOMove(targetPos, time).OnComplete(() =>
             {
                 onAutoPlayEnd.Invoke();
-                transform.position = initPos;
+                transform.position = targetPos;
             }).SetAutoKill(false).Pause();
 #endif
         }
@@ -37,7 +44,7 @@ namespace WorldActionSystem
         {
             Init(onAutoPlayEnd);
 #if !NoFunction
-            tween.ChangeValues(transform.position, initPos,1f/ speed).Play();
+            tween.ChangeValues(transform.position, targetPos,1f/ speed).Play();
 #endif
         }
 
@@ -45,7 +52,7 @@ namespace WorldActionSystem
         {
 #if !NoFunction
             tween.Complete();
-            transform.position = initPos;
+            transform.position = targetPos;
 #endif
         }
 

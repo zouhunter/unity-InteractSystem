@@ -60,6 +60,7 @@ namespace WorldActionSystem
         private static Coroutine lastCoroutine;
         private static UnityAction lastAction;
         public static event UnityAction<Transform> onCameraMoveTo;
+        private const float defultSpeed = 5;
         public void Awake()
         {
             Instence = this;
@@ -92,27 +93,29 @@ namespace WorldActionSystem
                 cameraNodes.Add(node);
             }
         }
+
         public static void SetViewCamera(UnityAction onComplete, string id = null)
         {
-            if (lastAction != null)
-            {
-                StopLastCoroutine();
-            }
+            if (Instence == null || !Instence.gameObject.activeInHierarchy) return;
+
+            StopStarted(false);
+
+            lastAction = onComplete;
+
             if (string.IsNullOrEmpty(id))
             {
-                OnStepComplete(onComplete);
+                OnStepComplete();
             }
             else if (id == defultID)
             {
                 currentNode = null;
                 if (currentCamera != mainCamera)
                 {
-                    lastAction = onComplete;
-                    lastCoroutine = Instence.StartCoroutine(MoveCameraToMainCamera(onComplete));
+                    lastCoroutine = Instence.StartCoroutine(MoveCameraToMainCamera(OnStepComplete));
                 }
                 else
                 {
-                    OnStepComplete(onComplete);
+                    OnStepComplete();
                 }
             }
 
@@ -121,13 +124,15 @@ namespace WorldActionSystem
                 var node = cameraNodes.Find(x => x != null && x.ID == id);
                 if (node == null || node == currentNode)
                 {
-                    OnStepComplete(onComplete);
                     currentNode = node;
+                    if(currentNode != null){
+                        SetTransform(currentNode.transform);
+                    }
+                    OnStepComplete();
                 }
                 else
                 {
-                    lastAction = onComplete;
-                    lastCoroutine = Instence.StartCoroutine(MoveCameraToNode(node, onComplete));
+                    lastCoroutine = Instence.StartCoroutine(MoveCameraToNode(node, OnStepComplete));
                 }
             }
         }
@@ -136,12 +141,15 @@ namespace WorldActionSystem
         {
             if (mainCamera != null)
             {
+                viewCamera.transform.SetParent(Instence.transform);
                 var startPos = viewCamera.transform.position;
                 var startRot = viewCamera.transform.rotation;
-                for (float i = 0; i < 1; i += Time.deltaTime)
+                var distence = Vector3.Distance(startPos, mainCamera.transform.position);
+                var time = (distence / defultSpeed) ;
+                for (float i = 0; i < time; i += Time.deltaTime)
                 {
-                    viewCamera.transform.position = Vector3.Lerp(startPos, mainCamera.transform.position, i);
-                    viewCamera.transform.rotation = Quaternion.Lerp(startRot, mainCamera.transform.rotation, i);
+                    viewCamera.transform.position = Vector3.Lerp(startPos, mainCamera.transform.position, i / time);
+                    viewCamera.transform.rotation = Quaternion.Lerp(startRot, mainCamera.transform.rotation, i / time);
                     yield return null;
                 }
 
@@ -151,13 +159,16 @@ namespace WorldActionSystem
                 mainCamera.gameObject.SetActive(true);
                 viewCamera.transform.SetParent(viewCameraParent);
             }
-            OnStepComplete(onComplete);//
+
+            if (onComplete != null) onComplete.Invoke();
         }
 
         static IEnumerator MoveCameraToNode(CameraNode target, UnityAction onComplete)
         {
             if (mainCamera != null)
             {
+                viewCamera.transform.SetParent(Instence.transform);
+
                 if (!viewCamera.gameObject.activeSelf)
                 {
                     SetTransform(mainCamera.transform);
@@ -171,10 +182,13 @@ namespace WorldActionSystem
 
             var startPos = viewCamera.transform.position;
             var startRot = viewCamera.transform.rotation;
-            for (float i = 0; i < target.LerpTime; i += Time.deltaTime)
+
+            var distence = Vector3.Distance(startPos, target.transform.position);
+            var time = (distence / target.Speed) ;
+            for (float i = 0; i < time; i += Time.deltaTime)
             {
-                viewCamera.transform.position = Vector3.Lerp(startPos, target.transform.position, i);
-                viewCamera.transform.rotation = Quaternion.Lerp(startRot, target.transform.rotation, i);
+                viewCamera.transform.position = Vector3.Lerp(startPos, target.transform.position, i/time);
+                viewCamera.transform.rotation = Quaternion.Lerp(startRot, target.transform.rotation, i / time);
                 yield return null;
             }
             viewCamera.transform.SetParent(target.transform);
@@ -182,11 +196,13 @@ namespace WorldActionSystem
 
             currentNode = target;
 
-            OnStepComplete(onComplete);
 
-            if (onCameraMoveTo != null){
+            if (onCameraMoveTo != null)
+            {
                 onCameraMoveTo.Invoke(target.transform);
             }
+
+            if (onComplete != null) onComplete.Invoke();
         }
         private static void SetTransform(Transform target)
         {
@@ -213,21 +229,31 @@ namespace WorldActionSystem
             lastCoroutine = null;
             cameraNodes.Clear();
         }
-        public static void StopLastCoroutine()
+        /// <summary>
+        /// 只结束开始
+        /// [选择性清理节点缓存]
+        /// </summary>
+        /// <param name="force"></param>
+        public static void StopStarted(bool force)
         {
-            if (lastCoroutine != null) {
-                Instence.StopCoroutine(lastCoroutine);
-            }
-            OnStepComplete(lastAction);
-        }
-        private static void OnStepComplete(UnityAction onComplete)
-        {
-            if (onComplete != null)
+            if (lastCoroutine != null)
             {
-                onComplete.Invoke();
-                onComplete = null;
+                Instence.StopCoroutine(lastCoroutine);
                 lastCoroutine = null;
+            }
+            if (force)
+            {
+                currentNode = null;
+            }
+            OnStepComplete();
+        }
+        private static void OnStepComplete()
+        {
+            if (lastAction != null)
+            {
+                var action = lastAction;
                 lastAction = null;
+                action.Invoke();
             }
         }
     }

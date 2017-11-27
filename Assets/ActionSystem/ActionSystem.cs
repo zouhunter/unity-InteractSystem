@@ -20,6 +20,7 @@ namespace WorldActionSystem
 
         }
         public event UserError onUserError;//步骤操作错误
+        public event CommandExecute onCommandExecute;
         public IRemoteController RemoteController { get { return remoteController; } }
         public IActionStap[] ActiveStaps { get { return steps; } }
         private IRemoteController remoteController;
@@ -28,6 +29,7 @@ namespace WorldActionSystem
         private List<IActionCommand> activeCommands;
         private RegistCmds onCommandRegist;
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
+
         #region Interface Fuctions
 
         private void Awake()
@@ -40,7 +42,7 @@ namespace WorldActionSystem
             var cmds = new List<ActionCommand>();
             RetriveCommand(cmds);//自身加载
             CreateAndRegistCommands(cmds);//动态加载
-            activeCommands = commandCtrl.RegistTriggers(cmds.ToArray(), OnStepComplete);
+            activeCommands = commandCtrl.RegistTriggers(cmds.ToArray(), OnStepComplete, OnCommandExectute);
             if (onCommandRegist != null) onCommandRegist.Invoke(activeCommands);
         }
         private void CreateAndRegistCommands(List<ActionCommand> cmds)
@@ -90,9 +92,24 @@ namespace WorldActionSystem
         /// <summary>
         /// 结束命令
         /// </summary>
-        private void OnStepComplete(string stempName)
+        private void OnStepComplete(string stepName)
         {
-            remoteController.OnEndExecuteCommand();
+            if(remoteController.CurrCommand != null && remoteController.CurrCommand.StepName == stepName)
+            {
+                remoteController.OnEndExecuteCommand();
+            }
+            else
+            {
+                Debug.LogError("Not Step :" + stepName);
+            }
+        }
+
+        private void OnCommandExectute(string stepName,int totalCount,int currentID)
+        {
+            if(onCommandExecute != null)
+            {
+                onCommandExecute.Invoke(stepName, totalCount, currentID);
+            }
         }
 
         /// <summary>
@@ -119,6 +136,8 @@ namespace WorldActionSystem
         {
             foreach (var item in prefabList)
             {
+                if (item.ignore) continue;
+
                 item.prefab.gameObject.SetActive(true);
                 var created = GameObject.Instantiate(item.prefab);
                 created.name = item.prefab.name;

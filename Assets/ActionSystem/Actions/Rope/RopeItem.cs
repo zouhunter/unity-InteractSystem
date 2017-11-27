@@ -21,7 +21,10 @@ namespace WorldActionSystem
             RegestRopeList();
             RecordStartPosAndSetLayer();
         }
-
+        private void OnEnable()
+        {
+            rope.Regenerate(true);
+        }
         private void RecordStartPosAndSetLayer()
         {
             ropeNodesStartPos = new Vector3[ropeNode.Count];
@@ -70,12 +73,12 @@ namespace WorldActionSystem
                 if(lastid >= 0)
                 {
                     var lastNode = ropeList[lastid];
-                    canMove  &= Vector3.Distance(pos, lastNode.transform.position) < lengthList[lastid];
+                    canMove  &= Vector3.Distance(pos, lastNode.transform.position) < 2 * lengthList[lastid];
                 }
                 if (nextid < ropeList.Count)
                 {
                     var nextNode = ropeList[nextid];
-                    canMove &= Vector3.Distance(pos, nextNode.transform.position) < lengthList[id];
+                    canMove &= Vector3.Distance(pos, nextNode.transform.position) < 2 * lengthList[id];
                 }
                 if(canMove)
                 {

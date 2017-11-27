@@ -13,6 +13,13 @@ namespace WorldActionSystem
     public class MatchObj : PlaceObj
     {
         public bool completeMoveBack = true;//结束时退回
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Match;
+            }
+        }
 
         public bool Matched { get { return obj != null; } }
 
@@ -37,7 +44,7 @@ namespace WorldActionSystem
         {
             var obj = ElementController.GetUnInstalledObj(Name);
             Attach(obj);
-            if (Setting.ignoreMatch && !ignorePass)
+            if (Setting.quickMoveElement && !ignorePass)
             {
                 if (!completeMoveBack)
                 {
@@ -56,7 +63,10 @@ namespace WorldActionSystem
 
         protected override void OnInstallComplete()
         {
-            OnEndExecute(false);
+            if (!Complete)
+            {
+                OnEndExecute(false);
+            }
         }
     }
 }

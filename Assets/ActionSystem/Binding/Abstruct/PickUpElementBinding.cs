@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem;
+using System;
 
 [RequireComponent(typeof(PickUpAbleElement))]
 
@@ -14,6 +15,17 @@ public class PickUpElementBinding : MonoBehaviour {
         pickUpElement = GetComponent<PickUpAbleElement>();
         pickUpElement.onPickUp.AddListener(OnPickUp);
         pickUpElement.onLayDown.AddListener(OnLayDown);
+        pickUpElement.onInstallOkEvent += OnInstallOK;
+    }
+
+    protected virtual void OnInstallOK()
+    {
+        
+    }
+
+    protected virtual void OnDestroy()
+    {
+        pickUpElement.onInstallOkEvent -= OnInstallOK;
     }
     protected virtual void OnPickUp()
     {

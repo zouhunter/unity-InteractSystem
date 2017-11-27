@@ -11,11 +11,11 @@ namespace WorldActionSystem
     public abstract class ActionObj : MonoBehaviour, IActionObj
     {
         [SerializeField]
-        public string _name;
+        protected string m_name;
         public bool startActive;
         public bool endActive;
         protected bool _complete;
-        public string Name { get { return _name; } }
+        public string Name { get { return m_name; } }
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
@@ -30,6 +30,9 @@ namespace WorldActionSystem
             }
         }
         [SerializeField]
+        private bool _queueInAuto = true;
+        public bool QueueInAuto { get { return _queueInAuto; } }
+        [SerializeField]
         private string _cameraID;
         public string CameraID { get { return _cameraID; } }
         public Transform anglePos;
@@ -41,19 +44,20 @@ namespace WorldActionSystem
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
         protected AngleCtroller angleCtrl { get { return AngleCtroller.Instance; } }
+
+        public abstract ControllerType CtrlType { get; }
+
         public static bool log = true;
         protected bool notice;
         protected virtual void Start()
         {
-            if (string.IsNullOrEmpty(_name)) _name = name;
+            if (string.IsNullOrEmpty(m_name)) m_name = name;
             hooks = GetComponentsInChildren<ActionHook>(false);
-            if (hooks.Length > 0)
-            {
+            if (hooks.Length > 0){
                 hookCtrl = new HookCtroller(this);
             }
             gameObject.SetActive(startActive);
-            if (anglePos == null)
-            {
+            if (anglePos == null){
                 anglePos = transform;
             }
             WorpCameraID();
@@ -92,10 +96,10 @@ namespace WorldActionSystem
             this.auto = auto;
             if (!_started)
             {
-                onBeforeStart.Invoke(auto);
                 _started = true;
                 _complete = false;
                 notice = true;
+                onBeforeStart.Invoke(auto);
                 gameObject.SetActive(true);
             }
             else
@@ -106,7 +110,6 @@ namespace WorldActionSystem
 
         public virtual void OnEndExecute(bool force)
         {
-            if (angleCtrl) angleCtrl.UnNotice(anglePos);
             notice = false;
 
             if (force)
@@ -139,23 +142,24 @@ namespace WorldActionSystem
 
         private void CoreEndExecute(bool force)
         {
+            if (angleCtrl) angleCtrl.UnNotice(anglePos);
+
             if (log) Debug.Log("OnEndExecute:" + this + ":" + force, this);
 
             if (!_complete)
             {
-                onBeforeComplete.Invoke(force);
                 notice = false;
                 _started = true;
                 _complete = true;
-                gameObject.SetActive(endActive);
+                onBeforeComplete.Invoke(force);
+                if (hooks.Length > 0){
+                    hookCtrl.OnEndExecute();
+                }
                 if (onEndExecute != null)
                 {
                     onEndExecute.Invoke();
                 }
-                if (hooks.Length > 0)
-                {
-                    hookCtrl.OnEndExecute();
-                }
+                gameObject.SetActive(endActive);
             }
             else
             {
@@ -165,15 +169,18 @@ namespace WorldActionSystem
 
         public virtual void OnUnDoExecute()
         {
-            if(_started) 
+            if (angleCtrl)
+                angleCtrl.UnNotice(anglePos);
+
+            if (log) Debug.Log("OnUnDoExecute:" + this, this);
+
+            if (_started) 
             {
                 _started = false;
                 _complete = false;
                 notice = false;
                 onBeforeUnDo.Invoke();
-
                 gameObject.SetActive(startActive);
-                if (angleCtrl) angleCtrl.UnNotice(anglePos);
 
                 if (hooks.Length > 0)
                 {
@@ -187,5 +194,20 @@ namespace WorldActionSystem
 
         }
 
+        public int CompareTo(IActionObj other)
+        {
+            if(QueueID > other.QueueID)
+            {
+                return 1;
+            }
+            else if(QueueID < other.QueueID)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace WorldActionSystem
 
     public interface IPlaceItem
     {
+        string Name { get; }
+        Collider Collider { get; }
         void NormalInstall(PlaceObj target, bool complete = true, bool binding = true);
         void QuickInstall(PlaceObj target, bool complete = true, bool binding = true);
         void NormalUnInstall();

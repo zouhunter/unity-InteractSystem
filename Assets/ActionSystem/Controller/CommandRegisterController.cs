@@ -14,9 +14,11 @@ namespace WorldActionSystem
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
 
         private StepComplete onStepComplete;
-        public List<IActionCommand> RegistTriggers(ActionCommand[] triggers, StepComplete onStepComplete)
+        private CommandExecute commandExecute;
+        public List<IActionCommand> RegistTriggers(ActionCommand[] triggers, StepComplete onStepComplete, CommandExecute commandExecute)
         {
             this.onStepComplete = onStepComplete;
+            this.commandExecute = commandExecute;
             foreach (var trigger in triggers)
             {
                 var obj = trigger;
@@ -61,10 +63,17 @@ namespace WorldActionSystem
                     {
                         item.Value.Sort();
                         var list = new List<IActionCommand>();
+                        var total = item.Value.Count;
                         for (int i = 0; i < item.Value.Count; i++)
                         {
-                            item.Value[i].RegistComplete(OnOneCommandComplete);
-                            list.Add(item.Value[i]);
+                            int index = i;
+                            int totalcmd = total;
+                            item.Value[index].RegistComplete(OnOneCommandComplete);
+                            item.Value[index].onBeforeActive.AddListener((x) =>
+                            {
+                                OnCommandStartExecute(stepName, totalcmd, index);
+                            });
+                            list.Add(item.Value[index]);
                         }
                         var cmd = new SequencesCommand(stepName, list);
                         seqDic.Add(stepName, cmd);
@@ -72,12 +81,24 @@ namespace WorldActionSystem
                     }
                     else//单命令
                     {
-                        item.Value[0].RegistComplete(OnOneCommandComplete);
                         var cmd = item.Value[0];
+                        cmd.RegistComplete(OnOneCommandComplete);
+                        cmd.onBeforeActive.AddListener((x) =>
+                        {
+                            OnCommandStartExecute(stepName, 1, 1);
+                        });
                         commandList.Add(cmd);
                     }
 
                 }
+            }
+        }
+
+        private void OnCommandStartExecute(string stepName, int totalCount, int currentID)
+        {
+            if(this.commandExecute !=null)
+            {
+                commandExecute.Invoke(stepName, totalCount, currentID);
             }
         }
     }

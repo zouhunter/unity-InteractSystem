@@ -8,8 +8,8 @@ namespace WorldActionSystem
 
     public class CameraNode : MonoBehaviour
     {
-        [SerializeField,Range(1,10)]
-        private float _lerpTime = 1;//缓慢移入
+        //[SerializeField,Range(1,10)]
+        private float _speed = 5;//缓慢移入
         //[SerializeField]
         private float _field = 60;
         [SerializeField]
@@ -17,7 +17,7 @@ namespace WorldActionSystem
         private float _distence = 1;
         private Quaternion _rotate;
         public string ID { get { return name; } }
-        public float LerpTime { get { return _lerpTime; } }
+        public float Speed { get { return _speed; } }
         public float Distence { get { return _distence; } }
         public float CameraField { get { return _field; } }
         public Quaternion Rotation { get { return _rotate; } }

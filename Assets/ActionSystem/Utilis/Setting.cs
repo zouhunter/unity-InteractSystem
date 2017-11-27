@@ -23,16 +23,15 @@ namespace WorldActionSystem
         internal static bool highLightNotice = true;//高亮提示
         internal static bool angleNotice = true;//箭头提示
         internal static bool useOperateCamera = true;//使用专用相机
-        internal static bool ignoreMatch = false;//
-        internal static bool ignoreInstall = false;
-
+        internal static bool quickMoveElement = false;//元素快速移动
+        internal static bool ignoreController = false;//忽略控制器
         internal static void ResetDefult()
         {
             highLightNotice = true;
             useOperateCamera = true;
-            ignoreMatch = false;
             angleNotice = true;
-            ignoreInstall = false;
+            quickMoveElement = false;
+            ignoreController = false;
         }
     }
 }

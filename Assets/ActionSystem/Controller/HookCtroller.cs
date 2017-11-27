@@ -10,6 +10,7 @@ namespace WorldActionSystem
     {
         protected bool _complete;
         public bool Complete { get { return _complete; } }
+
         protected bool _started;
         public bool Started { get { return _started; } }
 
@@ -17,6 +18,7 @@ namespace WorldActionSystem
         protected List<int> queueID = new List<int>();
         protected IActionHook[] hooks { get; set; }
         protected bool isForceAuto;
+
         public HookCtroller(ActionObj trigger)
         {
             this.actionObj = trigger;
@@ -60,6 +62,8 @@ namespace WorldActionSystem
                     {
                         item.OnStartExecute(isForceAuto);
                     }
+                    //Debug.Log("item:" + item);
+                    //Debug.Log("Complete:" + item.Complete);
                     if (!item.Complete)
                     {
                         item.OnEndExecute(true);
@@ -116,9 +120,13 @@ namespace WorldActionSystem
                     foreach (ActionHook item in neetActive)
                     {
                         var obj = item;
-                        item.onEndExecute =()=> OnCommandObjComplete(obj);
-                        //Debug.Log("On Execute " + item.name + "of " + id);
-                        item.OnStartExecute(isForceAuto);
+                        if (!obj.Started)
+                        {
+                            obj.onEndExecute = () => OnCommandObjComplete(obj);
+                            //Debug.Log("On Execute " + item.name + "of " + id);
+                            obj.OnStartExecute(isForceAuto);
+                        }
+                           
                     }
                 }
 

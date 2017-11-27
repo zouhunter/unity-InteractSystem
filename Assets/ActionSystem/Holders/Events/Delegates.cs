@@ -2,7 +2,7 @@
 
 namespace WorldActionSystem
 {
-    public delegate void CommandExecute(string stepName);
+    public delegate void CommandExecute(string stepName,int totalCount,int currentID);
     public delegate void RegistCmds(IList<IActionCommand> cmds);
     public delegate void StepComplete(string stepName);
     public delegate void UserError(string step, string info);

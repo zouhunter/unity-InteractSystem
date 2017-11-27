@@ -13,6 +13,8 @@ namespace WorldActionSystem
     /// </summary>
     public class RopeController : PlaceController
     {
+        public override ControllerType CtrlType { get { return ControllerType.Rope; } }
+
         private RopeObj ropeObj { get { return installPos as RopeObj; } }
 
         protected override int PlacePoslayerMask
@@ -25,6 +27,10 @@ namespace WorldActionSystem
         private RopeItem ropeItem;
         private Collider pickUpedRopeNode;
         private bool pickDownAble;
+
+        public RopeController(UnityAction<IPlaceItem> onSelect) : base(onSelect)
+        {
+        }
 
         public override void Update()
         {

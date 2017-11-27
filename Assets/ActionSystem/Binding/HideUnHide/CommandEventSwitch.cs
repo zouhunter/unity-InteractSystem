@@ -10,7 +10,7 @@ namespace WorldActionSystem
     /// 在一个ActionCommand时间内触发关闭和打开
     /// 或 打开或关闭事件
     /// </summary>
-    public class CommandEventHide : ActionCommandBinding
+    public class CommandEventSwitch : ActionCommandBinding
     {
         public string key;
 

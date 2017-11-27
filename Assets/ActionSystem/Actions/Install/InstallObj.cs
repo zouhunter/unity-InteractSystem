@@ -16,6 +16,14 @@ namespace WorldActionSystem
     /// </summary>
     public class InstallObj : PlaceObj
     {
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Install;
+            }
+        }
+
         public override int layer
         {
             get
@@ -52,14 +60,24 @@ namespace WorldActionSystem
 
         protected override void OnInstallComplete()
         {
-            OnEndExecute(false);
+            if (!Complete)
+            {
+                OnEndExecute(false);
+            }
         }
 
         protected override void OnUnInstallComplete()
         {
-            this.obj = null;
-            OnUnDoExecute();
-            OnStartExecute(auto);
+            if(Started)
+            {
+                if (AlreadyPlaced)
+                {
+                    var obj = Detach();
+                    obj.QuickUnInstall();
+                    obj.StepUnDo();
+                }
+                this.obj = null;
+            }
         }
 
         protected override void OnAutoInstall()
@@ -67,16 +85,9 @@ namespace WorldActionSystem
             PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
             Attach(obj);
             obj.StepActive();
-            if (Setting.ignoreInstall && !ignorePass)
+            if (Setting.quickMoveElement && !ignorePass)
             {
-                if (!hideOnInstall)
-                {
-                    obj.QuickInstall(this);
-                }
-                else
-                {
-                    OnInstallComplete();
-                }
+                obj.QuickInstall(this);
             }
             else
             {

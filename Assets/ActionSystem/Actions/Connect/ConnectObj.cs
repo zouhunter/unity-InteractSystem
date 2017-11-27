@@ -18,6 +18,14 @@ namespace WorldActionSystem
             public int p1;
             public int p2;
         }
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Connect;
+            }
+        }
+
         public List<PointGroup> connectGroup;
         private List<Collider> nodes = new List<Collider>();
         private Dictionary<int, LineRenderer> lineRenders = new Dictionary<int, LineRenderer>();

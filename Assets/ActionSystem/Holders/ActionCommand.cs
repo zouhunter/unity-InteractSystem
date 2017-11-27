@@ -20,14 +20,14 @@ namespace WorldActionSystem
         public bool Startd { get { return started; } }
         public bool Completed { get { return completed; } }
         private UserError userErr { get; set; }
-        private StepComplete stepComplete { get; set; }
+        private StepComplete stepComplete { get; set; }//步骤自动结束方法
         public IActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
         protected ActionCtroller coroutineCtrl;
         public ActionCtroller ActionCtrl { get { return coroutineCtrl; } }
         protected IActionObj[] actionObjs;
         [EnumMask, HideInInspector]
-        public ControllerType commandType;
+        public ControllerType commandType;//用于editor
 
         #region 可选参数配制
 
@@ -43,13 +43,18 @@ namespace WorldActionSystem
         public InputField.OnChangeEvent onBeforeUnDo;
         [HideInInspector]
         public InputField.OnChangeEvent onBeforePlayEnd;
-        public UnityEvent<string> Test;
+
         private bool started;
         private bool completed;
         protected virtual void Awake()
         {
             RegistActionObjs();
             WorpCameraID();
+        }
+        protected virtual void Start()
+        {
+            if (coroutineCtrl == null)
+                coroutineCtrl = new ActionCtroller(this);
         }
         private void WorpCameraID()
         {
@@ -67,16 +72,14 @@ namespace WorldActionSystem
             actionObjs = GetComponentsInChildren<IActionObj>(false);
         }
 
-        public void RegistComplete(StepComplete stepComplete)
-        {
-            this.stepComplete = stepComplete;
-        }
-
         public void RegistAsOperate(UserError userErr)
         {
             this.userErr = userErr;
         }
-
+        public void RegistComplete(StepComplete stepComplete)
+        {
+            this.stepComplete = stepComplete;
+        }
         public int CompareTo(ActionCommand other)
         {
             if (other.QueueID > QueueID)
@@ -108,7 +111,7 @@ namespace WorldActionSystem
                 started = true;
                 completed = true;
                 OnEndExecute();
-                stepComplete.Invoke(StepName);
+                if (stepComplete != null) stepComplete.Invoke(StepName);
                 return true;
             }
             else
@@ -120,14 +123,12 @@ namespace WorldActionSystem
 
         public virtual bool StartExecute(bool forceAuto)
         {
-            if (coroutineCtrl == null)
-                coroutineCtrl = new ActionCtroller(this);
-
             if (!started)
             {
                 started = true;
                 onBeforeActive.Invoke(StepName);
-                coroutineCtrl.OnStartExecute(forceAuto);
+                if(coroutineCtrl!=null)
+                    coroutineCtrl.OnStartExecute(forceAuto);
                 return true;
             }
             else
