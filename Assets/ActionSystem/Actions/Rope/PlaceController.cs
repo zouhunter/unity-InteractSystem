@@ -252,7 +252,10 @@ namespace WorldActionSystem
         Vector3 GetPositionFromHit()
         {
             var normalPos = disHit.point;
-            var boundPos = pickedUpObj.Collider.ClosestPoint(normalPos);
+            var boundPos = normalPos;
+#if UNITY_5_6_OR_NEWER
+           boundPos = pickedUpObj.Collider.ClosestPoint(normalPos);
+#endif
             var centerPos = pickedUpObj.transform.position;
             var project = Vector3.Project(centerPos - boundPos, disRay.direction);
             var targetPos = normalPos - project;
