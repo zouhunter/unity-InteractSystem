@@ -5,13 +5,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 426512}
-  - 33: {fileID: 3357694}
-  - 65: {fileID: 6540340}
-  - 23: {fileID: 2315362}
-  - 114: {fileID: 11408586}
+  - component: {fileID: 426512}
+  - component: {fileID: 3357694}
+  - component: {fileID: 6540340}
+  - component: {fileID: 2315362}
+  - component: {fileID: 11408586}
   m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
@@ -24,14 +24,14 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 452140}
-  - 33: {fileID: 3323622}
-  - 65: {fileID: 6530364}
-  - 23: {fileID: 2382890}
-  - 111: {fileID: 11169172}
-  - 114: {fileID: 11425278}
+  - component: {fileID: 452140}
+  - component: {fileID: 3323622}
+  - component: {fileID: 6530364}
+  - component: {fileID: 2382890}
+  - component: {fileID: 11169172}
+  - component: {fileID: 11425278}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -44,13 +44,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 457888}
-  - 33: {fileID: 3319216}
-  - 65: {fileID: 6537822}
-  - 23: {fileID: 2353916}
-  - 114: {fileID: 11461392}
+  - component: {fileID: 457888}
+  - component: {fileID: 3319216}
+  - component: {fileID: 6537822}
+  - component: {fileID: 2353916}
+  - component: {fileID: 11461392}
   m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
@@ -63,10 +63,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 460520}
-  - 114: {fileID: 11466480}
+  - component: {fileID: 460520}
+  - component: {fileID: 11466480}
   m_Layer: 0
   m_Name: animHook (4)
   m_TagString: Untagged
@@ -79,10 +79,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 464456}
-  - 114: {fileID: 11417520}
+  - component: {fileID: 464456}
+  - component: {fileID: 11417520}
   m_Layer: 0
   m_Name: emptyobj
   m_TagString: Untagged
@@ -95,26 +95,26 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 471462}
-  - 114: {fileID: 11474944}
+  - component: {fileID: 471462}
+  - component: {fileID: 11474944}
   m_Layer: 0
   m_Name: cubeup1A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &171360
 GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 421402}
-  - 114: {fileID: 11415746}
+  - component: {fileID: 421402}
+  - component: {fileID: 11415746}
   m_Layer: 0
   m_Name: animHook (3)
   m_TagString: Untagged
@@ -127,10 +127,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 478870}
-  - 114: {fileID: 11441312}
+  - component: {fileID: 478870}
+  - component: {fileID: 11441312}
   m_Layer: 0
   m_Name: camera (4)
   m_TagString: Untagged
@@ -143,10 +143,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 420962}
-  - 114: {fileID: 11447244}
+  - component: {fileID: 420962}
+  - component: {fileID: 11447244}
   m_Layer: 0
   m_Name: animHook (2)
   m_TagString: Untagged
@@ -159,12 +159,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 493778}
-  - 114: {fileID: 11405916}
-  - 114: {fileID: 11492880}
-  - 65: {fileID: 6505468}
+  - component: {fileID: 493778}
+  - component: {fileID: 11405916}
+  - component: {fileID: 11492880}
+  - component: {fileID: 6505468}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -184,6 +184,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 464456}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &421402
 Transform:
   m_ObjectHideFlags: 1
@@ -196,6 +197,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 464456}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &426512
 Transform:
   m_ObjectHideFlags: 1
@@ -208,6 +210,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 471462}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &452140
 Transform:
   m_ObjectHideFlags: 1
@@ -220,6 +223,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 493778}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &457888
 Transform:
   m_ObjectHideFlags: 1
@@ -232,6 +236,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 471462}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &460520
 Transform:
   m_ObjectHideFlags: 1
@@ -244,6 +249,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 464456}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &464456
 Transform:
   m_ObjectHideFlags: 1
@@ -259,6 +265,7 @@ Transform:
   - {fileID: 460520}
   m_Father: {fileID: 471462}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &471462
 Transform:
   m_ObjectHideFlags: 1
@@ -276,6 +283,7 @@ Transform:
   - {fileID: 478870}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &478870
 Transform:
   m_ObjectHideFlags: 1
@@ -288,6 +296,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 471462}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &493778
 Transform:
   m_ObjectHideFlags: 1
@@ -301,6 +310,7 @@ Transform:
   - {fileID: 452140}
   m_Father: {fileID: 471462}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &2315362
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -310,22 +320,30 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &2353916
 MeshRenderer:
@@ -336,22 +354,30 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &2382890
 MeshRenderer:
@@ -362,22 +388,30 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &3319216
 MeshFilter:
@@ -494,8 +528,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   delyTime: 0
   speed: 1
 --- !u!114 &11408586
@@ -529,8 +563,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   autoInstall: 0
   ignorePass: 0
   passBy: {fileID: 0}
@@ -585,8 +619,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &11425278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -660,8 +694,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   autoInstall: 0
   ignorePass: 0
   passBy: {fileID: 0}
@@ -733,28 +767,28 @@ MonoBehaviour:
   onPickUp:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onLayDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onStepActive:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onStepComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onStepUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   m_render: {fileID: 0}
   highLightColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1001 &100100000

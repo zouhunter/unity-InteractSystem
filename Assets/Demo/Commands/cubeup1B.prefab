@@ -5,12 +5,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 464774}
-  - 114: {fileID: 11475324}
-  - 114: {fileID: 11470680}
-  - 65: {fileID: 6540514}
+  - component: {fileID: 464774}
+  - component: {fileID: 11475324}
+  - component: {fileID: 11470680}
+  - component: {fileID: 6540514}
   m_Layer: 0
   m_Name: CubeX
   m_TagString: Untagged
@@ -23,10 +23,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 483522}
-  - 114: {fileID: 11485882}
+  - component: {fileID: 483522}
+  - component: {fileID: 11485882}
   m_Layer: 0
   m_Name: cubeup1B
   m_TagString: Untagged
@@ -39,14 +39,14 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 466744}
-  - 33: {fileID: 3378314}
-  - 65: {fileID: 6573714}
-  - 23: {fileID: 2345284}
-  - 111: {fileID: 11189232}
-  - 114: {fileID: 11482786}
+  - component: {fileID: 466744}
+  - component: {fileID: 3378314}
+  - component: {fileID: 6573714}
+  - component: {fileID: 2345284}
+  - component: {fileID: 11189232}
+  - component: {fileID: 11482786}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -67,6 +67,7 @@ Transform:
   - {fileID: 466744}
   m_Father: {fileID: 483522}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &466744
 Transform:
   m_ObjectHideFlags: 1
@@ -79,6 +80,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 464774}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &483522
 Transform:
   m_ObjectHideFlags: 1
@@ -92,6 +94,7 @@ Transform:
   - {fileID: 464774}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &2345284
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -101,22 +104,30 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &3378314
 MeshFilter:
@@ -175,38 +186,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ede9def9b1c7454fa41a2a6dcd1c4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: 
   startActive: 1
-  endActive: 1
   onPickUp:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnLayDown:
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onLayDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnInstallEnd:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onStepActive:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onStepComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onStepUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   m_render: {fileID: 0}
   highLightColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &11475324
@@ -220,26 +226,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_name: 
   startActive: 1
   endActive: 1
   queueID: 0
-  viewObj: {fileID: 0}
-  highLightColor: {r: 0, g: 1, b: 0, a: 1}
+  _queueInAuto: 1
+  _cameraID: 
+  anglePos: {fileID: 0}
   onBeforeStart:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  onBeforeUnDo:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onBeforeComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onBeforeUnDo:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   delyTime: 0
   speed: 1
 --- !u!114 &11482786
@@ -267,23 +275,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stepName: cubeup
-  executeIndex: 0
-  m_viewCamera: {fileID: 0}
+  _queueID: 0
+  _cameraID: defult
+  commandType: 0
+  lineWight: 0.1
+  lineMaterial: {fileID: 0}
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: WorldActionSystem.StepEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: WorldActionSystem.StepEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onBeforePlayEnd:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: WorldActionSystem.StepEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
