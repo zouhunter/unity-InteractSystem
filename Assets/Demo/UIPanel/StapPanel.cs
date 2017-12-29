@@ -87,7 +87,7 @@ namespace WorldActionSystem
             if (remoteController.CurrCommand != null)
             {
                 remoteController.StartExecuteCommand(OnEndExecute, autoPlay.isOn);
-                if(remoteController.CurrCommand != null)
+                if (remoteController.CurrCommand != null)
                 {
                     textShow.text = remoteController.CurrCommand.StepName;
                 }
@@ -181,18 +181,26 @@ namespace WorldActionSystem
     }
     public partial class StapPanel : MonoBehaviour
     {
-        public ActionSystem actionSystem;
+        public string groupName;
         public GameObject panel;
-        IRemoteController remoteController { get { return actionSystem.RemoteController; } }
+        private ActionGroup group;
+        IRemoteController remoteController { get { return group.RemoteController; } }
         public Step[] steps;
         void Start()
         {
             panel.SetActive(false);
-            actionSystem.LunchActionSystem(steps, (newStep)=> {
-                steps = newStep;
-                actionSystem.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
+            ActionSystem.Instence.RetriveAsync(groupName, (group) =>
+            {
+                this.group = group;
+
+                group.LunchActionSystem(steps, (newStep) =>
+                {
+                    steps = newStep;
+                    group.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
+                    panel.SetActive(true);
+                });
             });
-            panel.SetActive(true);
+
 
         }
     }

@@ -4,6 +4,6 @@ namespace WorldActionSystem
 {
     public interface IRootUse
     {
-        ActionSystem actionSystem { get; }
+        ActionGroup actionSystem { get; }
     }
 }

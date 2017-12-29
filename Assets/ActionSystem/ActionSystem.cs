@@ -1,170 +1,99 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+
 namespace WorldActionSystem
 {
-    public class ActionSystem : MonoBehaviour, IActionSystem
+    public class ActionSystem : MonoBehaviour
     {
-        public int totalCommand;
-        public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
-
-        #region Events
-        public event UserError onUserError;//步骤操作错误
-        public event CommandExecute onCommandExecute;
-        #endregion
-
-        #region Propertys
-        internal IRemoteController RemoteController { get { return remoteController; } }
-        internal IActionStap[] ActiveStaps { get { return steps; } }
-        internal CommandController CommandCtrl
+        private static ActionSystem _instence;
+        public static ActionSystem Instence
         {
             get
             {
-                return commandCtrl;
+                if (_instence == null)
+                {
+                    _instence = new GameObject("ActionSystem").AddComponent<ActionSystem>();
+                }
+                return _instence;
             }
         }
-        internal EventController EventCtrl
+        public ActionCtroller actionCtrl
         {
             get
             {
-                return eventCtrl;
+                if (_actionCtrl == null)
+                {
+                    _actionCtrl = new ActionCtroller(this);
+                }
+                return _actionCtrl;
             }
         }
-        internal AngleCtroller AngleCtrl { get { return angleCtrl; } }
-        #endregion
+        public CameraController cameraCtrl
+        {
+            get
+            {
+                if(_cameraCtrl == null)
+                {
+                    _cameraCtrl = new CameraController(this);
+                }
+                return _cameraCtrl;
+            }
+        }
+        private ActionCtroller _actionCtrl;
+        private CameraController _cameraCtrl;
 
-        #region Private
-        private IActionStap[] steps;
-        private IRemoteController remoteController;
-        private CommandController commandCtrl = new CommandController();
-        private EventController eventCtrl = new EventController();
-        private AngleCtroller angleCtrl;
-        private RegistCommandList onCommandRegisted { get; set; }
-        #endregion
-
-        #region UnityFunctions
+        private List<ActionGroup> groupList = new List<ActionGroup>();
+        private Dictionary<string, List<UnityAction<ActionGroup>>> waitDic = new Dictionary<string, List<UnityAction<ActionGroup>>>();
         private void Awake()
         {
-            angleCtrl = transform.GetComponentInChildren<AngleCtroller>(false);
-            commandCtrl.InitCommand(totalCommand, OnCommandExectute, OnStepComplete, OnUserError,
-                (x) =>
-                {
-                    if (onCommandRegisted != null)
-                        onCommandRegisted.Invoke(x);
-                });
-            Utility.CreateRunTimeObjects(transform, prefabList);
+            _instence = this;
         }
-        #endregion
 
-        #region Public Functions
-        /// <summary>
-        /// 设置安装顺序并生成最终步骤
-        /// </summary>
-        public void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK) where T : IActionStap
+        public void RetriveAsync(string groupKey,UnityAction<ActionGroup> onRetrive)
         {
-            Debug.Assert(steps != null);
-            onCommandRegisted = (activeCommands) =>
+            if (onRetrive == null) return;
+            var item = groupList.Find(x => x.groupKey == groupKey);
+            if (item)
             {
-                this.steps = ConfigSteps<T>(activeCommands, steps);//重新计算步骤
-                activeCommands = GetIActionCommandList(activeCommands, this.steps);
-                remoteController = new RemoteController(activeCommands);
-                onLunchOK.Invoke(Array.ConvertAll<IActionStap, T>(this.steps, x => (T)x));
-            };
-
-            if (commandCtrl.CommandRegisted)
-            {
-                onCommandRegisted.Invoke(commandCtrl.CommandList);
-            }
-        }
-        #endregion
-
-        #region private Funtions
-        /// <summary>
-        /// 结束命令
-        /// </summary>
-        private void OnStepComplete(string stepName)
-        {
-            if (remoteController.CurrCommand != null && remoteController.CurrCommand.StepName == stepName)
-            {
-                remoteController.OnEndExecuteCommand();
+                onRetrive.Invoke(item);
             }
             else
             {
-                Debug.LogError("Not Step :" + stepName);
+                if(!waitDic.ContainsKey(groupKey)){
+                    waitDic[groupKey] = new List<UnityAction<ActionGroup>>();
+                }
+                waitDic[groupKey].Add(onRetrive);
             }
         }
 
-        private void OnCommandExectute(string stepName, int totalCount, int currentID)
+        internal void RegistGroup(ActionGroup actionGroup)
         {
-            if (onCommandExecute != null)
+            if(!groupList.Contains(actionGroup))
             {
-                onCommandExecute.Invoke(stepName, totalCount, currentID);
+                groupList.Add(actionGroup);
             }
-        }
-
-        /// <summary>
-        /// 错误触发
-        /// </summary>
-        /// <param name="stepName"></param>
-        /// <param name="error"></param>
-        private void OnUserError(string stepName, string error)
-        {
-            if (onUserError != null) onUserError.Invoke(stepName, error);
-        }
-
-        /// 重置步骤
-        /// </summary>
-        /// <param name="commandDic"></param>
-        /// <param name="steps"></param>
-        /// <returns></returns>
-        private static IActionStap[] ConfigSteps<T>(List<IActionCommand> commandList, T[] steps) where T : IActionStap
-        {
-            List<IActionStap> activeStaps = new List<IActionStap>();
-            List<string> ignored = new List<string>();
-            for (int i = 0; i < steps.Length; i++)
+            if(waitDic.ContainsKey(actionGroup.groupKey))
             {
-                var old = commandList.Find(x => x.StepName == steps[i].StapName);
-                if (old != null)
+                var actions = waitDic[actionGroup.groupKey];
+                waitDic.Remove(actionGroup.groupKey);
+                foreach (var item in actions)
                 {
-                    activeStaps.Add(steps[i]);
-                }
-                else
-                {
-                    ignored.Add(steps[i].StapName);
+                    item.Invoke(actionGroup);
                 }
             }
-            Debug.Log("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
-            return activeStaps.ToArray();
         }
 
-        /// <summary>
-        /// 得到排序后的命令列表
-        /// </summary>
-        /// <returns></returns>
-        private static List<IActionCommand> GetIActionCommandList(List<IActionCommand> commandList, IActionStap[] steps)
+        internal void RemoveGroup(ActionGroup actionGroup)
         {
-            var actionCommandList = new List<IActionCommand>();
-            foreach (var item in steps)
+            if (groupList.Contains(actionGroup))
             {
-                var old = commandList.Find(x => x.StepName == item.StapName);
-                if (old != null)
-                {
-                    actionCommandList.Add(old);
-                }
-                else
-                {
-                    Debug.LogWarning(item + "已经存在");
-                }
+                groupList.Remove(actionGroup);
             }
-            return actionCommandList;
         }
-
-        #endregion
-
     }
 
 }

@@ -17,8 +17,8 @@ namespace WorldActionSystem {
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
-        private ActionSystem _system;
-        private ActionSystem system { get { transform.SurchSystem(ref _system);return _system; } }
+        private ActionGroup _system;
+        private ActionGroup system { get { transform.SurchSystem(ref _system);return _system; } }
         private void Awake()
         {
             viewObj.SetActive(false);

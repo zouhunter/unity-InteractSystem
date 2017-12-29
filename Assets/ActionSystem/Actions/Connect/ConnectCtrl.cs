@@ -24,12 +24,18 @@ namespace WorldActionSystem
         private ConnectObj connectObj;
         private Collider firstCollider;
         private LineRenderer line;
-      
+
         //private float pointDistence;
         private float hitDistence { get { return Config.hitDistence; } }
-        private CameraController cameraCtrl { get { return CameraController.Instence; } }
+        private CameraController cameraCtrl
+        {
+            get
+            {
+                return ActionSystem.Instence.cameraCtrl;
+            }
+        }
 
-        public ConnectCtrl(LineRenderer lineRender,Material lineMaterial, float lineWight)
+        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight)
         {
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);

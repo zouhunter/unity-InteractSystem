@@ -22,8 +22,8 @@ namespace WorldActionSystem
         private UserError userErr { get; set; }
         private StepComplete stepComplete { get; set; }//步骤自动结束方法
         public IActionObj[] ActionObjs { get { return actionObjs; } }
-        public ActionSystem actionSystem { get; set; }
-        public ActionCtroller ActionCtrl { get { return ActionCtroller.Instence; } }
+        public ActionGroup actionSystem { get; set; }
+        public ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
         protected IActionObj[] actionObjs;
         private ActionObjCtroller objectCtrl;
         [EnumMask, HideInInspector]
@@ -38,8 +38,8 @@ namespace WorldActionSystem
 
         private bool started;
         private bool completed;
-        private ActionSystem _system;
-        private ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
+        private ActionGroup _system;
+        private ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
         protected CommandController commandCtrl { get { return system.CommandCtrl; } }
         protected virtual void Awake()
         {

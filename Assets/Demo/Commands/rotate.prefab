@@ -286,8 +286,6 @@ MonoBehaviour:
   _queueID: 0
   _cameraID: 
   commandType: 8
-  lineWight: 0.1
-  lineMaterial: {fileID: 0}
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []

@@ -11,7 +11,13 @@ namespace WorldActionSystem
         public abstract ControllerType CtrlType { get; }
         public UnityAction<string> userError { get; set; }
         public UnityAction<IPlaceItem> onSelect { get; set; }
-        private CameraController cameraCtrl { get { return CameraController.Instence; } }
+        private CameraController cameraCtrl
+        {
+            get
+            {
+                return ActionSystem.Instence.cameraCtrl;
+            }
+        }
         protected Camera viewCamera
         {
             get

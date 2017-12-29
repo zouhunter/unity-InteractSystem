@@ -10,25 +10,46 @@ using Rotorz.ReorderableList.Internal;
 
 namespace WorldActionSystem
 {
-    [CustomEditor(typeof(ActionSystem)), CanEditMultipleObjects]
+    [CustomEditor(typeof(ActionGroup)), CanEditMultipleObjects]
     public class ActionSystemDrawer : Editor
     {
         protected bool swink;
         protected string query;
         protected SerializedProperty script;
+        protected SerializedProperty groupKeyProp;
         protected SerializedProperty configProp;
         protected SerializedProperty totalCommandProp;
-
+        protected SerializedProperty angleCtrlProp;
         protected SerializedProperty prefabListProp;
         protected DragAdapt prefabListPropAdapt;
 
         protected SerializedProperty prefabListWorp;
         protected DragAdapt prefabListWorpAdapt;
+        protected int selected = 0;
+        protected GUIContent[] selectables;
+        protected GUIContent[] Selectables
+        {
+            get
+            {
+                if (selectables == null)
+                {
+                    selectables = new GUIContent[] {
+                        new GUIContent("a"),
+                        new GUIContent("c"),
+                        new GUIContent("p"),
+                        new GUIContent("n"),
+                    };
+                }
+                return selectables;
+            }
+        }
 
         private void OnEnable()
         {
             script = serializedObject.FindProperty("m_Script");
             totalCommandProp = serializedObject.FindProperty("totalCommand");
+            groupKeyProp = serializedObject.FindProperty("groupKey");
+            angleCtrlProp = serializedObject.FindProperty("angleCtrl");
             configProp = serializedObject.FindProperty("config");
             prefabListProp = serializedObject.FindProperty("prefabList");
             prefabListPropAdapt = new DragAdapt(prefabListProp, "prefabList");
@@ -52,9 +73,36 @@ namespace WorldActionSystem
             {
                 DrawToolButtons();
             }
+            DrawControllers();
+            DrawSelection();
             DrawRuntimeItems();
             DrawAcceptRegion();
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void DrawSelection()
+        {
+            EditorGUI.BeginChangeCheck();
+            using (var hor = new EditorGUILayout.HorizontalScope())
+            {
+                query = EditorGUILayout.TextField(query);
+                selected = GUILayout.SelectionGrid(selected, Selectables, 4);
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                MarchList();
+            }
+        }
+
+        private void DrawControllers()
+        {
+            EditorGUILayout.PropertyField(groupKeyProp);
+            EditorGUILayout.PropertyField(angleCtrlProp);
+
+            if(string.IsNullOrEmpty(groupKeyProp.stringValue))
+            {
+                groupKeyProp.stringValue = target.name;
+            }
         }
 
         private void DrawScript()
@@ -66,13 +114,7 @@ namespace WorldActionSystem
 
         protected virtual void DrawRuntimeItems()
         {
-            EditorGUI.BeginChangeCheck();
-            query = EditorGUILayout.TextField(query);
-            if (EditorGUI.EndChangeCheck())
-            {
-                MarchList();
-            }
-            if (string.IsNullOrEmpty(query))
+            if (prefabListWorp.arraySize == 0)
             {
                 ReorderableListGUI.Title("元素列表");
                 Rotorz.ReorderableList.ReorderableListGUI.ListField(prefabListPropAdapt);
@@ -87,18 +129,46 @@ namespace WorldActionSystem
 
         private void MarchList()
         {
-            if (!string.IsNullOrEmpty(query))
+            prefabListWorp.ClearArray();
+            for (int i = 0; i < prefabListProp.arraySize; i++)
             {
-                prefabListWorp.ClearArray();
-                for (int i = 0; i < prefabListProp.arraySize; i++)
+                var prop = prefabListProp.GetArrayElementAtIndex(i);
+                var prefabProp = prop.FindPropertyRelative("prefab");
+                if (!string.IsNullOrEmpty(query))
                 {
-                    var prefabProp = prefabListProp.GetArrayElementAtIndex(i).FindPropertyRelative("prefab");
-                    if (prefabProp.objectReferenceValue != null && prefabProp.objectReferenceValue.name.ToLower().Contains(query.ToLower()))
+                    if (prefabProp.objectReferenceValue == null || !prefabProp.objectReferenceValue.name.ToLower().Contains(query.ToLower()))
                     {
-                        prefabListWorp.InsertArrayElementAtIndex(0);
-                        SerializedPropertyUtility.CopyPropertyValue(prefabListWorp.GetArrayElementAtIndex(i), prefabProp.GetArrayElementAtIndex(0));
+                        continue;
                     }
                 }
+
+                var containCommandProp = prop.FindPropertyRelative("containsCommand");
+                var containsPickupProp = prop.FindPropertyRelative("containsPickup");
+
+                if (selected == 1)
+                {
+                    if (!containCommandProp.boolValue)
+                    {
+                        continue;
+                    }
+                }
+                else if (selected == 2)
+                {
+                    if (!containsPickupProp.boolValue)
+                    {
+                        continue;
+                    }
+                }
+                else if (selected == 3)
+                {
+                    if(containCommandProp.boolValue || containsPickupProp.boolValue)
+                    {
+                        continue;
+                    }
+                }
+
+                prefabListWorp.InsertArrayElementAtIndex(0);
+                SerializedPropertyUtility.CopyPropertyValue(prefabListWorp.GetArrayElementAtIndex(0), prefabListProp.GetArrayElementAtIndex(i));
             }
         }
 
@@ -205,7 +275,7 @@ namespace WorldActionSystem
 
         private void RemoveDouble(SerializedProperty property)
         {
-            var actionSystem = target as ActionSystem;
+            var actionSystem = target as ActionGroup;
             var newList = new List<ActionPrefabItem>();
             var needRemove = new List<ActionPrefabItem>();
             foreach (var item in actionSystem.prefabList)
@@ -244,7 +314,7 @@ namespace WorldActionSystem
         }
         private void SortPrefabs(SerializedProperty property)
         {
-            var actionSystem = (ActionSystem)target;
+            var actionSystem = (ActionGroup)target;
             actionSystem.prefabList.Sort();
             EditorUtility.SetDirty(actionSystem);
         }
@@ -273,7 +343,7 @@ namespace WorldActionSystem
         {
             if (target == null) return;
 
-            var transform = (target as ActionSystem).transform;
+            var transform = (target as ActionGroup).transform;
             var commandList = new List<ActionCommand>();
             Utility.RetriveCommand(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
             for (int i = 0; i < prefabListProp.arraySize; i++)

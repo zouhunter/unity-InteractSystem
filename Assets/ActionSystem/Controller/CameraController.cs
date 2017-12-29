@@ -7,20 +7,8 @@ using System;
 
 namespace WorldActionSystem
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController
     {
-        private static CameraController _instence;
-        public static CameraController Instence
-        {
-            get
-            {
-                if(_instence == null){
-                    var ctrlHolder = new GameObject("CameraController");
-                    _instence = ctrlHolder.AddComponent<CameraController>();
-                }
-                return _instence;
-            }
-        }
         private List<CameraNode> cameraNodes = new List<CameraNode>();
         private Camera viewCamera;
         private Camera mainCamera;
@@ -68,16 +56,16 @@ namespace WorldActionSystem
         private UnityAction lastAction;
         public event UnityAction<Transform> onCameraMoveTo;
         private const float defultSpeed = 5;
-
-        private void Awake()
+        private MonoBehaviour holder;
+        public CameraController(MonoBehaviour holder)
         {
-            _instence = this;
-            viewCameraParent = transform;
+            this.holder = holder;
+            viewCameraParent = holder. transform;
             mainCamera = Camera.main;
             Debug.Assert(mainCamera);
             viewCamera = UnityEngine.Object.Instantiate(mainCamera);
             viewCamera.gameObject.AddComponent<ViewCamera>();
-            viewCamera.transform.SetParent(transform);
+            viewCamera.transform.SetParent(holder.transform);
             viewCamera.gameObject.SetActive(!mainCamera.isActiveAndEnabled);
         }
         private void OnMainCameraCallBack()
@@ -107,14 +95,13 @@ namespace WorldActionSystem
                 currentNode = null;
                 if (currentCamera != mainCamera)
                 {
-                    lastCoroutine = StartCoroutine(MoveCameraToMainCamera(OnStepComplete));
+                    lastCoroutine = holder. StartCoroutine(MoveCameraToMainCamera(OnStepComplete));
                 }
                 else
                 {
                     OnStepComplete();
                 }
             }
-
             else
             {
                 var node = cameraNodes.Find(x => x != null && x.ID == id);
@@ -129,7 +116,7 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    lastCoroutine = StartCoroutine(MoveCameraToNode(node, OnStepComplete));
+                    lastCoroutine = holder.StartCoroutine(MoveCameraToNode(node, OnStepComplete));
                 }
             }
         }
@@ -138,7 +125,7 @@ namespace WorldActionSystem
         {
             if (mainCamera != null)
             {
-                viewCamera.transform.SetParent(transform);
+                viewCamera.transform.SetParent(holder.transform);
                 var startPos = viewCamera.transform.position;
                 var startRot = viewCamera.transform.rotation;
                 var distence = Vector3.Distance(startPos, mainCamera.transform.position);
@@ -164,7 +151,7 @@ namespace WorldActionSystem
         {
             if (mainCamera != null)
             {
-                viewCamera.transform.SetParent(transform);
+                viewCamera.transform.SetParent(holder.transform);
 
                 if (!viewCamera.gameObject.activeSelf)
                 {
@@ -236,7 +223,7 @@ namespace WorldActionSystem
         {
             if (lastCoroutine != null)
             {
-                StopCoroutine(lastCoroutine);
+                holder.StopCoroutine(lastCoroutine);
                 lastCoroutine = null;
             }
             if (force)

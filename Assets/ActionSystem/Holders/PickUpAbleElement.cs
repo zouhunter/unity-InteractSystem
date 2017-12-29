@@ -17,8 +17,8 @@ namespace WorldActionSystem
     public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IPlaceItem, IRuntimeActive
     {
         public string _name;
-        private ActionSystem _system;
-        public ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
+        private ActionGroup _system;
+        public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
        
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public int animTime { get { return Config.autoExecuteTime; } }

@@ -18,11 +18,11 @@ namespace WorldActionSystem
         public const string commandParentName = "Triggers";
         public const string pickupParentName = "Elements";
 
-        internal static void SurchSystem(this Transform trans, ref ActionSystem system)
+        internal static void SurchSystem(this Transform trans, ref ActionGroup system)
         {
             if (system == null)
             {
-                system = trans.GetComponentInParent<ActionSystem>();
+                system = trans.GetComponentInParent<ActionGroup>();
             }
         }
         public static void RetriveCommand(Transform trans, UnityAction<ActionCommand> onRetive)

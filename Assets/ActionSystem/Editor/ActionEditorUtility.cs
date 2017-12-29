@@ -68,7 +68,7 @@ namespace WorldActionSystem
             GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
             if (gopfb != null)
             {
-                var actionSystem = GameObject.FindObjectOfType<ActionSystem>();
+                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
                 var parent = actionSystem == null ? null : actionSystem.transform;
                 parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
                 GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
