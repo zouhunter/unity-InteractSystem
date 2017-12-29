@@ -197,7 +197,7 @@ namespace WorldActionSystem
                     var rematrixProp = itemProp.FindPropertyRelative("rematrix");
                     var containsCommandProp = itemProp.FindPropertyRelative("containsCommand");
                     var containsPickupProp = itemProp.FindPropertyRelative("containsPickup");
-                    ActionEditorUtility.LoadPrefab(prefabProp, containsCommandProp, containsPickupProp, instanceIDProp,  rematrixProp, matrixProp);
+                    ActionEditorUtility.LoadPrefab(prefabProp, containsCommandProp, containsPickupProp, instanceIDProp, rematrixProp, matrixProp);
                 }
 
             }
@@ -275,12 +275,13 @@ namespace WorldActionSystem
 
             var transform = (target as ActionSystem).transform;
             var commandList = new List<ActionCommand>();
-            Utility.RetriveCommand(transform, (x)=> {if(!commandList.Contains(x)) commandList.Add(x); });
+            Utility.RetriveCommand(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
             for (int i = 0; i < prefabListProp.arraySize; i++)
             {
                 var prop = prefabListProp.GetArrayElementAtIndex(i);
-                var pfb = prop.FindPropertyRelative("prefab");
+                var ignore = prop.FindPropertyRelative("ignore");
 
+                var pfb = prop.FindPropertyRelative("prefab");
                 var contaionCommand = prop.FindPropertyRelative("containsCommand");
                 contaionCommand.boolValue = false;
                 var contaionPickUp = prop.FindPropertyRelative("containsPickup");
@@ -289,14 +290,16 @@ namespace WorldActionSystem
                 if (pfb.objectReferenceValue != null)
                 {
                     var go = pfb.objectReferenceValue as GameObject;
-                    Utility.RetriveCommand(go.transform, (x)=> {
-                        if(x != null)
+                    Utility.RetriveCommand(go.transform, (x) =>
+                    {
+                        if (x != null)
                         {
                             contaionCommand.boolValue = true;
-                            if (!commandList.Contains(x)) commandList.Add(x);
+                            if (!commandList.Contains(x) && !ignore.boolValue) commandList.Add(x);
                         }
                     });
-                    Utility.RetivePickElement(go.transform, (x) => {
+                    Utility.RetivePickElement(go.transform, (x) =>
+                    {
                         if (x != null)
                         {
                             contaionPickUp.boolValue = true;

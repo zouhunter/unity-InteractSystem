@@ -14,6 +14,6 @@ namespace WorldActionSystem
 {
     public interface IActionSystem
     {
-        void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK, Config config = null) where T : IActionStap;
+        void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK, Config config) where T : IActionStap;
     }
 }

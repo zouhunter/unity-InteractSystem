@@ -9,10 +9,6 @@ namespace WorldActionSystem
 
     public class InstallCtrl : PlaceController
     {
-        public InstallCtrl(UnityAction<IPlaceItem> onSelect,Config config) : base(onSelect,config)
-        {
-        }
-
         public override ControllerType CtrlType { get { return ControllerType.Install; } }
 
         public bool Active { get; private set; }
@@ -37,6 +33,7 @@ namespace WorldActionSystem
                 canplace = false;
                 why = "已经安装";
             }
+            
             else if (element.name != placeObj.Name)
             {
                 canplace = false;

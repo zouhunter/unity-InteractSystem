@@ -17,10 +17,10 @@ namespace WorldActionSystem
     public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IPlaceItem, IRuntimeActive
     {
         public string _name;
-        private Config _config;
-        protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
-        private ElementController _elementCtrl;
-        protected ElementController elementCtrl { get { transform.RetriveElementCtrl(ref _elementCtrl);return _elementCtrl; } }
+        private ActionSystem _system;
+        public ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
+        protected Config config { get { return system.Config; } }
+        protected ElementController elementCtrl { get { return system.ElementCtrl; } }
         public int animTime { get { return config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
@@ -68,7 +68,6 @@ namespace WorldActionSystem
         protected Collider _collider;
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
-        protected ActionSystem actionSystem;
 #if !NoFunction
         protected virtual void Start()
         {

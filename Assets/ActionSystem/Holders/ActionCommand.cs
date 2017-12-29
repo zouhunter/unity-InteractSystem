@@ -46,9 +46,9 @@ namespace WorldActionSystem
 
         private bool started;
         private bool completed;
-
-        private CommandController _commandCtrl;
-        protected CommandController commandCtrl { get { transform.RetriveCommandCtrl(ref _commandCtrl); return _commandCtrl; } }
+        private ActionSystem _system;
+        private ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
+        protected CommandController commandCtrl { get { return system.CommandCtrl; } }
         protected virtual void Awake()
         {
             RegistActionObjs();

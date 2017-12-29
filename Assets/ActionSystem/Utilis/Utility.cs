@@ -18,32 +18,11 @@ namespace WorldActionSystem
         public const string commandParentName = "Triggers";
         public const string pickupParentName = "Elements";
 
-        internal static void RetriveCommandCtrl(this Transform trans, ref CommandController ctrl)
+        internal static void SurchSystem(this Transform trans, ref ActionSystem system)
         {
-            if (ctrl == null)
+            if (system == null)
             {
-                ctrl = trans.GetComponentInParent<ActionSystem>().CommandCtrl;
-            }
-        }
-        internal static void RetriveElementCtrl(this Transform trans, ref ElementController ctrl)
-        {
-            if (ctrl == null)
-            {
-                ctrl = trans.GetComponentInParent<ActionSystem>().ElementCtrl;
-            }
-        }
-        internal static void RetriveConfig(this Transform trans, ref Config config)
-        {
-            if (config == null)
-            {
-                config = trans.GetComponentInParent<ActionSystem>().Config;
-            }
-        }
-        internal static void RetriveEventCtrl(this Transform trans, ref EventController ctrl)
-        {
-            if (ctrl == null)
-            {
-                ctrl = trans.GetComponentInParent<ActionSystem>().EventCtrl;
+                system = trans.GetComponentInParent<ActionSystem>();
             }
         }
         public static void RetriveCommand(Transform trans, UnityAction<ActionCommand> onRetive)

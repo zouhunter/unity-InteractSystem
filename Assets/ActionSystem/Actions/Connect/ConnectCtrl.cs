@@ -6,9 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ConnectCtrl : IActionCtroller
+    public class ConnectCtrl : OperateController
     {
-        public ControllerType CtrlType
+        public override ControllerType CtrlType
         {
             get
             {
@@ -24,13 +24,12 @@ namespace WorldActionSystem
         private ConnectObj connectObj;
         private Collider firstCollider;
         private LineRenderer line;
-        protected Config config { get; set; }
+      
         //private float pointDistence;
         private float hitDistence { get { return config.hitDistence; } }
-        private Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
-        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight,Config config)
+        private CameraController cameraCtrl { get { return system.CameraCtrl; } }
+        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight)
         {
-            this.config = config;
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);
         }
@@ -49,7 +48,7 @@ namespace WorldActionSystem
             line.material = lineMaterial;
         }
 
-        public void Update()
+        public override void Update()
         {
             if (firstCollider != null)
             {

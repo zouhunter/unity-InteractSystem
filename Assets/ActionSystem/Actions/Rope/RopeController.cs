@@ -28,10 +28,6 @@ namespace WorldActionSystem
         private Collider pickUpedRopeNode;
         private bool pickDownAble;
 
-        public RopeController(UnityAction<IPlaceItem> onSelect, Config config) : base(onSelect, config)
-        {
-        }
-
         public override void Update()
         {
             base.Update();

@@ -22,6 +22,10 @@ namespace WorldActionSystem
         public float CameraField { get { return _field; } }
         public Quaternion Rotation { get { return _rotate; } }
         public bool MoveAble { get { return _target != null; } }
+        private ActionSystem _system;
+        private ActionSystem system { get {  transform.SurchSystem(ref _system);return _system; } }
+        private CameraController cameraCtrl { get { return system.CameraCtrl; } }
+
         private void Awake()
         {
             if (_target == null && transform.childCount > 0)
@@ -39,7 +43,13 @@ namespace WorldActionSystem
                 _rotate = transform.rotation;
             }
 
-            CameraController.RegistNode(this);
+        }
+        private void Start()
+        {
+            if(cameraCtrl != null)
+            {
+                cameraCtrl.RegistNode(this);
+            }
         }
     }
 

@@ -48,6 +48,8 @@ namespace WorldActionSystem
                 return config;
             }
         }
+        internal AngleCtroller AngleCtrl { get { return angleCtrl; } }
+        internal CameraController CameraCtrl { get { return cameraCtrl; } }
         #endregion
 
         #region Private
@@ -56,6 +58,8 @@ namespace WorldActionSystem
         private CommandController commandCtrl = new CommandController();
         private ElementController elementCtrl = new ElementController();
         private EventController eventCtrl = new EventController();
+        private AngleCtroller angleCtrl;
+        private CameraController cameraCtrl;
         [SerializeField]
         private Config config = new Config();
         private RegistCommandList onCommandRegisted { get; set; }
@@ -64,6 +68,8 @@ namespace WorldActionSystem
         #region UnityFunctions
         private void Awake()
         {
+            angleCtrl = transform.GetComponentInChildren<AngleCtroller>(false);
+            cameraCtrl = transform.GetComponentInChildren<CameraController>(false);
             commandCtrl.InitCommand(totalCommand, OnCommandExectute, OnStepComplete, OnUserError,
                 (x) =>
                 {
@@ -81,7 +87,7 @@ namespace WorldActionSystem
         public void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK, Config config = null) where T : IActionStap
         {
             Debug.Assert(steps != null);
-            config = config == null ? new Config() : config;
+            if(config != null) this.config = config;
             onCommandRegisted = (activeCommands) =>
             {
                 this.steps = ConfigSteps<T>(activeCommands, steps);//重新计算步骤

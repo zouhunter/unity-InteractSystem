@@ -7,23 +7,16 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class RotateAnimController : IActionCtroller
+    public class RotateAnimController : OperateController
     {
-        public  ControllerType CtrlType { get { return ControllerType.Rotate; } }
+        public override ControllerType CtrlType { get { return ControllerType.Rotate; } }
 
-        public UnityAction<string> UserError { get; set; }
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
-        protected Config config { get; set; }
         private float distence { get { return config.hitDistence; } }
 
-        private Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
-        public RotateAnimController(Config config)
-        {
-            this.config = config;
-        }
-        public void Update()
+        public override void Update()
         {
             if (TrySelectRotateObj())
             {

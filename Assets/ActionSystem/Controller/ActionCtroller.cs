@@ -17,12 +17,14 @@ namespace WorldActionSystem
         private ControllerType activeTypes = 0;
         private Queue<IActionObj> actionQueue = new Queue<IActionObj>();
         private List<IActionObj> startedActions = new List<IActionObj>();
-        private List<IActionCtroller> controllerList = new List<IActionCtroller>();
+        private List<IOperateController> controllerList = new List<IOperateController>();
         protected Coroutine coroutine;
         public static bool log = false;
         public UnityAction<IActionObj> onActionStart;
-        private Config _config;
-        protected Config config { get { trigger.transform.RetriveConfig(ref _config); return _config; } }
+        private ActionSystem _system;
+        private ActionSystem system { get { trigger.transform.SurchSystem(ref _system); return _system; } }
+        protected Config config { get { return system.Config; } }
+        protected CameraController cameraCtrl { get { return system.CameraCtrl; } }
         public ActionCtroller(ActionCommand trigger)
         {
             this.trigger = trigger;
@@ -38,7 +40,7 @@ namespace WorldActionSystem
         {
             foreach (var item in actionObjs)
             {
-                if((commandType & item.CtrlType) != item.CtrlType)
+                if ((commandType & item.CtrlType) != item.CtrlType)
                 {
                     commandType |= item.CtrlType;
                     RegisterControllerByType(item.CtrlType);
@@ -48,44 +50,46 @@ namespace WorldActionSystem
 
         private void RegisterControllerByType(ControllerType type)
         {
+            OperateController currentCtrl = null;
             switch (type)
             {
                 case ControllerType.Install:
-                    var installCtrl = new InstallCtrl(OnPickUpObj,config);
-                    installCtrl.UserError = trigger.UserError;
-                    controllerList.Add(installCtrl);
+                    var installCtrl = new InstallCtrl();
+                    installCtrl.onSelect = OnPickUpObj;
+                    currentCtrl = installCtrl;
                     break;
                 case ControllerType.Match:
-                    var matchCtrl = new MatchCtrl(OnPickUpObj,config);
-                    matchCtrl.UserError = trigger.UserError;
-                    controllerList.Add(matchCtrl);
+                    var matchCtrl = new MatchCtrl();
+                    matchCtrl.onSelect = OnPickUpObj;
+                    currentCtrl = matchCtrl;
                     break;
                 case ControllerType.Click:
-                    var clickCtrl = new ClickContrller(config);
-                    clickCtrl.UserError = trigger.UserError;
-                    controllerList.Add(clickCtrl);
+                    currentCtrl = new ClickContrller();
                     break;
                 case ControllerType.Rotate:
-                    var rotAnimCtrl = new RotateAnimController(config);
-                    rotAnimCtrl.UserError = trigger.UserError;
-                    controllerList.Add(rotAnimCtrl);
+                    currentCtrl = new RotateAnimController();
                     break;
                 case ControllerType.Connect:
                     var lineRender = trigger.GetComponent<LineRenderer>();
                     if (lineRender == null){
                         lineRender = trigger.gameObject.AddComponent<LineRenderer>();
                     }
-                    var connectCtrl = new ConnectCtrl(lineRender, trigger.lineMaterial, trigger.lineWight,config);
-                    connectCtrl.onError = trigger.UserError;
-                    controllerList.Add(connectCtrl);
+                    currentCtrl = new ConnectCtrl(lineRender, trigger.lineMaterial, trigger.lineWight);
                     break;
                 case ControllerType.Rope:
-                    var ropCtrl = new RopeController(OnPickUpObj,config);
-                    ropCtrl.UserError = trigger.UserError;
-                    controllerList.Add(ropCtrl);
+                    var ropCtrl = new RopeController();
+                    ropCtrl.onSelect = OnPickUpObj;
+                    currentCtrl = ropCtrl;
                     break;
                 default:
                     break;
+            }
+
+            if(currentCtrl != null)
+            {
+                currentCtrl.system = system;
+                currentCtrl.UserError = trigger.UserError;
+                controllerList.Add(currentCtrl);
             }
         }
         /// <summary>
@@ -104,7 +108,8 @@ namespace WorldActionSystem
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            if (coroutine == null && trigger.gameObject.activeInHierarchy){
+            if (coroutine == null && trigger.gameObject.activeInHierarchy)
+            {
                 coroutine = trigger.StartCoroutine(Update());
             }
             ExecuteAStep();
@@ -129,7 +134,7 @@ namespace WorldActionSystem
             Array.Sort(actionObjs);
             foreach (var item in actionObjs)
             {
-                if(!item.Started)
+                if (!item.Started)
                 {
                     item.OnStartExecute(isForceAuto);
                 }
@@ -148,8 +153,9 @@ namespace WorldActionSystem
             ChargeQueueIDs();
             Array.Sort(actionObjs);
             Array.Reverse(actionObjs);
-            foreach (var item in actionObjs){
-                if(item.Started)
+            foreach (var item in actionObjs)
+            {
+                if (item.Started)
                 {
                     item.OnUnDoExecute();
                 }
@@ -162,7 +168,7 @@ namespace WorldActionSystem
             {
                 foreach (var ctrl in controllerList)
                 {
-                    if((ctrl.CtrlType & activeTypes) == ctrl.CtrlType)
+                    if ((ctrl.CtrlType & activeTypes) == ctrl.CtrlType)
                     {
                         ctrl.Update();
                     }
@@ -183,7 +189,7 @@ namespace WorldActionSystem
                         trigger.Complete();
                 }
             }
-            else if(actionQueue.Count > 0)//正在循环执行
+            else if (actionQueue.Count > 0)//正在循环执行
             {
                 QueueExectueActions();
             }
@@ -191,7 +197,7 @@ namespace WorldActionSystem
 
         public void CompleteOneStarted()
         {
-            if(startedActions.Count > 0)
+            if (startedActions.Count > 0)
             {
                 var action = startedActions[0];
                 OnStopAction(action);
@@ -199,7 +205,7 @@ namespace WorldActionSystem
             }
             else
             {
-               if(log) Debug.Log("startedActions.Count == 0");
+                if (log) Debug.Log("startedActions.Count == 0");
             }
         }
         private void CompleteQueues()
@@ -218,7 +224,8 @@ namespace WorldActionSystem
             while (actionQueue.Count > 0)
             {
                 var action = actionQueue.Dequeue();
-                if (action.Started){
+                if (action.Started)
+                {
                     action.OnUnDoExecute();
                 }
             }
@@ -235,7 +242,7 @@ namespace WorldActionSystem
                     actionQueue.Clear();
                     foreach (var item in neetActive)
                     {
-                        if(item.QueueInAuto)
+                        if (item.QueueInAuto)
                         {
                             actionQueue.Enqueue(item as ActionObj);
                         }
@@ -261,30 +268,37 @@ namespace WorldActionSystem
 
         protected void QueueExectueActions()
         {
-            if(actionQueue.Count > 0)
+            if (actionQueue.Count > 0)
             {
                 var actionObj = actionQueue.Dequeue();
-                if(log) Debug.Log("QueueExectueActions" + actionObj);
+                if (log) Debug.Log("QueueExectueActions" + actionObj);
                 TryStartAction(actionObj);
             }
         }
         private void TryStartAction(IActionObj obj)
         {
-            if(log) Debug.Log("Start A Step:" + obj);
-            if(!obj.Started)
+            if (log) Debug.Log("Start A Step:" + obj);
+            if (!obj.Started)
             {
                 if (onActionStart != null) onActionStart.Invoke(obj);
 
-                CameraController.SetViewCamera(() =>
+                if (cameraCtrl != null)
+                {
+                    cameraCtrl.SetViewCamera(() =>
+                   {
+                       StartAction(obj);
+                   }, GetCameraID(obj));
+                }
+                else
                 {
                     StartAction(obj);
-                }, GetCameraID(obj));
+                }
             }
             else
             {
                 Debug.LogError(obj + " allready started");
             }
-           
+
         }
 
         private void StartAction(IActionObj obj)
@@ -325,18 +339,18 @@ namespace WorldActionSystem
         private string GetCameraID(IActionObj obj)
         {
             //忽略匹配相机
-           if (config.quickMoveElement && obj is MatchObj && !(obj as MatchObj).ignorePass)
+            if (config.quickMoveElement && obj is MatchObj && !(obj as MatchObj).ignorePass)
             {
                 return null;
             }
-            else if(config.quickMoveElement && obj is InstallObj && !(obj as InstallObj).ignorePass)
+            else if (config.quickMoveElement && obj is InstallObj && !(obj as InstallObj).ignorePass)
             {
                 return null;
             }
             //除要求使用特殊相机或是动画步骤,都用主摄像机
             else if (config.useOperateCamera || obj is AnimObj)
             {
-                if(string.IsNullOrEmpty(obj.CameraID))
+                if (string.IsNullOrEmpty(obj.CameraID))
                 {
                     return trigger.CameraID;
                 }
@@ -351,11 +365,14 @@ namespace WorldActionSystem
                 return CameraController.defultID;
             }
         }
-       
+
 
         private void StopUpdateAction(bool force)
         {
-            CameraController.StopStarted(force);
+            if (cameraCtrl != null)
+            {
+                cameraCtrl.StopStarted(force);
+            }
             if (coroutine != null)
             {
                 trigger.StopCoroutine(coroutine);

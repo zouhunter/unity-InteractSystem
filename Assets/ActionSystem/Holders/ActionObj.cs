@@ -43,11 +43,11 @@ namespace WorldActionSystem
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
-        protected AngleCtroller angleCtrl { get { return AngleCtroller.Instance; } }
-        private ElementController _elementCtrl;
-        protected ElementController elementCtrl { get { transform.RetriveElementCtrl(ref _elementCtrl);return _elementCtrl; } }
-        private Config _config;
-        protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
+        protected AngleCtroller angleCtrl { get { return system.AngleCtrl; } }
+        private ActionSystem _system;
+        public ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
+        protected ElementController elementCtrl { get { return system.ElementCtrl; } }
+        protected Config config { get { return system.Config; } }
         public abstract ControllerType CtrlType { get; }
         public static bool log = true;
         protected bool notice;

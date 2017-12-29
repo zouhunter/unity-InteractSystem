@@ -9,7 +9,6 @@ namespace WorldActionSystem {
 
     public class AngleCtroller : MonoBehaviour
     {
-        public static AngleCtroller Instance;
         [SerializeField]
         protected GameObject viewObj;
         [SerializeField]
@@ -19,10 +18,11 @@ namespace WorldActionSystem {
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
         private Config _config;
-        protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
+        private ActionSystem _system;
+        private ActionSystem system { get { transform.SurchSystem(ref _system);return _system; } }
+        protected Config config { get {return system.Config; } }
         private void Awake()
         {
-            Instance = this;
             viewObj.SetActive(false);
         }
 

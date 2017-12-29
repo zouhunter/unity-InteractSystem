@@ -79,10 +79,8 @@ namespace WorldActionSystem
 
     }
 
-    public abstract class PlaceController : IActionCtroller
+    public abstract class PlaceController : OperateController
     {
-        public abstract ControllerType CtrlType { get; }
-        public UnityAction<string> UserError { get; set; }
         protected IHighLightItems highLight;
         protected PickUpAbleElement pickedUpObj;
         protected bool pickedUp;
@@ -92,24 +90,21 @@ namespace WorldActionSystem
         protected RaycastHit[] hits;
         protected bool installAble;
         protected string resonwhy;
-        protected Config config { get; set; }
         protected float hitDistence { get { return config.hitDistence; } }
-        protected Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
+
         protected bool activeNotice { get { return config.highLightNotice; } }
         protected Ray disRay;
         protected RaycastHit disHit;
         protected float elementDistence;
         protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
-        private UnityAction<IPlaceItem> onSelect;
+        public UnityAction<IPlaceItem> onSelect { get; set; }
         protected const float minDistence = 1f;
-        public PlaceController(UnityAction<IPlaceItem> onSelect,Config config)
+        public PlaceController()
         {
-            this.onSelect = onSelect;
-            this.config = config;
             highLight = new ShaderHighLight();
         }
         #region 鼠标操作事件
-        public virtual void Update()
+        public override void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -149,7 +144,7 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.pickUpElementLayer)))
             {
                 var pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
-                if (pickedUpObj != null && !pickedUpObj.HaveBinding)
+                if (pickedUpObj != null && !pickedUpObj.HaveBinding && pickedUpObj.system == system)
                 {
                     this.pickedUpObj = pickedUpObj;
                     pickedUpObj.OnPickUp();
@@ -181,7 +176,14 @@ namespace WorldActionSystem
                         {
                             hited = true;
                             installPos = hits[i].collider.GetComponent<PlaceObj>();
-                            installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
+                            if(CanOperate(installPos))
+                            {
+                                installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
+                            }
+                            else
+                            {
+                                installAble = false;
+                            }
                         }
                     }
                     if (!hited)

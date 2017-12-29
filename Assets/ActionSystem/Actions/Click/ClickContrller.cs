@@ -8,9 +8,9 @@ using UnityEngine.EventSystems;
 
 namespace WorldActionSystem
 {
-    public class ClickContrller: IActionCtroller
+    public class ClickContrller : OperateController
     {
-        public ControllerType CtrlType
+        public override ControllerType CtrlType
         {
             get
             {
@@ -22,14 +22,8 @@ namespace WorldActionSystem
         private ClickObj hitObj;
         private Vector3 screenPoint;
         private float distence = 10;
-        private Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
+      
         private GameObject lastSelected;
-        private Config config;
-        public ClickContrller(Config config)
-        {
-            this.config = config;
-        }
-        public UnityAction<string> UserError { get; set; }
 
         void OnBtnClicked(ClickObj obj)
         {
@@ -70,14 +64,17 @@ namespace WorldActionSystem
         {
             if (Physics.Raycast(ray, out hit, distence, (1 << Layers.clickItemLayer)))
             {
-                obj = hit.collider.GetComponent<ClickObj>();
-                return true;
+                var hited = hit.collider.GetComponent<ClickObj>();
+                if(CanOperate(hited)){
+                    obj = hited;
+                    return true;
+                }
             }
             obj = null;
             return false;
         }
 
-        public void Update()
+        public override void Update()
         {
             screenPoint = new Vector3();
 
