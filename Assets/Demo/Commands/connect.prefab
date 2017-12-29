@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 413870}
-  - 114: {fileID: 11405026}
+  - component: {fileID: 413870}
+  - component: {fileID: 11405026}
   m_Layer: 0
   m_Name: connectObj
   m_TagString: Untagged
@@ -21,26 +21,26 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 444396}
-  - 114: {fileID: 11448320}
+  - component: {fileID: 444396}
+  - component: {fileID: 11448320}
   m_Layer: 0
   m_Name: connect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &154706
 GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 494274}
-  - 65: {fileID: 6532642}
+  - component: {fileID: 494274}
+  - component: {fileID: 6532642}
   m_Layer: 0
   m_Name: node1
   m_TagString: Untagged
@@ -53,10 +53,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 406736}
-  - 65: {fileID: 6570634}
+  - component: {fileID: 406736}
+  - component: {fileID: 6570634}
   m_Layer: 0
   m_Name: node2
   m_TagString: Untagged
@@ -69,10 +69,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 428752}
-  - 65: {fileID: 6515748}
+  - component: {fileID: 428752}
+  - component: {fileID: 6515748}
   m_Layer: 0
   m_Name: node0
   m_TagString: Untagged
@@ -85,10 +85,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 413504}
-  - 114: {fileID: 11461362}
+  - component: {fileID: 413504}
+  - component: {fileID: 11461362}
   m_Layer: 0
   m_Name: camera (3)
   m_TagString: Untagged
@@ -108,6 +108,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413870}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &413504
 Transform:
   m_ObjectHideFlags: 1
@@ -120,6 +121,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 444396}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &413870
 Transform:
   m_ObjectHideFlags: 1
@@ -135,6 +137,7 @@ Transform:
   - {fileID: 406736}
   m_Father: {fileID: 444396}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &428752
 Transform:
   m_ObjectHideFlags: 1
@@ -147,6 +150,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413870}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &444396
 Transform:
   m_ObjectHideFlags: 1
@@ -161,6 +165,7 @@ Transform:
   - {fileID: 413504}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &494274
 Transform:
   m_ObjectHideFlags: 1
@@ -173,6 +178,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413870}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6515748
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -240,8 +246,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   lineWight: 0.1
   lineMaterial: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   connectGroup:

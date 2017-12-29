@@ -5,14 +5,14 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 461446}
-  - 33: {fileID: 3351952}
-  - 65: {fileID: 6547100}
-  - 23: {fileID: 2321362}
-  - 111: {fileID: 11118824}
-  - 114: {fileID: 11489078}
+  - component: {fileID: 461446}
+  - component: {fileID: 3351952}
+  - component: {fileID: 6547100}
+  - component: {fileID: 2321362}
+  - component: {fileID: 11118824}
+  - component: {fileID: 11489078}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -25,11 +25,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 484122}
-  - 114: {fileID: 11441124}
-  - 114: {fileID: 11459962}
+  - component: {fileID: 484122}
+  - component: {fileID: 11441124}
+  - component: {fileID: 11459962}
   m_Layer: 0
   m_Name: CubeAnim (2)
   m_TagString: Untagged
@@ -42,14 +42,14 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 482182}
-  - 33: {fileID: 3388768}
-  - 65: {fileID: 6589066}
-  - 23: {fileID: 2375464}
-  - 111: {fileID: 11199956}
-  - 114: {fileID: 11456474}
+  - component: {fileID: 482182}
+  - component: {fileID: 3388768}
+  - component: {fileID: 6589066}
+  - component: {fileID: 2375464}
+  - component: {fileID: 11199956}
+  - component: {fileID: 11456474}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -62,27 +62,27 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 499922}
-  - 114: {fileID: 11454928}
+  - component: {fileID: 499922}
+  - component: {fileID: 11454928}
   m_Layer: 0
   m_Name: autoAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &156838
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 426664}
-  - 114: {fileID: 11470458}
-  - 114: {fileID: 11415948}
+  - component: {fileID: 426664}
+  - component: {fileID: 11470458}
+  - component: {fileID: 11415948}
   m_Layer: 0
   m_Name: CubeAnim
   m_TagString: Untagged
@@ -95,11 +95,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 490972}
-  - 114: {fileID: 11488678}
-  - 114: {fileID: 11491114}
+  - component: {fileID: 490972}
+  - component: {fileID: 11488678}
+  - component: {fileID: 11491114}
   m_Layer: 0
   m_Name: CubeAnim (1)
   m_TagString: Untagged
@@ -112,10 +112,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 457952}
-  - 114: {fileID: 11469232}
+  - component: {fileID: 457952}
+  - component: {fileID: 11469232}
   m_Layer: 0
   m_Name: camera (1)
   m_TagString: Untagged
@@ -128,14 +128,14 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 418594}
-  - 33: {fileID: 3352590}
-  - 65: {fileID: 6563956}
-  - 23: {fileID: 2388942}
-  - 111: {fileID: 11107928}
-  - 114: {fileID: 11446834}
+  - component: {fileID: 418594}
+  - component: {fileID: 3352590}
+  - component: {fileID: 6563956}
+  - component: {fileID: 2388942}
+  - component: {fileID: 11107928}
+  - component: {fileID: 11446834}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -148,10 +148,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 483776}
-  - 114: {fileID: 11468324}
+  - component: {fileID: 483776}
+  - component: {fileID: 11468324}
   m_Layer: 0
   m_Name: animHook (1)
   m_TagString: Untagged
@@ -171,6 +171,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 484122}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &426664
 Transform:
   m_ObjectHideFlags: 1
@@ -185,6 +186,7 @@ Transform:
   - {fileID: 482182}
   m_Father: {fileID: 499922}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &457952
 Transform:
   m_ObjectHideFlags: 1
@@ -197,6 +199,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 499922}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &461446
 Transform:
   m_ObjectHideFlags: 1
@@ -209,6 +212,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 490972}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &482182
 Transform:
   m_ObjectHideFlags: 1
@@ -221,6 +225,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 426664}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &483776
 Transform:
   m_ObjectHideFlags: 1
@@ -233,6 +238,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 426664}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &484122
 Transform:
   m_ObjectHideFlags: 1
@@ -246,6 +252,7 @@ Transform:
   - {fileID: 418594}
   m_Father: {fileID: 499922}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &490972
 Transform:
   m_ObjectHideFlags: 1
@@ -259,6 +266,7 @@ Transform:
   - {fileID: 461446}
   m_Father: {fileID: 499922}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &499922
 Transform:
   m_ObjectHideFlags: 1
@@ -275,6 +283,7 @@ Transform:
   - {fileID: 457952}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &2321362
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -284,22 +293,30 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &2375464
 MeshRenderer:
@@ -310,22 +327,30 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &2388942
 MeshRenderer:
@@ -336,22 +361,30 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &3351952
 MeshFilter:
@@ -499,8 +532,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   delyTime: 4
   speed: 3
 --- !u!114 &11446834
@@ -529,7 +562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: autoanim
   _queueID: 0
-  _cameraID: defult
+  _cameraID: 
   commandType: 0
   lineWight: 0.1
   lineMaterial: {fileID: 0}
@@ -634,8 +667,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   delyTime: 0
   speed: 1
 --- !u!114 &11488678
@@ -669,8 +702,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   delyTime: 2
   speed: 2
 --- !u!114 &11489078
