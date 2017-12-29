@@ -138,7 +138,7 @@ namespace WorldActionSystem
             else
             {
                 PlaceNodeWrong(ropeItem, pickUpedRopeNode);
-                UserError(resonwhy);
+                OnUserError(resonwhy);
             }
             pickUpedRopeNode = null;
             ropeItem = null;

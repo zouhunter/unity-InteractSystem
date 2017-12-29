@@ -18,8 +18,7 @@ namespace WorldActionSystem
 
         private string highLight { get { return "HighLightObjects"; } }
         private string unhighLight { get { return "UnHighLightObjects"; } }
-protected Config config { get; set; }
-        private bool activeHighLight { get { return config.highLightNotice; } }
+        private bool activeHighLight { get { return Config.highLightNotice; } }
         private List<Highlighter> highlighters = new List<Highlighter>();
         protected EventController eventCtrl { get; set; }
         private void Start()

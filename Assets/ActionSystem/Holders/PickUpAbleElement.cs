@@ -19,9 +19,9 @@ namespace WorldActionSystem
         public string _name;
         private ActionSystem _system;
         public ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
-        protected Config config { get { return system.Config; } }
-        protected ElementController elementCtrl { get { return system.ElementCtrl; } }
-        public int animTime { get { return config.autoExecuteTime; } }
+       
+        protected ElementController elementCtrl { get { return ElementController.Instence; } }
+        public int animTime { get { return Config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
         public virtual string Name { get { return _name; } }
@@ -80,7 +80,11 @@ namespace WorldActionSystem
             gameObject.SetActive(startActive);
             elementCtrl.RegistElement(this);
         }
-        
+        protected virtual void OnDestroy()
+        {
+            move.Kill(false);
+            elementCtrl.RemoveElement(this);
+        }
         protected virtual void InitRender()
         {
             if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
@@ -100,7 +104,7 @@ namespace WorldActionSystem
             else
             {
                 var player = FindObjectOfType<Camera>().transform;
-                midPos = player.transform.position + player.transform.forward * config.elementFoward;
+                midPos = player.transform.position + player.transform.forward * Config.elementFoward;
             }
 
             var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
@@ -296,7 +300,7 @@ namespace WorldActionSystem
 
         protected virtual void Update()
         {
-            if (!config.highLightNotice) return;
+            if (!Config.highLightNotice) return;
             if (m_render == null) return;
             if (actived)
             {
@@ -342,10 +346,7 @@ namespace WorldActionSystem
             target = null;
             return old;
         }
-        protected virtual void OnDestroy()
-        {
-            move.Kill(false);
-        }
+       
     }
 
 }

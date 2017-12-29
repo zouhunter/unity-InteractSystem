@@ -14,7 +14,7 @@ namespace WorldActionSystem
         [SerializeField]
         protected GameObject viewObj;
         protected Highlighter highLighter;
-        protected bool noticeAuto { get { return config.highLightNotice; } }
+        protected bool noticeAuto { get { return Config.highLightNotice; } }
         protected override void Awake()
         {
             base.Awake();

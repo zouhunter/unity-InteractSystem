@@ -90,14 +90,13 @@ namespace WorldActionSystem
         protected RaycastHit[] hits;
         protected bool installAble;
         protected string resonwhy;
-        protected float hitDistence { get { return config.hitDistence; } }
+        protected float hitDistence { get { return Config.hitDistence; } }
 
-        protected bool activeNotice { get { return config.highLightNotice; } }
+        protected bool activeNotice { get { return Config.highLightNotice; } }
         protected Ray disRay;
         protected RaycastHit disHit;
         protected float elementDistence;
         protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
-        public UnityAction<IPlaceItem> onSelect { get; set; }
         protected const float minDistence = 1f;
         public PlaceController()
         {
@@ -144,12 +143,12 @@ namespace WorldActionSystem
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.pickUpElementLayer)))
             {
                 var pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
-                if (pickedUpObj != null && !pickedUpObj.HaveBinding && pickedUpObj.system == system)
+                if (pickedUpObj != null && !pickedUpObj.HaveBinding)
                 {
                     this.pickedUpObj = pickedUpObj;
                     pickedUpObj.OnPickUp();
                     pickedUp = true;
-                    if(onSelect != null) onSelect.Invoke(pickedUpObj);
+                    OnSelectItem(pickedUpObj);
                     elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.transform.position);
                 }
 
@@ -176,14 +175,7 @@ namespace WorldActionSystem
                         {
                             hited = true;
                             installPos = hits[i].collider.GetComponent<PlaceObj>();
-                            if(CanOperate(installPos))
-                            {
-                                installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
-                            }
-                            else
-                            {
-                                installAble = false;
-                            }
+                            installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
                         }
                     }
                     if (!hited)
@@ -220,7 +212,7 @@ namespace WorldActionSystem
             else
             {
                 PlaceWrong(pickedUpObj);
-                UserError(resonwhy);
+                OnUserError(resonwhy);
             }
 
             pickedUp = false;

@@ -17,10 +17,8 @@ namespace WorldActionSystem {
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
-        private Config _config;
         private ActionSystem _system;
         private ActionSystem system { get { transform.SurchSystem(ref _system);return _system; } }
-        protected Config config { get {return system.Config; } }
         private void Awake()
         {
             viewObj.SetActive(false);
@@ -28,7 +26,7 @@ namespace WorldActionSystem {
 
         public void UnNotice(Transform target)
         {
-            if (!config.highLightNotice) return;
+            if (!Config.highLightNotice) return;
 
             if (actived.ContainsKey(target))
             {
@@ -39,7 +37,7 @@ namespace WorldActionSystem {
 
         public void Notice(Transform target,bool update = false)
         {
-            if (!config.highLightNotice) return;
+            if (!Config.highLightNotice) return;
 
             if (!actived.ContainsKey(target))
             {

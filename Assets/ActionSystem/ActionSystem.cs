@@ -27,13 +27,6 @@ namespace WorldActionSystem
                 return commandCtrl;
             }
         }
-        internal ElementController ElementCtrl
-        {
-            get
-            {
-                return elementCtrl;
-            }
-        }
         internal EventController EventCtrl
         {
             get
@@ -41,27 +34,15 @@ namespace WorldActionSystem
                 return eventCtrl;
             }
         }
-        internal Config Config
-        {
-            get
-            {
-                return config;
-            }
-        }
         internal AngleCtroller AngleCtrl { get { return angleCtrl; } }
-        internal CameraController CameraCtrl { get { return cameraCtrl; } }
         #endregion
 
         #region Private
         private IActionStap[] steps;
         private IRemoteController remoteController;
         private CommandController commandCtrl = new CommandController();
-        private ElementController elementCtrl = new ElementController();
         private EventController eventCtrl = new EventController();
         private AngleCtroller angleCtrl;
-        private CameraController cameraCtrl;
-        [SerializeField]
-        private Config config = new Config();
         private RegistCommandList onCommandRegisted { get; set; }
         #endregion
 
@@ -69,7 +50,6 @@ namespace WorldActionSystem
         private void Awake()
         {
             angleCtrl = transform.GetComponentInChildren<AngleCtroller>(false);
-            cameraCtrl = transform.GetComponentInChildren<CameraController>(false);
             commandCtrl.InitCommand(totalCommand, OnCommandExectute, OnStepComplete, OnUserError,
                 (x) =>
                 {
@@ -84,10 +64,9 @@ namespace WorldActionSystem
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
-        public void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK, Config config = null) where T : IActionStap
+        public void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK) where T : IActionStap
         {
             Debug.Assert(steps != null);
-            if(config != null) this.config = config;
             onCommandRegisted = (activeCommands) =>
             {
                 this.steps = ConfigSteps<T>(activeCommands, steps);//重新计算步骤

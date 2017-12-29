@@ -52,7 +52,6 @@ namespace WorldActionSystem
         public Toggle notice;
         public Toggle autoNext;
         public Toggle autoPlay;
-        public Config config;
         /// <summary>
         /// 注册按扭事件
         /// </summary>
@@ -176,7 +175,7 @@ namespace WorldActionSystem
         }
         void OnNoticeStateChanged(bool isOn)
         {
-            config.highLightNotice = isOn;
+            Config.highLightNotice = isOn;
         }
         public Text textShow;
     }

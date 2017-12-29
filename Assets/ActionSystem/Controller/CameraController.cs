@@ -9,8 +9,20 @@ namespace WorldActionSystem
 {
     public class CameraController : MonoBehaviour
     {
+        private static CameraController _instence;
+        public static CameraController Instence
+        {
+            get
+            {
+                if(_instence == null){
+                    var ctrlHolder = new GameObject("CameraController");
+                    _instence = ctrlHolder.AddComponent<CameraController>();
+                }
+                return _instence;
+            }
+        }
         private List<CameraNode> cameraNodes = new List<CameraNode>();
-        public Camera viewCamera;
+        private Camera viewCamera;
         private Camera mainCamera;
         private CameraNode currentNode;
         private Camera currentCamera
@@ -59,13 +71,14 @@ namespace WorldActionSystem
 
         private void Awake()
         {
+            _instence = this;
             viewCameraParent = transform;
             mainCamera = Camera.main;
-            if (mainCamera == null)
-            {
-                Debug.LogError("场景没有主摄像机");
-                viewCamera.gameObject.SetActive(true);
-            }
+            Debug.Assert(mainCamera);
+            viewCamera = UnityEngine.Object.Instantiate(mainCamera);
+            viewCamera.gameObject.AddComponent<ViewCamera>();
+            viewCamera.transform.SetParent(transform);
+            viewCamera.gameObject.SetActive(!mainCamera.isActiveAndEnabled);
         }
         private void OnMainCameraCallBack()
         {

@@ -24,7 +24,7 @@ namespace WorldActionSystem
         public bool MoveAble { get { return _target != null; } }
         private ActionSystem _system;
         private ActionSystem system { get {  transform.SurchSystem(ref _system);return _system; } }
-        private CameraController cameraCtrl { get { return system.CameraCtrl; } }
+        private CameraController cameraCtrl { get { return  CameraController.Instence; } }
 
         private void Awake()
         {

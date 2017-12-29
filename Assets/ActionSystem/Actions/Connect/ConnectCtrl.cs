@@ -26,9 +26,10 @@ namespace WorldActionSystem
         private LineRenderer line;
       
         //private float pointDistence;
-        private float hitDistence { get { return config.hitDistence; } }
-        private CameraController cameraCtrl { get { return system.CameraCtrl; } }
-        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight)
+        private float hitDistence { get { return Config.hitDistence; } }
+        private CameraController cameraCtrl { get { return CameraController.Instence; } }
+
+        public ConnectCtrl(LineRenderer lineRender,Material lineMaterial, float lineWight)
         {
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);

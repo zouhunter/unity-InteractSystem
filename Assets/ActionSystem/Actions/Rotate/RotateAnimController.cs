@@ -14,7 +14,7 @@ namespace WorldActionSystem
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
-        private float distence { get { return config.hitDistence; } }
+        private float distence { get { return Config.hitDistence; } }
 
         public override void Update()
         {

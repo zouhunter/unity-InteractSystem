@@ -85,7 +85,7 @@ namespace WorldActionSystem
             PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
             Attach(obj);
             obj.StepActive();
-            if (config.quickMoveElement && !ignorePass)
+            if (Config.quickMoveElement && !ignorePass)
             {
                 obj.QuickInstall(this);
             }

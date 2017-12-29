@@ -29,11 +29,11 @@ namespace WorldActionSystem
         {
             if (!obj.Started)
             {
-                UserError("不可点击" + obj.Name);
+                OnUserError("不可点击" + obj.Name);
             }
             else if (obj.Complete)
             {
-                UserError("已经结束点击" + obj.Name);
+                OnUserError("已经结束点击" + obj.Name);
             }
             if (obj.Started && !obj.Complete)
             {
@@ -57,18 +57,15 @@ namespace WorldActionSystem
 
         void OnClickEmpty()
         {
-            UserError("点击位置不正确");
+            OnUserError("点击位置不正确");
         }
 
         private bool TryHitBtnObj(out ClickObj obj)
         {
             if (Physics.Raycast(ray, out hit, distence, (1 << Layers.clickItemLayer)))
             {
-                var hited = hit.collider.GetComponent<ClickObj>();
-                if(CanOperate(hited)){
-                    obj = hited;
-                    return true;
-                }
+                obj = hit.collider.GetComponent<ClickObj>();
+                return true;
             }
             obj = null;
             return false;

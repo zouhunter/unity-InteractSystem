@@ -10,7 +10,7 @@ namespace WorldActionSystem
     public class ActionHightSender : ActionObjBinding
     {
         public string key;
-        private bool noticeAuto { get { return config.highLightNotice; } }
+        private bool noticeAuto { get { return Config.highLightNotice; } }
         private string highLight { get { return "HighLightObjects"; } }
         private string unhighLight { get { return "UnHighLightObjects"; } }
 

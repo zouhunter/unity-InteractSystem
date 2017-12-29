@@ -23,20 +23,12 @@ namespace WorldActionSystem
         private StepComplete stepComplete { get; set; }//步骤自动结束方法
         public IActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionSystem actionSystem { get; set; }
-        protected ActionCtroller coroutineCtrl;
-        public ActionCtroller ActionCtrl { get { return coroutineCtrl; } }
+        public ActionCtroller ActionCtrl { get { return ActionCtroller.Instence; } }
         protected IActionObj[] actionObjs;
+        private ActionObjCtroller objectCtrl;
         [EnumMask, HideInInspector]
         public ControllerType commandType;//用于editor
-
-        #region 可选参数配制
-
-        [HideInInspector]
-        public float lineWight = 0.1f;
-        [HideInInspector]
-        public Material lineMaterial;
-        #endregion
-
+        
         [HideInInspector]
         public InputField.OnChangeEvent onBeforeActive;
         [HideInInspector]
@@ -53,11 +45,10 @@ namespace WorldActionSystem
         {
             RegistActionObjs();
             WorpCameraID();
+            objectCtrl = new ActionObjCtroller(this);
         }
         protected virtual void Start()
         {
-            if (coroutineCtrl == null)
-                coroutineCtrl = new ActionCtroller(this);
             RegistToActionSystem();
         }
         private void RegistToActionSystem()
@@ -136,8 +127,7 @@ namespace WorldActionSystem
             {
                 started = true;
                 onBeforeActive.Invoke(StepName);
-                if(coroutineCtrl!=null)
-                    coroutineCtrl.OnStartExecute(forceAuto);
+                ActionCtrl.OnStartExecute(objectCtrl,forceAuto);
                 return true;
             }
             else
@@ -171,16 +161,14 @@ namespace WorldActionSystem
         public void OnEndExecute()
         {
             onBeforePlayEnd.Invoke(StepName);
-            if (coroutineCtrl != null) coroutineCtrl.OnEndExecute();
+            ActionCtrl.OnEndExecute(objectCtrl);
         }
 
         public virtual void UnDoExecute()
         {
             started = false;
             completed = false;
-            onBeforeUnDo.Invoke(StepName);
-            if (coroutineCtrl != null)
-                coroutineCtrl.OnUnDoExecute();
+            ActionCtrl.OnUnDoExecute(objectCtrl);
         }
 
 

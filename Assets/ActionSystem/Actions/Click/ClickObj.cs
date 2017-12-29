@@ -8,7 +8,7 @@ namespace WorldActionSystem
 {
     public class ClickObj : ActionObj
     {
-        private float autoCompleteTime { get { return config.autoExecuteTime; } }
+        private float autoCompleteTime { get { return Config.autoExecuteTime; } }
 
         public override ControllerType CtrlType
         {

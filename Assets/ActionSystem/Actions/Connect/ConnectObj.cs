@@ -12,7 +12,7 @@ namespace WorldActionSystem
         public float lineWight = 0.1f;
         public Material lineMaterial;
         
-        private float autoTime { get { return config.autoExecuteTime; } }
+        private float autoTime { get { return Config.autoExecuteTime; } }
         [System.Serializable]
         public class PointGroup
         {

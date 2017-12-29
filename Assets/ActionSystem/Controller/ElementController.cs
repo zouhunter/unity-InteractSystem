@@ -8,14 +8,23 @@ namespace WorldActionSystem
 {
     public class ElementController
     {
+        public static ElementController _instence;
+        private ElementController() { }
+        public static ElementController Instence
+        {
+            get
+            {
+                if(_instence == null)
+                {
+                    _instence = new ElementController();
+                }
+                return _instence;
+            }
+        }
+
         private Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
         private List<PlaceObj> lockQueue = new List<PlaceObj>();
         public bool log = false;
-
-        public void Clean()
-        {
-            objectList.Clear();
-        }
 
         /// <summary>
         /// 外部添加Element
@@ -29,6 +38,19 @@ namespace WorldActionSystem
             else
             {
                 objectList[(string)item.Name] = new System.Collections.Generic.List<PickUpAbleElement>() { item };
+            }
+        }
+        public void RemoveElement(PickUpAbleElement item)
+        {
+            foreach (var objItem in objectList)
+            {
+                if(item.Name == objItem.Key)
+                {
+                    if(objItem.Value.Contains(item))
+                    {
+                        objItem.Value.Remove(item);
+                    }
+                }
             }
         }
 
@@ -94,7 +116,6 @@ namespace WorldActionSystem
         }
         public void CompleteElements(PlaceObj element, bool undo)
         {
-
             lockQueue.Remove(element);
             var active = lockQueue.Find(x => x.Name == element.Name);
             if (active == null)

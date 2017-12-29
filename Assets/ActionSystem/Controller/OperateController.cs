@@ -9,22 +9,25 @@ namespace WorldActionSystem
     public abstract class OperateController : IOperateController
     {
         public abstract ControllerType CtrlType { get; }
-        public UnityAction<string> UserError { get; set; }
-        public ActionSystem system { get; set; }
-        protected Config config { get { return system.Config; } }
-        private CameraController cameraCtrl { get { return system.CameraCtrl; } }
+        public UnityAction<string> userError { get; set; }
+        public UnityAction<IPlaceItem> onSelect { get; set; }
+        private CameraController cameraCtrl { get { return CameraController.Instence; } }
         protected Camera viewCamera
         {
             get
             {
                 return cameraCtrl == null ?
-                    Camera.main : cameraCtrl.GetActiveCamera(config.useOperateCamera);
+                    Camera.main : cameraCtrl.GetActiveCamera(Config.useOperateCamera);
             }
         }
         public abstract void Update();
-        protected bool CanOperate(ActionObj target)
+        protected virtual void OnUserError(string errInfo)
         {
-            return target.system == system;
+            if (userError != null) userError.Invoke(errInfo);
+        }
+        protected virtual void OnSelectItem(IPlaceItem item)
+        {
+            if (onSelect != null) onSelect.Invoke(item);
         }
     }
 }

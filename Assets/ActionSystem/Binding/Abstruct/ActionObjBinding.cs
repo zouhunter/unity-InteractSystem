@@ -11,7 +11,7 @@ public class ActionObjBinding : MonoBehaviour {
     private ActionSystem _system;
     private ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
     protected EventController eventCtrl { get { return system.EventCtrl; } }
-    protected Config config { get { return system.Config; } }
+   
     protected virtual void Awake()
     {
         actionObj = gameObject.GetComponent<ActionObj>();

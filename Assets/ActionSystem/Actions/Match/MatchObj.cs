@@ -44,7 +44,7 @@ namespace WorldActionSystem
         {
             var obj = elementCtrl.GetUnInstalledObj(Name);
             Attach(obj);
-            if (config.quickMoveElement && !ignorePass)
+            if (Config.quickMoveElement && !ignorePass)
             {
                 if (!completeMoveBack)
                 {

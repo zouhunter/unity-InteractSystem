@@ -46,8 +46,8 @@ namespace WorldActionSystem
         protected AngleCtroller angleCtrl { get { return system.AngleCtrl; } }
         private ActionSystem _system;
         public ActionSystem system { get { transform.SurchSystem(ref _system); return _system; } }
-        protected ElementController elementCtrl { get { return system.ElementCtrl; } }
-        protected Config config { get { return system.Config; } }
+        protected ElementController elementCtrl { get { return ElementController.Instence; } }
+       
         public abstract ControllerType CtrlType { get; }
         public static bool log = true;
         protected bool notice;
@@ -79,7 +79,7 @@ namespace WorldActionSystem
         {
             if (Complete||!Started) return;
 
-            if (!config.angleNotice || this is AnimObj) return;
+            if (!Config.angleNotice || this is AnimObj) return;
 
             if (notice)
             {
