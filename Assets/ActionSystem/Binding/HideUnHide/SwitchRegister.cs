@@ -17,28 +17,30 @@ namespace WorldActionSystem
         private string resetKey { get { return "HideResetObjects"; } }
         private string hideKey { get { return "HideObjects"; } }
         private string showKey { get { return "UnHideObjects"; } }
+        protected EventController eventCtrl { get; set; }
 
         private bool[] startStates;
 
         protected void Awake()
         {
             startStates = new bool[m_Objs.Count];
-            for (int i = 0; i < startStates.Length; i++){
+            for (int i = 0; i < startStates.Length; i++)
+            {
                 startStates[i] = m_Objs[i].activeSelf;
             }
         }
         private void Start()
         {
-            EventController.AddDelegate<string>(hideKey, HideGameObjects);
-            EventController.AddDelegate<string>(showKey, UnHideGameObjects);
-            EventController.AddDelegate<string>(resetKey, ResetGameObjects);
+            eventCtrl.AddDelegate<string>(hideKey, HideGameObjects);
+            eventCtrl.AddDelegate<string>(showKey, UnHideGameObjects);
+            eventCtrl.AddDelegate<string>(resetKey, ResetGameObjects);
         }
 
         private void OnDestroy()
         {
-            EventController.RemoveDelegate<string>(hideKey, HideGameObjects);
-            EventController.RemoveDelegate<string>(showKey, UnHideGameObjects);
-            EventController.RemoveDelegate<string>(resetKey, ResetGameObjects);
+            eventCtrl.RemoveDelegate<string>(hideKey, HideGameObjects);
+            eventCtrl.RemoveDelegate<string>(showKey, UnHideGameObjects);
+            eventCtrl.RemoveDelegate<string>(resetKey, ResetGameObjects);
         }
 
         public void HideGameObjects(string key)
@@ -61,7 +63,7 @@ namespace WorldActionSystem
         }
         public void ResetGameObjects(string key)
         {
-            if(this.key == key)
+            if (this.key == key)
             {
                 for (int i = 0; i < startStates.Length; i++)
                 {

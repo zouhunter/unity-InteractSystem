@@ -30,15 +30,15 @@ namespace WorldActionSystem
         }
         protected virtual void OnBeforeStart(bool auto)
         {
-            ElementController.ActiveElements(this);
+            elementCtrl.ActiveElements(this);
         }
         protected virtual void OnBeforeComplete(bool force)
         {
-            ElementController.CompleteElements(this, false);
+            elementCtrl.CompleteElements(this, false);
         }
         protected virtual void OnBeforeUnDo()
         {
-            ElementController.CompleteElements(this, true);
+            elementCtrl.CompleteElements(this, true);
         }
         public override void OnStartExecute(bool auto = false)
         {
@@ -92,9 +92,10 @@ namespace WorldActionSystem
         protected RaycastHit[] hits;
         protected bool installAble;
         protected string resonwhy;
-        protected float hitDistence { get { return Setting.hitDistence; } }
+        protected Config config { get; set; }
+        protected float hitDistence { get { return config.hitDistence; } }
         protected Camera viewCamera { get { return CameraController.ActiveCamera; } }
-        protected bool activeNotice { get { return Setting.highLightNotice; } }
+        protected bool activeNotice { get { return config.highLightNotice; } }
         protected Ray disRay;
         protected RaycastHit disHit;
         protected float elementDistence;
@@ -144,7 +145,7 @@ namespace WorldActionSystem
         void SelectAnElement()
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, hitDistence, (1 << Setting.pickUpElementLayer)))
+            if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.pickUpElementLayer)))
             {
                 var pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
                 if (pickedUpObj != null && !pickedUpObj.HaveBinding)
@@ -236,7 +237,7 @@ namespace WorldActionSystem
         void MoveWithMouse()
         {
             disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(disRay, out disHit, elementDistence, 1 << Setting.obstacleLayer | 1<< Setting.placePosLayer | 1<< Setting.matchPosLayer | 1<< Setting.installPosLayer))
+            if (Physics.Raycast(disRay, out disHit, elementDistence, 1 << Layers.obstacleLayer | 1<< Layers.placePosLayer | 1<< Layers.matchPosLayer | 1<< Layers.installPosLayer))
             {
                 pickedUpObj.transform.position = GetPositionFromHit();
             }

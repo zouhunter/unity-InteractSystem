@@ -18,19 +18,21 @@ namespace WorldActionSystem
 
         private string highLight { get { return "HighLightObjects"; } }
         private string unhighLight { get { return "UnHighLightObjects"; } }
-        private bool activeHighLight { get { return Setting.highLightNotice; } }
+protected Config config { get; set; }
+        private bool activeHighLight { get { return config.highLightNotice; } }
         private List<Highlighter> highlighters = new List<Highlighter>();
+        protected EventController eventCtrl { get; set; }
         private void Start()
         {
-            EventController.AddDelegate<string>(highLight, HighLightGameObjects);
-            EventController.AddDelegate<string>(unhighLight, UnHighLightGameObjects);
+            eventCtrl.AddDelegate<string>(highLight, HighLightGameObjects);
+            eventCtrl.AddDelegate<string>(unhighLight, UnHighLightGameObjects);
             RegistItems();
         }
 
         private void OnDestroy()
         {
-            EventController.RemoveDelegate<string>(highLight, HighLightGameObjects);
-            EventController.RemoveDelegate<string>(unhighLight, UnHighLightGameObjects);
+            eventCtrl.RemoveDelegate<string>(highLight, HighLightGameObjects);
+            eventCtrl.RemoveDelegate<string>(unhighLight, UnHighLightGameObjects);
         }
         private void RegistItems()
         {

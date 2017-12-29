@@ -41,11 +41,12 @@ namespace WorldActionSystem
                 return _cameraView;
             }
         }
+        protected static Config config { get; set; }
         internal static Camera ActiveCamera
         {
             get
             {
-                if (!Setting.useOperateCamera || viewCamera == null)
+                if (!config.useOperateCamera || viewCamera == null)
                 {
                     return mainCamera;
                 }

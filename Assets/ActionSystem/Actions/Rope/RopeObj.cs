@@ -27,7 +27,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return Setting.placePosLayer;
+                return Layers.placePosLayer;
             }
         }
         private Transform angleTemp;
@@ -227,7 +227,7 @@ namespace WorldActionSystem
 
             if (!AlreadyPlaced)
             {
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
+                PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
                 Attach(obj);
                 obj.QuickInstall(this,true,true);
             }
@@ -244,7 +244,7 @@ namespace WorldActionSystem
         {
             foreach (var item in ropeNode)
             {
-                item.gameObject.layer = Setting.ropeNodeLayer;
+                item.gameObject.layer = Layers.ropeNodeLayer;
             }
         }
 
@@ -264,7 +264,7 @@ namespace WorldActionSystem
 
         protected override void OnAutoInstall()
         {
-            PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
+            PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
             Attach(obj);
             obj.NormalInstall(this);
         }

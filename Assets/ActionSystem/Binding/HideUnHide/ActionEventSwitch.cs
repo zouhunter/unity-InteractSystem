@@ -23,27 +23,27 @@ namespace WorldActionSystem
         {
             if(activeOnStart)
             {
-                EventController.NotifyObserver(showKey, key);
+                eventCtrl.NotifyObserver(showKey, key);
             }
             else
             {
-                EventController.NotifyObserver(hideKey, key);
+                eventCtrl.NotifyObserver(hideKey, key);
             }
         }
         protected override void OnBeforeComplete(bool force)
         {
             if (activeOnComplete)
             {
-                EventController.NotifyObserver(showKey, key);
+                eventCtrl.NotifyObserver(showKey, key);
             }
             else
             {
-                EventController.NotifyObserver(hideKey, key);
+                eventCtrl.NotifyObserver(hideKey, key);
             }
         }
         protected override void OnBeforeUnDo()
         {
-            EventController.NotifyObserver(resetKey, key);
+            eventCtrl.NotifyObserver(resetKey, key);
         }
 
     }

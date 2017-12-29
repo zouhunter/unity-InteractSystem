@@ -31,7 +31,7 @@ namespace WorldActionSystem
             for (int i = 0; i < ropeNodesStartPos.Length; i++)
             {
                 ropeNodesStartPos[i] = ropeNode[i].transform.position;
-                ropeNode[i].gameObject.layer = Setting.ropeNodeLayer;
+                ropeNode[i].gameObject.layer = Layers.ropeNodeLayer;
             }
         }
 

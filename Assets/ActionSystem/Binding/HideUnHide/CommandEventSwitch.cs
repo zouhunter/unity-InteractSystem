@@ -26,27 +26,27 @@ namespace WorldActionSystem
         {
             if (activeOnStart)
             {
-                EventController.NotifyObserver(showKey, key);
+                eventCtrl.NotifyObserver(showKey, key);
             }
             else
             {
-                EventController.NotifyObserver(hideKey, key);
+                eventCtrl.NotifyObserver(hideKey, key);
             }
         }
         protected override void OnBeforePlayEnd(string step)
         {
             if (activeOnComplete)
             {
-                EventController.NotifyObserver(showKey, key);
+                eventCtrl.NotifyObserver(showKey, key);
             }
             else
             {
-                EventController.NotifyObserver(hideKey, key);
+                eventCtrl.NotifyObserver(hideKey, key);
             }
         }
         protected override void OnBeforeUnDo(string step)
         {
-            EventController.NotifyObserver(resetKey, key);
+            eventCtrl.NotifyObserver(resetKey, key);
         }
 
 

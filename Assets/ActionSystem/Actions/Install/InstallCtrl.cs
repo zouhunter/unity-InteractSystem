@@ -17,7 +17,7 @@ namespace WorldActionSystem
 
         public bool Active { get; private set; }
 
-        protected override int PlacePoslayerMask { get { return 1 << Setting.installPosLayer; } }
+        protected override int PlacePoslayerMask { get { return 1 << Layers.installPosLayer; } }
 
         protected override bool CanPlace(PlaceObj placeObj, PickUpAbleElement element, out string why)
         {

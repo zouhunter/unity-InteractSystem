@@ -11,7 +11,8 @@ namespace WorldActionSystem
     {
         public float lineWight = 0.1f;
         public Material lineMaterial;
-        private float autoTime { get { return Setting.autoExecuteTime; } }
+        
+        private float autoTime { get { return config.autoExecuteTime; } }
         [System.Serializable]
         public class PointGroup
         {
@@ -98,7 +99,7 @@ namespace WorldActionSystem
                 var collider = child.GetComponent<Collider>();
                 if (collider != null)
                 {
-                    collider.gameObject.layer = Setting.connectItemLayer;
+                    collider.gameObject.layer = Layers.connectItemLayer;
                     nodes.Add(collider);
                 }
             }

@@ -23,7 +23,7 @@ namespace WorldActionSystem
         }
         private void OnEnterClickObj()
         {
-            if (!Setting.highLightNotice) return;
+            if (!config.highLightNotice) return;
 
             if (clickObj.Started && !clickObj.Complete)
             {

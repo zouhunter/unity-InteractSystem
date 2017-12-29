@@ -44,9 +44,10 @@ namespace WorldActionSystem
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
         protected AngleCtroller angleCtrl { get { return AngleCtroller.Instance; } }
-
+        protected ElementController elementCtrl { get; set; }
+        private Config _config;
+        protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
         public abstract ControllerType CtrlType { get; }
-
         public static bool log = true;
         protected bool notice;
         protected virtual void Start()
@@ -77,7 +78,7 @@ namespace WorldActionSystem
         {
             if (Complete||!Started) return;
 
-            if (!Setting.angleNotice || this is AnimObj) return;
+            if (!config.angleNotice || this is AnimObj) return;
 
             if (notice)
             {

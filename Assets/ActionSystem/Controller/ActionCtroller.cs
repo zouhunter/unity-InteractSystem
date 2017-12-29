@@ -21,13 +21,14 @@ namespace WorldActionSystem
         protected Coroutine coroutine;
         public static bool log = false;
         public UnityAction<IActionObj> onActionStart;
-
+        private Config _config;
+        protected Config config { get { trigger.transform.RetriveConfig(ref _config); return _config; } }
         public ActionCtroller(ActionCommand trigger)
         {
             this.trigger = trigger;
             actionObjs = trigger.ActionObjs;
             ChargeQueueIDs();
-            if (!Setting.ignoreController)
+            if (!config.ignoreController)
             {
                 InitController();
             }
@@ -324,16 +325,16 @@ namespace WorldActionSystem
         private string GetCameraID(IActionObj obj)
         {
             //忽略匹配相机
-           if (Setting.quickMoveElement && obj is MatchObj && !(obj as MatchObj).ignorePass)
+           if (config.quickMoveElement && obj is MatchObj && !(obj as MatchObj).ignorePass)
             {
                 return null;
             }
-            else if(Setting.quickMoveElement && obj is InstallObj && !(obj as InstallObj).ignorePass)
+            else if(config.quickMoveElement && obj is InstallObj && !(obj as InstallObj).ignorePass)
             {
                 return null;
             }
             //除要求使用特殊相机或是动画步骤,都用主摄像机
-            else if (Setting.useOperateCamera || obj is AnimObj)
+            else if (config.useOperateCamera || obj is AnimObj)
             {
                 if(string.IsNullOrEmpty(obj.CameraID))
                 {

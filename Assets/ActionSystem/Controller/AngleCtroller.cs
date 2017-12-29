@@ -18,7 +18,7 @@ namespace WorldActionSystem {
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
-
+        protected Config config { get; set; }
         private void Awake()
         {
             Instance = this;
@@ -27,7 +27,7 @@ namespace WorldActionSystem {
 
         public void UnNotice(Transform target)
         {
-            if (!Setting.highLightNotice) return;
+            if (!config.highLightNotice) return;
 
             if (actived.ContainsKey(target))
             {
@@ -38,7 +38,7 @@ namespace WorldActionSystem {
 
         public void Notice(Transform target,bool update = false)
         {
-            if (!Setting.highLightNotice) return;
+            if (!config.highLightNotice) return;
 
             if (!actived.ContainsKey(target))
             {

@@ -8,6 +8,10 @@ using WorldActionSystem;
 [RequireComponent(typeof(ActionObj))]
 public class ActionObjBinding : MonoBehaviour {
     protected ActionObj actionObj;
+    private EventController _eventCtrl;
+    protected EventController eventCtrl { get { transform.RetriveEventCtrl(ref _eventCtrl);return _eventCtrl; } }
+    private Config _config;
+    protected Config config { get { transform.RetriveConfig(ref _config); return _config; } }
     protected virtual void Awake()
     {
         actionObj = gameObject.GetComponent<ActionObj>();

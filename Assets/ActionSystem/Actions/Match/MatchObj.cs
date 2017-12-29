@@ -23,7 +23,7 @@ namespace WorldActionSystem
 
         public bool Matched { get { return obj != null; } }
 
-        public override int layer { get { return Setting.matchPosLayer; } }
+        public override int layer { get { return Layers.matchPosLayer; } }
 
         protected override void OnBeforeComplete(bool force)
         {
@@ -42,9 +42,9 @@ namespace WorldActionSystem
         }
         protected override void OnAutoInstall()
         {
-            var obj = ElementController.GetUnInstalledObj(Name);
+            var obj = elementCtrl.GetUnInstalledObj(Name);
             Attach(obj);
-            if (Setting.quickMoveElement && !ignorePass)
+            if (config.quickMoveElement && !ignorePass)
             {
                 if (!completeMoveBack)
                 {

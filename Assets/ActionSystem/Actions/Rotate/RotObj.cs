@@ -77,7 +77,7 @@ namespace WorldActionSystem
 #else
             lineRender.SetWidth(.1f, .01f);
 #endif
-            gameObject.layer = Setting.rotateItemLayer;
+            gameObject.layer = Layers.rotateItemLayer;
             comparer = new FloatComparer(deviation);
             if (render == null) render = GetComponentInChildren<Renderer>();
         }

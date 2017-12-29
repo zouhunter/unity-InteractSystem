@@ -15,7 +15,8 @@ namespace WorldActionSystem
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
-        private float distence { get { return Setting.hitDistence; } }
+        protected Config config { get; set; }
+        private float distence { get { return config.hitDistence; } }
 
         private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
@@ -32,7 +33,7 @@ namespace WorldActionSystem
 
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, distence, (1 << Setting.rotateItemLayer)))
+            if (Physics.Raycast(ray, out hit, distence, (1 << Layers.rotateItemLayer)))
             {
                 selectedObj = hit.collider.GetComponent<RotObj>();
             }

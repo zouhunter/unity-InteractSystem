@@ -9,30 +9,49 @@ namespace WorldActionSystem
 {
     public class CommandController
     {
+        public bool CommandRegisted { get; private set; }
+        public List<IActionCommand> CommandList { get { return commandList; }}
+
         private List<IActionCommand> commandList = new List<IActionCommand>();
         private Dictionary<string, List<ActionCommand>> actionDic = new Dictionary<string, List<ActionCommand>>();//触发器
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
-
+        private int totalCommand;
         private StepComplete onStepComplete;
         private CommandExecute commandExecute;
-        public List<IActionCommand> RegistTriggers(ActionCommand[] triggers, StepComplete onStepComplete, CommandExecute commandExecute)
+        private RegistCommandList onAllCommandRegisted;
+        private UserError onUserError;
+        internal void InitCommand(int totalCommand, CommandExecute onCommandRegistComplete, StepComplete onStepComplete,UserError onUserError, RegistCommandList onAllCommandRegisted)
         {
+            this.totalCommand = totalCommand;
             this.onStepComplete = onStepComplete;
-            this.commandExecute = commandExecute;
-            foreach (var trigger in triggers)
+            this.onUserError = onUserError;
+            this.commandExecute = onCommandRegistComplete;
+            this.onAllCommandRegisted = onAllCommandRegisted;
+            TryComplelteRegist();
+        }
+        public void RegistCommand(ActionCommand command)
+        {
+            if (actionDic.ContainsKey(command.StepName))
             {
-                var obj = trigger;
-                if (actionDic.ContainsKey(obj.StepName))
-                {
-                    actionDic[obj.StepName].Add(obj);
-                }
-                else
-                {
-                    actionDic[obj.StepName] = new List<ActionCommand>() { obj };
-                }
+                actionDic[command.StepName].Add(command);
             }
-            RegistTriggerCommand();
-            return commandList;
+            else
+            {
+                actionDic[command.StepName] = new List<ActionCommand>() { command };
+            }
+            TryComplelteRegist();
+        }
+
+        private void TryComplelteRegist()
+        {
+            if (totalCommand <= commandList.Count)
+            {
+                RegistTriggerCommand();
+                if(onAllCommandRegisted != null){
+                    onAllCommandRegisted.Invoke(commandList);
+                }
+                CommandRegisted = true;
+            }
         }
 
         private void OnOneCommandComplete(string stepName)
@@ -69,6 +88,7 @@ namespace WorldActionSystem
                             int index = i;
                             int totalcmd = total;
                             item.Value[index].RegistComplete(OnOneCommandComplete);
+                            item.Value[index].RegistAsOperate(onUserError);
                             item.Value[index].onBeforeActive.AddListener((x) =>
                             {
                                 OnCommandStartExecute(stepName, totalcmd, index);
@@ -83,6 +103,7 @@ namespace WorldActionSystem
                     {
                         var cmd = item.Value[0];
                         cmd.RegistComplete(OnOneCommandComplete);
+                        cmd.RegistAsOperate(onUserError);
                         cmd.onBeforeActive.AddListener((x) =>
                         {
                             OnCommandStartExecute(stepName, 1, 1);
@@ -94,9 +115,10 @@ namespace WorldActionSystem
             }
         }
 
+
         private void OnCommandStartExecute(string stepName, int totalCount, int currentID)
         {
-            if(this.commandExecute !=null)
+            if (this.commandExecute != null)
             {
                 commandExecute.Invoke(stepName, totalCount, currentID);
             }

@@ -8,6 +8,7 @@ using WorldActionSystem;
 [RequireComponent(typeof(ActionCommand))]
 public class ActionCommandBinding : MonoBehaviour {
     protected ActionCommand cmd;
+    protected EventController eventCtrl { get; set; }
 
     protected virtual void Awake()
     {

@@ -28,7 +28,7 @@ namespace WorldActionSystem
         {
             get
             {
-               return Setting.installPosLayer;
+               return Layers.installPosLayer;
             }
         }
 
@@ -38,7 +38,7 @@ namespace WorldActionSystem
 
             if (!AlreadyPlaced)
             {
-                PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
+                PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
                 Attach(obj);
                 obj.QuickInstall(this);
                 obj.StepComplete();
@@ -82,10 +82,10 @@ namespace WorldActionSystem
 
         protected override void OnAutoInstall()
         {
-            PickUpAbleElement obj = ElementController.GetUnInstalledObj(Name);
+            PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
             Attach(obj);
             obj.StepActive();
-            if (Setting.quickMoveElement && !ignorePass)
+            if (config.quickMoveElement && !ignorePass)
             {
                 obj.QuickInstall(this);
             }

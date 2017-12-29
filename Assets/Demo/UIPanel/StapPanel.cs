@@ -52,7 +52,7 @@ namespace WorldActionSystem
         public Toggle notice;
         public Toggle autoNext;
         public Toggle autoPlay;
-
+        public Config config;
         /// <summary>
         /// 注册按扭事件
         /// </summary>
@@ -176,23 +176,23 @@ namespace WorldActionSystem
         }
         void OnNoticeStateChanged(bool isOn)
         {
-            Setting.highLightNotice = isOn;
+            config.highLightNotice = isOn;
         }
         public Text textShow;
     }
     public partial class StapPanel : MonoBehaviour
     {
+        public ActionSystem actionSystem;
         public GameObject panel;
-        IRemoteController remoteController;
+        IRemoteController remoteController { get { return actionSystem.RemoteController; } }
         public Step[] steps;
         void Start()
         {
             panel.SetActive(false);
-            StartCoroutine(ActionSystem.LunchActionSystem(steps, (Instance, newStep)=> {
-                remoteController = Instance.RemoteController;
+            actionSystem.LunchActionSystem(steps, ( newStep)=> {
                 steps = newStep;
-                Instance.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
-            }));
+                actionSystem.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
+            });
             panel.SetActive(true);
 
         }

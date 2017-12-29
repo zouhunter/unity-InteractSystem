@@ -8,7 +8,7 @@ namespace WorldActionSystem
 {
     public class ClickObj : ActionObj
     {
-        private float autoCompleteTime { get { return Setting.autoExecuteTime; } }
+        private float autoCompleteTime { get { return config.autoExecuteTime; } }
 
         public override ControllerType CtrlType
         {
@@ -29,7 +29,7 @@ namespace WorldActionSystem
         protected override void Start()
         {
             base.Start();
-            gameObject.layer = Setting.clickItemLayer;
+            gameObject.layer = Layers.clickItemLayer;
         }
         public override void OnStartExecute(bool auto = false)
         {

@@ -17,7 +17,9 @@ namespace WorldActionSystem
     public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IPlaceItem, IRuntimeActive
     {
         public string _name;
-        public int animTime { get { return Setting.autoExecuteTime; } }
+        private Config _config;
+        protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
+        public int animTime { get { return config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
         public virtual string Name { get { return _name; } }
@@ -64,17 +66,21 @@ namespace WorldActionSystem
         protected Collider _collider;
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
+        protected ActionSystem actionSystem;
 #if !NoFunction
         protected virtual void Start()
         {
             _collider = GetComponent<Collider>();
             if (string.IsNullOrEmpty(_name)) _name = name;
-            ElementController.RegistElement(this);
             InitRender();
-            gameObject.layer = Setting.pickUpElementLayer;
+            gameObject.layer = Layers.pickUpElementLayer;
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
+        }
+        protected void TryRegist()
+        {
+            transform.GetComponentInParent<ActionSystem>().ElementCtrl.RegistElement(this);
         }
 
         protected virtual void InitRender()
@@ -96,7 +102,7 @@ namespace WorldActionSystem
             else
             {
                 var player = FindObjectOfType<Camera>().transform;
-                midPos = player.transform.position + player.transform.forward * Setting.elementFoward;
+                midPos = player.transform.position + player.transform.forward * config.elementFoward;
             }
 
             var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
@@ -292,7 +298,7 @@ namespace WorldActionSystem
 
         protected virtual void Update()
         {
-            if (!Setting.highLightNotice) return;
+            if (!config.highLightNotice) return;
             if (m_render == null) return;
             if (actived)
             {

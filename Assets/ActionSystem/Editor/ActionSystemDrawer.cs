@@ -17,6 +17,7 @@ namespace WorldActionSystem
         protected string query;
 
         protected SerializedProperty script;
+        protected SerializedProperty totalCommandProp;
 
         protected SerializedProperty prefabListProp;
         protected DragAdapt prefabListPropAdapt;
@@ -27,7 +28,7 @@ namespace WorldActionSystem
         private void OnEnable()
         {
             script = serializedObject.FindProperty("m_Script");
-
+            totalCommandProp = serializedObject.FindProperty("totalCommand");
             prefabListProp = serializedObject.FindProperty("prefabList");
             prefabListPropAdapt = new DragAdapt(prefabListProp, "prefabList");
 
@@ -35,6 +36,11 @@ namespace WorldActionSystem
 
             prefabListWorp = sobj.FindProperty("prefabList");
             prefabListWorpAdapt = new DragAdapt(prefabListWorp, "prefabList");
+        }
+
+        private void OnDisable()
+        {
+            CalcuteCommandCount();
         }
 
         public override void OnInspectorGUI()
@@ -170,7 +176,8 @@ namespace WorldActionSystem
                 GameObject prefab = null;
                 var prefabProp = itemProp.FindPropertyRelative("prefab");
                 var instanceIDProp = itemProp.FindPropertyRelative("instanceID");
-                if (instanceIDProp.intValue != 0) {
+                if (instanceIDProp.intValue != 0)
+                {
                     var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
                     if (gitem != null)
                     {
@@ -259,6 +266,27 @@ namespace WorldActionSystem
                     }
                 }
             }
+        }
+
+        private void CalcuteCommandCount()
+        {
+            if (target == null) return;
+
+            var transform = (target as ActionSystem).transform;
+            var commandList = new List<ActionCommand>();
+            Utility.RetriveCommand(transform, commandList);
+            for (int i = 0; i < prefabListProp.arraySize; i++)
+            {
+                var prop = prefabListProp.GetArrayElementAtIndex(i);
+                var pfb = prop.FindPropertyRelative("prefab");
+                if (pfb.objectReferenceValue != null)
+                {
+                    var go = pfb.objectReferenceValue as GameObject;
+                    Utility.RetriveCommand(go.transform, commandList);
+                }
+            }
+            totalCommandProp.intValue = commandList.Count;
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

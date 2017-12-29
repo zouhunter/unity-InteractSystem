@@ -24,8 +24,9 @@ namespace WorldActionSystem
         private ConnectObj connectObj;
         private Collider firstCollider;
         private LineRenderer line;
+        protected Config config { get; set; }
         //private float pointDistence;
-        private float hitDistence { get { return Setting.hitDistence; } }
+        private float hitDistence { get { return config.hitDistence; } }
         private Camera viewCamera { get { return CameraController.ActiveCamera; } }
 
         public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight)
@@ -81,7 +82,7 @@ namespace WorldActionSystem
         private bool TryHitNode(out Collider collider)
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, hitDistence, 1 << Setting.connectItemLayer))
+            if (Physics.Raycast(ray, out hit, hitDistence, 1 << Layers.connectItemLayer))
             {
                 if (onHoverItem != null) onHoverItem(hit.collider);
                 if (Input.GetMouseButtonDown(0))

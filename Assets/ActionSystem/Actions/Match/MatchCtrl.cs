@@ -15,7 +15,7 @@ namespace WorldActionSystem
 
         public override ControllerType CtrlType { get { return ControllerType.Match; } }
 
-        protected override int PlacePoslayerMask { get { return 1<< Setting.matchPosLayer; } }
+        protected override int PlacePoslayerMask { get { return 1<< Layers.matchPosLayer; } }
 
         protected override bool CanPlace(PlaceObj matchPos, PickUpAbleElement element, out string why)
         {

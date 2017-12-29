@@ -46,6 +46,9 @@ namespace WorldActionSystem
 
         private bool started;
         private bool completed;
+
+        private CommandController _commandCtrl;
+        protected CommandController commandCtrl { get { transform.RetriveCommandCtrl(ref _commandCtrl); return _commandCtrl; } }
         protected virtual void Awake()
         {
             RegistActionObjs();
@@ -55,7 +58,13 @@ namespace WorldActionSystem
         {
             if (coroutineCtrl == null)
                 coroutineCtrl = new ActionCtroller(this);
+            RegistToActionSystem();
         }
+        private void RegistToActionSystem()
+        {
+            commandCtrl.RegistCommand(this);
+        }
+
         private void WorpCameraID()
         {
             if (string.IsNullOrEmpty(_cameraID))

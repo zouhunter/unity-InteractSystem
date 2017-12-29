@@ -10,7 +10,7 @@ namespace WorldActionSystem
     public class ActionHightSender : ActionObjBinding
     {
         public string key;
-        private bool noticeAuto { get { return Setting.highLightNotice; } }
+        private bool noticeAuto { get { return config.highLightNotice; } }
         private string highLight { get { return "HighLightObjects"; } }
         private string unhighLight { get { return "UnHighLightObjects"; } }
 
@@ -53,11 +53,11 @@ namespace WorldActionSystem
         {
             if (open)
             {
-                EventController.NotifyObserver<string>(highLight, key);
+                eventCtrl.NotifyObserver<string>(highLight, key);
             }
             else
             {
-                EventController.NotifyObserver<string>(unhighLight, key);
+                eventCtrl.NotifyObserver<string>(unhighLight, key);
             }
         }
 

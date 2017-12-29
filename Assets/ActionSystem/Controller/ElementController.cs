@@ -8,11 +8,11 @@ namespace WorldActionSystem
 {
     public class ElementController
     {
-        private static Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
-        private static List<PlaceObj> lockQueue = new List<PlaceObj>();
-        public static bool log = false;
+        private Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
+        private List<PlaceObj> lockQueue = new List<PlaceObj>();
+        public bool log = false;
 
-        public static void Clean()
+        public void Clean()
         {
             objectList.Clear();
         }
@@ -20,7 +20,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 外部添加Element
         /// </summary>
-        public static void RegistElement(PickUpAbleElement item)
+        public void RegistElement(PickUpAbleElement item)
         {
             if (objectList.ContainsKey((string)item.Name))
             {
@@ -37,7 +37,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public static List<PickUpAbleElement> GetElements(string elementName)
+        public List<PickUpAbleElement> GetElements(string elementName)
         {
             if (objectList.ContainsKey(elementName))
             {
@@ -55,7 +55,7 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public static PickUpAbleElement GetUnInstalledObj(string elementName)
+        public PickUpAbleElement GetUnInstalledObj(string elementName)
         {
             List<PickUpAbleElement> listObj;
 
@@ -72,13 +72,13 @@ namespace WorldActionSystem
             throw new Exception("配制错误,缺少" + elementName);
         }
 
-        public static void ActiveElements(PlaceObj element)
+        public void ActiveElements(PlaceObj element)
         {
 
             var actived = lockQueue.Find(x => x.Name == element.name);
             if (actived == null)
             {
-                var objs = ElementController.GetElements(element.Name);
+                var objs = GetElements(element.Name);
                 if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {
@@ -92,14 +92,14 @@ namespace WorldActionSystem
             }
             lockQueue.Add(element);
         }
-        public static void CompleteElements(PlaceObj element, bool undo)
+        public void CompleteElements(PlaceObj element, bool undo)
         {
 
             lockQueue.Remove(element);
             var active = lockQueue.Find(x => x.Name == element.Name);
             if (active == null)
             {
-                var objs = ElementController.GetElements(element.Name);
+                var objs = GetElements(element.Name);
                 if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {

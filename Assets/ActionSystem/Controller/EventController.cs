@@ -228,21 +228,21 @@ namespace WorldActionSystem
         }
     }
 
-    internal static class EventController
+    public class EventController
     {
-        private static IDictionary<string, List<IEventItem>> m_observerMap;
+        private IDictionary<string, List<IEventItem>> m_observerMap;
 
-        public static UnityAction<string> MessageNotHandled { get; set; }
+        public UnityAction<string> MessageNotHandled { get; set; }
 
-        static EventController()
+        public EventController()
         {
             m_observerMap = new Dictionary<string, List<IEventItem>>();
         }
-        public static void Clean()
+        public void Clean()
         {
             m_observerMap.Clear();
         }
-        public static void NoMessageHandle(string rMessage)
+        public void NoMessageHandle(string rMessage)
         {
             if (MessageNotHandled == null)
             {
@@ -255,28 +255,28 @@ namespace WorldActionSystem
         }
 
         #region 注册注销事件
-        public static void AddDelegate<T>(string key, UnityAction<T> handle)
+        public void AddDelegate<T>(string key, UnityAction<T> handle)
         {
             if (handle == null) return;
             EventItem<T> observer = EventItem<T>.Allocate(handle);
             RegisterObserver(key, observer);
         }
-        public static void AddDelegate(string key, UnityAction handle)
+        public void AddDelegate(string key, UnityAction handle)
         {
             if (handle == null) return;
             EventItem observer = EventItem.Allocate(handle);
             RegisterObserver(key, observer);
         }
 
-        public static void RemoveDelegate<T>(string key, UnityAction<T> handle)
+        public void RemoveDelegate<T>(string key, UnityAction<T> handle)
         {
             ReMoveObserver(key, handle);
         }
-        public static void RemoveDelegate(string key, UnityAction handle)
+        public void RemoveDelegate(string key, UnityAction handle)
         {
             ReMoveObserver(key, handle);
         }
-        public static void RemoveDelegates(string key)
+        public void RemoveDelegates(string key)
         {
             if (m_observerMap.ContainsKey(key))
             {
@@ -286,7 +286,7 @@ namespace WorldActionSystem
         #endregion
 
         #region 触发事件
-        public static void NotifyObserver(string key)
+        public void NotifyObserver(string key)
         {
             if (m_observerMap.ContainsKey(key))
             {
@@ -309,7 +309,7 @@ namespace WorldActionSystem
                 NoMessageHandle(key);
             }
         }
-        public static void NotifyObserver<T>(string key, T value)
+        public void NotifyObserver<T>(string key, T value)
         {
             if (m_observerMap.ContainsKey(key))
             {
@@ -327,7 +327,7 @@ namespace WorldActionSystem
         }
         #endregion
 
-        private static void RegisterObserver(string key, IEventItem observer)
+        private void RegisterObserver(string key, IEventItem observer)
         {
             if (m_observerMap.ContainsKey(key))
             {
@@ -342,7 +342,7 @@ namespace WorldActionSystem
             }
         }
 
-        private static bool ReMoveObserver(string key, object handle)
+        private bool ReMoveObserver(string key, object handle)
         {
             if (handle == null) return false;
             if (m_observerMap.ContainsKey(key))

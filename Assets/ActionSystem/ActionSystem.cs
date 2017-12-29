@@ -7,59 +7,69 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ActionSystem : MonoBehaviour
+    public class ActionSystem : MonoBehaviour, IActionSystem
     {
-        private static ActionSystem instance = default(ActionSystem);
-        protected ActionSystem() { }
-        public static ActionSystem Instance
+        public int totalCommand;
+        public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
+
+        #region Events
+        public event UserError onUserError;//步骤操作错误
+        public event CommandExecute onCommandExecute;
+        #endregion
+
+        #region Propertys
+        internal IRemoteController RemoteController { get { return remoteController; } }
+        internal IActionStap[] ActiveStaps { get { return steps; } }
+        internal CommandController CommandCtrl
         {
             get
             {
-                return instance;
+                return commandCtrl;
             }
-
         }
-        public event UserError onUserError;//步骤操作错误
-        public event CommandExecute onCommandExecute;
-        public IRemoteController RemoteController { get { return remoteController; } }
-        public IActionStap[] ActiveStaps { get { return steps; } }
-        private IRemoteController remoteController;
+        internal ElementController ElementCtrl
+        {
+            get
+            {
+                return elementCtrl;
+            }
+        }
+        internal EventController EventCtrl
+        {
+            get
+            {
+                return eventCtrl;
+            }
+        }
+        internal Config Config
+        {
+            get
+            {
+                return config;
+            }
+        }
+        #endregion
+
+        #region Private
         private IActionStap[] steps;
-        private CommandController commandCtrl = new WorldActionSystem.CommandController();
-        private List<IActionCommand> activeCommands;
-        private RegistCmds onCommandRegist;
-        public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
+        private IRemoteController remoteController;
+        private CommandController commandCtrl = new CommandController();
+        private ElementController elementCtrl = new ElementController();
+        private EventController eventCtrl = new EventController();
+        private Config config = new Config();
+        private RegistCommandList onCommandRegisted { get; set; }
+        #endregion
 
-        #region Interface Fuctions
-
+        #region UnityFunctions
         private void Awake()
         {
-            instance = this;
-        }
-
-        private void Start()
-        {
-            var cmds = new List<ActionCommand>();
-            RetriveCommand(cmds);//自身加载
-            CreateAndRegistCommands(cmds);//动态加载
-            activeCommands = commandCtrl.RegistTriggers(cmds.ToArray(), OnStepComplete, OnCommandExectute);
-            if (onCommandRegist != null) onCommandRegist.Invoke(activeCommands);
-        }
-        private void CreateAndRegistCommands(List<ActionCommand> cmds)
-        {
-            CreateObjects((cmd) =>
-            {
-                cmd.RegistAsOperate(OnUserError);
-                cmds.Add(cmd);
-            });
-        }
-        private void RetriveCommand(List<ActionCommand> cmds)
-        {
-            RetriveCommand(transform, (cmd) =>
-            {
-                cmd.RegistAsOperate(OnUserError);
-                cmds.Add(cmd);
-            });
+            commandCtrl.InitCommand(totalCommand, OnCommandExectute, OnStepComplete, OnUserError,
+                (x) =>
+                {
+                    if (onCommandRegisted != null)
+                        onCommandRegisted.Invoke(x);
+                });
+            CreateObjects();
         }
         #endregion
 
@@ -67,25 +77,23 @@ namespace WorldActionSystem
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
-        public static IEnumerator LunchActionSystem<T>(T[] steps, UnityAction<ActionSystem, T[]> onLunchOK) where T : IActionStap
+        public void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK, Config config = null) where T : IActionStap
         {
             Debug.Assert(steps != null);
-            yield return new WaitUntil(() => Instance != null);
-
-            Instance.onCommandRegist = (commandList) =>
+            config = config == null ? new Config() : config;
+            onCommandRegisted = (activeCommands) =>
             {
-                Instance.steps = ConfigSteps<T>(Instance.activeCommands, steps);//重新计算步骤
-                Instance.activeCommands = GetIActionCommandList(Instance.activeCommands, Instance.steps);
-                Instance.remoteController = new RemoteController(Instance.activeCommands);
-                onLunchOK.Invoke(Instance, Array.ConvertAll<IActionStap, T>(Instance.steps, x => (T)x));
+                this.steps = ConfigSteps<T>(activeCommands, steps);//重新计算步骤
+                activeCommands = GetIActionCommandList(activeCommands, this.steps);
+                remoteController = new RemoteController(activeCommands);
+                onLunchOK.Invoke(Array.ConvertAll<IActionStap, T>(this.steps, x => (T)x));
             };
 
-            if (Instance.activeCommands != null)
+            if (commandCtrl.CommandRegisted)
             {
-                Instance.onCommandRegist.Invoke(Instance.activeCommands);
+                onCommandRegisted.Invoke(commandCtrl.CommandList);
             }
         }
-
         #endregion
 
         #region private Funtions
@@ -94,7 +102,7 @@ namespace WorldActionSystem
         /// </summary>
         private void OnStepComplete(string stepName)
         {
-            if(remoteController.CurrCommand != null && remoteController.CurrCommand.StepName == stepName)
+            if (remoteController.CurrCommand != null && remoteController.CurrCommand.StepName == stepName)
             {
                 remoteController.OnEndExecuteCommand();
             }
@@ -104,9 +112,9 @@ namespace WorldActionSystem
             }
         }
 
-        private void OnCommandExectute(string stepName,int totalCount,int currentID)
+        private void OnCommandExectute(string stepName, int totalCount, int currentID)
         {
-            if(onCommandExecute != null)
+            if (onCommandExecute != null)
             {
                 onCommandExecute.Invoke(stepName, totalCount, currentID);
             }
@@ -121,18 +129,10 @@ namespace WorldActionSystem
         {
             if (onUserError != null) onUserError.Invoke(stepName, error);
         }
-
         /// <summary>
-        /// 当完成命令对象注册
+        /// 创建动态对象 
         /// </summary>
-        /// <param name="cmdList"></param>
-        private void OnCommandRegistComplete(List<IActionCommand> cmdList)
-        {
-            instance.activeCommands = cmdList;
-            if (onCommandRegist != null) onCommandRegist.Invoke(cmdList);
-        }
-
-        internal void CreateObjects(UnityAction<ActionCommand> onCreateCommand)
+        private void CreateObjects()
         {
             foreach (var item in prefabList)
             {
@@ -154,58 +154,8 @@ namespace WorldActionSystem
                 {
                     TransUtil.LoadmatrixInfo(item.matrix, created.transform);
                 }
-
-
-                if (item.containsCommand)
-                {
-                    RetriveCommand(created.transform, onCreateCommand);
-                }
             }
         }
-
-        private void RetriveCommand(Transform trans, UnityAction<ActionCommand> onRetive)
-        {
-            if (!trans.gameObject.activeSelf) return;
-            var coms = trans.GetComponents<ActionCommand>();
-            if (coms != null && coms.Length > 0)
-            {
-                foreach (var com in coms)
-                {
-                    onRetive(com);
-                }
-                return;
-            }
-            else
-            {
-
-                foreach (Transform child in trans)
-                {
-                    RetriveCommand(child, onRetive);
-                }
-            }
-
-        }
-
-        private void RetivePickElement(Transform trans, UnityAction<PickUpAbleElement> onRetive)
-        {
-            if (!trans.gameObject.activeSelf) return;
-            var com = trans.GetComponent<PickUpAbleElement>();
-            if (com)
-            {
-                onRetive(com);
-                return;
-            }
-            else
-            {
-                foreach (Transform child in trans)
-                {
-                    RetivePickElement(child, onRetive);
-                }
-            }
-
-        }
-
-
         /// 重置步骤
         /// </summary>
         /// <param name="commandDic"></param>
@@ -254,12 +204,7 @@ namespace WorldActionSystem
         }
 
         #endregion
-        private void OnDestroy()
-        {
-            ElementController.Clean();
-            EventController.Clean();
-            Setting.ResetDefult();
-        }
+
     }
 
 }
