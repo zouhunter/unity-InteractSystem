@@ -15,8 +15,8 @@ namespace WorldActionSystem
     {
         protected bool swink;
         protected string query;
-
         protected SerializedProperty script;
+        protected SerializedProperty configProp;
         protected SerializedProperty totalCommandProp;
 
         protected SerializedProperty prefabListProp;
@@ -29,13 +29,14 @@ namespace WorldActionSystem
         {
             script = serializedObject.FindProperty("m_Script");
             totalCommandProp = serializedObject.FindProperty("totalCommand");
+            configProp = serializedObject.FindProperty("config");
             prefabListProp = serializedObject.FindProperty("prefabList");
             prefabListPropAdapt = new DragAdapt(prefabListProp, "prefabList");
-
             var sobj = new SerializedObject(ScriptableObject.CreateInstance<ActionSystemObj>());
 
             prefabListWorp = sobj.FindProperty("prefabList");
             prefabListWorpAdapt = new DragAdapt(prefabListWorp, "prefabList");
+            CalcuteCommandCount();
         }
 
         private void OnDisable()
@@ -192,11 +193,11 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    var parentProp = itemProp.FindPropertyRelative("parent");
                     var matrixProp = itemProp.FindPropertyRelative("matrix");
-                    var reparentProp = itemProp.FindPropertyRelative("reparent");
                     var rematrixProp = itemProp.FindPropertyRelative("rematrix");
-                    ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, reparentProp, parentProp, rematrixProp, matrixProp);
+                    var containsCommandProp = itemProp.FindPropertyRelative("containsCommand");
+                    var containsPickupProp = itemProp.FindPropertyRelative("containsPickup");
+                    ActionEditorUtility.LoadPrefab(prefabProp, containsCommandProp, containsPickupProp, instanceIDProp,  rematrixProp, matrixProp);
                 }
 
             }
@@ -274,15 +275,33 @@ namespace WorldActionSystem
 
             var transform = (target as ActionSystem).transform;
             var commandList = new List<ActionCommand>();
-            Utility.RetriveCommand(transform, commandList);
+            Utility.RetriveCommand(transform, (x)=> {if(!commandList.Contains(x)) commandList.Add(x); });
             for (int i = 0; i < prefabListProp.arraySize; i++)
             {
                 var prop = prefabListProp.GetArrayElementAtIndex(i);
                 var pfb = prop.FindPropertyRelative("prefab");
+
+                var contaionCommand = prop.FindPropertyRelative("containsCommand");
+                contaionCommand.boolValue = false;
+                var contaionPickUp = prop.FindPropertyRelative("containsPickup");
+                contaionPickUp.boolValue = false;
+
                 if (pfb.objectReferenceValue != null)
                 {
                     var go = pfb.objectReferenceValue as GameObject;
-                    Utility.RetriveCommand(go.transform, commandList);
+                    Utility.RetriveCommand(go.transform, (x)=> {
+                        if(x != null)
+                        {
+                            contaionCommand.boolValue = true;
+                            if (!commandList.Contains(x)) commandList.Add(x);
+                        }
+                    });
+                    Utility.RetivePickElement(go.transform, (x) => {
+                        if (x != null)
+                        {
+                            contaionPickUp.boolValue = true;
+                        }
+                    });
                 }
             }
             totalCommandProp.intValue = commandList.Count;

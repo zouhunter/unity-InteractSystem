@@ -27,11 +27,10 @@ namespace WorldActionSystem
         protected Config config { get; set; }
         //private float pointDistence;
         private float hitDistence { get { return config.hitDistence; } }
-        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
-
-        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight)
+        private Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
+        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight,Config config)
         {
-            //this.pointDistence = pointDistence;
+            this.config = config;
             this.line = lineRender;
             InitConnectObj(lineMaterial, lineWight);
         }

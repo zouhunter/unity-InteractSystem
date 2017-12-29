@@ -19,6 +19,8 @@ namespace WorldActionSystem
         public string _name;
         private Config _config;
         protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
+        private ElementController _elementCtrl;
+        protected ElementController elementCtrl { get { transform.RetriveElementCtrl(ref _elementCtrl);return _elementCtrl; } }
         public int animTime { get { return config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
@@ -77,12 +79,9 @@ namespace WorldActionSystem
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
+            elementCtrl.RegistElement(this);
         }
-        protected void TryRegist()
-        {
-            transform.GetComponentInParent<ActionSystem>().ElementCtrl.RegistElement(this);
-        }
-
+        
         protected virtual void InitRender()
         {
             if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();

@@ -94,7 +94,7 @@ namespace WorldActionSystem
         protected string resonwhy;
         protected Config config { get; set; }
         protected float hitDistence { get { return config.hitDistence; } }
-        protected Camera viewCamera { get { return CameraController.ActiveCamera; } }
+        protected Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
         protected bool activeNotice { get { return config.highLightNotice; } }
         protected Ray disRay;
         protected RaycastHit disHit;
@@ -102,9 +102,10 @@ namespace WorldActionSystem
         protected abstract int PlacePoslayerMask { get; }//1 << Setting.installPosLayer
         private UnityAction<IPlaceItem> onSelect;
         protected const float minDistence = 1f;
-        public PlaceController(UnityAction<IPlaceItem> onSelect)
+        public PlaceController(UnityAction<IPlaceItem> onSelect,Config config)
         {
             this.onSelect = onSelect;
+            this.config = config;
             highLight = new ShaderHighLight();
         }
         #region 鼠标操作事件

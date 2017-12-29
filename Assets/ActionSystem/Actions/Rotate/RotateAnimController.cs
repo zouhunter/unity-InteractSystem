@@ -18,8 +18,11 @@ namespace WorldActionSystem
         protected Config config { get; set; }
         private float distence { get { return config.hitDistence; } }
 
-        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
-
+        private Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
+        public RotateAnimController(Config config)
+        {
+            this.config = config;
+        }
         public void Update()
         {
             if (TrySelectRotateObj())

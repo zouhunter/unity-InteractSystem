@@ -22,9 +22,13 @@ namespace WorldActionSystem
         private ClickObj hitObj;
         private Vector3 screenPoint;
         private float distence = 10;
-        private Camera viewCamera { get { return CameraController.ActiveCamera; } }
+        private Camera viewCamera { get { return CameraController.GetActiveCamera(config.useOperateCamera); } }
         private GameObject lastSelected;
-
+        private Config config;
+        public ClickContrller(Config config)
+        {
+            this.config = config;
+        }
         public UnityAction<string> UserError { get; set; }
 
         void OnBtnClicked(ClickObj obj)
@@ -98,21 +102,6 @@ namespace WorldActionSystem
                     OnClickEmpty();
                 }
             }
-        }
-
-        public void OnStartExecute(bool forceAuto)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public void OnEndExecute()
-        {
-            //throw new NotImplementedException();
-        }
-
-        public void OnUnDoExecute()
-        {
-            //throw new NotImplementedException();
         }
     }
 

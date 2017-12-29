@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 457106}
-  - 114: {fileID: 11408048}
+  - component: {fileID: 457106}
+  - component: {fileID: 11408048}
   m_Layer: 0
   m_Name: rotateAnim
   m_TagString: Untagged
@@ -21,13 +21,13 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 450912}
-  - 33: {fileID: 3307564}
-  - 65: {fileID: 6517000}
-  - 23: {fileID: 2396340}
-  - 114: {fileID: 11425104}
+  - component: {fileID: 450912}
+  - component: {fileID: 3307564}
+  - component: {fileID: 6517000}
+  - component: {fileID: 2396340}
+  - component: {fileID: 11425104}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -40,10 +40,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 444728}
-  - 114: {fileID: 11420146}
+  - component: {fileID: 444728}
+  - component: {fileID: 11420146}
   m_Layer: 0
   m_Name: rotanim
   m_TagString: Untagged
@@ -64,6 +64,7 @@ Transform:
   - {fileID: 450912}
   m_Father: {fileID: 457106}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &450912
 Transform:
   m_ObjectHideFlags: 1
@@ -76,6 +77,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 444728}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &457106
 Transform:
   m_ObjectHideFlags: 1
@@ -89,6 +91,7 @@ Transform:
   - {fileID: 444728}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &2396340
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -98,22 +101,28 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &3307564
 MeshFilter:
@@ -146,23 +155,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stepName: rotateanim
-  executeIndex: 2
-  m_viewCamera: {fileID: 0}
+  _queueID: 0
+  _cameraID: defult
+  commandType: 0
+  lineWight: 0.1
+  lineMaterial: {fileID: 0}
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: WorldActionSystem.StepEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: WorldActionSystem.StepEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onBeforePlayEnd:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: WorldActionSystem.StepEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &11420146
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -174,22 +186,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_name: 
   startActive: 0
   endActive: 1
   queueID: 0
-  viewObj: {fileID: 0}
-  highLightColor: {r: 0, g: 1, b: 0, a: 1}
+  _queueInAuto: 1
+  _cameraID: 
+  anglePos: {fileID: 0}
   onBeforeStart:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  onBeforeUnDo:
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onBeforeComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  onBeforeComplete:
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
@@ -207,7 +221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c1700754e4bf74c941870f232c0a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPos: {x: 5, y: 0, z: 5}
+  targetTrans: {fileID: 0}
+  time: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -10,23 +10,20 @@ namespace WorldActionSystem
     [CustomPropertyDrawer(typeof(ActionPrefabItem), true)]
     public class ActionPrefabItemDrawer : PropertyDrawer
     {
-        protected SerializedProperty reparentProp;
         protected SerializedProperty containsCommandProp;
+        protected SerializedProperty containsPickupProp;
         protected SerializedProperty rematrixProp;
         protected SerializedProperty matrixProp;
 
         protected SerializedProperty instanceIDProp;
-        protected SerializedProperty parentProp;
         protected SerializedProperty prefabProp;
         protected SerializedProperty ignoreProp;
-
         protected void FindCommonPropertys(SerializedProperty property)
         {
             rematrixProp = property.FindPropertyRelative("rematrix");
             matrixProp = property.FindPropertyRelative("matrix");
-            reparentProp = property.FindPropertyRelative("reparent");
+            containsPickupProp = property.FindPropertyRelative("containsPickup");
             instanceIDProp = property.FindPropertyRelative("instanceID");
-            parentProp = property.FindPropertyRelative("parent");
             containsCommandProp = property.FindPropertyRelative("containsCommand");
             ignoreProp = property.FindPropertyRelative("ignore");
         }
@@ -35,7 +32,7 @@ namespace WorldActionSystem
         {
             FindCommonPropertys(property);
             prefabProp = property.FindPropertyRelative("prefab");
-            return (property.isExpanded ? reparentProp.boolValue ? 4 : 2 : 1) * EditorGUIUtility.singleLineHeight;
+            return (property.isExpanded ? 2:1)* EditorGUIUtility.singleLineHeight;
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -50,7 +47,7 @@ namespace WorldActionSystem
                 property.isExpanded = !property.isExpanded;
                 if (property.isExpanded)
                 {
-                    ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, reparentProp, parentProp, rematrixProp, matrixProp);
+                    ActionEditorUtility.LoadPrefab(prefabProp,containsCommandProp,containsPickupProp, instanceIDProp, rematrixProp, matrixProp);
                 }
                 else
                 {
@@ -112,23 +109,17 @@ namespace WorldActionSystem
 
         protected void DrawOptions(Rect rect)
         {
-            var tempRect = rect;
             var optionCount = 4;
             var width = rect.width / optionCount;
             var choiseRect = new Rect(rect.x, rect.y, width, rect.height);
             rematrixProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Matrix", rematrixProp.boolValue);
             choiseRect.x += width;
-            reparentProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Parent", reparentProp.boolValue);
-            choiseRect.x += width;
-            containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Command", containsCommandProp.boolValue);
-            choiseRect.x += width;
+            //containsPickupProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Pickup", containsPickupProp.boolValue);
+            //choiseRect.x += width;
+            //containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Command", containsCommandProp.boolValue);
+            //choiseRect.x += width;
             ignoreProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "[Ignore]", ignoreProp.boolValue);
             choiseRect.x += width;
-            if (reparentProp.boolValue)
-            {
-                tempRect.y += 1.5f * EditorGUIUtility.singleLineHeight;
-                EditorGUI.PropertyField(tempRect, parentProp);
-            }
         }
 
         protected void InformationShow(Rect rect)
@@ -142,7 +133,7 @@ namespace WorldActionSystem
                 var infoRect = rect;
                 infoRect.x = infoRect.width - 80;
                 infoRect.width = 25;
-                if (reparentProp.boolValue)
+                if (containsPickupProp.boolValue)
                 {
                     GUI.color = new Color(0.3f, 0.5f, 0.8f);
                     EditorGUI.SelectableLabel(infoRect, "[p]");

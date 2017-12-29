@@ -189,7 +189,7 @@ namespace WorldActionSystem
         void Start()
         {
             panel.SetActive(false);
-            actionSystem.LunchActionSystem(steps, ( newStep)=> {
+            actionSystem.LunchActionSystem(steps, (newStep)=> {
                 steps = newStep;
                 actionSystem.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
             });

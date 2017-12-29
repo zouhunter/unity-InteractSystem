@@ -51,22 +51,22 @@ namespace WorldActionSystem
             switch (type)
             {
                 case ControllerType.Install:
-                    var installCtrl = new InstallCtrl(OnPickUpObj);
+                    var installCtrl = new InstallCtrl(OnPickUpObj,config);
                     installCtrl.UserError = trigger.UserError;
                     controllerList.Add(installCtrl);
                     break;
                 case ControllerType.Match:
-                    var matchCtrl = new MatchCtrl(OnPickUpObj);
+                    var matchCtrl = new MatchCtrl(OnPickUpObj,config);
                     matchCtrl.UserError = trigger.UserError;
                     controllerList.Add(matchCtrl);
                     break;
                 case ControllerType.Click:
-                    var clickCtrl = new ClickContrller();
+                    var clickCtrl = new ClickContrller(config);
                     clickCtrl.UserError = trigger.UserError;
                     controllerList.Add(clickCtrl);
                     break;
                 case ControllerType.Rotate:
-                    var rotAnimCtrl = new RotateAnimController();
+                    var rotAnimCtrl = new RotateAnimController(config);
                     rotAnimCtrl.UserError = trigger.UserError;
                     controllerList.Add(rotAnimCtrl);
                     break;
@@ -75,12 +75,12 @@ namespace WorldActionSystem
                     if (lineRender == null){
                         lineRender = trigger.gameObject.AddComponent<LineRenderer>();
                     }
-                    var connectCtrl = new ConnectCtrl(lineRender, trigger.lineMaterial, trigger.lineWight);
+                    var connectCtrl = new ConnectCtrl(lineRender, trigger.lineMaterial, trigger.lineWight,config);
                     connectCtrl.onError = trigger.UserError;
                     controllerList.Add(connectCtrl);
                     break;
                 case ControllerType.Rope:
-                    var ropCtrl = new RopeController(OnPickUpObj);
+                    var ropCtrl = new RopeController(OnPickUpObj,config);
                     ropCtrl.UserError = trigger.UserError;
                     controllerList.Add(ropCtrl);
                     break;

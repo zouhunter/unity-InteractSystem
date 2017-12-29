@@ -44,7 +44,8 @@ namespace WorldActionSystem
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
         protected AngleCtroller angleCtrl { get { return AngleCtroller.Instance; } }
-        protected ElementController elementCtrl { get; set; }
+        private ElementController _elementCtrl;
+        protected ElementController elementCtrl { get { transform.RetriveElementCtrl(ref _elementCtrl);return _elementCtrl; } }
         private Config _config;
         protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
         public abstract ControllerType CtrlType { get; }

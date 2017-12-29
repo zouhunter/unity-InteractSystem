@@ -9,7 +9,7 @@ namespace WorldActionSystem
 
     public class InstallCtrl : PlaceController
     {
-        public InstallCtrl(UnityAction<IPlaceItem> onSelect) : base(onSelect)
+        public InstallCtrl(UnityAction<IPlaceItem> onSelect,Config config) : base(onSelect,config)
         {
         }
 

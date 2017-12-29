@@ -444,13 +444,14 @@ namespace HighlightingSystem
 				Debug.LogWarning("HighlightingSystem : Image effects is not supported on this platform!");
 				return false;
 			}
-			
-			// Render Textures supported?
-			if (!SystemInfo.supportsRenderTextures)
+#if !UNITY_5_6_OR_NEWER
+            // Render Textures supported?
+            if (!SystemInfo.supportsRenderTextures)
 			{
 				Debug.LogWarning("HighlightingSystem : RenderTextures is not supported on this platform!");
 				return false;
 			}
+#endif
 			
 			// Required Render Texture Format supported?
 			if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
@@ -580,6 +581,6 @@ namespace HighlightingSystem
 			renderBuffer.ReleaseTemporaryRT(ShaderPropertyID._HighlightingBlur1);
 			renderBuffer.ReleaseTemporaryRT(ShaderPropertyID._HighlightingBlur2);
 		}
-		#endregion
+#endregion
 	}
 }

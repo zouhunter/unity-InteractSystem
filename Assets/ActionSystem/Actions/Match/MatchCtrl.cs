@@ -9,7 +9,7 @@ namespace WorldActionSystem
 
     public class MatchCtrl : PlaceController
     {
-        public MatchCtrl(UnityAction<IPlaceItem> onSelect) : base(onSelect)
+        public MatchCtrl(UnityAction<IPlaceItem> onSelect, Config config) : base(onSelect, config)
         {
         }
 

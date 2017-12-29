@@ -41,21 +41,17 @@ namespace WorldActionSystem
                 return _cameraView;
             }
         }
-        protected static Config config { get; set; }
-        internal static Camera ActiveCamera
-        {
-            get
-            {
-                if (!config.useOperateCamera || viewCamera == null)
-                {
-                    return mainCamera;
-                }
-                else
-                {
-                    return viewCamera;
-                }
-            }
 
+        internal static Camera GetActiveCamera(bool useOperateCamera)
+        {
+            if (!useOperateCamera || viewCamera == null)
+            {
+                return mainCamera;
+            }
+            else
+            {
+                return viewCamera;
+            }
         }
         internal const string defultID = "defult";
         private static Coroutine lastCoroutine;

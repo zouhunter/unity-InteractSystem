@@ -15,15 +15,20 @@ namespace WorldActionSystem
 
     public static class Utility
     {
-        internal static void RetriveCommandCtrl(this Transform trans,ref CommandController ctrl)
+        public const string commandParentName = "Triggers";
+        public const string pickupParentName = "Elements";
+
+        internal static void RetriveCommandCtrl(this Transform trans, ref CommandController ctrl)
         {
-            if (ctrl == null){
+            if (ctrl == null)
+            {
                 ctrl = trans.GetComponentInParent<ActionSystem>().CommandCtrl;
             }
         }
         internal static void RetriveElementCtrl(this Transform trans, ref ElementController ctrl)
         {
-            if (ctrl == null){
+            if (ctrl == null)
+            {
                 ctrl = trans.GetComponentInParent<ActionSystem>().ElementCtrl;
             }
         }
@@ -41,14 +46,14 @@ namespace WorldActionSystem
                 ctrl = trans.GetComponentInParent<ActionSystem>().EventCtrl;
             }
         }
-        public static void RetriveCommand(Transform trans, List<ActionCommand> list)
+        public static void RetriveCommand(Transform trans, UnityAction<ActionCommand> onRetive)
         {
             var coms = trans.GetComponents<ActionCommand>();
             if (coms != null && coms.Length > 0)
             {
                 foreach (var com in coms)
                 {
-                    if (!list.Contains(com)) list.Add(com);
+                    onRetive(com);
                 }
                 return;
             }
@@ -56,7 +61,7 @@ namespace WorldActionSystem
             {
                 foreach (Transform child in trans)
                 {
-                    RetriveCommand(child, list);
+                    RetriveCommand(child, onRetive);
                 }
             }
 
@@ -81,5 +86,55 @@ namespace WorldActionSystem
 
         }
 
+        public static void CreateRunTimeObjects(Transform transform, List<ActionPrefabItem> prefabList)
+        {
+           
+            foreach (var item in prefabList)
+            {
+                if (item.ignore) continue;
+
+                var parent = GetParent(transform, item.containsCommand, item.containsPickup);
+
+                var created = CreateRunTimeObject(item.prefab, parent);
+
+                if (item.rematrix)
+                {
+                    TransUtil.LoadmatrixInfo(item.matrix, created.transform);
+                }
+            }
+        }
+        public static Transform GetParent(Transform transform, bool containsCommand, bool containsPickup)
+        {
+            Transform parent = transform;
+            if (containsCommand)
+            {
+                var commandParent = transform.Find(commandParentName);
+                if (commandParent == null)
+                {
+                    commandParent = new GameObject(commandParentName).transform;
+                    commandParent.SetParent(transform, false);
+                }
+                parent = commandParent;
+            }
+            else if (containsPickup)
+            {
+                var pickupParent = transform.Find(pickupParentName);
+                if (pickupParent == null)
+                {
+                    pickupParent = new GameObject(pickupParentName).transform;
+                    pickupParent.SetParent(transform, false);
+                }
+                parent = pickupParent;
+            }
+            return parent;
+        }
+        private static GameObject CreateRunTimeObject(GameObject prefab,Transform parent)
+        {
+            prefab.gameObject.SetActive(true);
+            var created = GameObject.Instantiate(prefab);
+            created.name = prefab.name;
+            created.transform.SetParent(parent, false);
+            return created;
+        }
     }
 }

@@ -18,7 +18,8 @@ namespace WorldActionSystem {
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
-        protected Config config { get; set; }
+        private Config _config;
+        protected Config config { get { transform.RetriveConfig(ref _config);return _config; } }
         private void Awake()
         {
             Instance = this;

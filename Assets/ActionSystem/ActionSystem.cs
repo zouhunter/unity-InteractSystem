@@ -56,6 +56,7 @@ namespace WorldActionSystem
         private CommandController commandCtrl = new CommandController();
         private ElementController elementCtrl = new ElementController();
         private EventController eventCtrl = new EventController();
+        [SerializeField]
         private Config config = new Config();
         private RegistCommandList onCommandRegisted { get; set; }
         #endregion
@@ -69,7 +70,7 @@ namespace WorldActionSystem
                     if (onCommandRegisted != null)
                         onCommandRegisted.Invoke(x);
                 });
-            CreateObjects();
+            Utility.CreateRunTimeObjects(transform, prefabList);
         }
         #endregion
 
@@ -129,33 +130,7 @@ namespace WorldActionSystem
         {
             if (onUserError != null) onUserError.Invoke(stepName, error);
         }
-        /// <summary>
-        /// 创建动态对象 
-        /// </summary>
-        private void CreateObjects()
-        {
-            foreach (var item in prefabList)
-            {
-                if (item.ignore) continue;
 
-                item.prefab.gameObject.SetActive(true);
-                var created = GameObject.Instantiate(item.prefab);
-                created.name = item.prefab.name;
-                if (item.reparent && item.parent != null)
-                {
-                    created.transform.SetParent(item.parent, false);
-                }
-                else
-                {
-                    created.transform.SetParent(transform, false);
-                }
-
-                if (item.rematrix)
-                {
-                    TransUtil.LoadmatrixInfo(item.matrix, created.transform);
-                }
-            }
-        }
         /// 重置步骤
         /// </summary>
         /// <param name="commandDic"></param>

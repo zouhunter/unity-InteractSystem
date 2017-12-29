@@ -24,9 +24,11 @@ namespace HighlightingSystem
 		{
 			typeof(MeshRenderer), 
 			typeof(SkinnedMeshRenderer), 
-			typeof(SpriteRenderer), 
-			typeof(ParticleRenderer), 
-			typeof(ParticleSystemRenderer), 
+			typeof(SpriteRenderer),
+#if !UNITY_5_6_OR_NEWER
+            typeof(ParticleRenderer), 
+#endif
+            typeof(ParticleSystemRenderer), 
 		};
 		#endregion
 

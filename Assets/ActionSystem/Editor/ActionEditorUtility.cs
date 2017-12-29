@@ -48,7 +48,7 @@ namespace WorldActionSystem
             }
         }
 
-        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty reparentProp, SerializedProperty parentProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)
+        internal static void LoadPrefab(SerializedProperty prefabProp,SerializedProperty ct_commandProp,SerializedProperty ct_pickProp, SerializedProperty instanceIDProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)
         {
             if (prefabProp.objectReferenceValue == null)
             {
@@ -68,37 +68,21 @@ namespace WorldActionSystem
             GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
             if (gopfb != null)
             {
+                var actionSystem = GameObject.FindObjectOfType<ActionSystem>();
+                var parent = actionSystem == null ? null : actionSystem.transform;
+                parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
                 GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
 
                 instanceIDProp.intValue = go.GetInstanceID();
 
-                var actionSystem = GameObject.FindObjectOfType<ActionSystem>();
-
-                if (reparentProp.boolValue)
-                {
-                    var parent = parentProp.objectReferenceValue;
-                    if (parent != null)
-                    {
-                        go.transform.SetParent(parent as Transform, false);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("坐标对象为空" + go.name);
-                    }
-                }
-                else
-                {
-                    var parent = actionSystem == null ? null : actionSystem.transform;
-                    go.transform.SetParent(parent, false);
-                }
+               
+                go.transform.SetParent(parent, false);
 
                 if (rematrixProp.boolValue)
                 {
                     LoadmatrixInfo(matrixProp, go.transform);
                 }
             }
-
-
         }
 
         internal static void SavePrefab(SerializedProperty instanceIDProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)

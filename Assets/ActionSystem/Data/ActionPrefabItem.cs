@@ -16,13 +16,9 @@ namespace WorldActionSystem
                 if (string.IsNullOrEmpty(_id))
                 {
                     var name = prefab == null ? "Null" : prefab.name;
-                    if (!reparent && !rematrix)
+                    if (!rematrix)
                     {
                         _id = name;
-                    }
-                    else if(reparent)
-                    {
-                        _id = string.Format("[{0}][{1}][{2}]", name, ((parent == null) ? "" : parent.GetHashCode().ToString()),matrix);
                     }
                     else
                     {
@@ -34,10 +30,9 @@ namespace WorldActionSystem
             }
         }
         public bool containsCommand;
+        public bool containsPickup;
         public bool rematrix;
         public Matrix4x4 matrix;
-        public bool reparent;
-        public Transform parent;
         public GameObject prefab;
         public bool ignore;
         public int CompareTo(ActionPrefabItem other)

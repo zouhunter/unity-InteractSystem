@@ -10,12 +10,13 @@ namespace WorldActionSystem
     public class CommandController
     {
         public bool CommandRegisted { get; private set; }
-        public List<IActionCommand> CommandList { get { return commandList; }}
+        public List<IActionCommand> CommandList { get { return _commandList; }}
 
-        private List<IActionCommand> commandList = new List<IActionCommand>();
+        private List<IActionCommand> _commandList = new List<IActionCommand>();
         private Dictionary<string, List<ActionCommand>> actionDic = new Dictionary<string, List<ActionCommand>>();//触发器
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
         private int totalCommand;
+        private int currentCommand;
         private StepComplete onStepComplete;
         private CommandExecute commandExecute;
         private RegistCommandList onAllCommandRegisted;
@@ -31,6 +32,7 @@ namespace WorldActionSystem
         }
         public void RegistCommand(ActionCommand command)
         {
+            currentCommand++;
             if (actionDic.ContainsKey(command.StepName))
             {
                 actionDic[command.StepName].Add(command);
@@ -44,11 +46,11 @@ namespace WorldActionSystem
 
         private void TryComplelteRegist()
         {
-            if (totalCommand <= commandList.Count)
+            if (totalCommand == currentCommand)
             {
                 RegistTriggerCommand();
                 if(onAllCommandRegisted != null){
-                    onAllCommandRegisted.Invoke(commandList);
+                    onAllCommandRegisted.Invoke(_commandList);
                 }
                 CommandRegisted = true;
             }
@@ -97,7 +99,7 @@ namespace WorldActionSystem
                         }
                         var cmd = new SequencesCommand(stepName, list);
                         seqDic.Add(stepName, cmd);
-                        commandList.Add(cmd);
+                        _commandList.Add(cmd);
                     }
                     else//单命令
                     {
@@ -108,7 +110,7 @@ namespace WorldActionSystem
                         {
                             OnCommandStartExecute(stepName, 1, 1);
                         });
-                        commandList.Add(cmd);
+                        _commandList.Add(cmd);
                     }
 
                 }
