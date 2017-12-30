@@ -56,6 +56,7 @@ namespace WorldActionSystem
         private UnityAction lastAction;
         public event UnityAction<Transform> onCameraMoveTo;
         private const float defultSpeed = 5;
+        private const float maxTime = 2f;
         private MonoBehaviour holder;
         public CameraController(MonoBehaviour holder)
         {
@@ -129,7 +130,7 @@ namespace WorldActionSystem
                 var startPos = viewCamera.transform.position;
                 var startRot = viewCamera.transform.rotation;
                 var distence = Vector3.Distance(startPos, mainCamera.transform.position);
-                var time = (distence / defultSpeed);
+                var time = Mathf.Clamp((distence / defultSpeed),0, maxTime);
                 for (float i = 0; i < time; i += Time.deltaTime)
                 {
                     viewCamera.transform.position = Vector3.Lerp(startPos, mainCamera.transform.position, i / time);
@@ -168,7 +169,7 @@ namespace WorldActionSystem
             var startRot = viewCamera.transform.rotation;
 
             var distence = Vector3.Distance(startPos, target.transform.position);
-            var time = (distence / target.Speed);
+            var time = Mathf.Clamp((distence / target.Speed), 0, maxTime);
             for (float i = 0; i < time; i += Time.deltaTime)
             {
                 viewCamera.transform.position = Vector3.Lerp(startPos, target.transform.position, i / time);
