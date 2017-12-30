@@ -11,9 +11,10 @@ public class AutoExecute : MonoBehaviour {
     [SerializeField]
     private Step[] steps;
     private string currentStep;
+    public Config config;
 	// Use this for initialization
 	void Start () {
-        Config.angleObj = angle;
+        Config.Defult = config;
         group.LunchActionSystem(steps, (worpedSteps) =>
         {
             Debug.Log("InitOK");

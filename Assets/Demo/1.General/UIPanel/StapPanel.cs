@@ -175,7 +175,7 @@ namespace WorldActionSystem
         }
         void OnNoticeStateChanged(bool isOn)
         {
-            Config.highLightNotice = isOn;
+            Config.Defult._highLightNotice = isOn;
         }
         public Text textShow;
     }
