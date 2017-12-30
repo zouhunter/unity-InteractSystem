@@ -71,11 +71,7 @@ namespace WorldActionSystem
                     currentCtrl = new RotateAnimController();
                     break;
                 case ControllerType.Connect:
-                    var lineRender = holder.GetComponentInChildren<LineRenderer>();
-                    if (lineRender == null){
-                        lineRender = holder.gameObject.AddComponent<LineRenderer>();
-                    }
-                    currentCtrl = new ConnectCtrl(lineRender, lineMaterial, lineWight);
+                    currentCtrl = new ConnectCtrl();
                     break;
                 case ControllerType.Rope:
                     currentCtrl = new RopeController();

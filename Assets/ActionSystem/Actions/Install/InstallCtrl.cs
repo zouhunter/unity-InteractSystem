@@ -50,7 +50,6 @@ namespace WorldActionSystem
         {
             pos.Attach(pickup);
             pickup.QuickInstall(pos);
-            pos.OnEndExecute(false);
         }
 
         protected override void PlaceWrong(PickUpAbleElement pickup)

@@ -21,7 +21,7 @@ namespace WorldActionSystem
         private Ray ray;
         private ClickObj hitObj;
         private Vector3 screenPoint;
-        private float distence = 10;
+        private float distence { get { return Config.hitDistence; } }
       
         private GameObject lastSelected;
 

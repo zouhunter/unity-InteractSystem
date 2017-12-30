@@ -31,10 +31,13 @@ namespace WorldActionSystem
                return Layers.installPosLayer;
             }
         }
-
-        public override void OnEndExecute(bool force)
+        protected override void Awake()
         {
-            base.OnEndExecute(force);
+            base.Awake();
+        }
+        protected override void OnBeforeComplete(bool force)
+        {
+            base.OnBeforeComplete(force);
 
             if (!AlreadyPlaced)
             {
@@ -44,12 +47,12 @@ namespace WorldActionSystem
                 obj.StepComplete();
             }
         }
-
-        public override void OnUnDoExecute()
+        protected override void OnBeforeUnDo()
         {
-            Debug.Log("UnDo:" + Name);
+            Debug.Log("OnBeforeUnDo:" + Name);
 
-            base.OnUnDoExecute();
+            base.OnBeforeUnDo();
+
             if (AlreadyPlaced)
             {
                 var obj = Detach();

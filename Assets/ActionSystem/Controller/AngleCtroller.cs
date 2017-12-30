@@ -7,26 +7,23 @@ using HighlightingSystem;
 
 namespace WorldActionSystem {
 
-    public class AngleCtroller : MonoBehaviour
+    public class AngleCtroller
     {
-        [SerializeField]
-        protected GameObject viewObj;
-        [SerializeField]
-        protected Color highLightColor = Color.green;
-
+        protected GameObject viewObj { get { return Config.angleObj; } }
+        protected Color highLightColor { get { return Config.highLightColor; } }
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
-        private ActionGroup _system;
-        private ActionGroup system { get { transform.SurchSystem(ref _system);return _system; } }
-        private void Awake()
+        private ActionSystem actionSystem;
+        public AngleCtroller(ActionSystem system)
         {
-            viewObj.SetActive(false);
+            actionSystem = system;
         }
 
         public void UnNotice(Transform target)
         {
             if (!Config.highLightNotice) return;
+            if (!Config.angleObj) return;
 
             if (actived.ContainsKey(target))
             {
@@ -38,6 +35,7 @@ namespace WorldActionSystem {
         public void Notice(Transform target,bool update = false)
         {
             if (!Config.highLightNotice) return;
+            if (!Config.angleObj) return;
 
             if (!actived.ContainsKey(target))
             {
@@ -61,8 +59,8 @@ namespace WorldActionSystem {
             }
             else
             {
-                angle = Instantiate(viewObj);
-                angle.transform.SetParent(transform);
+                angle = Object.Instantiate(viewObj);
+                angle.transform.SetParent(actionSystem.transform);
                 Highlighter high = null;
                 if (!highLightDic.TryGetValue(angle,out high))
                 {

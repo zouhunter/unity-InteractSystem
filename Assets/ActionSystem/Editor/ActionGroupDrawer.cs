@@ -19,7 +19,6 @@ namespace WorldActionSystem
         protected SerializedProperty groupKeyProp;
         protected SerializedProperty configProp;
         protected SerializedProperty totalCommandProp;
-        protected SerializedProperty angleCtrlProp;
         protected SerializedProperty prefabListProp;
         protected DragAdapt prefabListPropAdapt;
 
@@ -49,11 +48,10 @@ namespace WorldActionSystem
             script = serializedObject.FindProperty("m_Script");
             totalCommandProp = serializedObject.FindProperty("totalCommand");
             groupKeyProp = serializedObject.FindProperty("groupKey");
-            angleCtrlProp = serializedObject.FindProperty("angleCtrl");
             configProp = serializedObject.FindProperty("config");
             prefabListProp = serializedObject.FindProperty("prefabList");
             prefabListPropAdapt = new DragAdapt(prefabListProp, "prefabList");
-            var sobj = new SerializedObject(ScriptableObject.CreateInstance<ActionSystemObj>());
+            var sobj = new SerializedObject(ScriptableObject.CreateInstance<ActionGroupObj>());
 
             prefabListWorp = sobj.FindProperty("prefabList");
             prefabListWorpAdapt = new DragAdapt(prefabListWorp, "prefabList");
@@ -97,7 +95,6 @@ namespace WorldActionSystem
         private void DrawControllers()
         {
             EditorGUILayout.PropertyField(groupKeyProp);
-            EditorGUILayout.PropertyField(angleCtrlProp);
 
             if(string.IsNullOrEmpty(groupKeyProp.stringValue))
             {

@@ -43,7 +43,7 @@ namespace WorldActionSystem
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
-        protected AngleCtroller angleCtrl { get { return system.AngleCtrl; } }
+        protected AngleCtroller angleCtrl { get { return ActionSystem.Instence.angleCtrl; } }
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
@@ -83,11 +83,11 @@ namespace WorldActionSystem
 
             if (notice)
             {
-                if (angleCtrl) angleCtrl.Notice(anglePos);
+                 angleCtrl.Notice(anglePos);
             }
             else
             {
-                if (angleCtrl) angleCtrl.UnNotice(anglePos);
+                 angleCtrl.UnNotice(anglePos);
             }
 
         }
@@ -144,7 +144,7 @@ namespace WorldActionSystem
 
         private void CoreEndExecute(bool force)
         {
-            if (angleCtrl) angleCtrl.UnNotice(anglePos);
+            angleCtrl.UnNotice(anglePos);
 
             if (log) Debug.Log("OnEndExecute:" + this + ":" + force, this);
 
@@ -157,8 +157,7 @@ namespace WorldActionSystem
                 if (hooks.Length > 0){
                     hookCtrl.OnEndExecute();
                 }
-                if (onEndExecute != null)
-                {
+                if (onEndExecute != null){
                     onEndExecute.Invoke();
                 }
                 gameObject.SetActive(endActive);
@@ -171,8 +170,7 @@ namespace WorldActionSystem
 
         public virtual void OnUnDoExecute()
         {
-            if (angleCtrl)
-                angleCtrl.UnNotice(anglePos);
+            angleCtrl.UnNotice(anglePos);
 
             if (log) Debug.Log("OnUnDoExecute:" + this, this);
 

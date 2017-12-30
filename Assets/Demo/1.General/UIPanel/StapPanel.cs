@@ -205,17 +205,5 @@ namespace WorldActionSystem
         }
     }
 
-    [Serializable]
-    public class Step : IActionStap
-    {
-        public string step;
-        public string StapName
-        {
-            get
-            {
-                return step;
-            }
-        }
-
-    }
+   
 }

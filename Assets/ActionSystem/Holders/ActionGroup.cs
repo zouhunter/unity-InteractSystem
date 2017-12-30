@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public class ActionGroup : MonoBehaviour, IActionSystem
+    public class ActionGroup : MonoBehaviour
     {
         public string groupKey;
         public int totalCommand;
@@ -35,7 +35,6 @@ namespace WorldActionSystem
                 return eventCtrl;
             }
         }
-        internal AngleCtroller AngleCtrl { get { return angleCtrl; } }
         #endregion
 
         #region Private
@@ -43,8 +42,6 @@ namespace WorldActionSystem
         private IRemoteController remoteController;
         private CommandController commandCtrl = new CommandController();
         private EventController eventCtrl = new EventController();
-        [SerializeField]
-        private AngleCtroller angleCtrl;
         private RegistCommandList onCommandRegisted { get; set; }
         #endregion
 

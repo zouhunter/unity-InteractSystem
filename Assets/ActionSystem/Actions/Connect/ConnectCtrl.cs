@@ -24,8 +24,10 @@ namespace WorldActionSystem
         private ConnectObj connectObj;
         private Collider firstCollider;
         private LineRenderer line;
+        private Material lineMaterial { get { return Config.lineMaterial; } }
+        private float lineWight { get { return Config.lineWidth; } }
 
-        //private float pointDistence;
+        private GameObject lineHolder;
         private float hitDistence { get { return Config.hitDistence; } }
         private CameraController cameraCtrl
         {
@@ -35,13 +37,15 @@ namespace WorldActionSystem
             }
         }
 
-        public ConnectCtrl(LineRenderer lineRender, Material lineMaterial, float lineWight)
+        public ConnectCtrl()
         {
-            this.line = lineRender;
-            InitConnectObj(lineMaterial, lineWight);
+            lineHolder = new GameObject("lineHolder");
+            lineHolder.hideFlags = HideFlags.HideInHierarchy;
+            this.line = lineHolder.AddComponent<LineRenderer>();
+            InitConnectObj();
         }
 
-        private void InitConnectObj(Material lineMaterial, float lineWight)
+        private void InitConnectObj()
         {
 #if UNITY_5_6_OR_NEWER
             line.textureMode = LineTextureMode.Tile;

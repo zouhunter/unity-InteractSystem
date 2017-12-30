@@ -13,7 +13,7 @@ namespace WorldActionSystem
         private Camera viewCamera;
         private Camera mainCamera;
         private CameraNode currentNode;
-        private Camera currentCamera
+        public Camera currentCamera
         {
             get
             {

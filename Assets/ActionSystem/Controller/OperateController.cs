@@ -22,8 +22,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return cameraCtrl == null ?
-                    Camera.main : cameraCtrl.GetActiveCamera(Config.useOperateCamera);
+                return cameraCtrl.currentCamera;
             }
         }
         public abstract void Update();

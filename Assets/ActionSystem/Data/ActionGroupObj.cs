@@ -5,7 +5,7 @@ using System;
 using UnityEngine.Events;
 namespace WorldActionSystem
 {
-    public class ActionSystemObj : ScriptableObject
+    public class ActionGroupObj : ScriptableObject
     {
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
     }
