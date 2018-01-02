@@ -153,10 +153,10 @@ namespace WorldActionSystem
                     EditorGUI.SelectableLabel(infoRect, "[c]");
                     infoRect.x += infoRect.width;
                 }
-
+                GUI.color = new Color(0, .5f, 0, .2f);
                 if(ignoreProp.boolValue)
                 {
-                    EditorGUI.HelpBox(rect, "", MessageType.Warning);
+                    GUI.Box(rect,"");
                 }
                 GUI.color = Color.white;
             }

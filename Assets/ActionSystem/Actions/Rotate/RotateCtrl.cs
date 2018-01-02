@@ -14,6 +14,10 @@ namespace WorldActionSystem
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
+        private Vector3 originalTargetPosition;
+        private Vector3 axis;
+        private Vector3 previousMousePosition;
+
         private float distence { get { return Config.hitDistence; } }
 
         public override void Update()
@@ -37,9 +41,7 @@ namespace WorldActionSystem
             return selectedObj != null;
         }
 
-        Vector3 originalTargetPosition;
-        Vector3 axis ;
-        Vector3 previousMousePosition;
+      
 
         void TransformSelected()
         {
@@ -83,17 +85,6 @@ namespace WorldActionSystem
             return Vector3.Distance(selectedObj.transform.position, pos) < selectedObj.triggerRadius;
         }
 
-        public void OnStartExecute(bool forceAuto)
-        {
-        }
-
-        public void OnEndExecute()
-        {
-        }
-
-        public void OnUnDoExecute()
-        {
-        }
     }
 
 }

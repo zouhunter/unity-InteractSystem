@@ -12,6 +12,10 @@ namespace WorldActionSystem
     {
         [SerializeField, Header("target (child transform)")]
         private Transform targetHolder;
+        [SerializeField]
+        private float clampTime = 0.2f;
+        [SerializeField]
+        private bool clampHard;
         private float autoDragTime { get { return Config.autoExecuteTime; } }
         public override ControllerType CtrlType
         {
@@ -28,7 +32,7 @@ namespace WorldActionSystem
         {
             base.Start();
             InitPositions();
-            gameObject.layer = Layers.dragPosLayer;
+            gameObject.layer = Layers.dragItemLayer;
         }
         private void InitPositions()
         {
@@ -63,6 +67,7 @@ namespace WorldActionSystem
                 StopCoroutine(waitCoroutine);
                 waitCoroutine = null;
             }
+            transform.localPosition = targetPos;
         }
         public override void OnUnDoExecute()
         {
@@ -72,6 +77,61 @@ namespace WorldActionSystem
                 StopCoroutine(waitCoroutine);
                 waitCoroutine = null;
             }
+            transform.localPosition = startPos;
+        }
+
+        internal void Clamp()
+        {
+            if(Vector3.Dot(transform.localPosition - startPos, targetPos - startPos) < 0)
+            {
+                if (gameObject.activeInHierarchy)
+                    StartCoroutine(ClampInternal(startPos));
+            }
+            else if (Vector3.Distance(transform.localPosition, startPos) > Vector3.Distance(targetPos, startPos))
+            {
+                if (gameObject.activeInHierarchy)
+                    StartCoroutine(ClampInternal(targetPos));
+            }
+            else
+            {
+                TryTrigger();
+            }
+        }
+
+        IEnumerator ClampInternal(Vector3 pos)
+        {
+            var s_pos = transform.localPosition;
+            for (float i = 0; i < clampTime; i += Time.deltaTime)
+            {
+                transform.localPosition = Vector3.Lerp(s_pos, pos, i/clampTime);
+                yield return null;
+            }
+            TryTrigger();
+        }
+
+        private void TryTrigger()
+        {
+            if(Vector3.Distance(transform.localPosition, targetPos) < 0.2f)
+            {
+                OnEndExecute(false);
+            }
+        }
+
+        internal void TryMove(Vector3 vector3)
+        {
+            if(clampHard)
+            {
+                var newpos = transform.localPosition + vector3;
+                if(Vector3.Distance(newpos, startPos) > Vector3.Distance(targetPos,startPos))
+                {
+                    return;
+                }
+                if (Vector3.Dot(newpos - startPos,targetPos -startPos) < 0)
+                {
+                    return;
+                }
+            }
+            transform.localPosition += vector3;
         }
     }
 
