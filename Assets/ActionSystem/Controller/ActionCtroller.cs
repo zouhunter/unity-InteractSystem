@@ -87,12 +87,12 @@ namespace WorldActionSystem
             activeTypes ^= ctrlType;
         }
 
-        public virtual void OnEndExecute()
+        public virtual void OnEndExecute(ActionObjCtroller activeObjCtrl)
         {
             if (activeObjCtrl != null) activeObjCtrl.OnEndExecute();
         }
 
-        public virtual void OnUnDoExecute()
+        public virtual void OnUnDoExecute(ActionObjCtroller activeObjCtrl)
         {
             if (activeObjCtrl != null) activeObjCtrl.OnUnDoExecute();
         }

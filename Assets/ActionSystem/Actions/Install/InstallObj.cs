@@ -55,7 +55,6 @@ namespace WorldActionSystem
             if (!Complete){
                 OnEndExecute(false);
             }
-            obj.PickUpAble = false;
         }
 
         protected override void OnUnInstallComplete()

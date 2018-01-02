@@ -43,6 +43,7 @@ public class LoopExecuteBehaiver : MonoBehaviour {
         }
         else
         {
+            Debug.Log("ToAllCommandStart");
             group.RemoteController.ToAllCommandStart();
             LoopExecute();
         }

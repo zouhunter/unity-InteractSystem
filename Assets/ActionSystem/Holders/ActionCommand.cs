@@ -162,14 +162,14 @@ namespace WorldActionSystem
         public void OnEndExecute()
         {
             onBeforePlayEnd.Invoke(StepName);
-            ActionCtrl.OnEndExecute();
+            ActionCtrl.OnEndExecute(objectCtrl);
         }
 
         public virtual void UnDoExecute()
         {
             started = false;
             completed = false;
-            ActionCtrl.OnUnDoExecute();
+            ActionCtrl.OnUnDoExecute(objectCtrl);
         }
 
 
