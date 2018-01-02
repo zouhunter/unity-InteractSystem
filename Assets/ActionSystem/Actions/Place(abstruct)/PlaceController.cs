@@ -43,7 +43,6 @@ namespace WorldActionSystem
             matchCtrl = new WorldActionSystem.MatchCtrl(this);
         }
 
-
         #region 鼠标操作事件
         public override void Update()
         {
