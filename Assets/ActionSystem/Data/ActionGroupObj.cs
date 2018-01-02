@@ -7,7 +7,8 @@ namespace WorldActionSystem
 {
     public class ActionGroupObj : ScriptableObject
     {
+        public string groupKey;
+        public int totalCommand;
         public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
     }
-
 }

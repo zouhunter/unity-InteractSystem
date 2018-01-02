@@ -14,23 +14,11 @@ namespace WorldActionSystem
     public class ActionCommandDrawer : Editor
     {
         SerializedProperty commandTypeProp;
-
-        //SerializedProperty lineWightProp;
-        //SerializedProperty lineMaterialProp;
-        //SerializedProperty pointDistenceProp;
-
-        SerializedProperty onBeforeActiveProp;
-        SerializedProperty onBeforeUnDoProp;
-        SerializedProperty onBeforePlayEndProp;
-
         List<ControllerType> activeCommands = new List<ControllerType>();
 
         private void OnEnable()
         {
             commandTypeProp = serializedObject.FindProperty("commandType");
-            onBeforeActiveProp = serializedObject.FindProperty("onBeforeActive");
-            onBeforeUnDoProp = serializedObject.FindProperty("onBeforeUnDo");
-            onBeforePlayEndProp = serializedObject.FindProperty("onBeforePlayEnd");
         }
 
 
@@ -44,7 +32,6 @@ namespace WorldActionSystem
                 ModifyType();
                 SwitchDrawing();
                 DrawOptionDatas();
-                DrawEvents();
                 serializedObject.ApplyModifiedProperties();
             }
         }
@@ -139,13 +126,6 @@ namespace WorldActionSystem
         private bool ContainsType(ControllerType target)
         {
             return ((ControllerType)commandTypeProp.intValue & target) == target;
-        }
-
-        private void DrawEvents()
-        {
-            EditorGUILayout.PropertyField(onBeforeActiveProp);
-            EditorGUILayout.PropertyField(onBeforeUnDoProp);
-            EditorGUILayout.PropertyField(onBeforePlayEndProp);
         }
     }
 }

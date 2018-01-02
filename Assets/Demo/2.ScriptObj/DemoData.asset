@@ -11,188 +11,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f69cb8bf67c3154c8a0e1e4c11358f3, type: 3}
   m_Name: DemoData
   m_EditorClassIdentifier: 
+  groupKey: DemoData
+  totalCommand: 1
   prefabList:
   - instanceID: 0
-    containsCommand: 0
+    containsCommand: 1
     containsPickup: 0
-    rematrix: 0
+    rematrix: 1
     matrix:
       e00: 0
       e01: 0
-      e02: 0
+      e02: 1
       e03: 0
       e10: 0
       e11: 0
-      e12: 0
+      e12: 1
       e13: 0
       e20: 0
       e21: 0
-      e22: 0
+      e22: 1
       e23: 0
       e30: 0
       e31: 0
       e32: 0
-      e33: 0
-    prefab: {fileID: 0}
-    ignore: 0
-  - instanceID: 0
-    containsCommand: 0
-    containsPickup: 0
-    rematrix: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    prefab: {fileID: 0}
-    ignore: 0
-  - instanceID: 0
-    containsCommand: 0
-    containsPickup: 0
-    rematrix: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    prefab: {fileID: 0}
-    ignore: 0
-  - instanceID: 0
-    containsCommand: 0
-    containsPickup: 0
-    rematrix: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    prefab: {fileID: 0}
-    ignore: 0
-  - instanceID: 0
-    containsCommand: 0
-    containsPickup: 0
-    rematrix: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    prefab: {fileID: 0}
-    ignore: 0
-  - instanceID: 0
-    containsCommand: 0
-    containsPickup: 0
-    rematrix: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    prefab: {fileID: 0}
-    ignore: 0
-  - instanceID: 0
-    containsCommand: 0
-    containsPickup: 0
-    rematrix: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    prefab: {fileID: 0}
-    ignore: 0
-  - instanceID: 0
-    containsCommand: 0
-    containsPickup: 0
-    rematrix: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    prefab: {fileID: 0}
+      e33: 1
+    prefab: {fileID: 195080, guid: e00870a924cbfad4eb4bb669cc925e01, type: 2}
     ignore: 0

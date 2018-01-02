@@ -87,7 +87,7 @@ namespace WorldActionSystem
             Transform parent = transform;
             if (containsCommand)
             {
-                var commandParent = transform.Find(commandParentName);
+                var commandParent = transform == null ?null: transform.Find(commandParentName);
                 if (commandParent == null)
                 {
                     commandParent = new GameObject(commandParentName).transform;
@@ -97,7 +97,7 @@ namespace WorldActionSystem
             }
             else if (containsPickup)
             {
-                var pickupParent = transform.Find(pickupParentName);
+                var pickupParent = transform == null ? null : transform.Find(pickupParentName);
                 if (pickupParent == null)
                 {
                     pickupParent = new GameObject(pickupParentName).transform;

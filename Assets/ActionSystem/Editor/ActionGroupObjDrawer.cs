@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
@@ -10,9 +9,8 @@ using Rotorz.ReorderableList.Internal;
 
 namespace WorldActionSystem
 {
-  
-    [CustomEditor(typeof(ActionGroup)), CanEditMultipleObjects]
-    public class ActionGroupAndObjDrawer : Editor
+    [CustomEditor(typeof(ActionGroupObj)), CanEditMultipleObjects]
+    public class ActionGroupObjDrawer : Editor
     {
         protected bool swink;
         protected string query;
@@ -66,8 +64,7 @@ namespace WorldActionSystem
         {
             serializedObject.Update();
             DrawScript();
-            using (var hor = new EditorGUILayout.HorizontalScope())
-            {
+            using (var hor = new EditorGUILayout.HorizontalScope()){
                 DrawToolButtons();
             }
             DrawControllers();
@@ -95,7 +92,7 @@ namespace WorldActionSystem
         {
             EditorGUILayout.PropertyField(groupKeyProp);
 
-            if(string.IsNullOrEmpty(groupKeyProp.stringValue))
+            if (string.IsNullOrEmpty(groupKeyProp.stringValue))
             {
                 groupKeyProp.stringValue = target.name;
             }
@@ -157,7 +154,7 @@ namespace WorldActionSystem
                 }
                 else if (selected == 3)
                 {
-                    if(containCommandProp.boolValue || containsPickupProp.boolValue)
+                    if (containCommandProp.boolValue || containsPickupProp.boolValue)
                     {
                         continue;
                     }
@@ -271,7 +268,7 @@ namespace WorldActionSystem
 
         private void RemoveDouble(SerializedProperty property)
         {
-            var actionSystem = target as ActionGroup;
+            var actionSystem = target as ActionGroupObj;
             var newList = new List<ActionPrefabItem>();
             var needRemove = new List<ActionPrefabItem>();
             foreach (var item in actionSystem.prefabList)
@@ -310,7 +307,7 @@ namespace WorldActionSystem
         }
         private void SortPrefabs(SerializedProperty property)
         {
-            var actionSystem = (ActionGroup)target;
+            var actionSystem = (ActionGroupObj)target;
             actionSystem.prefabList.Sort();
             EditorUtility.SetDirty(actionSystem);
         }
@@ -340,13 +337,6 @@ namespace WorldActionSystem
             if (target == null) return;
 
             var commandList = new List<ActionCommand>();
-
-            if(target is ActionGroup)
-            {
-                var transform = (target as ActionGroup).transform;
-                Utility.RetriveCommand(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
-            }
-         
 
             for (int i = 0; i < prefabListProp.arraySize; i++)
             {
@@ -383,4 +373,5 @@ namespace WorldActionSystem
             serializedObject.ApplyModifiedProperties();
         }
     }
+
 }

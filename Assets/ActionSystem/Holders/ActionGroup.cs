@@ -46,14 +46,14 @@ namespace WorldActionSystem
         #endregion
 
         #region UnityFunctions
-        private void Awake()
+        private void Start()
         {
             commandCtrl.InitCommand(totalCommand, OnCommandExectute, OnStepComplete, OnUserError,
-                (x) =>
-                {
-                    if (onCommandRegisted != null)
-                        onCommandRegisted.Invoke(x);
-                });
+               (x) =>
+               {
+                   if (onCommandRegisted != null)
+                       onCommandRegisted.Invoke(x);
+               });
             Utility.CreateRunTimeObjects(transform, prefabList);
             ActionSystem.Instence.RegistGroup(this);
         }

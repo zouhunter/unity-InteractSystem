@@ -30,7 +30,7 @@ namespace WorldActionSystem
         }
 
         private event UnityAction<IPickUpAbleItem> onPickup;
-
+        private float timer = 0f;
         public PickUpController(ActionSystem actionSystem)
         {
             this.actionSystem = actionSystem;
@@ -40,17 +40,13 @@ namespace WorldActionSystem
         {
             if (LeftTriggered())
             {
-                if (!PickedUp)
-                {
-                    SelectAnElement();
-                }
-            }
-
-            if (CenterTriggered())
-            {
-                if (PickedUp)
+                if(HaveExecuteTwicePerSecond(ref timer))
                 {
                     PickDown();
+                }
+                else if (!PickedUp)
+                {
+                    SelectAnElement();
                 }
             }
 
@@ -65,6 +61,7 @@ namespace WorldActionSystem
                 elementDistence = minDistence;
             }
         }
+
 
         internal void PickUp(IPickUpAbleItem pickedUpObj)
         {
@@ -91,7 +88,18 @@ namespace WorldActionSystem
                 pickedUpObj = null;
             }
         }
-
+        public static bool HaveExecuteTwicePerSecond(ref float timer)
+        {
+            if (Time.time - timer < 0.5f)
+            {
+                return true;
+            }
+            else
+            {
+                timer = Time.time;
+                return false;
+            }
+        }
         private bool LeftTriggered()
         {
             return Input.GetMouseButtonDown(0);

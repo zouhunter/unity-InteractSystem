@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using WorldActionSystem;
 
-public class AutoExecute : MonoBehaviour {
+public class LoopExecuteBehaiver : MonoBehaviour {
+    [SerializeField]
+    private bool autoExecute;
     [SerializeField]
     private ActionGroup group;
     [SerializeField]
     private Step[] steps;
+ 
     private string currentStep;
     public Config config;
 	// Use this for initialization
@@ -31,7 +34,7 @@ public class AutoExecute : MonoBehaviour {
     {
         Debug.Log("LoopExecute");
 
-        if(group.RemoteController.StartExecuteCommand(LoopExecute, false))
+        if(group.RemoteController.StartExecuteCommand(LoopExecute, autoExecute))
         {
             if(group.RemoteController.CurrCommand != null)
             {

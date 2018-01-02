@@ -37,8 +37,11 @@ namespace WorldActionSystem
         public string CameraID { get { return _cameraID; } }
         public Transform anglePos;
         public UnityAction onEndExecute { get; set; }
+        [HideInInspector]
         public Toggle.ToggleEvent onBeforeStart;
+        [HideInInspector]
         public Toggle.ToggleEvent onBeforeComplete;
+        [HideInInspector]
         public UnityEvent onBeforeUnDo;
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
@@ -91,7 +94,10 @@ namespace WorldActionSystem
             }
 
         }
-
+        public virtual void OnBeforeStart(bool auto)
+        {
+            this.onBeforeStart.Invoke(auto);
+        }
         public virtual void OnStartExecute(bool auto = false)
         {
             if (log) Debug.Log("OnStartExecute:" + this);
@@ -101,7 +107,7 @@ namespace WorldActionSystem
                 _started = true;
                 _complete = false;
                 notice = true;
-                onBeforeStart.Invoke(auto);
+                OnBeforeStart(auto);
                 gameObject.SetActive(true);
             }
             else
@@ -110,6 +116,7 @@ namespace WorldActionSystem
             }
         }
 
+      
         public virtual void OnEndExecute(bool force)
         {
             notice = false;
@@ -141,7 +148,10 @@ namespace WorldActionSystem
                 }
             }
         }
-
+        public virtual void OnBeforeEnd(bool force)
+        {
+            onBeforeComplete.Invoke(force);
+        }
         private void CoreEndExecute(bool force)
         {
             angleCtrl.UnNotice(anglePos);
@@ -153,7 +163,7 @@ namespace WorldActionSystem
                 notice = false;
                 _started = true;
                 _complete = true;
-                onBeforeComplete.Invoke(force);
+                OnBeforeEnd(force);
                 if (hooks.Length > 0){
                     hookCtrl.OnEndExecute();
                 }
@@ -167,7 +177,10 @@ namespace WorldActionSystem
                 Debug.LogError("already completed", gameObject);
             }
         }
-
+        public virtual void OnBeforeUnDo()
+        {
+            onBeforeUnDo.Invoke();
+        }
         public virtual void OnUnDoExecute()
         {
             angleCtrl.UnNotice(anglePos);
@@ -179,7 +192,7 @@ namespace WorldActionSystem
                 _started = false;
                 _complete = false;
                 notice = false;
-                onBeforeUnDo.Invoke();
+                OnBeforeUnDo();
                 gameObject.SetActive(startActive);
 
                 if (hooks.Length > 0)
