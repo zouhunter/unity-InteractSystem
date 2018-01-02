@@ -12,7 +12,7 @@ namespace WorldActionSystem
         int backNumInput = 0;
         string jumpStapInput;
         int forwardNumInput = 0;
-
+        public Config config;
         public void OnbackNumInputEndEdit(string value)
         {
             if (!string.IsNullOrEmpty(value))
@@ -57,6 +57,7 @@ namespace WorldActionSystem
         /// </summary>
         void Awake()
         {
+            Config.Defult = config;
             accept.onClick.AddListener(OnAcceptButtonCilcked);
             start.onClick.AddListener(OnToStartButtonClicked);
             backAstep.onClick.AddListener(OnBackAStapButtonClicked);

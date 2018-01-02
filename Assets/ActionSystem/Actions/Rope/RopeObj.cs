@@ -17,7 +17,8 @@ namespace WorldActionSystem
                 return ControllerType.Rope;
             }
         }
-
+        [SerializeField]
+        private GameObject ropeBody;
         [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();
         [SerializeField]
@@ -42,6 +43,7 @@ namespace WorldActionSystem
         {
             rope.Regenerate(true);
         }
+       
         protected override void Start()
         {
             base.Start();
@@ -103,7 +105,9 @@ namespace WorldActionSystem
             anglePos = angleTemp;
 
             if (completeHide)
-                gameObject.SetActive(true);
+            {
+                ropeBody.gameObject.SetActive(true);
+            }
         }
  
         public override void OnBeforeEnd(bool force)
@@ -114,11 +118,15 @@ namespace WorldActionSystem
                 StopCoroutine(antoCoroutine);
 
             QuickInstallRopeNodes(ropeNodeFrom);
-
-            if (completeHide)
-                gameObject.SetActive(false);
         }
-
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            if(completeHide)
+            {
+                ropeBody.gameObject.SetActive(false);
+            }
+        }
         private IEnumerator AutoConnectRopeNodes()
         {
             Collider current;
@@ -265,17 +273,31 @@ namespace WorldActionSystem
             }
         }
 
-        internal void QuickInstallRopeNodes(List<Collider> ropeNode)
+        internal void QuickInstallRopeNodes(List<Collider> ropeNodeFrom)
         {
-            foreach (var target in ropeNode)
+            for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
-                var obj = this.ropeNodeTo.Find(x => x.name == target.name && !connected.Contains(x));
+                var from = ropeNodeFrom[i];
+                var obj = this.ropeNodeTo.Find(x => x.name == from.name && !connected.Contains(x));
+
                 if (obj != null){
-                    target.transform.position = obj.transform.position;
+                    Debug.Log("form:" + from.transform.position);
+                    Debug.Log("to:" + obj.transform.position);
+
+                    from.transform.position = obj.transform.position;
                     connected.Add(obj);
-                    connected.Add(target);
+                    connected.Add(from);
                 }
             }
+            if(completeHide)
+            {
+                Invoke("TryRegenerate", 0.1f);
+            }
+        }
+
+        private void TryRegenerate()
+        {
+            rope.Regenerate(false);
         }
     }
 }

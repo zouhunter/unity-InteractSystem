@@ -152,6 +152,7 @@ namespace WorldActionSystem
         {
             onBeforeComplete.Invoke(force);
         }
+
         private void CoreEndExecute(bool force)
         {
             angleCtrl.UnNotice(anglePos);
@@ -160,10 +161,11 @@ namespace WorldActionSystem
 
             if (!_complete)
             {
+                OnBeforeEnd(force);
+
                 notice = false;
                 _started = true;
                 _complete = true;
-                OnBeforeEnd(force);
                 if (hooks.Length > 0){
                     hookCtrl.OnEndExecute();
                 }
