@@ -210,6 +210,7 @@ namespace WorldActionSystem
         /// </summary>
         public virtual void NormalUnInstall()
         {
+            Debug.Log("NormalUnInstall");
             StopTween();
 #if !NoFunction
             tweenCompleteAction = () => { 
@@ -227,6 +228,8 @@ namespace WorldActionSystem
         /// </summary>
         public virtual void QuickUnInstall()
         {
+            Debug.Log("QuickUnInstall");
+
 #if !NoFunction
             StopTween();
             move.Pause();

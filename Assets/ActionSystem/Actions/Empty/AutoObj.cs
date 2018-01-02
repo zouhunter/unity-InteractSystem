@@ -25,14 +25,15 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            autocoroutine = StartCoroutine(AutoComplete());
+            autocoroutine = StartCoroutine(AutoExecute());
         }
 
-        IEnumerator AutoComplete()
+        IEnumerator AutoExecute()
         {
             yield return null;
             OnEndExecute(false);
         }
+
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
@@ -44,8 +45,7 @@ namespace WorldActionSystem
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            if (autocoroutine != null)
-            {
+            if (autocoroutine != null){
                 StopCoroutine(autocoroutine);
             }
         }

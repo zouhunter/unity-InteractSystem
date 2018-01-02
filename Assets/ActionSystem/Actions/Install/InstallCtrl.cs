@@ -34,7 +34,7 @@ namespace WorldActionSystem
                 why = "已经安装";
             }
             
-            else if (element.name != placeObj.Name)
+            else if (element.Name != placeObj.Name)
             {
                 canplace = false;
                 why = "零件不匹配";

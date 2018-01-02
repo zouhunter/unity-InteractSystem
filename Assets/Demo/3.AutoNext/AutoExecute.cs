@@ -7,8 +7,6 @@ public class AutoExecute : MonoBehaviour {
     [SerializeField]
     private ActionGroup group;
     [SerializeField]
-    private GameObject angle;
-    [SerializeField]
     private Step[] steps;
     private string currentStep;
     public Config config;

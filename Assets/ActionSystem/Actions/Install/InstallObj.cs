@@ -75,9 +75,10 @@ namespace WorldActionSystem
             {
                 if (AlreadyPlaced)
                 {
-                    var obj = Detach();
-                    obj.QuickUnInstall();
-                    obj.StepUnDo();
+                    /*var obj = */Detach();
+                    //obj.QuickUnInstall();
+                    //Debug.Log("un install:" + obj);
+                    //obj.StepUnDo();
                 }
                 this.obj = null;
             }

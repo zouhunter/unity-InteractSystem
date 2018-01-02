@@ -11,7 +11,7 @@ namespace WorldActionSystem
     /// 将ropeItem安装到指定RopeObj上
     /// 然后安装内部的点到对就的RopeObj上
     /// </summary>
-    public class RopeController : PlaceController
+    public class RopeCtrl : PlaceController
     {
         public override ControllerType CtrlType { get { return ControllerType.Rope; } }
 
@@ -191,8 +191,9 @@ namespace WorldActionSystem
             }
             else if (!(element is RopeItem))
             {
-                why = "零件未挂RopeItem脚本";
-                Debug.LogError("【配制错误】:零件未挂RopeObj脚本");
+                why = "对象不匹配";
+                installAble = false;
+                //Debug.LogError("【配制错误】:零件未挂RopeObj脚本");
             }
             else if (!placeItem.Started)
             {

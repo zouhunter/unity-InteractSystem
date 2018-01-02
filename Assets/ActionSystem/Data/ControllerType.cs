@@ -4,11 +4,12 @@ namespace WorldActionSystem
 {
     public enum ControllerType
     {
-        Install = 1,
-        Match = 1<<1,
-        Click = 1<<2,
-        Rotate = 1<<3,
-        Connect = 1<<4,
-        Rope = 1<<5,
+        Install = 1 << 0,//安装
+        Match = 1 << 1,//匹配
+        Click = 1 << 2,//点击
+        Rotate = 1 << 3,//旋转
+        Connect = 1 << 4,//连接
+        Rope = 1 << 5,//绳索
+        Drag = 1 << 6,//拖拽
     }
 }

@@ -246,8 +246,8 @@ MonoBehaviour:
   onBeforeUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   lineWight: 0.1
   lineMaterial: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   connectGroup:

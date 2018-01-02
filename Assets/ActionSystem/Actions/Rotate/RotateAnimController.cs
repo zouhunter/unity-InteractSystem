@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class RotateAnimController : OperateController
+    public class RotateCtrl : OperateController
     {
         public override ControllerType CtrlType { get { return ControllerType.Rotate; } }
 

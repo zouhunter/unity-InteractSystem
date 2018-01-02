@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-
     public class ActionCtroller
     {
         protected List<ActionObjCtroller> activeObjCtrls = new List<ActionObjCtroller>();
@@ -15,10 +14,6 @@ namespace WorldActionSystem
         private ControllerType activeTypes = 0;
         public static bool log = false;
         public UnityAction<IActionObj> onActionStart;
-        #region 可选参数配制
-        public float lineWight = 0.1f;
-        public Material lineMaterial;
-        #endregion
         protected MonoBehaviour holder;
         private CameraController cameraCtrl
         {
@@ -31,11 +26,7 @@ namespace WorldActionSystem
         public ActionCtroller(MonoBehaviour holder)
         {
             this.holder = holder;
-            var types = Enum.GetValues(typeof(ControllerType));
-            foreach (var type in types)
-            {
-                RegisterController((ControllerType)type);
-            }
+            RegisterControllers();
             holder.StartCoroutine(Start());
         }
 
@@ -45,7 +36,7 @@ namespace WorldActionSystem
             {
                 foreach (var ctrl in controllerList)
                 {
-                    if ((ctrl.CtrlType & activeTypes) == ctrl.CtrlType)
+                    if ((ctrl.CtrlType & activeTypes) != 0)
                     {
                         ctrl.Update();
                     }
@@ -53,36 +44,18 @@ namespace WorldActionSystem
                 yield return null;
             }
         }
-        private void RegisterController(ControllerType type)
+        private void RegisterControllers()
         {
-            OperateController currentCtrl = null;
-            switch (type)
-            {
-                case ControllerType.Install:
-                    currentCtrl = new InstallCtrl();
-                    break;
-                case ControllerType.Match:
-                    currentCtrl = new MatchCtrl();
-                    break;
-                case ControllerType.Click:
-                    currentCtrl = new ClickContrller();
-                    break;
-                case ControllerType.Rotate:
-                    currentCtrl = new RotateAnimController();
-                    break;
-                case ControllerType.Connect:
-                    currentCtrl = new ConnectCtrl();
-                    break;
-                case ControllerType.Rope:
-                    currentCtrl = new RopeController();
-                    break;
-                default:
-                    break;
-            }
+            controllerList.Add(new InstallCtrl());
+            controllerList.Add(new MatchCtrl());
+            controllerList.Add(new ClickCtrl());
+            controllerList.Add(new RotateCtrl());
+            controllerList.Add(new ConnectCtrl());
+            controllerList.Add(new RopeCtrl());
+            controllerList.Add(new DragCtrl());
 
-            if (currentCtrl != null)
+            foreach (var currentCtrl in controllerList)
             {
-                controllerList.Add(currentCtrl);
                 currentCtrl.userError = OnUserError;
                 currentCtrl.onSelect = OnPickUpObj;
             }
@@ -115,10 +88,12 @@ namespace WorldActionSystem
             actionCtrl.onCtrlStart = OnActionStart;
             actionCtrl.OnStartExecute(forceAuto);
         }
+
         private void OnActionStart(ControllerType ctrlType)
         {
             activeTypes |= ctrlType;
         }
+
         private void OnActionStop(ControllerType ctrlType)
         {
             activeTypes ^= ctrlType;
@@ -137,7 +112,5 @@ namespace WorldActionSystem
         {
             actionCtrl.OnUnDoExecute();
         }
-
-
     }
 }

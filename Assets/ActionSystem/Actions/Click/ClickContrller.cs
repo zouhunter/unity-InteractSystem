@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace WorldActionSystem
 {
-    public class ClickContrller : OperateController
+    public class ClickCtrl : OperateController
     {
         public override ControllerType CtrlType
         {
