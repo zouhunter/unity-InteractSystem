@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WorldActionSystem;
@@ -18,8 +19,14 @@ public class AutoExecute : MonoBehaviour {
             Debug.Log("InitOK");
             LoopExecute();
         });
+        group.onUserError += OnUserError;
     }
-	
+
+    private void OnUserError(string step, string info)
+    {
+        Debug.Log(step + ":" + info);
+    }
+
     private void LoopExecute()
     {
         Debug.Log("LoopExecute");

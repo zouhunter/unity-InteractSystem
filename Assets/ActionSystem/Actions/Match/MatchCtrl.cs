@@ -7,13 +7,16 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class MatchCtrl : PlaceController
+    public class MatchCtrl : IPlaceState
     {
-        public override ControllerType CtrlType { get { return ControllerType.Match; } }
+        public ControllerType CtrlType { get { return ControllerType.Match; } }
 
-        protected override int PlacePoslayerMask { get { return 1<< Layers.matchPosLayer; } }
-
-        protected override bool CanPlace(PlaceObj matchPos, PickUpAbleElement element, out string why)
+        private PlaceController placeCtrl;
+        public MatchCtrl(PlaceController placeCtrl)
+        {
+            this.placeCtrl = placeCtrl;
+        }
+        public bool CanPlace(PlaceObj matchPos, IPickUpAbleItem element, out string why)
         {
             var matchAble = true;
             if (matchPos == null)
@@ -32,7 +35,7 @@ namespace WorldActionSystem
                 matchAble = false;
                 why = "已经触发结束";
             }
-            else if (matchPos.Name != pickedUpObj.name)
+            else if (matchPos.Name != element.Name)
             {
                 matchAble = false;
                 why = "零件不匹配";
@@ -45,17 +48,24 @@ namespace WorldActionSystem
             return matchAble;
         }
 
-        protected override void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
+        public void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
         {
-            pos.Attach(pickedUpObj);
-            pickedUpObj.QuickInstall(pos, false, false);
+            pos.Attach(placeCtrl.pickedUpObj);
+            placeCtrl.pickedUpObj.QuickInstall(pos, false, false);
         }
 
-        protected override void PlaceWrong(PickUpAbleElement pickup)
+        public void PlaceWrong(PickUpAbleElement pickup)
         {
-            pickedUpObj.OnPickDown();
+            if (pickup)
+            {
+                pickup.OnPickDown();
+            }
         }
 
+        public void Update()
+        {
+
+        }
     }
 
 }

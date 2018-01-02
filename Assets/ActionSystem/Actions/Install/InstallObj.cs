@@ -24,17 +24,6 @@ namespace WorldActionSystem
             }
         }
 
-        public override int layer
-        {
-            get
-            {
-               return Layers.installPosLayer;
-            }
-        }
-        protected override void Awake()
-        {
-            base.Awake();
-        }
         protected override void OnBeforeComplete(bool force)
         {
             base.OnBeforeComplete(force);
@@ -63,10 +52,10 @@ namespace WorldActionSystem
 
         protected override void OnInstallComplete()
         {
-            if (!Complete)
-            {
+            if (!Complete){
                 OnEndExecute(false);
             }
+            obj.PickUpAble = false;
         }
 
         protected override void OnUnInstallComplete()
@@ -75,10 +64,8 @@ namespace WorldActionSystem
             {
                 if (AlreadyPlaced)
                 {
-                    /*var obj = */Detach();
-                    //obj.QuickUnInstall();
-                    //Debug.Log("un install:" + obj);
-                    //obj.StepUnDo();
+                    var obj = Detach();
+                    obj.PickUpAble = true;
                 }
                 this.obj = null;
             }

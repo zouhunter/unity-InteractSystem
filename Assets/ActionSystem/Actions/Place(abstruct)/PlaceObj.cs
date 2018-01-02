@@ -14,10 +14,10 @@ namespace WorldActionSystem
         public bool straightMove;//直线移动
         public bool ignoreMiddle;//忽略中间点
         public bool hideOnInstall;//安装完后隐藏
+        public int layer { get { return Layers.placePosLayer; } }
 
         public virtual GameObject Go { get { return gameObject; } }
         public virtual bool AlreadyPlaced { get { return obj != null; } }
-        public abstract int layer { get; }
         public virtual PickUpAbleElement obj { get; protected set; }
 
         protected virtual void Awake()

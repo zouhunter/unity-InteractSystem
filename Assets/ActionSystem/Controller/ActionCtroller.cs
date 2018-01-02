@@ -8,13 +8,12 @@ namespace WorldActionSystem
 {
     public class ActionCtroller
     {
-        protected List<ActionObjCtroller> activeObjCtrls = new List<ActionObjCtroller>();
+        public ActionObjCtroller activeObjCtrl { get;private set; }
         private List<IOperateController> controllerList = new List<IOperateController>();
         protected Coroutine coroutine;
         private ControllerType activeTypes = 0;
         public static bool log = false;
         public UnityAction<IActionObj> onActionStart;
-        protected MonoBehaviour holder;
         private CameraController cameraCtrl
         {
             get
@@ -22,71 +21,60 @@ namespace WorldActionSystem
                 return ActionSystem.Instence.cameraCtrl;
             }
         }
+        public PickUpController pickupCtrl { get{ return ActionSystem.Instence.pickUpCtrl; } }
 
-        public ActionCtroller(MonoBehaviour holder)
+        public ActionCtroller()
         {
-            this.holder = holder;
             RegisterControllers();
-            holder.StartCoroutine(Start());
         }
 
-        private IEnumerator Start()
+        public void Update()
         {
-            while (true)
+            foreach (var ctrl in controllerList)
             {
-                foreach (var ctrl in controllerList)
+                if ((ctrl.CtrlType & activeTypes) != 0)
                 {
-                    if ((ctrl.CtrlType & activeTypes) != 0)
-                    {
-                        ctrl.Update();
-                    }
+                    ctrl.Update();
+                   
                 }
-                yield return null;
             }
         }
         private void RegisterControllers()
         {
-            controllerList.Add(new InstallCtrl());
-            controllerList.Add(new MatchCtrl());
+            pickupCtrl.RegistOnPickup(OnPickUpObj);
+
+            controllerList.Add(new PlaceController());
             controllerList.Add(new ClickCtrl());
+            controllerList.Add(new RopeCtrl());
             controllerList.Add(new RotateCtrl());
             controllerList.Add(new ConnectCtrl());
-            controllerList.Add(new RopeCtrl());
             controllerList.Add(new DragCtrl());
 
-            foreach (var currentCtrl in controllerList)
+            foreach (var ctrl in controllerList)
             {
-                currentCtrl.userError = OnUserError;
-                currentCtrl.onSelect = OnPickUpObj;
+                ctrl.userErr = OnUserError;
             }
         }
 
         public void OnUserError(string error)
         {
-            foreach (var item in activeObjCtrls)
-            {
-                item.trigger.UserError(error);
-            }
+            if(activeObjCtrl !=null)
+                activeObjCtrl.trigger.UserError(error);
         }
         /// 激活首要对象
         /// </summary>
         /// <param name="obj"></param>
-        public void OnPickUpObj(IPlaceItem obj)
+        internal void OnPickUpObj(IPickUpAbleItem obj)
         {
-            foreach (var item in activeObjCtrls)
-            {
-                item.OnPickUpObj(obj);
-            }
+            if (activeObjCtrl != null) activeObjCtrl.OnPickUpObj(obj);
         }
 
-        public virtual void OnStartExecute(ActionObjCtroller actionCtrl, bool forceAuto)
+        public virtual void OnStartExecute(ActionObjCtroller activeObjCtrl, bool forceAuto)
         {
-            if (!activeObjCtrls.Contains(actionCtrl))
-            {
-                activeObjCtrls.Add(actionCtrl);
-            }
-            actionCtrl.onCtrlStart = OnActionStart;
-            actionCtrl.OnStartExecute(forceAuto);
+            this.activeObjCtrl = activeObjCtrl;
+            this.activeObjCtrl.onCtrlStart = OnActionStart;
+            this.activeObjCtrl.onCtrlStop = OnActionStop;
+            this.activeObjCtrl.OnStartExecute(forceAuto);
         }
 
         private void OnActionStart(ControllerType ctrlType)
@@ -99,18 +87,14 @@ namespace WorldActionSystem
             activeTypes ^= ctrlType;
         }
 
-        public virtual void OnEndExecute(ActionObjCtroller actionCtrl)
+        public virtual void OnEndExecute()
         {
-            actionCtrl.OnEndExecute();
-            if (activeObjCtrls.Contains(actionCtrl))
-            {
-                activeObjCtrls.Remove(actionCtrl);
-            }
+            if (activeObjCtrl != null) activeObjCtrl.OnEndExecute();
         }
 
-        public virtual void OnUnDoExecute(ActionObjCtroller actionCtrl)
+        public virtual void OnUnDoExecute()
         {
-            actionCtrl.OnUnDoExecute();
+            if (activeObjCtrl != null) activeObjCtrl.OnUnDoExecute();
         }
     }
 }

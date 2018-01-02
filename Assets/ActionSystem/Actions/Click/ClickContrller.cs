@@ -29,11 +29,11 @@ namespace WorldActionSystem
         {
             if (!obj.Started)
             {
-                OnUserError("不可点击" + obj.Name);
+                SetUserErr("不可点击" + obj.Name);
             }
             else if (obj.Complete)
             {
-                OnUserError("已经结束点击" + obj.Name);
+                SetUserErr("已经结束点击" + obj.Name);
             }
             if (obj.Started && !obj.Complete)
             {
@@ -57,7 +57,7 @@ namespace WorldActionSystem
 
         void OnClickEmpty()
         {
-            OnUserError("点击位置不正确");
+            SetUserErr("点击位置不正确");
         }
 
         private bool TryHitBtnObj(out ClickObj obj)

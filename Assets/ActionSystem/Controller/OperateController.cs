@@ -9,7 +9,7 @@ namespace WorldActionSystem
     public abstract class OperateController : IOperateController
     {
         public abstract ControllerType CtrlType { get; }
-        public UnityAction<string> userError { get; set; }
+        public UnityAction<string> userErr { get; set; }
         public UnityAction<IPlaceItem> onSelect { get; set; }
         private CameraController cameraCtrl
         {
@@ -26,13 +26,13 @@ namespace WorldActionSystem
             }
         }
         public abstract void Update();
-        protected virtual void OnUserError(string errInfo)
+
+        protected virtual void SetUserErr(string errInfo)
         {
-            if (userError != null) userError.Invoke(errInfo);
-        }
-        protected virtual void OnSelectItem(IPlaceItem item)
-        {
-            if (onSelect != null) onSelect.Invoke(item);
+            if (userErr != null)
+            {
+                this.userErr(errInfo);
+            }
         }
     }
 }

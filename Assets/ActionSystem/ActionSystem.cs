@@ -22,9 +22,11 @@ namespace WorldActionSystem
                 return _instence;
             }
         }
+
         public ActionCtroller actionCtrl { get; private set; }
         public CameraController cameraCtrl { get; private set; }
         public AngleCtroller angleCtrl { get; private set; }
+        public PickUpController pickUpCtrl { get; private set; }
 
         private List<ActionGroup> groupList = new List<ActionGroup>();
         private Dictionary<string, List<UnityAction<ActionGroup>>> waitDic = new Dictionary<string, List<UnityAction<ActionGroup>>>();
@@ -37,17 +39,33 @@ namespace WorldActionSystem
         }
         private void InitControllers()
         {
+            if (pickUpCtrl == null)
+            {
+                pickUpCtrl = new PickUpController(this);
+            }
+            if (actionCtrl == null)
+            {
+                actionCtrl = new ActionCtroller();
+            }
             if (cameraCtrl == null)
             {
                 cameraCtrl = new CameraController(this);
             }
-            if (actionCtrl == null)
-            {
-                actionCtrl = new ActionCtroller(this);
-            }
             if (angleCtrl == null)
             {
                 angleCtrl = new AngleCtroller(this);
+            }
+        }
+
+        private void Update()
+        {
+            if(angleCtrl != null)
+            {
+                actionCtrl.Update();
+            }
+            if(pickUpCtrl != null)
+            {
+                pickUpCtrl.Update();
             }
         }
         private void OnApplicationQuit()

@@ -19,7 +19,6 @@ namespace WorldActionSystem
         public string _name;
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
-       
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public int animTime { get { return Config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
@@ -65,6 +64,9 @@ namespace WorldActionSystem
                 return _collider;
             }
         }
+
+        public bool PickUpAble { get; set; }
+
         protected Collider _collider;
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
@@ -258,23 +260,24 @@ namespace WorldActionSystem
             }
         }
 
-
         public virtual void OnPickDown()
         {
             StopTween();
-            if(onLayDown != null)
-            {
+            if(onLayDown != null){
                 onLayDown.Invoke();
             }
-            NormalUnInstall();
         }
-
+        public void SetPosition(Vector3 pos)
+        {
+            transform.SetPositionAndRotation(pos, transform.rotation);
+        }
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
         /// </summary>
         public virtual void StepActive()
         {
             actived = true;
+            PickUpAble = true;
             onStepActive.Invoke();
             gameObject.SetActive(true);
         }

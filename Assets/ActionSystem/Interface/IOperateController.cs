@@ -7,9 +7,8 @@ namespace WorldActionSystem
 {
     public interface IOperateController
     {
-        UnityAction<string> userError { get; set; }
-        UnityAction<IPlaceItem> onSelect { get; set; }
         ControllerType CtrlType { get; }
+        UnityAction<string> userErr { get; set; }
         void Update();
     }
 

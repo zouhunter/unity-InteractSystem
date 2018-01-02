@@ -23,8 +23,6 @@ namespace WorldActionSystem
 
         public bool Matched { get { return obj != null; } }
 
-        public override int layer { get { return Layers.matchPosLayer; } }
-
         protected override void OnBeforeComplete(bool force)
         {
             base.OnBeforeComplete(force);

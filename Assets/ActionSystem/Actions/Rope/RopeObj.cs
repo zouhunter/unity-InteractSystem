@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class RopeObj : PlaceObj
+    public class RopeObj : ActionObj
     {
         public bool completeHide;
         public override ControllerType CtrlType
@@ -19,76 +19,67 @@ namespace WorldActionSystem
         }
 
         [SerializeField]
-        private List<Collider> ropeNode = new List<Collider>();
+        private List<Collider> ropeNodeFrom = new List<Collider>();
+        [SerializeField]
+        private List<Collider> ropeNodeTo = new List<Collider>();
         private List<Collider> connected = new List<Collider>();
-        private RopeItem ropeItem { get { return obj as RopeItem;  } set { obj = value; } }
-        public bool Connected { get { return connected.Count == ropeNode.Count; } }
-        public override int layer
-        {
-            get
-            {
-                return Layers.placePosLayer;
-            }
-        }
+        public bool Connected { get { return connected.Count == ropeNodeFrom.Count; } }
+
         private Transform angleTemp;
         private Coroutine antoCoroutine;
-        public bool quickInstall;
+        public UltimateRope rope;
+        private Vector3[] ropeNodesInstallPos;
+        private Vector3[] ropeNodesStartPos;
+        private List<Collider> ropeList = new List<Collider>();
+        private List<float> lengthList = new List<float>();
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
             RegistNodes();
-            hideOnInstall = false;//强制不可以隐藏
+            RegestRopeList();
+            RecordStartPosAndSetLayer();
         }
         protected override void Start()
         {
             base.Start();
             angleTemp = anglePos;
         }
-
-        protected override void OnInstallComplete()
+        public override void OnStartExecute(bool auto = false)
         {
-            if (log) Debug.Log("OnInstallComplete");
-            if (obj == this.obj)
+            base.OnStartExecute(auto);
+            if(auto)
             {
-                ropeItem.RegistNodesInstallPos();
-
-                //提示一个接头点
-                if (auto)
-                {
-                    if(gameObject.activeInHierarchy)
-                    {
-                        antoCoroutine = StartCoroutine(AutoInstallAllRopeNode());
-                    }
-                    else
-                    {
-                        Collider current;
-                        Collider currentTarget;
-                        while ((current = SelectOneRopeNode(out currentTarget)) != null)
-                        {
-                            current.transform.position = currentTarget.transform.position;
-                            connected.Add(currentTarget);
-                        }
-                    }
-                }
-                else
-                {
-                    SelectOneRopeNode();
-                }
+                antoCoroutine = StartCoroutine(AutoInstallAllRopeNode());
             }
         }
-
-        protected override void OnUnInstallComplete()
+        public override void OnUnDoExecute()
         {
-            if (AlreadyPlaced && this.obj == obj)
-            {
-                if (ropeItem != null){
-                    ropeItem.QuickUnInstallAllRopeNode();
-                }
-                Detach();
-                connected.Clear();
-            }
+            base.OnUnDoExecute();
+            if (antoCoroutine != null) StopCoroutine(antoCoroutine);
+            //if (AlreadyPlaced)
+            //{
+            //    var ropeItem = this.ropeItem;
+            //    ropeItem.QuickUnInstallAllRopeNode();
+            //    var obj = Detach();
+            //    obj.QuickUnInstall();
+            //    obj.StepUnDo();
+            //}
+            connected.Clear();
+            anglePos = angleTemp;
+        }
 
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+
+            if (antoCoroutine != null) StopCoroutine(antoCoroutine);
+
+            QuickInstallRopeNodes(ropeNodeFrom);
+
+            if (completeHide)
+                gameObject.SetActive(false);
+
+            connected = new List<Collider>(ropeNodeFrom);
         }
 
         private IEnumerator AutoInstallAllRopeNode()
@@ -99,35 +90,27 @@ namespace WorldActionSystem
             {
                 var startPos = current.transform.position;
 
-                if (quickInstall)
+                for (float i = 0; i < 1f; i += Time.deltaTime)
                 {
-                    current.transform.position = currentTarget.transform.position;
+                    current.transform.position = Vector3.Lerp(startPos, currentTarget.transform.position, i);
+                    yield return null;
                 }
-                else
-                {
-                    for (float i = 0; i < 1f; i += Time.deltaTime)
-                    {
-                        current.transform.position = Vector3.Lerp(startPos, currentTarget.transform.position, i);
-                        yield return null;
-                    }
-                }
-               
+
                 connected.Add(currentTarget);
             }
         }
 
         private void SelectOneRopeNode()
         {
-            Debug.Assert(ropeItem);
-            if (connected.Count == ropeNode.Count)
+            if (connected.Count == ropeNodeFrom.Count)
             {
                 OnEndExecute(false);
             }
             else
             {
-                for (int i = 0; i < ropeNode.Count; i++)
+                for (int i = 0; i < ropeNodeFrom.Count; i++)
                 {
-                    var collider = ropeItem.ropeNode.Find(x=>x.name == ropeNode[i].name);
+                    var collider = ropeNodeTo.Find(x=>x.name == ropeNodeFrom[i].name);
                     var mark = connected.Find(x => x.name == collider.name);
                     if (mark == null)
                     {
@@ -142,20 +125,19 @@ namespace WorldActionSystem
 
         private Collider SelectOneRopeNode(out Collider target)
         {
-            Debug.Assert(ropeItem);
-            if (connected.Count == ropeNode.Count)
+            if (connected.Count == ropeNodeFrom.Count)
             {
                 OnEndExecute(false);
             }
             else
             {
-                for (int i = 0; i < ropeNode.Count; i++)
+                for (int i = 0; i < ropeNodeFrom.Count; i++)
                 {
-                    var collider = ropeItem.ropeNode[i];
+                    var collider = ropeNodeFrom[i];
                     var mark = connected.Find(x => x.name == collider.name);
                     if (mark == null)
                     {
-                        target = ropeNode[i];
+                        target = ropeNodeFrom[i];
                         angleCtrl.UnNotice(anglePos);
                         anglePos = target.transform;
                         //Debug.Log("Notice:" + anglePos);
@@ -167,24 +149,19 @@ namespace WorldActionSystem
             return null;
         }
 
-        /// <summary>
-        /// 点击到一个接头点
-        /// </summary>
-        /// <param name="collider"></param>
         public void OnPickupCollider(Collider collider)
         {
-            if (ropeItem == null) return;
-            for (int i = 0; i < ropeNode.Count; i++)
+            for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
-                var cld = ropeNode[i];
-                if (ropeNode[i].name == collider.name)
+                var cld = ropeNodeFrom[i];
+                if (ropeNodeFrom[i].name == collider.name)
                 {
                     if (connected.Contains(cld))
                     {
                         connected.Remove(cld);
                     }
                     angleCtrl.UnNotice(anglePos);
-                    anglePos = ropeNode[i].transform;
+                    anglePos = ropeNodeFrom[i].transform;
                     break;
                 }
             }
@@ -193,9 +170,9 @@ namespace WorldActionSystem
         public bool CanInstallCollider(Collider collider)
         {
             bool havePos = false;
-            for (int i = 0; i < ropeNode.Count; i++)
+            for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
-                if (ropeNode[i].name == collider.name && !connected.Contains(ropeNode[i]))
+                if (ropeNodeFrom[i].name == collider.name && !connected.Contains(ropeNodeFrom[i]))
                 {
                     havePos = true;
                 }
@@ -203,46 +180,10 @@ namespace WorldActionSystem
             return havePos;
         }
 
-        public override void OnUnDoExecute()
-        {
-            base.OnUnDoExecute();
-            if (antoCoroutine != null) StopCoroutine(antoCoroutine);
-            if (AlreadyPlaced)
-            {
-                var ropeItem = this.ropeItem;
-                ropeItem.QuickUnInstallAllRopeNode();
-                var obj = Detach();
-                obj.QuickUnInstall();
-                obj.StepUnDo();
-            }
-            connected.Clear();
-            anglePos = angleTemp;
-        }
-
-        public override void OnEndExecute(bool force)
-        {
-            base.OnEndExecute(force);
-
-            if (antoCoroutine != null) StopCoroutine(antoCoroutine);
-
-            if (!AlreadyPlaced)
-            {
-                PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
-                Attach(obj);
-                obj.QuickInstall(this,true,true);
-            }
-
-            ropeItem.QuickInstallRopeNodes(ropeNode);
-
-            if (completeHide)
-                ropeItem.gameObject.SetActive(false);
-
-            connected = new List<Collider>(ropeNode);
-        }
-
+ 
         private void RegistNodes()
         {
-            foreach (var item in ropeNode)
+            foreach (var item in ropeNodeFrom)
             {
                 item.gameObject.layer = Layers.ropeNodeLayer;
             }
@@ -250,23 +191,121 @@ namespace WorldActionSystem
 
         internal void QuickInstallRopeItem(Collider collider)
         {
-            for (int i = 0; i < ropeNode.Count; i++)
+            for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
-                if (ropeNode[i].name == collider.name && !connected.Contains(ropeNode[i]))
+                if (ropeNodeFrom[i].name == collider.name && !connected.Contains(ropeNodeFrom[i]))
                 {
-                    connected.Add(ropeNode[i]);
-                    collider.transform.position = ropeNode[i].transform.position;
+                    connected.Add(ropeNodeFrom[i]);
+                    collider.transform.position = ropeNodeFrom[i].transform.position;
                     break;
                 }
             }
             SelectOneRopeNode();
         }
 
-        protected override void OnAutoInstall()
+    
+        private void OnEnable()
         {
-            PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
-            Attach(obj);
-            obj.NormalInstall(this);
+            rope.Regenerate(true);
+        }
+        private void RecordStartPosAndSetLayer()
+        {
+            ropeNodesStartPos = new Vector3[ropeNodeTo.Count];
+            for (int i = 0; i < ropeNodesStartPos.Length; i++)
+            {
+                ropeNodesStartPos[i] = ropeNodeTo[i].transform.position;
+                ropeNodeTo[i].gameObject.layer = Layers.ropeNodeLayer;
+            }
+        }
+
+        private void RegestRopeList()
+        {
+            ropeList.Add(rope.RopeStart.GetComponent<BoxCollider>());
+            for (int i = 0; i < rope.RopeNodes.Count; i++)
+            {
+                ropeList.Add(rope.RopeNodes[i].goNode.GetComponent<BoxCollider>());
+                lengthList.Add(rope.RopeNodes[i].fLength);
+            }
+
+        }
+
+        public void RegistNodesInstallPos()
+        {
+            Debug.Log("RegistNodesInstallPos");
+            ropeNodesInstallPos = new Vector3[ropeNodeTo.Count];
+            for (int i = 0; i < ropeNodesInstallPos.Length; i++)
+            {
+                ropeNodesInstallPos[i] = ropeNodeTo[i].transform.position;
+            }
+        }
+        /// <summary>
+        /// 防止线被拉太长
+        /// </summary>
+        /// <param name="collider"></param>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public bool TryMoveToPos(Collider collider, Vector3 pos)
+        {
+            if (rope.RopeNodes.Count == 0) return false;
+            var id = ropeList.IndexOf(collider);
+            if (id != -1)
+            {
+                bool canMove = true;
+                var lastid = id - 1;
+                var nextid = id + 1;
+                if (lastid >= 0)
+                {
+                    var lastNode = ropeList[lastid];
+                    canMove &= Vector3.Distance(pos, lastNode.transform.position) < 2 * lengthList[lastid];
+                }
+                if (nextid < ropeList.Count)
+                {
+                    var nextNode = ropeList[nextid];
+                    canMove &= Vector3.Distance(pos, nextNode.transform.position) < 2 * lengthList[id];
+                }
+                if (canMove)
+                {
+                    collider.transform.position = pos;
+                }
+                return canMove;
+            }
+            return false;
+        }
+        /// 放回
+        /// </summary>
+        public void PickDownCollider(Collider collider)
+        {
+            Debug.Assert(collider != null);
+            var id = ropeNodeTo.IndexOf(collider);
+            collider.transform.position = ropeNodesInstallPos[id];
+        }
+
+        public void PickDownAllCollider()
+        {
+            for (int i = 0; i < ropeNodeTo.Count; i++)
+            {
+                ropeNodeTo[i].transform.position = ropeNodesInstallPos[i];
+            }
+        }
+
+        public void QuickUnInstallAllRopeNode()
+        {
+            for (int i = 0; i < ropeNodeTo.Count; i++)
+            {
+                ropeNodeTo[i].transform.position = ropeNodesStartPos[i];
+            }
+        }
+
+        internal void QuickInstallRopeNodes(List<Collider> ropeNode)
+        {
+            foreach (var target in ropeNode)
+            {
+                var obj = this.ropeNodeTo.Find(x => x.name == target.name);
+                if (obj != null)
+                {
+                    obj.transform.position = target.transform.position;
+                }
+            }
         }
     }
 }

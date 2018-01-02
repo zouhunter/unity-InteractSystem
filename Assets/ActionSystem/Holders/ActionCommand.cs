@@ -24,6 +24,7 @@ namespace WorldActionSystem
         public IActionObj[] ActionObjs { get { return actionObjs; } }
         public ActionGroup actionSystem { get; set; }
         public ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
+
         protected IActionObj[] actionObjs;
         private ActionObjCtroller objectCtrl;
         [EnumMask, HideInInspector]
@@ -161,14 +162,14 @@ namespace WorldActionSystem
         public void OnEndExecute()
         {
             onBeforePlayEnd.Invoke(StepName);
-            ActionCtrl.OnEndExecute(objectCtrl);
+            ActionCtrl.OnEndExecute();
         }
 
         public virtual void UnDoExecute()
         {
             started = false;
             completed = false;
-            ActionCtrl.OnUnDoExecute(objectCtrl);
+            ActionCtrl.OnUnDoExecute();
         }
 
 

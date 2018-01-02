@@ -1,8 +1,14 @@
-﻿namespace WorldActionSystem
+﻿using UnityEngine;
+
+namespace WorldActionSystem
 {
-    internal interface IPickUpAbleItem
+    public interface IPickUpAbleItem
     {
+        string Name { get; }
+        bool PickUpAble { get; set; }
         void OnPickUp();
         void OnPickDown();
+        void SetPosition(Vector3 pos);
+        Collider Collider { get; }
     }
 }

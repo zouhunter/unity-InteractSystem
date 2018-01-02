@@ -7,15 +7,19 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCtrl : PlaceController
+    public class InstallCtrl : IPlaceState
     {
-        public override ControllerType CtrlType { get { return ControllerType.Install; } }
+        public ControllerType CtrlType { get { return ControllerType.Install; } }
 
         public bool Active { get; private set; }
 
-        protected override int PlacePoslayerMask { get { return 1 << Layers.installPosLayer; } }
+        private PlaceController placeCtrl;
+        public InstallCtrl(PlaceController placeCtrl)
+        {
+            this.placeCtrl = placeCtrl;
+        }
 
-        protected override bool CanPlace(PlaceObj placeObj, PickUpAbleElement element, out string why)
+        public  bool CanPlace(PlaceObj placeObj, IPickUpAbleItem element, out string why)
         {
             why = null;
             var canplace = true;
@@ -46,15 +50,19 @@ namespace WorldActionSystem
             return canplace;
         }
 
-        protected override void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
+        public  void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
         {
             pos.Attach(pickup);
             pickup.QuickInstall(pos);
+            pickup.PickUpAble = false;
         }
 
-        protected override void PlaceWrong(PickUpAbleElement pickup)
+        public  void PlaceWrong(PickUpAbleElement pickup)
         {
-            pickedUpObj.NormalUnInstall();
+            if(pickup)
+            {
+                pickup.NormalUnInstall();
+            }
         }
     }
 
