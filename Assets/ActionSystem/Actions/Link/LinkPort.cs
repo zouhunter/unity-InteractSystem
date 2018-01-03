@@ -8,11 +8,11 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [ExecuteInEditMode]
-    public class PortItemBehaiver : MonoBehaviour
+    public class LinkPort : MonoBehaviour
     {
         #region Propertys
-        public PortParentBehaiver Body { get; set; }
-        public PortItemBehaiver ConnectedNode { get; set; }
+        public LinkItem Body { get; set; }
+        public LinkPort ConnectedNode { get; set; }
         public Renderer Render {
             get
             {
@@ -27,7 +27,7 @@ namespace WorldActionSystem
             }
         }
         public int NodeID { get { return _nodeId; } }
-        public List<ConnectAble> connectAble
+        public List<LinkInfo> connectAble
         {
             get
             {
@@ -37,18 +37,24 @@ namespace WorldActionSystem
         #endregion
         [SerializeField]
         private Renderer _render;
-        public bool _renderActive;
-        public int _nodeId;
-        public List<ConnectAble> _connectAble;
+        [SerializeField]
+        private bool _renderActive;
+        private int _nodeId;
+        public List<LinkInfo> _connectAble;
 
         void Awake()
         {
             gameObject.layer = Layers.nodeLayer;
-            if (_render == null) _render = GetComponentInChildren<Renderer>();
-            _render.enabled = false;
+            if (_render == null)
+                _render = GetComponentInChildren<Renderer>();
+        }
+        private void OnEnable()
+        {
+            _nodeId = transform.GetSiblingIndex();
+            _render.enabled = _renderActive;
         }
 
-        public bool Attach(PortItemBehaiver item)
+        public bool Attach(LinkPort item)
         {
             item.ConnectedNode = this;
             ConnectedNode = item;
@@ -61,7 +67,7 @@ namespace WorldActionSystem
             _render.enabled = _renderActive;
             if (ConnectedNode != null)
             {
-                ConnectAble connect = connectAble.Find(x => { return x.itemName == ConnectedNode.Body.Name && x.nodeId == ConnectedNode.NodeID; });
+                LinkInfo connect = connectAble.Find(x => { return x.itemName == ConnectedNode.Body.Name && x.nodeId == ConnectedNode.NodeID; });
                 if (connect != null){
                     Body.ResetBodyTransform(ConnectedNode.Body, connect.relativePos, connect.relativeDir);
                 }
@@ -69,10 +75,10 @@ namespace WorldActionSystem
         }
 
 
-        public PortItemBehaiver Detach()
+        public LinkPort Detach()
         {
             _render.enabled = false;
-            PortItemBehaiver outItem = ConnectedNode;
+            LinkPort outItem = ConnectedNode;
             if (ConnectedNode != null)
             {
                 ConnectedNode.ConnectedNode = null;

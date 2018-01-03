@@ -57,6 +57,15 @@ namespace WorldActionSystem
             }
         }
 
+        internal void RegistOnPickStatu(Action<IPickUpAbleItem> onPickStatu)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RegistOnPickDown(Action<IPickUpAbleItem> onPickDown)
+        {
+            throw new NotImplementedException();
+        }
 
         internal void PickUp(IPickUpAbleItem pickedUpObj)
         {

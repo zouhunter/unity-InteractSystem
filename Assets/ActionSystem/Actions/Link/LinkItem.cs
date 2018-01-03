@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class PortParentBehaiver : MonoBehaviour
+    public class LinkItem : MonoBehaviour,IPickUpAbleItem
     {
-        private List<PortItemBehaiver> _childNodes = new List<PortItemBehaiver>();
-        public List<PortItemBehaiver> ChildNodes
+        private List<LinkPort> _childNodes = new List<LinkPort>();
+        public List<LinkPort> ChildNodes
         {
             get
             {
@@ -33,15 +33,34 @@ namespace WorldActionSystem
             }
         }
 
-        public void ResetBodyTransform(PortParentBehaiver otherParent, Vector3 rPos, Vector3 rdDir)
+        public bool PickUpAble { get; set; }
+
+        public Collider Collider { get; private set; }
+
+        public void OnPickDown()
+        {
+            
+        }
+
+        public void OnPickUp()
+        {
+            
+        }
+
+        public void ResetBodyTransform(LinkItem otherParent, Vector3 rPos, Vector3 rdDir)
         {
             transform.position = otherParent.Trans.TransformPoint(rPos);
             transform.forward = otherParent.Trans.TransformDirection(rdDir);
         }
 
+        public void SetPosition(Vector3 pos)
+        {
+           
+        }
+
         private void Awake()
         {
-            var nodeItems = GetComponentsInChildren<PortItemBehaiver>(true);
+            var nodeItems = GetComponentsInChildren<LinkPort>(true);
             _childNodes.AddRange(nodeItems);
 
             foreach (var item in nodeItems)

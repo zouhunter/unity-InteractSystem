@@ -11,5 +11,6 @@ namespace WorldActionSystem
         Connect = 1 << 4,//连接
         Rope = 1 << 5,//绳索
         Drag = 1 << 6,//拖拽
+        Link = 1 << 7,//关联
     }
 }

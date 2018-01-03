@@ -130,17 +130,18 @@ namespace WorldActionSystem
 
         private void MarchList()
         {
+            if (string.IsNullOrEmpty(query) && selected == 0) return;
+
             prefabListWorp.ClearArray();
+
             for (int i = 0; i < prefabListProp.arraySize; i++)
             {
                 var prop = prefabListProp.GetArrayElementAtIndex(i);
                 var prefabProp = prop.FindPropertyRelative("prefab");
-                if (!string.IsNullOrEmpty(query))
+
+                if (prefabProp.objectReferenceValue == null || !prefabProp.objectReferenceValue.name.ToLower().Contains(query.ToLower()))
                 {
-                    if (prefabProp.objectReferenceValue == null || !prefabProp.objectReferenceValue.name.ToLower().Contains(query.ToLower()))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 var containCommandProp = prop.FindPropertyRelative("containsCommand");
@@ -192,7 +193,7 @@ namespace WorldActionSystem
             {
                 CloseAllCreated(selected == 0 ? prefabListProp : prefabListWorp);
             }
-            if (GUILayout.Button(new GUIContent("i", "反射忽略"), btnStyle))
+            if (GUILayout.Button(new GUIContent("i", "反向忽略"), btnStyle))
             {
                 IgnoreNotIgnored(prefabListProp);
             }

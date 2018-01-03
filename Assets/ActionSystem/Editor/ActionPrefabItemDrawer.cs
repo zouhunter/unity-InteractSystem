@@ -149,8 +149,15 @@ namespace WorldActionSystem
                     EditorGUI.SelectableLabel(infoRect, "[c]");
                     infoRect.x += infoRect.width;
                 }
-                GUI.color = Color.red;
-                if(ignoreProp.boolValue)
+                if (EditorGUIUtility.isProSkin)
+                {
+                    GUI.color = Color.red;
+                }
+                else
+                {
+                    GUI.color = new Color(1, 0, 0, 0.3f);
+                }
+                if (ignoreProp.boolValue)
                 {
                     GUI.Box(rect,"");
                 }

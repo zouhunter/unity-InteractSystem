@@ -8,7 +8,8 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [System.Serializable]
-    public class ConnectAble
+    public class LinkInfo
+
     {
         public string itemName;
         public int nodeId;

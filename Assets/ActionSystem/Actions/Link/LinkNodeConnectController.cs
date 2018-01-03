@@ -7,22 +7,22 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class NodeConnectController
+    public class LinkNodeConnectController
     {
-        public event UnityAction<PortItemBehaiver[]> onConnected;
-        public event UnityAction<PortItemBehaiver> onMatch;
-        public event UnityAction<PortItemBehaiver> onDisMatch;
-        public event UnityAction<PortItemBehaiver[]> onDisconnected;
-        public Dictionary<PortParentBehaiver, List<PortItemBehaiver>> ConnectedDic { get { return connectedNodes; } }
+        public event UnityAction<LinkPort[]> onConnected;
+        public event UnityAction<LinkPort> onMatch;
+        public event UnityAction<LinkPort> onDisMatch;
+        public event UnityAction<LinkPort[]> onDisconnected;
+        public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return connectedNodes; } }
 
         private float timeSpan;
         private float spanTime;
         private float sphereRange = 0.0001f;
-        private PortParentBehaiver pickedUpItem;
-        private PortItemBehaiver activeNode;
-        private PortItemBehaiver targetNode;
-        private Dictionary<PortParentBehaiver, List<PortItemBehaiver>> connectedNodes = new Dictionary<PortParentBehaiver, List<PortItemBehaiver>>();
-        public NodeConnectController(float sphereRange, float spanTime)
+        private LinkItem pickedUpItem;
+        private LinkPort activeNode;
+        private LinkPort targetNode;
+        private Dictionary<LinkItem, List<LinkPort>> connectedNodes = new Dictionary<LinkItem, List<LinkPort>>();
+        public LinkNodeConnectController(float sphereRange, float spanTime)
         {
             this.spanTime = spanTime;
             this.sphereRange = sphereRange;
@@ -55,7 +55,7 @@ namespace WorldActionSystem
         {
             if (pickedUpItem != null)
             {
-                PortItemBehaiver tempNode;
+                LinkPort tempNode;
                 foreach (var item in pickedUpItem.ChildNodes)
                 {
                     if (FindInstallableNode(item, out tempNode))
@@ -74,14 +74,14 @@ namespace WorldActionSystem
             return false;
         }
 
-        private bool FindInstallableNode(PortItemBehaiver item, out PortItemBehaiver node)
+        private bool FindInstallableNode(LinkPort item, out LinkPort node)
         {
             Collider[] colliders = Physics.OverlapSphere(item.Pos, sphereRange, 1 << Layers.nodeLayer);
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)
                 {
-                    PortItemBehaiver tempNode = collider.GetComponent<PortItemBehaiver>();
+                    LinkPort tempNode = collider.GetComponent<LinkPort>();
                     if (tempNode == null)
                     {
                         //Debug.Log(collider + " have no iportItem");
@@ -102,19 +102,19 @@ namespace WorldActionSystem
             return false;
         }
 
-        public void SetActiveItem(PortParentBehaiver item)
+        public void SetActiveItem(LinkItem item)
         {
             this.pickedUpItem = item;
-            List<PortItemBehaiver> olditems = new List<PortItemBehaiver>();
+            List<LinkPort> olditems = new List<LinkPort>();
             if (connectedNodes.ContainsKey(item))
             {
-                List<PortItemBehaiver> needClear = new List<PortItemBehaiver>();
+                List<LinkPort> needClear = new List<LinkPort>();
                 for (int i = 0; i < connectedNodes[item].Count; i++)
                 {
-                    PortItemBehaiver nodeItem = connectedNodes[item][i];
+                    LinkPort nodeItem = connectedNodes[item][i];
                     needClear.Add(nodeItem);
 
-                    PortItemBehaiver target = nodeItem.ConnectedNode;
+                    LinkPort target = nodeItem.ConnectedNode;
                     connectedNodes[target.Body].Remove(target);
                     Debug.Log(connectedNodes[item][i].Detach());
 
@@ -130,7 +130,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void SetDisableItem(PortParentBehaiver item)
+        public void SetDisableItem(LinkItem item)
         {
             pickedUpItem = null;
             targetNode = null;
@@ -147,19 +147,19 @@ namespace WorldActionSystem
 
                     if (!connectedNodes.ContainsKey(pickedUpItem))
                     {
-                        connectedNodes[pickedUpItem] = new List<PortItemBehaiver>();
+                        connectedNodes[pickedUpItem] = new List<LinkPort>();
                     }
 
                     connectedNodes[pickedUpItem].Add(activeNode);
 
                     if (!connectedNodes.ContainsKey(targetNode.Body))
                     {
-                        connectedNodes[targetNode.Body] = new List<PortItemBehaiver>();
+                        connectedNodes[targetNode.Body] = new List<LinkPort>();
                     }
 
                     connectedNodes[targetNode.Body].Add(targetNode);
 
-                    if (onConnected != null) onConnected.Invoke(new PortItemBehaiver[] { activeNode, targetNode });
+                    if (onConnected != null) onConnected.Invoke(new LinkPort[] { activeNode, targetNode });
                     activeNode = null;
                     targetNode = null;
                 }

@@ -25,14 +25,14 @@ namespace WorldActionSystem
 
     public class ConnectConfigWindow : EditorWindow
     {
-        private PortItemBehaiver node_A;
-        private PortItemBehaiver node_B;
-        private PortParentBehaiver item_A;
-        private PortParentBehaiver item_B;
+        private LinkPort node_A;
+        private LinkPort node_B;
+        private LinkItem item_A;
+        private LinkItem item_B;
 
         GameObject selected = null;
 
-        [MenuItem("Window/Connector/Connect")]
+        [MenuItem("Window/ActionSystem/Connect")]
         static void OpenConnectConfigWindow()
         {
             EditorWindow window = GetWindow<ConnectConfigWindow>("连接配制", true);
@@ -98,9 +98,9 @@ namespace WorldActionSystem
         void TryConnect()
         {
             //itemA = EditorGUILayout.ObjectField("元素A", itemA, typeof(ElementItemBehaiver), true) as ElementItemBehaiver;
-            node_A = EditorGUILayout.ObjectField("A子节点", node_A, typeof(PortItemBehaiver), true) as PortItemBehaiver;
+            node_A = EditorGUILayout.ObjectField("A子节点", node_A, typeof(LinkPort), true) as LinkPort;
             //itemB = EditorGUILayout.ObjectField("元素B", itemB, typeof(ElementItemBehaiver), true) as ElementItemBehaiver;
-            node_B = EditorGUILayout.ObjectField("B子节点", node_B, typeof(PortItemBehaiver), true) as PortItemBehaiver;
+            node_B = EditorGUILayout.ObjectField("B子节点", node_B, typeof(LinkPort), true) as LinkPort;
 
             if (node_A != null)
             {
@@ -132,7 +132,7 @@ namespace WorldActionSystem
 
         private void LoadConnect()
         {
-            ConnectAble nodeArecored = node_A.connectAble.Find((x) => x.itemName == item_B.name && x.nodeId == node_B.NodeID);
+            LinkInfo nodeArecored = node_A.connectAble.Find((x) => x.itemName == item_B.name && x.nodeId == node_B.NodeID);
             if (nodeArecored != null)
             {
                 item_A.transform.position = item_B.transform.TransformPoint(nodeArecored.relativePos);
@@ -140,31 +140,31 @@ namespace WorldActionSystem
             }
         }
 
-        PortParentBehaiver FindInoutItem(PortItemBehaiver node)
+        LinkItem FindInoutItem(LinkPort node)
         {
             Transform parent = node.transform.parent;
-            while (parent.GetComponent<PortParentBehaiver>() == null)
+            while (parent.GetComponent<LinkItem>() == null)
             {
                 parent = parent.parent;
             }
-            return parent.GetComponent<PortParentBehaiver>();
+            return parent.GetComponent<LinkItem>();
         }
 
         void CreateConnect()
         {
             RecordInout();
 
-            ConnectAble nodeArecored = node_A.connectAble.Find((x) => x.itemName == item_B.name && x.nodeId == node_B.NodeID);
-            ConnectAble nodeBrecored = node_B.connectAble.Find((x) => x.itemName == item_A.name && x.nodeId == node_A.NodeID);
+            LinkInfo nodeArecored = node_A.connectAble.Find((x) => x.itemName == item_B.name && x.nodeId == node_B.NodeID);
+            LinkInfo nodeBrecored = node_B.connectAble.Find((x) => x.itemName == item_A.name && x.nodeId == node_A.NodeID);
             //已经记录过
             if (nodeArecored == null)
             {
-                nodeArecored = new ConnectAble();
+                nodeArecored = new LinkInfo();
                 node_A.connectAble.Add(nodeArecored);
             }
             if (nodeBrecored == null)
             {
-                nodeBrecored = new ConnectAble();
+                nodeBrecored = new LinkInfo();
                 node_B.connectAble.Add(nodeBrecored);
             }
 
@@ -183,7 +183,7 @@ namespace WorldActionSystem
             EditorUtility.SetDirty(node_B);
         }
 
-        void RecoreNameAndID(ConnectAble nodeArecored, ConnectAble nodeBrecored)
+        void RecoreNameAndID(LinkInfo nodeArecored, LinkInfo nodeBrecored)
         {
             nodeArecored.itemName = item_B.name;
             nodeBrecored.itemName = item_A.name;
@@ -191,7 +191,7 @@ namespace WorldActionSystem
             nodeBrecored.nodeId = node_A.NodeID;
         }
 
-        void RecordTransform(ConnectAble nodeArecored, ConnectAble nodeBrecored, Transform ourItem, Transform otherItem)
+        void RecordTransform(LinkInfo nodeArecored, LinkInfo nodeBrecored, Transform ourItem, Transform otherItem)
         {
             nodeArecored.relativePos = otherItem.InverseTransformPoint(ourItem.position);
             nodeArecored.relativeDir = otherItem.InverseTransformDirection(ourItem.forward); //Quaternion.Inverse(ourItem.rotation) * otherItem.rotation;
