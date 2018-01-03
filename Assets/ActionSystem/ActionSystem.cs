@@ -27,7 +27,6 @@ namespace WorldActionSystem
         public CameraController cameraCtrl { get; private set; }
         public AngleCtroller angleCtrl { get; private set; }
         public PickUpController pickUpCtrl { get; private set; }
-
         private List<ActionGroup> groupList = new List<ActionGroup>();
         private Dictionary<string, List<UnityAction<ActionGroup>>> waitDic = new Dictionary<string, List<UnityAction<ActionGroup>>>();
 

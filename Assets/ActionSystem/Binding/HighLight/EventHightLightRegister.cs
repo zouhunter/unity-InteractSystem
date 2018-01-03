@@ -4,13 +4,10 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using HighlightingSystem;
-namespace WorldActionSystem
+namespace WorldActionSystem.Binding
 {
-    public class HightLightRegister : MonoBehaviour
+    public class EventHightLightRegister : ActionObjEventRegister
     {
-
-        [SerializeField]
-        private string key;
         [SerializeField]
         private Color color = Color.green;
         [SerializeField]
@@ -18,9 +15,10 @@ namespace WorldActionSystem
 
         private string highLight { get { return "HighLightObjects"; } }
         private string unhighLight { get { return "UnHighLightObjects"; } }
+
         private bool activeHighLight { get { return Config.highLightNotice; } }
         private List<Highlighter> highlighters = new List<Highlighter>();
-        protected EventController eventCtrl { get; set; }
+
         private void Start()
         {
             eventCtrl.AddDelegate<string>(highLight, HighLightGameObjects);

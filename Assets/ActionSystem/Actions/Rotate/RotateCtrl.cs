@@ -75,8 +75,7 @@ namespace WorldActionSystem
             {
                 selectedObj.ClampAsync(() =>
                 {
-                    if (selectedObj.TryMarchRot())
-                    {
+                    if (selectedObj.TryMarchRot()){
                         selectedObj.OnEndExecute(false);
                     }
                     selectedObj = null;

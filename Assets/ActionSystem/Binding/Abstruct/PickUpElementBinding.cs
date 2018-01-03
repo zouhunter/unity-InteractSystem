@@ -22,7 +22,6 @@ public class PickUpElementBinding : MonoBehaviour {
     {
         
     }
-
     protected virtual void OnDestroy()
     {
         pickUpElement.onInstallOkEvent -= OnInstallOK;

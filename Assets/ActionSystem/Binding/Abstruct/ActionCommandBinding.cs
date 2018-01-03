@@ -10,7 +10,9 @@ namespace WorldActionSystem.Binding
     public class ActionCommandBinding : MonoBehaviour
     {
         protected ActionCommand cmd;
-        protected EventController eventCtrl { get; set; }
+        private ActionGroup _system;
+        private ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
+        protected EventController eventCtrl { get { return system.EventCtrl; } }
 
         protected virtual void Awake()
         {

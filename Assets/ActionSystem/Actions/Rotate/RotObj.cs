@@ -17,9 +17,9 @@ namespace WorldActionSystem
             }
         }
 
-        public float minAngle = 0;
+        public float minAngle = -30;
         public float maxAngle = 30;
-        public float triggerAngle = 28;
+        public float triggerAngle = 30;
         public bool clampHard;
         public bool completeMoveBack;
         public float autoCompleteTime = 2f;
@@ -33,7 +33,7 @@ namespace WorldActionSystem
         private float currAngle;
         private Quaternion startRot;
         private FloatComparer comparer;
-        protected const float deviation = 0.2f;
+        protected const float deviation = 1f;
 
         protected override void Start()
         {
@@ -57,7 +57,8 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(forceauto);
             Operater.rotation = startRot;
-            if (forceauto) StartCoroutine(AutoRotateTo());
+            if (forceauto)
+                StartCoroutine(AutoRotateTo());
         }
 
         private IEnumerator AutoRotateTo()
@@ -71,15 +72,15 @@ namespace WorldActionSystem
             }
             OnEndExecute(false);
         }
-        public override void OnEndExecute(bool force)
+        protected override void OnBeforeEnd(bool force)
         {
-            base.OnEndExecute(force);
-            if(completeMoveBack)
+            base.OnBeforeEnd(force);
+            if (completeMoveBack)
             {
                 Operater.rotation = startRot;
             }
         }
-
+      
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
@@ -87,11 +88,11 @@ namespace WorldActionSystem
             currAngle = 0;
         }
 
-
         internal bool TryMarchRot()
         {
             return comparer.Equals(currAngle, triggerAngle);
         }
+
         public void ClampAsync(UnityAction onComplete)
         {
             if(gameObject.activeInHierarchy)

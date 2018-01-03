@@ -168,15 +168,13 @@ namespace WorldActionSystem
                 notice = false;
                 _started = true;
                 _complete = true;
-                if (hooks.Length > 0)
-                {
+                if (hooks.Length > 0){
                     hookCtrl.OnEndExecute();
                 }
-                if (onEndExecute != null)
-                {
+                gameObject.SetActive(endActive);
+                if (onEndExecute != null) {
                     onEndExecute.Invoke();
                 }
-                gameObject.SetActive(endActive);
             }
             else
             {

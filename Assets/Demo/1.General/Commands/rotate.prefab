@@ -854,12 +854,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   circleDetail: 40
-  Direction: {x: 0, y: 0, z: 0}
   flashSpeed: 1
   highLight: 1
   triggerRadius: 1
   color: {r: 0, g: 1, b: 0, a: 1}
-  Active: 0
 --- !u!114 &114364561188411898
 MonoBehaviour:
   m_ObjectHideFlags: 1

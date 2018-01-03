@@ -8,7 +8,7 @@ using System;
 namespace WorldActionSystem.Binding
 {
     [RequireComponent(typeof(ClickObj))]
-    public class ClickHighLighterSender : ActionHightSender
+    public class ClickHighLighterSender : EventHightSender
     {
         private ClickObj clickObj;
         protected override void Awake()

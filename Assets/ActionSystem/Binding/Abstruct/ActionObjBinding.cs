@@ -9,10 +9,7 @@ namespace WorldActionSystem.Binding
     public class ActionObjBinding : MonoBehaviour
     {
         protected ActionObj actionObj;
-        private ActionGroup _system;
-        private ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
-        protected EventController eventCtrl { get { return system.EventCtrl; } }
-
+    
         protected virtual void Awake()
         {
             actionObj = gameObject.GetComponent<ActionObj>();
