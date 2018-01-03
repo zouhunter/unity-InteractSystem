@@ -22,8 +22,8 @@ namespace WorldActionSystem
         private UserError userErr { get; set; }
         private StepComplete stepComplete { get; set; }//步骤自动结束方法
         public IActionObj[] ActionObjs { get { return actionObjs; } }
-        public ActionGroup actionSystem { get; set; }
-        public ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
+        protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
+        public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } }
 
         protected IActionObj[] actionObjs;
         private ActionObjCtroller objectCtrl;
@@ -41,7 +41,8 @@ namespace WorldActionSystem
         private bool completed;
         private ActionGroup _system;
         private ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
-        protected CommandController commandCtrl { get { return system.CommandCtrl; } }
+        protected CommandController commandCtrl { get { return system == null ? null: system.CommandCtrl; } }
+
         protected virtual void Awake()
         {
             RegistActionObjs();
@@ -50,11 +51,11 @@ namespace WorldActionSystem
         }
         protected virtual void Start()
         {
-            RegistToActionSystem();
+            TryRegistToActionSystem();
         }
-        private void RegistToActionSystem()
+        private void TryRegistToActionSystem()
         {
-            commandCtrl.RegistCommand(this);
+           if(commandCtrl != null) commandCtrl.RegistCommand(this);
         }
 
         private void WorpCameraID()

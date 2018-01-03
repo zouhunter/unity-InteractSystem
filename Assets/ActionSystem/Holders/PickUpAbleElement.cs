@@ -128,7 +128,7 @@ namespace WorldActionSystem
         }
         protected virtual void Start()
         {
-            _collider = GetComponent<Collider>();
+            _collider = GetComponentInChildren<Collider>();
             InitRender();
             InitLayer();
             startPos = transform.position;
@@ -138,7 +138,6 @@ namespace WorldActionSystem
         private void InitLayer()
         {
             GetComponentInChildren<Collider>().gameObject.layer = Layers.pickUpElementLayer;
-
         }
 
         protected virtual void OnDestroy()

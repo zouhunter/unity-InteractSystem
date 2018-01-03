@@ -27,12 +27,12 @@ namespace WorldActionSystem
             }
         }
 
-        public ActionCtroller ActionCtrl
+        public ActionObjCtroller ActionObjCtrl
         {
             get
             {
                 if (currentCmd == null) return null;
-                return currentCmd.ActionCtrl;
+                return currentCmd.ActionObjCtrl;
             }
         }
 

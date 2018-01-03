@@ -21,6 +21,7 @@ namespace WorldActionSystem
         private CommandExecute commandExecute;
         private RegistCommandList onAllCommandRegisted;
         private UserError onUserError;
+
         internal void InitCommand(int totalCommand, CommandExecute onCommandRegistComplete, StepComplete onStepComplete,UserError onUserError, RegistCommandList onAllCommandRegisted)
         {
             this.totalCommand = totalCommand;
