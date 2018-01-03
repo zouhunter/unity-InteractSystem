@@ -26,6 +26,7 @@ namespace WorldActionSystem
         internal static int ropeNodeLayer = 15;
         internal const int placePosLayer = 16;
         internal const int dragItemLayer = 17;
+        internal const int nodeLayer = 18;
     }
 
 }
