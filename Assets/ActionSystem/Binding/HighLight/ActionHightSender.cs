@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Binding
 {
     public class ActionHightSender : ActionObjBinding
     {

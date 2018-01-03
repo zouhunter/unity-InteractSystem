@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Binding
 {
     /// <summary>
     /// 在一个ActionCommand时间内触发状态改变

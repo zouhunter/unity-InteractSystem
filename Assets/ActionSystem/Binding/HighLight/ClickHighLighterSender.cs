@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using System;
-namespace WorldActionSystem
+namespace WorldActionSystem.Binding
 {
     [RequireComponent(typeof(ClickObj))]
     public class ClickHighLighterSender : ActionHightSender

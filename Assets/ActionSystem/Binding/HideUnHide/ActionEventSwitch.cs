@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-namespace WorldActionSystem
+
+namespace WorldActionSystem.Binding
 {
     /// <summary>
     /// 在一个触发器时间内触发关闭和打开

@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem;
-namespace WorldActionSystem
+namespace WorldActionSystem.Binding
 {
     [RequireComponent(typeof(ClickObj))]
     public class ClickHighter : ActionHighLighter

@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using HighlightingSystem;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Binding
 {
     public class ActionHighLighter : ActionObjBinding
     {
