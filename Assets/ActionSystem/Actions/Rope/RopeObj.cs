@@ -18,8 +18,6 @@ namespace WorldActionSystem
             }
         }
         [SerializeField]
-        private GameObject ropeBody;
-        [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();
         [SerializeField]
         private List<Collider> ropeNodeTo = new List<Collider>();
@@ -43,13 +41,13 @@ namespace WorldActionSystem
         {
             rope.Regenerate(true);
         }
-       
+
         protected override void Start()
         {
             base.Start();
             angleTemp = anglePos;
         }
-        
+
         private void RegistNodes()
         {
             ropeNodeStartPos = new Vector3[ropeNodeFrom.Count];
@@ -84,7 +82,8 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            if(auto){
+            if (auto)
+            {
                 antoCoroutine = StartCoroutine(AutoConnectRopeNodes());
             }
             else
@@ -105,11 +104,12 @@ namespace WorldActionSystem
             connected.Clear();
             anglePos = angleTemp;
 
-            if (completeHide){
-                ropeBody.gameObject.SetActive(true);
+            if (completeHide)
+            {
+                rope.gameObject.SetActive(true);
             }
         }
- 
+
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
@@ -119,8 +119,9 @@ namespace WorldActionSystem
 
             QuickInstallRopeNodes(ropeNodeFrom);
 
-            if (completeHide) {
-                ropeBody.gameObject.SetActive(false);
+            if (completeHide)
+            {
+                rope.gameObject.SetActive(false);
             }
         }
         private IEnumerator AutoConnectRopeNodes()
@@ -146,7 +147,7 @@ namespace WorldActionSystem
 
         private void NoticeSelectNode()
         {
-            if (connected.Count == ropeNodeFrom.Count)
+            if (Connected)
             {
                 OnEndExecute(false);
             }
@@ -174,7 +175,7 @@ namespace WorldActionSystem
                 for (int i = 0; i < ropeNodeFrom.Count; i++)
                 {
                     var collider = ropeNodeFrom[i];
-                    if(!connected.Contains(collider))
+                    if (!connected.Contains(collider))
                     {
                         target = ropeNodeTo.Find(x => x.name == collider.name && !connected.Contains(x));
                         angleCtrl.UnNotice(anglePos);
@@ -188,14 +189,18 @@ namespace WorldActionSystem
             return null;
         }
 
-        public void OnPickupCollider(Collider collider)
+        public void PickupCollider(Collider collider)
         {
-            var toCollider = ropeNodeTo.Find(x => x.name == collider.name && !connected.Contains(x));
-            if(toCollider != null)
+            if (connected.Contains(collider))
             {
-                if (connected.Contains(collider)){
-                    connected.Remove(collider);
-                }
+                var otherNode = ropeNodeTo.Find(x => x.name == collider.name && connected.Contains(x));
+                connected.Remove(collider);
+                connected.Remove(otherNode);
+            }
+
+            var toCollider = ropeNodeTo.Find(x => x.name == collider.name && !connected.Contains(x));
+            if (toCollider != null)
+            {
                 angleCtrl.UnNotice(anglePos);
                 anglePos = toCollider.transform;
             }
@@ -217,7 +222,7 @@ namespace WorldActionSystem
         internal void QuickInstallRopeItem(Collider collider)
         {
             var nodeTo = ropeNodeTo.Find(x => x.name == collider.name && !connected.Contains(x));
-            if(nodeTo)
+            if (nodeTo)
             {
                 connected.Add(nodeTo);
                 connected.Add(collider);
@@ -276,7 +281,8 @@ namespace WorldActionSystem
                 var from = ropeNodeFrom[i];
                 var obj = this.ropeNodeTo.Find(x => x.name == from.name && !connected.Contains(x));
 
-                if (obj != null){
+                if (obj != null)
+                {
                     Debug.Log("form:" + from.transform.position);
                     Debug.Log("to:" + obj.transform.position);
 
@@ -285,7 +291,7 @@ namespace WorldActionSystem
                     connected.Add(from);
                 }
             }
-            if(completeHide)
+            if (completeHide)
             {
                 Invoke("TryRegenerate", 0.1f);
             }

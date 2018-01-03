@@ -93,10 +93,14 @@ namespace WorldActionSystem
             return comparer.Equals(currAngle, triggerAngle);
         }
 
-        public void ClampAsync(UnityAction onComplete)
+        public void Clamp()
         {
-            if(gameObject.activeInHierarchy)
-                StartCoroutine(Clamp(onComplete));
+            if (gameObject.activeInHierarchy)
+                StartCoroutine(Clamp(() => {
+                    if (TryMarchRot()){
+                        OnEndExecute(false);
+                    }
+                }));
         }
 
         private IEnumerator Clamp(UnityAction onComplete)

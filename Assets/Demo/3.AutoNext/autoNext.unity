@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -400,7 +400,7 @@ MonoBehaviour:
   _queueInAuto: 1
   _cameraID: 
   anglePos: {fileID: 0}
-  onBeforeStart:
+  onStartExecute:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -410,7 +410,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  onBeforeUnDo:
+  onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
@@ -471,7 +471,7 @@ MonoBehaviour:
   _queueInAuto: 1
   _cameraID: 
   anglePos: {fileID: 0}
-  onBeforeStart:
+  onStartExecute:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -481,7 +481,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  onBeforeUnDo:
+  onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
@@ -579,8 +579,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55cb2678aa66a084784f404e62351526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoExecute: 0
   group: {fileID: 1934717868}
-  angle: {fileID: 1796584629303038, guid: 564b8a6eb080d424abe243889aef3b7f, type: 2}
   steps:
   - step: StepOne
   - step: StepTwo
@@ -1054,6 +1054,7 @@ GameObject:
   - component: {fileID: 1637519902}
   - component: {fileID: 1637519901}
   - component: {fileID: 1637519900}
+  - component: {fileID: 1637519903}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -1131,6 +1132,17 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1637519898}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1637519903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1637519898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 427edf62da6b6704281a621e6729f20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1920734374
 GameObject:
   m_ObjectHideFlags: 0

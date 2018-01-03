@@ -51,7 +51,7 @@ namespace WorldActionSystem
                 var obj = hit.collider.GetComponentInParent<RopeObj>();
                 if (obj != null && obj.Started && !obj.Complete)//正在进行操作
                 {
-                    obj.OnPickupCollider(hit.collider);
+                    obj.PickupCollider(hit.collider);
                     ropeSelected = obj;
                     pickUpedRopeNode = hit.collider;
                     Debug.Log("Select: " + pickUpedRopeNode);

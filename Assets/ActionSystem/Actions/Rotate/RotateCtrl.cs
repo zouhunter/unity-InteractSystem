@@ -73,13 +73,8 @@ namespace WorldActionSystem
 
             if (Input.GetMouseButtonUp(0))
             {
-                selectedObj.ClampAsync(() =>
-                {
-                    if (selectedObj.TryMarchRot()){
-                        selectedObj.OnEndExecute(false);
-                    }
-                    selectedObj = null;
-                });
+                selectedObj.Clamp();
+                selectedObj = null;
             }
         }
 

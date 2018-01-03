@@ -9,7 +9,15 @@ namespace WorldActionSystem
     {
         private void Start()
         {
-            gameObject.layer = Layers.obstacleLayer;
+            SetAllChildColliderAsObstacle();
+        }
+        private void SetAllChildColliderAsObstacle()
+        {
+            var colliders = GetComponentsInChildren<Collider>();
+            foreach (var item in colliders)
+            {
+                item. gameObject.layer = Layers.obstacleLayer;
+            }
         }
     }
 }
