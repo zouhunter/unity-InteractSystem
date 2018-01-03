@@ -91,7 +91,7 @@ namespace WorldActionSystem
                             int index = i;
                             int totalcmd = total;
                             item.Value[index].RegistComplete(OnOneCommandComplete);
-                            item.Value[index].RegistAsOperate(onUserError);
+                            item.Value[index].RegistAsOperate(OnUserError);
                             item.Value[index].onBeforeActive.AddListener((x) =>
                             {
                                 OnCommandStartExecute(stepName, totalcmd, index);
@@ -106,7 +106,7 @@ namespace WorldActionSystem
                     {
                         var cmd = item.Value[0];
                         cmd.RegistComplete(OnOneCommandComplete);
-                        cmd.RegistAsOperate(onUserError);
+                        cmd.RegistAsOperate(OnUserError);
                         cmd.onBeforeActive.AddListener((x) =>
                         {
                             OnCommandStartExecute(stepName, 1, 1);
@@ -115,6 +115,14 @@ namespace WorldActionSystem
                     }
 
                 }
+            }
+        }
+
+        private void OnUserError(string stepName,string errInfo)
+        {
+            if(this.onUserError != null)
+            {
+                this.onUserError.Invoke(stepName, errInfo);
             }
         }
 

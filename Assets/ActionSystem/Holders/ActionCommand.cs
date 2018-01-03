@@ -16,7 +16,7 @@ namespace WorldActionSystem
         [SerializeField]
         private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
-        public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name;  return _stepName; } }
+        public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
         public bool Startd { get { return started; } }
         public bool Completed { get { return completed; } }
         private UserError userErr { get; set; }
@@ -41,7 +41,7 @@ namespace WorldActionSystem
         private bool completed;
         private ActionGroup _system;
         private ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
-        protected CommandController commandCtrl { get { return system == null ? null: system.CommandCtrl; } }
+        protected CommandController commandCtrl { get { return system == null ? null : system.CommandCtrl; } }
 
         protected virtual void Awake()
         {
@@ -55,7 +55,7 @@ namespace WorldActionSystem
         }
         private void TryRegistToActionSystem()
         {
-           if(commandCtrl != null) commandCtrl.RegistCommand(this);
+            if (commandCtrl != null) commandCtrl.RegistCommand(this);
         }
 
         private void WorpCameraID()
@@ -100,7 +100,10 @@ namespace WorldActionSystem
 
         internal void UserError(string err)
         {
-            userErr.Invoke(StepName, err);
+            if (userErr != null)
+            {
+                userErr.Invoke(StepName, err);
+            }
         }
 
         /// <summary>
@@ -129,7 +132,7 @@ namespace WorldActionSystem
             {
                 started = true;
                 onBeforeActive.Invoke(StepName);
-                ActionCtrl.OnStartExecute(objectCtrl,forceAuto);
+                ActionCtrl.OnStartExecute(objectCtrl, forceAuto);
                 return true;
             }
             else
