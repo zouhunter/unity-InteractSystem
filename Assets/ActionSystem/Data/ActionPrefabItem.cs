@@ -15,16 +15,7 @@ namespace WorldActionSystem
             {
                 if (string.IsNullOrEmpty(_id))
                 {
-                    var name = prefab == null ? "Null" : prefab.name;
-                    if (!rematrix)
-                    {
-                        _id = name;
-                    }
-                    else
-                    {
-                        _id = string.Format("[{0}][{1}]", name, matrix);
-                    }
-                    Debug.Log(_id);
+                    _id = CalcuteID(prefab, rematrix, matrix);
                 }
                 return _id;
             }
@@ -35,6 +26,21 @@ namespace WorldActionSystem
         public Matrix4x4 matrix;
         public GameObject prefab;
         public bool ignore;
+
+        public static string CalcuteID(GameObject prefab,bool rematrix, Matrix4x4 matrix)
+        {
+            string _id = null;
+            var name = prefab == null ? "Null" : prefab.name;
+            if (!rematrix)
+            {
+                _id = name;
+            }
+            else
+            {
+                _id = string.Format("[{0}][{1}]", name, matrix);
+            }
+            return _id;
+        }
         public int CompareTo(ActionPrefabItem other)
         {
             if (prefab == null || other.prefab == null) return 0;
