@@ -3059,7 +3059,6 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   completeHide: 1
-  ropeBody: {fileID: 0}
   ropeNodeFrom:
   - {fileID: 65713283611403996}
   - {fileID: 65528489543059122}
