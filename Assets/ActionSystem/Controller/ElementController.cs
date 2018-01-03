@@ -40,6 +40,7 @@ namespace WorldActionSystem
                 objectList[(string)item.Name] = new System.Collections.Generic.List<PickUpAbleElement>() { item };
             }
         }
+
         public void RemoveElement(PickUpAbleElement item)
         {
             foreach (var objItem in objectList)
@@ -96,8 +97,7 @@ namespace WorldActionSystem
 
         public void ActiveElements(PlaceObj element)
         {
-
-            var actived = lockQueue.Find(x => x.Name == element.name);
+            var actived = lockQueue.Find(x => x.Name == element.Name);
             if (actived == null)
             {
                 var objs = GetElements(element.Name);
@@ -106,14 +106,14 @@ namespace WorldActionSystem
                 {
                     if (log) Debug.Log("ActiveElements:" + element.Name + (!objs[i].Started && !objs[i].HaveBinding));
 
-                    if (!objs[i].Started && !objs[i].HaveBinding)
-                    {
+                    if (!objs[i].Started && !objs[i].HaveBinding){
                         objs[i].StepActive();
                     }
                 }
             }
             lockQueue.Add(element);
         }
+
         public void CompleteElements(PlaceObj element, bool undo)
         {
             lockQueue.Remove(element);

@@ -12,7 +12,7 @@ namespace WorldActionSystem
 {
   
     [CustomEditor(typeof(ActionGroup)), CanEditMultipleObjects]
-    public class ActionGroupAndObjDrawer : Editor
+    public class ActionGroupDrawer : Editor
     {
         protected bool swink;
         protected string query;

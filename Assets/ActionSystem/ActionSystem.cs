@@ -41,7 +41,7 @@ namespace WorldActionSystem
         {
             if (pickUpCtrl == null)
             {
-                pickUpCtrl = new PickUpController(this);
+                pickUpCtrl = new PickUpController(/*this*/);
             }
             if (actionCtrl == null)
             {

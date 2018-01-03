@@ -43,7 +43,7 @@ namespace WorldActionSystem
         {
             pickupCtrl.RegistOnPickup(OnPickUpObj);
 
-            controllerList.Add(new PlaceController());
+            controllerList.Add(new PlaceCtrl());
             controllerList.Add(new ClickCtrl());
             controllerList.Add(new RopeCtrl());
             controllerList.Add(new RotateCtrl());

@@ -22,7 +22,7 @@ namespace WorldActionSystem
         private Ray ray;
         private RaycastHit hit;
         private Vector3 previousMousePosition;
-        private Vector3 originalTargetPosition;
+        //private Vector3 originalTargetPosition;
         private Vector3 direction;
         private float distence { get { return Config.hitDistence; } }
         private float elementDistence;
@@ -61,7 +61,7 @@ namespace WorldActionSystem
         {
             if (Input.GetMouseButtonDown(0))
             {
-                originalTargetPosition = selectedObj.transform.position;
+                //originalTargetPosition = selectedObj.transform.position;
                 direction = (selectedObj.targetPos - selectedObj.startPos).normalized;
                 previousMousePosition = Vector3.zero;
             }

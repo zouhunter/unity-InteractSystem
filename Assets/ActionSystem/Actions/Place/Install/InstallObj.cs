@@ -6,9 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Internal;
-#if !NoFunction
-using DG.Tweening;
-#endif
+
 namespace WorldActionSystem
 {
     /// <summary>
@@ -23,10 +21,9 @@ namespace WorldActionSystem
                 return ControllerType.Install;
             }
         }
-
-        protected override void OnBeforeComplete(bool force)
+        protected override void OnBeforeEnd(bool force)
         {
-            base.OnBeforeComplete(force);
+            base.OnBeforeEnd(force);
 
             if (!AlreadyPlaced)
             {
@@ -36,11 +33,9 @@ namespace WorldActionSystem
                 obj.StepComplete();
             }
         }
-        protected override void OnBeforeUnDo()
+        public override void OnUnDoExecute()
         {
-            Debug.Log("OnBeforeUnDo:" + Name);
-
-            base.OnBeforeUnDo();
+            base.OnUnDoExecute();
 
             if (AlreadyPlaced)
             {

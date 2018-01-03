@@ -23,31 +23,26 @@ namespace WorldActionSystem
         protected virtual void Awake()
         {
             gameObject.layer = layer;
-            onBeforeStart.AddListener(OnBeforeStart);
-            onBeforeComplete.AddListener(OnBeforeComplete);
-            onBeforeUnDo.AddListener(OnBeforeUnDo);
         }
-        protected virtual void OnBeforeStart(bool auto)
-        {
-            elementCtrl.ActiveElements(this);
-        }
-        protected virtual void OnBeforeComplete(bool force)
-        {
-            elementCtrl.CompleteElements(this, false);
-        }
-        protected virtual void OnBeforeUnDo()
-        {
-            elementCtrl.CompleteElements(this, true);
-        }
+    
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            if (auto || autoInstall)
-            {
+            elementCtrl.ActiveElements(this);
+            if (auto || autoInstall){
                 OnAutoInstall();
             }
         }
-
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            elementCtrl.CompleteElements(this, true);
+        }
+        protected override void OnBeforeEnd(bool force)
+        {
+            base.OnBeforeEnd(force);
+            elementCtrl.CompleteElements(this, false);
+        }
         protected abstract void OnAutoInstall();
 
         public virtual void Attach(PickUpAbleElement obj)

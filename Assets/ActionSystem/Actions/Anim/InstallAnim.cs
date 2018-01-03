@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
-using System.Collections.Generic;
-#if !NoFunction
-using DG.Tweening;
-#endif
-using System;
+using System.Collections;
+
 namespace WorldActionSystem
 {
-
     public class InstallAnim : MonoBehaviour, AnimPlayer
     {
         [SerializeField]
@@ -17,9 +12,7 @@ namespace WorldActionSystem
         [SerializeField]
         private float time = 2f;
         private Vector3 initPos;
-#if !NoFunction
-        public Tweener tween;
-#endif
+        private Coroutine coroutine;
         private void Awake()
         {
             initPos = transform.position;
@@ -28,41 +21,48 @@ namespace WorldActionSystem
             }
         }
 
-        void Init(UnityAction onAutoPlayEnd)
-        {
-#if !NoFunction
-            transform.position = initPos;
-            tween = transform.DOMove(targetPos, time).OnComplete(() =>
-            {
-                onAutoPlayEnd.Invoke();
-                transform.position = targetPos;
-            }).SetAutoKill(false).Pause();
-#endif
-        }
+   
 
         public void Play(float speed, UnityAction onAutoPlayEnd)
         {
-            Init(onAutoPlayEnd);
-#if !NoFunction
-            tween.ChangeValues(transform.position, targetPos,1f/ speed).Play();
-#endif
+            time = 1f / speed;
+            transform.position = initPos;
+            coroutine = StartCoroutine(MoveAnim(onAutoPlayEnd));
         }
 
         public void EndPlay()
         {
-#if !NoFunction
-            tween.Complete();
+            if (coroutine != null) {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
             transform.position = targetPos;
-#endif
         }
 
         public void UnDoPlay()
         {
-#if !NoFunction
             Debug.Log("UnDoPlay");
-            tween.Rewind();
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
             transform.position = initPos;
-#endif
+        }
+        private IEnumerator MoveAnim(UnityAction onComplete)
+        {
+            var startPos = transform.position;
+            for (float i = 0; i < time; i += Time.deltaTime)
+            {
+                transform.position = Vector3.Lerp(startPos, targetPos, i / time);
+                yield return null;
+            }
+            if (onComplete != null)
+            {
+                onComplete.Invoke();
+                onComplete = null;
+            }
+            transform.position = targetPos;
         }
     }
 }

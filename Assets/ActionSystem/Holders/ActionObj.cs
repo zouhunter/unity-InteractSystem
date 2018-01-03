@@ -15,7 +15,7 @@ namespace WorldActionSystem
         public bool startActive;
         public bool endActive;
         protected bool _complete;
-        public string Name { get { return m_name; } }
+        public string Name { get { if (string.IsNullOrEmpty(m_name)) m_name = name; return m_name; } }
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
@@ -38,11 +38,11 @@ namespace WorldActionSystem
         public Transform anglePos;
         public UnityAction onEndExecute { get; set; }
         [HideInInspector]
-        public Toggle.ToggleEvent onBeforeStart;
+        public Toggle.ToggleEvent onStartExecute;
         [HideInInspector]
         public Toggle.ToggleEvent onBeforeComplete;
         [HideInInspector]
-        public UnityEvent onBeforeUnDo;
+        public UnityEvent onUnDoExecute;
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
         private HookCtroller hookCtrl;
@@ -50,15 +50,15 @@ namespace WorldActionSystem
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
-       
+
         public abstract ControllerType CtrlType { get; }
         public static bool log = true;
         protected bool notice;
         protected virtual void Start()
         {
-            if (string.IsNullOrEmpty(m_name)) m_name = name;
             hooks = GetComponentsInChildren<ActionHook>(false);
-            if (hooks.Length > 0){
+            if (hooks.Length > 0)
+            {
                 hookCtrl = new HookCtroller(this);
             }
             gameObject.SetActive(startActive);
@@ -80,24 +80,26 @@ namespace WorldActionSystem
         }
         protected virtual void Update()
         {
-            if (Complete||!Started) return;
+            if (Complete || !Started) return;
 
             if (!Config.angleNotice || this is AnimObj) return;
 
             if (notice)
             {
-                 angleCtrl.Notice(anglePos);
+                angleCtrl.Notice(anglePos);
             }
             else
             {
-                 angleCtrl.UnNotice(anglePos);
+                angleCtrl.UnNotice(anglePos);
             }
 
         }
-        public virtual void OnBeforeStart(bool auto)
+
+        private void OnStartExecuteInternal(bool auto)
         {
-            this.onBeforeStart.Invoke(auto);
+            this.onStartExecute.Invoke(auto);
         }
+
         public virtual void OnStartExecute(bool auto = false)
         {
             if (log) Debug.Log("OnStartExecute:" + this);
@@ -107,8 +109,8 @@ namespace WorldActionSystem
                 _started = true;
                 _complete = false;
                 notice = true;
-                OnBeforeStart(auto);
                 gameObject.SetActive(true);
+                OnStartExecuteInternal(auto);
             }
             else
             {
@@ -116,7 +118,7 @@ namespace WorldActionSystem
             }
         }
 
-      
+
         public virtual void OnEndExecute(bool force)
         {
             notice = false;
@@ -148,7 +150,7 @@ namespace WorldActionSystem
                 }
             }
         }
-        public virtual void OnBeforeEnd(bool force)
+        protected virtual void OnBeforeEnd(bool force)
         {
             onBeforeComplete.Invoke(force);
         }
@@ -166,10 +168,12 @@ namespace WorldActionSystem
                 notice = false;
                 _started = true;
                 _complete = true;
-                if (hooks.Length > 0){
+                if (hooks.Length > 0)
+                {
                     hookCtrl.OnEndExecute();
                 }
-                if (onEndExecute != null){
+                if (onEndExecute != null)
+                {
                     onEndExecute.Invoke();
                 }
                 gameObject.SetActive(endActive);
@@ -179,9 +183,10 @@ namespace WorldActionSystem
                 Debug.LogError("already completed", gameObject);
             }
         }
-        public virtual void OnBeforeUnDo()
+
+        private void OnUnDoExecuteInternal()
         {
-            onBeforeUnDo.Invoke();
+            onUnDoExecute.Invoke();
         }
         public virtual void OnUnDoExecute()
         {
@@ -189,12 +194,12 @@ namespace WorldActionSystem
 
             if (log) Debug.Log("OnUnDoExecute:" + this, this);
 
-            if (_started) 
+            if (_started)
             {
                 _started = false;
                 _complete = false;
                 notice = false;
-                OnBeforeUnDo();
+                OnUnDoExecuteInternal();
                 gameObject.SetActive(startActive);
 
                 if (hooks.Length > 0)
@@ -211,11 +216,11 @@ namespace WorldActionSystem
 
         public int CompareTo(IActionObj other)
         {
-            if(QueueID > other.QueueID)
+            if (QueueID > other.QueueID)
             {
                 return 1;
             }
-            else if(QueueID < other.QueueID)
+            else if (QueueID < other.QueueID)
             {
                 return -1;
             }

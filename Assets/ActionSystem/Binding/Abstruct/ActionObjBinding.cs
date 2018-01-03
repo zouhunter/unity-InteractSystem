@@ -15,17 +15,17 @@ public class ActionObjBinding : MonoBehaviour {
     protected virtual void Awake()
     {
         actionObj = gameObject.GetComponent<ActionObj>();
-        actionObj.onBeforeStart.AddListener(OnBeforeActive);
+        actionObj.onStartExecute.AddListener(OnBeforeActive);
         actionObj.onBeforeComplete.AddListener(OnBeforeComplete);
-        actionObj.onBeforeUnDo.AddListener(OnBeforeUnDo);
+        actionObj.onUnDoExecute.AddListener(OnBeforeUnDo);
     }
     private void OnDestroy()
     {
         if (actionObj)
         {
-            actionObj.onBeforeStart.RemoveListener(OnBeforeActive);
+            actionObj.onStartExecute.RemoveListener(OnBeforeActive);
             actionObj.onBeforeComplete.RemoveListener(OnBeforeComplete);
-            actionObj.onBeforeUnDo.RemoveListener(OnBeforeUnDo);
+            actionObj.onUnDoExecute.RemoveListener(OnBeforeUnDo);
         }
     }
     protected virtual void OnBeforeActive(bool forceAuto) { }

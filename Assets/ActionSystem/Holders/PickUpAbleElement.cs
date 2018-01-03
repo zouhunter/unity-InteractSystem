@@ -5,12 +5,60 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-#if !NoFunction
-using DG.Tweening;
-#endif
+
 namespace WorldActionSystem
 {
+    public class Tweener
+    {
+        private MonoBehaviour holder;
+        private Vector3[] positons;
+        private float animTime;
+        private UnityAction onComplete;
+        private Transform target;
+        private Coroutine coroutine;
+        private UnityAction<int> onwayPointChanged { get; set; }
+        public Tweener(MonoBehaviour holder)
+        {
+            this.holder = holder;
+        }
 
+        internal void DOPath(Transform transform, Vector3[] vector3, int animTime, UnityAction onComplete)
+        {
+            this.positons = vector3;
+            this.animTime = animTime;
+            this.onComplete = onComplete;
+            this.target = transform;
+            coroutine = holder.StartCoroutine(MoveCore());
+        }
+        IEnumerator MoveCore()
+        {
+            float d_time = animTime / (positons.Length - 1);
+            for (int i = 0; i < positons.Length - 1; i++)
+            {
+                if (onwayPointChanged != null) onwayPointChanged(i);
+                var startPos = positons[i];
+                var targetPos = positons[i + 1];
+                for (float j = 0; j < d_time; j+=Time.deltaTime)
+                {
+                    target.position = Vector3.Lerp(startPos, targetPos, j);
+                    yield return null;
+                }
+            }
+            if (onwayPointChanged != null) onwayPointChanged(positons.Length - 1);
+            if (onComplete != null) onComplete();
+        }
+        internal void Kill()
+        {
+            if(coroutine != null)
+            {
+                holder.StopCoroutine(coroutine);
+            }
+        }
+        internal void OnWaypointChange(UnityAction<int> p)
+        {
+            onwayPointChanged = p;
+        }
+    }
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
@@ -23,40 +71,43 @@ namespace WorldActionSystem
         public int animTime { get { return Config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
-        public virtual string Name { get { return _name; } }
+
+        public virtual string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
 
         public bool Started { get { return actived; } }
 
         public Renderer Render { get { return m_render; } }
+
         public event UnityAction onInstallOkEvent;
         public event UnityAction onUnInstallOkEvent;
-
+        [HideInInspector]
         public UnityEvent onPickUp;
+        [HideInInspector]
         public UnityEvent onLayDown;
 
+        [HideInInspector]
         public UnityEvent onStepActive;
+        [HideInInspector]
         public UnityEvent onStepComplete;
+        [HideInInspector]
         public UnityEvent onStepUnDo;
 
         [SerializeField]
         private Renderer m_render;
         [SerializeField]
         protected Color highLightColor = Color.green;
-#if !NoFunction
         protected Vector3 startRotation;
         protected Vector3 startPos;
         protected Tweener move;
         protected int smooth = 50;
-#endif
         protected IHighLightItems highLighter;
         protected bool actived;
         protected PlaceObj target;
         public PlaceObj BindingObj { get { return target; } }
-        protected bool hideOnInstall { get { return target? target.hideOnInstall:false; } }//
-        protected bool StraightMove { get { return target ? target.straightMove:false ; } }
+        protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
+        protected bool StraightMove { get { return target ? target.straightMove : false; } }
         protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
-        protected Transform Passby { get { return target?target.passBy:null; } }
-
+        protected Transform Passby { get { return target ? target.passBy : null; } }
         public Collider Collider
         {
             get
@@ -64,27 +115,28 @@ namespace WorldActionSystem
                 return _collider;
             }
         }
-
         public bool PickUpAble { get; set; }
-
         protected Collider _collider;
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
-#if !NoFunction
+
+        private void Awake()
+        {
+            elementCtrl.RegistElement(this);
+            move = new Tweener(this);
+        }
         protected virtual void Start()
         {
             _collider = GetComponent<Collider>();
-            if (string.IsNullOrEmpty(_name)) _name = name;
             InitRender();
             gameObject.layer = Layers.pickUpElementLayer;
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
-            elementCtrl.RegistElement(this);
         }
         protected virtual void OnDestroy()
         {
-            move.Kill(false);
+            move.Kill();
             elementCtrl.RemoveElement(this);
         }
         protected virtual void InitRender()
@@ -142,17 +194,16 @@ namespace WorldActionSystem
             List<Vector3> rots;
             CreatePosList(end, endRot, out poss, out rots);
             tweening = true;
-            move = transform.DOPath(poss.ToArray(), animTime).OnComplete(OnTweenComplete).SetAutoKill(true);
+            move.DOPath(transform, poss.ToArray(), animTime, OnTweenComplete);
             move.OnWaypointChange((x) =>
             {
                 transform.eulerAngles = rots[x];
             });
         }
-#endif
         protected virtual void OnTweenComplete()
         {
             tweening = false;
-            if(tweenCompleteAction != null)
+            if (tweenCompleteAction != null)
             {
                 tweenCompleteAction.Invoke();
             }
@@ -161,33 +212,32 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(PlaceObj target, bool complete = true,bool binding = true)
+        public virtual void NormalInstall(PlaceObj target, bool complete = true, bool binding = true)
         {
             StopTween();
-#if !NoFunction
             if (!HaveBinding)
             {
                 Binding(target);
 
-                tweenCompleteAction = () =>{
+                tweenCompleteAction = () =>
+                {
                     OnInstallComplete(complete);
                 };
 
                 DoPath(target.transform.position, target.transform.eulerAngles);
-               
+
                 if (!binding)
                 {
                     UnBinding();
                 }
             }
-#endif
         }
 
         /// <summary>
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(PlaceObj target, bool complete = true,bool binding = true)
+        public virtual void QuickInstall(PlaceObj target, bool complete = true, bool binding = true)
         {
             StopTween();
             if (!HaveBinding)
@@ -203,7 +253,7 @@ namespace WorldActionSystem
             }
             else
             {
-                Debug.LogError(this +"HaveBinding:" + BindingObj);
+                Debug.LogError(this + "HaveBinding:" + BindingObj);
             }
         }
 
@@ -215,8 +265,10 @@ namespace WorldActionSystem
             Debug.Log("NormalUnInstall");
             StopTween();
 #if !NoFunction
-            tweenCompleteAction = () => { 
-                if (HaveBinding){
+            tweenCompleteAction = () =>
+            {
+                if (HaveBinding)
+                {
                     UnBinding();
                 }
                 OnUnInstallComplete();
@@ -234,12 +286,12 @@ namespace WorldActionSystem
 
 #if !NoFunction
             StopTween();
-            move.Pause();
             transform.eulerAngles = startRotation;
             transform.position = startPos;
             target = null;
 
-            if (HaveBinding){
+            if (HaveBinding)
+            {
                 UnBinding();
             }
 
@@ -263,7 +315,8 @@ namespace WorldActionSystem
         public virtual void OnPickDown()
         {
             StopTween();
-            if(onLayDown != null){
+            if (onLayDown != null)
+            {
                 onLayDown.Invoke();
             }
         }
@@ -288,7 +341,8 @@ namespace WorldActionSystem
         {
             actived = false;
             onStepComplete.Invoke();
-            if(tweening){
+            if (tweening)
+            {
                 StopTween();
                 OnTweenComplete();
             }
@@ -320,15 +374,13 @@ namespace WorldActionSystem
 
         protected virtual void StopTween()
         {
-#if !NoFunction
-            move.Pause();
-            move.Kill(true);
-#endif
+            move.Kill();
         }
 
         protected virtual void OnInstallComplete(bool complete)
         {
-            if(hideOnInstall){
+            if (hideOnInstall)
+            {
                 gameObject.SetActive(false);
             }
 
@@ -352,7 +404,7 @@ namespace WorldActionSystem
             target = null;
             return old;
         }
-       
+
     }
 
 }

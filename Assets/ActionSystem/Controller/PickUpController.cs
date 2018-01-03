@@ -19,7 +19,7 @@ namespace WorldActionSystem
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
 
-        private ActionSystem actionSystem;
+        //private ActionSystem actionSystem;
 
         protected Camera viewCamera
         {
@@ -31,9 +31,9 @@ namespace WorldActionSystem
 
         private event UnityAction<IPickUpAbleItem> onPickup;
         private float timer = 0f;
-        public PickUpController(ActionSystem actionSystem)
+        public PickUpController(/*ActionSystem actionSystem*/)
         {
-            this.actionSystem = actionSystem;
+            //this.actionSystem = actionSystem;
         }
 
         public void Update()

@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class MatchCtrl : IPlaceState
+    public class MatchState : IPlaceState
     {
         public ControllerType CtrlType { get { return ControllerType.Match; } }
 
-        private PlaceController placeCtrl;
-        public MatchCtrl(PlaceController placeCtrl)
+        private PlaceCtrl placeCtrl;
+        public MatchState(PlaceCtrl placeCtrl)
         {
             this.placeCtrl = placeCtrl;
         }
@@ -60,11 +60,6 @@ namespace WorldActionSystem
             {
                 pickup.OnPickDown();
             }
-        }
-
-        public void Update()
-        {
-
         }
     }
 

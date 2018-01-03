@@ -96,6 +96,7 @@ namespace WorldActionSystem
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
+
             if (antoCoroutine != null)
                 StopCoroutine(antoCoroutine);
 
@@ -104,13 +105,12 @@ namespace WorldActionSystem
             connected.Clear();
             anglePos = angleTemp;
 
-            if (completeHide)
-            {
+            if (completeHide){
                 ropeBody.gameObject.SetActive(true);
             }
         }
  
-        public override void OnBeforeEnd(bool force)
+        protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
 
@@ -118,12 +118,8 @@ namespace WorldActionSystem
                 StopCoroutine(antoCoroutine);
 
             QuickInstallRopeNodes(ropeNodeFrom);
-        }
-        public override void OnEndExecute(bool force)
-        {
-            base.OnEndExecute(force);
-            if(completeHide)
-            {
+
+            if (completeHide) {
                 ropeBody.gameObject.SetActive(false);
             }
         }

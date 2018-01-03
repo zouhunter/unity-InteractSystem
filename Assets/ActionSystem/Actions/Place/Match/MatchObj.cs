@@ -5,9 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-#if !NoFunction
-using DG.Tweening;
-#endif
+
 namespace WorldActionSystem
 {
     public class MatchObj : PlaceObj
@@ -22,17 +20,18 @@ namespace WorldActionSystem
         }
 
         public bool Matched { get { return obj != null; } }
-
-        protected override void OnBeforeComplete(bool force)
+        protected override void OnBeforeEnd(bool force)
         {
-            base.OnBeforeComplete(force);
+            base.OnBeforeEnd(force);
+
             if (Matched && completeMoveBack){
                 obj.QuickUnInstall();
             }
         }
-        protected override void OnBeforeUnDo()
+        public override void OnUnDoExecute()
         {
-            base.OnBeforeUnDo();
+            base.OnUnDoExecute();
+
             if (Matched){
                 var obj = Detach();
                 obj.QuickUnInstall();

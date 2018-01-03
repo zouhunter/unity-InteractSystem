@@ -7,19 +7,13 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class InstallCtrl : IPlaceState
+    public class InstallState : IPlaceState
     {
         public ControllerType CtrlType { get { return ControllerType.Install; } }
 
         public bool Active { get; private set; }
 
-        private PlaceController placeCtrl;
-        public InstallCtrl(PlaceController placeCtrl)
-        {
-            this.placeCtrl = placeCtrl;
-        }
-
-        public  bool CanPlace(PlaceObj placeObj, IPickUpAbleItem element, out string why)
+        public bool CanPlace(PlaceObj placeObj, IPickUpAbleItem element, out string why)
         {
             why = null;
             var canplace = true;
@@ -37,7 +31,7 @@ namespace WorldActionSystem
                 canplace = false;
                 why = "已经安装";
             }
-            
+
             else if (element.Name != placeObj.Name)
             {
                 canplace = false;
@@ -50,16 +44,16 @@ namespace WorldActionSystem
             return canplace;
         }
 
-        public  void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
+        public void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
         {
             pos.Attach(pickup);
             pickup.QuickInstall(pos);
             pickup.PickUpAble = false;
         }
 
-        public  void PlaceWrong(PickUpAbleElement pickup)
+        public void PlaceWrong(PickUpAbleElement pickup)
         {
-            if(pickup)
+            if (pickup)
             {
                 pickup.NormalUnInstall();
             }

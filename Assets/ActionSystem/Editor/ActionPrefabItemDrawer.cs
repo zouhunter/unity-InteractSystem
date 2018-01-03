@@ -114,10 +114,6 @@ namespace WorldActionSystem
             var choiseRect = new Rect(rect.x, rect.y, width, rect.height);
             rematrixProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Matrix", rematrixProp.boolValue);
             choiseRect.x += width;
-            //containsPickupProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Pickup", containsPickupProp.boolValue);
-            //choiseRect.x += width;
-            //containsCommandProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Command", containsCommandProp.boolValue);
-            //choiseRect.x += width;
             ignoreProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "[Ignore]", ignoreProp.boolValue);
             choiseRect.x += width;
         }
@@ -153,7 +149,7 @@ namespace WorldActionSystem
                     EditorGUI.SelectableLabel(infoRect, "[c]");
                     infoRect.x += infoRect.width;
                 }
-                GUI.color = new Color(0, .5f, 0, .2f);
+                GUI.color = Color.red;
                 if(ignoreProp.boolValue)
                 {
                     GUI.Box(rect,"");

@@ -7,7 +7,7 @@ using System;
 
 namespace WorldActionSystem
 {
-    public sealed class PlaceController : OperateController, IPlaceState
+    public sealed class PlaceCtrl : OperateController, IPlaceState
     {
         public IHighLightItems highLight;
         public PickUpController pickCtrl { get { return ActionSystem.Instence.pickUpCtrl; } }
@@ -32,15 +32,15 @@ namespace WorldActionSystem
         public Ray ray;
         public RaycastHit hit;
         public RaycastHit[] hits;
-        private InstallCtrl installCtrl;
-        private MatchCtrl matchCtrl;
+        private InstallState installCtrl;
+        private MatchState matchCtrl;
         private IPlaceState current;
 
-        public PlaceController()
+        public PlaceCtrl()
         {
             highLight = new ShaderHighLight();
-            current = installCtrl = new WorldActionSystem.InstallCtrl(this);
-            matchCtrl = new WorldActionSystem.MatchCtrl(this);
+            current = installCtrl = new WorldActionSystem.InstallState(/*this*/);
+            matchCtrl = new WorldActionSystem.MatchState(this);
         }
 
         #region 鼠标操作事件
