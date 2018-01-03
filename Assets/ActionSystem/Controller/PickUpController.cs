@@ -19,8 +19,6 @@ namespace WorldActionSystem
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
 
-        //private ActionSystem actionSystem;
-
         protected Camera viewCamera
         {
             get
@@ -31,10 +29,7 @@ namespace WorldActionSystem
 
         private event UnityAction<IPickUpAbleItem> onPickup;
         private float timer = 0f;
-        public PickUpController(/*ActionSystem actionSystem*/)
-        {
-            //this.actionSystem = actionSystem;
-        }
+
 
         public void Update()
         {
@@ -152,7 +147,7 @@ namespace WorldActionSystem
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.pickUpElementLayer)))
             {
-                var pickedUpObj = hit.collider.GetComponent<PickUpAbleElement>();
+                var pickedUpObj = hit.collider.GetComponentInParent<PickUpAbleElement>();
                 if(pickedUpObj.PickUpAble) PickUp(pickedUpObj);
             }
         }

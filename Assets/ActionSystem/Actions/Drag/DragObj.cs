@@ -32,7 +32,11 @@ namespace WorldActionSystem
         {
             base.Start();
             InitPositions();
-            gameObject.layer = Layers.dragItemLayer;
+            InitLayer();
+        }
+        private void InitLayer()
+        {
+            GetComponentInChildren<Collider>().gameObject.layer = Layers.dragItemLayer;
         }
         private void InitPositions()
         {

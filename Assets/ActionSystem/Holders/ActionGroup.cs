@@ -20,7 +20,6 @@ namespace WorldActionSystem
 
         #region Propertys
         internal IRemoteController RemoteController { get { return remoteController; } }
-        internal IActionStap[] ActiveStaps { get { return steps; } }
         internal CommandController CommandCtrl
         {
             get
@@ -38,7 +37,7 @@ namespace WorldActionSystem
         #endregion
 
         #region Private
-        private IActionStap[] steps;
+        //private IActionStap[] steps;
         private IRemoteController remoteController;
         private CommandController commandCtrl = new CommandController();
         private EventController eventCtrl = new EventController();
@@ -67,15 +66,53 @@ namespace WorldActionSystem
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
+        public void LunchActionSystem(UnityAction<string[]> onLunchOK)
+        {
+            onCommandRegisted = (activeCommands) =>
+            {
+                var steps = activeCommands.ConvertAll<string>(x => x.StepName);
+                steps.Sort();
+                activeCommands = GetIActionCommandList(activeCommands, steps.ToArray());
+                remoteController = new RemoteController(activeCommands);
+                onLunchOK.Invoke(steps.ToArray());
+            };
+
+            if (commandCtrl.CommandRegisted)
+            {
+                onCommandRegisted.Invoke(commandCtrl.CommandList);
+            }
+        }
+        /// <summary>
+        /// 设置安装顺序并生成最终步骤
+        /// </summary>
+        public void LunchActionSystem(string[] steps, UnityAction<string[]> onLunchOK) 
+        {
+            Debug.Assert(steps != null);
+            onCommandRegisted = (activeCommands) =>
+            {
+                var stepsWorp = ConfigSteps(activeCommands, steps);//重新计算步骤
+                activeCommands = GetIActionCommandList(activeCommands, stepsWorp);
+                remoteController = new RemoteController(activeCommands);
+                onLunchOK.Invoke(stepsWorp);
+            };
+
+            if (commandCtrl.CommandRegisted)
+            {
+                onCommandRegisted.Invoke(commandCtrl.CommandList);
+            }
+        }
+        /// <summary>
+        /// 设置安装顺序并生成最终步骤
+        /// </summary>
         public void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK) where T : IActionStap
         {
             Debug.Assert(steps != null);
             onCommandRegisted = (activeCommands) =>
             {
-                this.steps = ConfigSteps<T>(activeCommands, steps);//重新计算步骤
-                activeCommands = GetIActionCommandList(activeCommands, this.steps);
+                var stepsWorp = ConfigSteps<T>(activeCommands, steps);//重新计算步骤
+                activeCommands = GetIActionCommandList(activeCommands,Array.ConvertAll<IActionStap,string>( stepsWorp,x=>x.StapName));
                 remoteController = new RemoteController(activeCommands);
-                onLunchOK.Invoke(Array.ConvertAll<IActionStap, T>(this.steps, x => (T)x));
+                onLunchOK.Invoke(Array.ConvertAll<IActionStap, T>(stepsWorp, x => (T)x));
             };
 
             if (commandCtrl.CommandRegisted)
@@ -124,6 +161,31 @@ namespace WorldActionSystem
         /// <param name="commandDic"></param>
         /// <param name="steps"></param>
         /// <returns></returns>
+        private static string[] ConfigSteps(List<IActionCommand> commandList, string[] steps)
+        {
+            List<string> activeStaps = new List<string>();
+            List<string> ignored = new List<string>();
+            for (int i = 0; i < steps.Length; i++)
+            {
+                var old = commandList.Find(x => x.StepName == steps[i]);
+                if (old != null)
+                {
+                    activeStaps.Add(steps[i]);
+                }
+                else
+                {
+                    ignored.Add(steps[i]);
+                }
+            }
+            Debug.Log("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
+            return activeStaps.ToArray();
+        }
+
+        /// 重置步骤
+        /// </summary>
+        /// <param name="commandDic"></param>
+        /// <param name="steps"></param>
+        /// <returns></returns>
         private static IActionStap[] ConfigSteps<T>(List<IActionCommand> commandList, T[] steps) where T : IActionStap
         {
             List<IActionStap> activeStaps = new List<IActionStap>();
@@ -148,12 +210,12 @@ namespace WorldActionSystem
         /// 得到排序后的命令列表
         /// </summary>
         /// <returns></returns>
-        private static List<IActionCommand> GetIActionCommandList(List<IActionCommand> commandList, IActionStap[] steps)
+        private static List<IActionCommand> GetIActionCommandList(List<IActionCommand> commandList, string[] steps)
         {
             var actionCommandList = new List<IActionCommand>();
             foreach (var item in steps)
             {
-                var old = commandList.Find(x => x.StepName == item.StapName);
+                var old = commandList.Find(x => x.StepName == item);
                 if (old != null)
                 {
                     actionCommandList.Add(old);

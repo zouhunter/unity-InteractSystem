@@ -11,7 +11,7 @@ namespace WorldActionSystem
     {
         public bool CommandRegisted { get; private set; }
         public List<IActionCommand> CommandList { get { return _commandList; }}
-
+        public Dictionary<string, List<ActionCommand>> CommandDic { get { return actionDic; } }
         private List<IActionCommand> _commandList = new List<IActionCommand>();
         private Dictionary<string, List<ActionCommand>> actionDic = new Dictionary<string, List<ActionCommand>>();//触发器
         private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();

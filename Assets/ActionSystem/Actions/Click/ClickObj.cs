@@ -26,11 +26,15 @@ namespace WorldActionSystem
         [HideInInspector]
         public UnityEvent onMouseExit;
 
-        protected override void Start()
-        {
+        protected override void Start(){
             base.Start();
-            gameObject.layer = Layers.clickItemLayer;
+            InitLayer();
         }
+        private void InitLayer()
+        {
+            GetComponentInChildren<Collider>().gameObject.layer = Layers.clickItemLayer;
+        }
+
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);

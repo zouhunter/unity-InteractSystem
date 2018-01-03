@@ -28,8 +28,10 @@ namespace WorldActionSystem
         private float elementDistence;
         public override void Update()
         {
-            if (TrySelectObj())
-            {
+            if(Input.GetMouseButtonDown(0)) {
+                TrySelectObj();
+            }
+            if (selectedObj != null){
                 TransformSelected();
             }
         }
@@ -41,7 +43,7 @@ namespace WorldActionSystem
 
             if (Physics.Raycast(ray, out hit, distence, (1 << Layers.dragItemLayer)))
             {
-                var obj = hit.collider.GetComponent<DragObj>();
+                var obj = hit.collider.GetComponentInParent<DragObj>();
                 if (obj.Started && !obj.Complete)
                 {
                     selectedObj = obj;

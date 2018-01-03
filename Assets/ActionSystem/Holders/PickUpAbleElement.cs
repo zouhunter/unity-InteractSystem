@@ -30,6 +30,7 @@ namespace WorldActionSystem
             this.target = transform;
             coroutine = holder.StartCoroutine(MoveCore());
         }
+
         IEnumerator MoveCore()
         {
             float d_time = animTime / (positons.Length - 1);
@@ -129,11 +130,17 @@ namespace WorldActionSystem
         {
             _collider = GetComponent<Collider>();
             InitRender();
-            gameObject.layer = Layers.pickUpElementLayer;
+            InitLayer();
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
         }
+        private void InitLayer()
+        {
+            GetComponentInChildren<Collider>().gameObject.layer = Layers.pickUpElementLayer;
+
+        }
+
         protected virtual void OnDestroy()
         {
             move.Kill();

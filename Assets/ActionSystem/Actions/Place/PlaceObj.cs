@@ -22,7 +22,11 @@ namespace WorldActionSystem
 
         protected virtual void Awake()
         {
-            gameObject.layer = layer;
+            InitLayer();
+        }
+        private void InitLayer()
+        {
+            GetComponentInChildren<Collider>().gameObject.layer = layer;
         }
     
         public override void OnStartExecute(bool auto = false)

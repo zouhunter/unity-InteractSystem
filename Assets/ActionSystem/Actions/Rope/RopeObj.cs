@@ -73,10 +73,10 @@ namespace WorldActionSystem
 
         private void RegestRopeList()
         {
-            ropeList.Add(rope.RopeStart.GetComponent<BoxCollider>());
+            ropeList.Add(rope.RopeStart.GetComponent<Collider>());
             for (int i = 0; i < rope.RopeNodes.Count; i++)
             {
-                ropeList.Add(rope.RopeNodes[i].goNode.GetComponent<BoxCollider>());
+                ropeList.Add(rope.RopeNodes[i].goNode.GetComponent<Collider>());
                 lengthList.Add(rope.RopeNodes[i].fLength);
             }
         }

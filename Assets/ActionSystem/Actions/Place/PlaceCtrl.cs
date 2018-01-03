@@ -74,7 +74,7 @@ namespace WorldActionSystem
                     var hitedObj = false;
                     for (int i = 0; i < hits.Length; i++)
                     {
-                        installPos = hits[i].collider.GetComponent<PlaceObj>();
+                        installPos = hits[i].collider.GetComponentInParent<PlaceObj>();
                         if (installPos)
                         {
                             SwitchState(installPos.CtrlType);

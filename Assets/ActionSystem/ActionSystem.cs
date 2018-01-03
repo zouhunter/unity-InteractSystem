@@ -30,6 +30,7 @@ namespace WorldActionSystem
 
         private List<ActionGroup> groupList = new List<ActionGroup>();
         private Dictionary<string, List<UnityAction<ActionGroup>>> waitDic = new Dictionary<string, List<UnityAction<ActionGroup>>>();
+
         private void Awake()
         {
             if (_instence == null){
@@ -96,6 +97,7 @@ namespace WorldActionSystem
             if (!groupList.Contains(actionGroup))
             {
                 groupList.Add(actionGroup);
+                actionGroup.transform.SetParent(transform);
             }
             if (waitDic.ContainsKey(actionGroup.groupKey))
             {
@@ -107,7 +109,13 @@ namespace WorldActionSystem
                 }
             }
         }
-
+        public static void Clean()
+        {
+            if(_instence != null)
+            {
+                Destroy(_instence.gameObject);
+            }
+        }
         internal void RemoveGroup(ActionGroup actionGroup)
         {
             if (groupList.Contains(actionGroup))

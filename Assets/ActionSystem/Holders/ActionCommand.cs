@@ -16,7 +16,7 @@ namespace WorldActionSystem
         [SerializeField]
         private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
-        public string StepName { get { return _stepName; } }
+        public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name;  return _stepName; } }
         public bool Startd { get { return started; } }
         public bool Completed { get { return completed; } }
         private UserError userErr { get; set; }
@@ -29,7 +29,7 @@ namespace WorldActionSystem
         private ActionObjCtroller objectCtrl;
         [EnumMask, HideInInspector]
         public ControllerType commandType;//用于editor
-        
+
         [HideInInspector]
         public InputField.OnChangeEvent onBeforeActive;
         [HideInInspector]

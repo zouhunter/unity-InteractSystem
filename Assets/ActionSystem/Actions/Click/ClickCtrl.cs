@@ -64,7 +64,7 @@ namespace WorldActionSystem
         {
             if (Physics.Raycast(ray, out hit, distence, (1 << Layers.clickItemLayer)))
             {
-                obj = hit.collider.GetComponent<ClickObj>();
+                obj = hit.collider.GetComponentInParent<ClickObj>();
                 return true;
             }
             obj = null;
