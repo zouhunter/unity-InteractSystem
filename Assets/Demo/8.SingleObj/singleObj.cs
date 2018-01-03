@@ -6,17 +6,26 @@ using System.Collections.Generic;
 using WorldActionSystem;
 
 public class singleObj : MonoBehaviour {
-    public ActionObj obj;
+    public DragObj obj;
     private DragCtrl dragCtrl;
     public bool autoExecute;
     private void Start()
     {
-        obj.onBeforeComplete.AddListener((x) => { Debug.Log("complete"); });
+        obj.onEndExecute = OnEndMove; 
         dragCtrl = new DragCtrl();
     }
     private void Update()
     {
         dragCtrl.Update();
+    }
+    private void OnEndMove()
+    {
+        Debug.Log("complete");
+        obj.OnUnDoExecute();
+        obj.OnStartExecute(autoExecute);
+       var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.position = obj.targetPos;
+        cube.AddComponent<Rigidbody>();
     }
     private void OnGUI()
     {

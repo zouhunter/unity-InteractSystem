@@ -63,9 +63,9 @@ namespace WorldActionSystem
             }
             OnEndExecute(false);
         }
-        public override void OnEndExecute(bool force)
+        protected override void OnBeforeEnd(bool force)
         {
-            base.OnEndExecute(force);
+            base.OnBeforeEnd(force);
             if (auto && waitCoroutine != null)
             {
                 StopCoroutine(waitCoroutine);

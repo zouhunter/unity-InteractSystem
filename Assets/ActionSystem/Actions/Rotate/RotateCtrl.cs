@@ -14,7 +14,6 @@ namespace WorldActionSystem
         private RotObj selectedObj;
         private RaycastHit hit;
         private Ray ray;
-        private Vector3 originalTargetPosition;
         private Vector3 axis;
         private Vector3 previousMousePosition;
 
@@ -22,32 +21,33 @@ namespace WorldActionSystem
 
         public override void Update()
         {
-            if (TrySelectRotateObj())
+            if(Input.GetMouseButtonDown(0) && selectedObj == null)
+            {
+                TrySelectRotateObj();
+            }
+            if (selectedObj != null)
             {
                 TransformSelected();
             }
         }
-        private bool TrySelectRotateObj()
+        private void TrySelectRotateObj()
         {
-            if (viewCamera == null) return false;
+            if (viewCamera == null) return;
 
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit, distence, (1 << Layers.rotateItemLayer)))
             {
-                selectedObj = hit.collider.GetComponent<RotObj>();
+                selectedObj = hit.collider.GetComponentInParent<RotObj>();
             }
-
-            return selectedObj != null;
         }
 
-      
+
 
         void TransformSelected()
         {
             if (Input.GetMouseButtonDown(0))
             {
-                originalTargetPosition = selectedObj.transform.position;
                 axis = selectedObj.Direction;
                 previousMousePosition = Vector3.zero;
             }
@@ -57,13 +57,13 @@ namespace WorldActionSystem
                 if (selectedObj.Started)
                 {
                     ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-                    Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, originalTargetPosition, axis);
-                    if (previousMousePosition != Vector3.zero && mousePosition != Vector3.zero && IsInCercle(mousePosition))
+                    Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, selectedObj.transform.position, axis);
+                    if (previousMousePosition != Vector3.zero && mousePosition != Vector3.zero)
                     {
                         var vec1 = previousMousePosition - selectedObj.transform.position;
                         var vec2 = mousePosition - selectedObj.transform.position;
                         float rotateAmount = (Vector3.Angle(Vector3.Cross(vec1, vec2), axis) < 180f ? 1 : -1)
-                            * Vector3.Angle(vec1, vec2) * selectedObj.rotSpeed;
+                            * Vector3.Angle(vec1, vec2) * 1;
                         selectedObj.Rotate(rotateAmount);
                     }
 
@@ -73,16 +73,15 @@ namespace WorldActionSystem
 
             if (Input.GetMouseButtonUp(0))
             {
-                selectedObj.ClampAsync(()=> {
-                    if (selectedObj.TryMarchRot()) {
+                selectedObj.ClampAsync(() =>
+                {
+                    if (selectedObj.TryMarchRot())
+                    {
                         selectedObj.OnEndExecute(false);
                     }
-                });               
+                    selectedObj = null;
+                });
             }
-        }
-        private bool IsInCercle(Vector3 pos)
-        {
-            return Vector3.Distance(selectedObj.transform.position, pos) < selectedObj.triggerRadius;
         }
 
     }
