@@ -264,6 +264,7 @@ namespace WorldActionSystem
             Debug.Assert(collider != null);
             var id = ropeNodeFrom.IndexOf(collider);
             collider.transform.position = ropeNodeStartPos[id];
+            NoticeSelectNode();
         }
 
         public void PickDownAllCollider()
