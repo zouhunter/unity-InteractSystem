@@ -15,28 +15,30 @@ namespace WorldActionSystem
         public event UnityAction<LinkPort[]> onDisconnected;
         public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return connectedNodes; } }
 
-        private float timeSpan;
-        private float spanTime;
-        private float sphereRange = 0.0001f;
+        private float timer;
+        private const float spanTime = 0.5f;
         private LinkItem pickedUpItem;
         private LinkPort activeNode;
         private LinkPort targetNode;
         private Dictionary<LinkItem, List<LinkPort>> connectedNodes = new Dictionary<LinkItem, List<LinkPort>>();
-        public LinkNodeConnectController(float sphereRange, float spanTime)
-        {
-            this.spanTime = spanTime;
-            this.sphereRange = sphereRange;
-        }
+
 
         public void Update()
         {
-            timeSpan += Time.deltaTime;
-            if (pickedUpItem != null && timeSpan > spanTime)
+            timer += Time.deltaTime;
+            if (pickedUpItem != null && timer > spanTime)
             {
-                timeSpan = 0f;
-               
-                if (!FindConnectableObject())
+                timer = 0f;
+
+                if (FindConnectableObject())
                 {
+                    if (onMatch != null)
+                    {
+                        onMatch(activeNode);
+                        onMatch(targetNode);
+                    }
+                }
+                else {
                     if (targetNode != null)
                     {
                         onDisMatch.Invoke(targetNode);
@@ -53,6 +55,7 @@ namespace WorldActionSystem
 
         public bool FindConnectableObject()
         {
+
             if (pickedUpItem != null)
             {
                 LinkPort tempNode;
@@ -62,10 +65,6 @@ namespace WorldActionSystem
                     {
                         activeNode = item;
                         targetNode = tempNode;
-                        if (onMatch != null) {
-                            onMatch(activeNode);
-                            onMatch(targetNode);
-                        }
                         return true;
                     }
                 }
@@ -76,12 +75,12 @@ namespace WorldActionSystem
 
         private bool FindInstallableNode(LinkPort item, out LinkPort node)
         {
-            Collider[] colliders = Physics.OverlapSphere(item.Pos, sphereRange, 1 << Layers.nodeLayer);
+            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, 1 << Layers.nodeLayer);
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)
                 {
-                    LinkPort tempNode = collider.GetComponent<LinkPort>();
+                    LinkPort tempNode = collider.GetComponentInParent<LinkPort>();
                     if (tempNode == null)
                     {
                         //Debug.Log(collider + " have no iportItem");

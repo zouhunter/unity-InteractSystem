@@ -35,18 +35,29 @@ namespace WorldActionSystem
 
         public bool PickUpAble { get; set; }
 
-        public Collider Collider { get; private set; }
+        [SerializeField]
+        private Collider _collider;
+        public Collider Collider { get { if (_collider == null) _collider = GetComponent<Collider>();return _collider; } }
 
-        public void OnPickDown()
+        private void Awake()
         {
-            
+            InitPorts();
+            InitLayer();
+        }
+        private void InitPorts()
+        {
+            var nodeItems = GetComponentsInChildren<LinkPort>(true);
+            _childNodes.AddRange(nodeItems);
+            foreach (var item in nodeItems)
+            {
+                item.Body = this;
+            }
         }
 
-        public void OnPickUp()
+        private void InitLayer()
         {
-            
+            Collider.gameObject.layer = Layers.pickUpElementLayer;
         }
-
         public void ResetBodyTransform(LinkItem otherParent, Vector3 rPos, Vector3 rdDir)
         {
             transform.position = otherParent.Trans.TransformPoint(rPos);
@@ -55,18 +66,19 @@ namespace WorldActionSystem
 
         public void SetPosition(Vector3 pos)
         {
-           
+            transform.position = pos;
         }
 
-        private void Awake()
+        public void OnPickUp()
         {
-            var nodeItems = GetComponentsInChildren<LinkPort>(true);
-            _childNodes.AddRange(nodeItems);
+        }
 
-            foreach (var item in nodeItems)
-            {
-                item.Body = this;
-            }
+        public void OnPickStay()
+        {
+        }
+
+        public void OnPickDown()
+        {
         }
     }
 

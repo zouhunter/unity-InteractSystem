@@ -7,76 +7,100 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class LinkCtrl
+    public class LinkCtrl : OperateController
     {
-        [Range(0.1f, 1f)]
-        public float nodeUpdateSpanTime = 0.5f;
-        [Range(0.02f, 0.1f)]
-        public float pickUpSpantime = 0.02f;
-        [Range(10, 60)]
-        public int scrollSpeed = 20;
-        [Range(0, 1)]
-        public float sphereRange = 0.1f;
-        [Range(3, 15)]
-        public float distence = 1f;
-
+        private LinkObj linkObj;
         public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return nodeConnectCtrl.ConnectedDic; } }
-
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Link;
+            }
+        }
 
         private PickUpController pickCtrl { get { return ActionSystem.Instence.pickUpCtrl; } }
         private LinkNodeConnectController nodeConnectCtrl;
         private IHighLightItems highter;
-        public void Start()
+
+        public LinkCtrl()
         {
             highter = new ShaderHighLight();
-            nodeConnectCtrl = new LinkNodeConnectController(sphereRange, nodeUpdateSpanTime);
-            pickCtrl.RegistOnPickup(OnPickUp);
-            pickCtrl.RegistOnPickDown(OnPickDown);
-            pickCtrl.RegistOnPickStatu(OnPickStatu);
+            nodeConnectCtrl = new LinkNodeConnectController();
+            pickCtrl.onPickup += (OnPickUp);
+            pickCtrl.onPickdown += (OnPickDown);
+            pickCtrl.onPickStay += (OnPickStay);
             nodeConnectCtrl.onDisMatch += OnDisMath;
             nodeConnectCtrl.onMatch += OnMatch;
             nodeConnectCtrl.onConnected += OnConnected;
             nodeConnectCtrl.onDisconnected += OnDisConnected;
         }
 
-        public void Update()
+        public override void Update()
         {
-            if (UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
-            if (pickCtrl != null) pickCtrl.Update();
-            if (nodeConnectCtrl != null) nodeConnectCtrl.Update();
+            if (nodeConnectCtrl != null)
+                nodeConnectCtrl.Update();
         }
 
         void OnMatch(LinkPort item)
         {
+            highter.HighLightTarget(item.gameObject, Color.green);
+            Debug.Log("OnMatch:" + item);
         }
         void OnDisMath(LinkPort item)
         {
+            highter.UnHighLightTarget(item.gameObject);
+            Debug.Log("OnDisMath:" + item);
         }
         void OnPickUp(IPickUpAbleItem obj)
         {
-            nodeConnectCtrl.SetActiveItem(obj as LinkItem);
+            if (obj is LinkItem)
+            {
+                nodeConnectCtrl.SetActiveItem(obj as LinkItem);
+                linkObj = (obj as LinkItem).GetComponentInParent<LinkObj>();
+            }
         }
 
         void OnPickDown(IPickUpAbleItem obj)
         {
-            nodeConnectCtrl.SetDisableItem(obj as LinkItem);
+            if (obj is LinkItem)
+            {
+                nodeConnectCtrl.SetDisableItem(obj as LinkItem);
+                TryComplete();
+            }
+        }
+        void OnPickStay(IPickUpAbleItem go)
+        {
+            nodeConnectCtrl.TryConnect();
+            pickCtrl.PickDown();
+            Debug.Log("OnPickStatu");
         }
 
         void OnConnected(LinkPort[] nodes)
         {
             foreach (var item in nodes)
             {
+                highter.UnHighLightTarget(item.gameObject);
             }
         }
         void OnDisConnected(LinkPort[] nodes)
         {
             foreach (var item in nodes)
             {
+                highter.UnHighLightTarget(item.gameObject);
             }
         }
-        void OnPickStatu(IPickUpAbleItem go)
+
+        void TryComplete()
         {
-            nodeConnectCtrl.TryConnect();
+            if (linkObj != null)
+            {
+                if (linkObj.LinkItems.Length == ConnectedDic.Count)
+                {
+                    linkObj.OnEndExecute(false);
+                }
+            }
         }
+
     }
 }

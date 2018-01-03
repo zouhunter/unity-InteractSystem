@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace WorldActionSystem
 {
-    public class LinkObj : ActionObj
+    public class LinkObj : ActionObj, IPickUpAbleItem
     {
         [SerializeField]
         private List<LinkItem> linkItems;
+        public LinkItem[] LinkItems { get { return linkItems.ToArray(); } }
+
         [SerializeField]
         private List<LinkGroup> defultLink;
 
@@ -21,10 +23,27 @@ namespace WorldActionSystem
             }
         }
 
+        [SerializeField]
+        private Collider _handle;
+        public Collider Collider { get { return _handle; } }
+        public bool PickUpAble
+        {
+            get
+            {
+                return Started && !Complete;
+            }
+
+            set
+            {
+
+            }
+        }
+
         protected override void Start()
         {
             base.Start();
             InitLinkItems();
+            InitLayer();
         }
 
         void InitLinkItems()
@@ -37,6 +56,10 @@ namespace WorldActionSystem
                 startRotation[i] = linkItems[i].transform.localRotation;
             }
         }
+        void InitLayer()
+        {
+            Collider.gameObject.layer = Layers.pickUpElementLayer;
+        }
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
@@ -46,6 +69,21 @@ namespace WorldActionSystem
                 {
                     StartCoroutine(AutoLinkItems());
                 }
+            }
+            else
+            {
+                foreach (var item in linkItems)
+                {
+                    item.PickUpAble = true;
+                }
+            }
+        }
+        protected override void OnBeforeEnd(bool force)
+        {
+            base.OnBeforeEnd(force);
+            foreach (var item in linkItems)
+            {
+                item.PickUpAble = false;
             }
         }
         private IEnumerator AutoLinkItems()
@@ -58,11 +96,11 @@ namespace WorldActionSystem
                 var portA = linkGroup.portA;
                 var portB = linkGroup.portB;
 
-                if(!stoped.Contains(portB))//将B移向A
+                if (!stoped.Contains(portB))//将B移向A
                 {
                     yield return MoveBToA(portA, portB);
                     stoped.Add(portB);
-                    if(!stoped.Contains(portA))
+                    if (!stoped.Contains(portA))
                     {
                         stoped.Add(portA);
                     }
@@ -75,7 +113,7 @@ namespace WorldActionSystem
             }
         }
 
-        IEnumerator MoveBToA(LinkPort portA,LinkPort portB)
+        IEnumerator MoveBToA(LinkPort portA, LinkPort portB)
         {
             var linkInfoA = portA.connectAble.Find(x => x.itemName == portB.Body.Name);
             var linkInfoB = portB.connectAble.Find(x => x.itemName == portA.Body.name);
@@ -94,6 +132,23 @@ namespace WorldActionSystem
                 yield return null;
             }
 
+        }
+
+        public void OnPickUp()
+        {
+        }
+
+        public void OnPickStay()
+        {
+        }
+
+        public void OnPickDown()
+        {
+        }
+
+        public void SetPosition(Vector3 pos)
+        {
+            transform.position = pos;
         }
     }
 }

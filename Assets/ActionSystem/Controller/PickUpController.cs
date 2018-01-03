@@ -18,7 +18,7 @@ namespace WorldActionSystem
         private RaycastHit disHit;
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
-
+       
         protected Camera viewCamera
         {
             get
@@ -27,7 +27,9 @@ namespace WorldActionSystem
             }
         }
 
-        private event UnityAction<IPickUpAbleItem> onPickup;
+        public event UnityAction<IPickUpAbleItem> onPickup;
+        public event UnityAction<IPickUpAbleItem> onPickdown;
+        public event UnityAction<IPickUpAbleItem> onPickStay;
         private float timer = 0f;
 
 
@@ -43,6 +45,10 @@ namespace WorldActionSystem
                 {
                     SelectAnElement();
                 }
+                else
+                {
+                    PickStay();
+                }
             }
 
             if (PickedUp)
@@ -57,16 +63,6 @@ namespace WorldActionSystem
             }
         }
 
-        internal void RegistOnPickStatu(Action<IPickUpAbleItem> onPickStatu)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void RegistOnPickDown(Action<IPickUpAbleItem> onPickDown)
-        {
-            throw new NotImplementedException();
-        }
-
         internal void PickUp(IPickUpAbleItem pickedUpObj)
         {
             if (pickedUpObj != null)
@@ -76,18 +72,27 @@ namespace WorldActionSystem
                 if (this.onPickup != null) onPickup.Invoke(pickedUpObj);
                 elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.Collider.transform.position);
             }
-
         }
 
-        public void RegistOnPickup(UnityAction<IPickUpAbleItem> action)
+        public void PickStay()
         {
-            onPickup += action;
+            if (pickedUpObj != null)
+            {
+                pickedUpObj.OnPickStay();
+
+                if (onPickStay != null)
+                    onPickStay(pickedUpObj);
+
+            }
         }
 
         public void PickDown()
         {
+            Debug.Log("PickDown");
             if (pickedUpObj != null)
             {
+                if (onPickdown != null) onPickdown(pickedUpObj);
+
                 pickedUpObj.OnPickDown();
                 pickedUpObj = null;
             }
@@ -156,9 +161,14 @@ namespace WorldActionSystem
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.pickUpElementLayer)))
             {
-                var pickedUpObj = hit.collider.GetComponentInParent<PickUpAbleElement>();
-                if(pickedUpObj.PickUpAble) PickUp(pickedUpObj);
+                var pickedUpObj = hit.collider.gameObject.GetComponentInParent<IPickUpAbleItem>();
+                if (pickedUpObj != null)
+                {
+                    if (pickedUpObj.PickUpAble)
+                        PickUp(pickedUpObj);
+                }
             }
         }
+
     }
 }

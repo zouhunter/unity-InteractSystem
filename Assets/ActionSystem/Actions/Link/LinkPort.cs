@@ -13,12 +13,6 @@ namespace WorldActionSystem
         #region Propertys
         public LinkItem Body { get; set; }
         public LinkPort ConnectedNode { get; set; }
-        public Renderer Render {
-            get
-            {
-                return _render;
-            }
-        }
         public Vector3 Pos
         {
             get
@@ -34,37 +28,37 @@ namespace WorldActionSystem
                 return _connectAble;
             }
         }
+
+        public float Range { get { return _range; } }
         #endregion
-        [SerializeField]
-        private Renderer _render;
-        [SerializeField]
-        private bool _renderActive;
         private int _nodeId;
+        [SerializeField,Range(0.1f,100)]
+        private float _range = 0.5f;
         public List<LinkInfo> _connectAble;
 
         void Awake()
         {
-            gameObject.layer = Layers.nodeLayer;
-            if (_render == null)
-                _render = GetComponentInChildren<Renderer>();
+            InitLayer();
         }
         private void OnEnable()
         {
             _nodeId = transform.GetSiblingIndex();
-            _render.enabled = _renderActive;
+        }
+        private void InitLayer()
+        {
+            gameObject.GetComponentInChildren<Collider>().gameObject.layer = Layers.nodeLayer;
+
         }
 
         public bool Attach(LinkPort item)
         {
             item.ConnectedNode = this;
             ConnectedNode = item;
-            _render.enabled = _renderActive;
             return true;
         }
 
         public void ResetTransform()
         {
-            _render.enabled = _renderActive;
             if (ConnectedNode != null)
             {
                 LinkInfo connect = connectAble.Find(x => { return x.itemName == ConnectedNode.Body.Name && x.nodeId == ConnectedNode.NodeID; });
@@ -73,11 +67,8 @@ namespace WorldActionSystem
                 }
             }
         }
-
-
         public LinkPort Detach()
         {
-            _render.enabled = false;
             LinkPort outItem = ConnectedNode;
             if (ConnectedNode != null)
             {

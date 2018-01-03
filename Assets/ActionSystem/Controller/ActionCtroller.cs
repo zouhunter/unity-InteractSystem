@@ -41,8 +41,8 @@ namespace WorldActionSystem
         }
         private void RegisterControllers()
         {
-            pickupCtrl.RegistOnPickup(OnPickUpObj);
-
+            pickupCtrl.onPickup += (OnPickUpObj);
+            controllerList.Add(new LinkCtrl());
             controllerList.Add(new PlaceCtrl());
             controllerList.Add(new ClickCtrl());
             controllerList.Add(new RopeCtrl());

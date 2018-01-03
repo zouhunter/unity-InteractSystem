@@ -317,7 +317,9 @@ namespace WorldActionSystem
                 onPickUp.Invoke();
             }
         }
-
+        public void OnPickStay()
+        {
+        }
         public virtual void OnPickDown()
         {
             StopTween();
