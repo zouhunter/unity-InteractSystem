@@ -7,21 +7,19 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class LinkNodeConnectController
+    public class LinkConnectController
     {
-        public event UnityAction<LinkPort[]> onConnected;
-        public event UnityAction<LinkPort> onMatch;
-        public event UnityAction<LinkPort> onDisMatch;
-        public event UnityAction<LinkPort[]> onDisconnected;
-        public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return connectedNodes; } }
-
+        public UnityAction<LinkPort[]> onConnected { get; set; }
+        public UnityAction<LinkPort> onMatch { get; set; }
+        public UnityAction<LinkPort> onDisMatch { get; set; }
+        public UnityAction<LinkPort[]> onDisconnected { get; set; }
+        private Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get; set; }
+        private Transform Parent { get; set; }
         private float timer;
         private const float spanTime = 0.5f;
         private LinkItem pickedUpItem;
         private LinkPort activeNode;
         private LinkPort targetNode;
-        private Dictionary<LinkItem, List<LinkPort>> connectedNodes = new Dictionary<LinkItem, List<LinkPort>>();
-
 
         public void Update()
         {
@@ -38,7 +36,8 @@ namespace WorldActionSystem
                         onMatch(targetNode);
                     }
                 }
-                else {
+                else
+                {
                     if (targetNode != null)
                     {
                         onDisMatch.Invoke(targetNode);
@@ -55,7 +54,6 @@ namespace WorldActionSystem
 
         public bool FindConnectableObject()
         {
-
             if (pickedUpItem != null)
             {
                 LinkPort tempNode;
@@ -69,12 +67,17 @@ namespace WorldActionSystem
                     }
                 }
             }
-         
+
             return false;
         }
-
         private bool FindInstallableNode(LinkPort item, out LinkPort node)
         {
+            if (item.ConnectedNode != null)
+            {
+                node = item.ConnectedNode;
+                return false;
+            }
+
             Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, 1 << Layers.nodeLayer);
             if (colliders != null && colliders.Length > 0)
             {
@@ -104,29 +107,40 @@ namespace WorldActionSystem
         public void SetActiveItem(LinkItem item)
         {
             this.pickedUpItem = item;
-            List<LinkPort> olditems = new List<LinkPort>();
-            if (connectedNodes.ContainsKey(item))
+
+            List<LinkPort> disconnected = new List<LinkPort>();
+
+            if (ConnectedDic.ContainsKey(item))
             {
-                List<LinkPort> needClear = new List<LinkPort>();
-                for (int i = 0; i < connectedNodes[item].Count; i++)
+                LinkPort[] connectedPort = ConnectedDic[item].ToArray();
+                for (int i = 0; i < connectedPort.Length; i++)
                 {
-                    LinkPort nodeItem = connectedNodes[item][i];
-                    needClear.Add(nodeItem);
+                    LinkPort port = ConnectedDic[item][i];
+                    LinkPort otherPort = port.ConnectedNode;
 
-                    LinkPort target = nodeItem.ConnectedNode;
-                    connectedNodes[target.Body].Remove(target);
-                    Debug.Log(connectedNodes[item][i].Detach());
-
-                    olditems.Add(nodeItem);
-                    olditems.Add(target);
+                    if (otherPort.Body.transform.IsChildOf(item.transform))
+                    {
+                        continue;//子对象不用清除
+                    }
+                    else
+                    {
+                        ConnectedDic[item].Remove(port);
+                        ConnectedDic[otherPort.Body].Remove(otherPort);
+                        LinkUtil.DetachNodes(port, otherPort, Parent);
+                        disconnected.Add(port);
+                        disconnected.Add(otherPort);
+                    }
                 }
 
-                for (int i = 0; i < needClear.Count; i++)
-                {
-                    connectedNodes[item].Remove(needClear[i]);
-                }
-                if (onDisconnected != null) onDisconnected.Invoke(needClear.ToArray());
+                if (onDisconnected != null)
+                    onDisconnected.Invoke(disconnected.ToArray());
             }
+        }
+
+        public void SetState(Transform parent, Dictionary<LinkItem, List<LinkPort>> ConnectedDic)
+        {
+            this.ConnectedDic = ConnectedDic;
+            this.Parent = parent;
         }
 
         public void SetDisableItem(LinkItem item)
@@ -138,31 +152,33 @@ namespace WorldActionSystem
 
         public void TryConnect()
         {
-            if (activeNode != null && activeNode != null)
+            if (activeNode != null && targetNode != null && !targetNode.Body.transform.IsChildOf(activeNode.Body.transform))
             {
-                if (targetNode.Attach(activeNode))
-                {
-                    activeNode.ResetTransform();
+                RecordToDic(activeNode);
 
-                    if (!connectedNodes.ContainsKey(pickedUpItem))
-                    {
-                        connectedNodes[pickedUpItem] = new List<LinkPort>();
-                    }
+                RecordToDic(targetNode);
 
-                    connectedNodes[pickedUpItem].Add(activeNode);
+                LinkUtil.AttachNodes(activeNode, targetNode);
 
-                    if (!connectedNodes.ContainsKey(targetNode.Body))
-                    {
-                        connectedNodes[targetNode.Body] = new List<LinkPort>();
-                    }
+                if (onConnected != null)
+                    onConnected.Invoke(new LinkPort[] { activeNode, targetNode });
 
-                    connectedNodes[targetNode.Body].Add(targetNode);
-
-                    if (onConnected != null) onConnected.Invoke(new LinkPort[] { activeNode, targetNode });
-                    activeNode = null;
-                    targetNode = null;
-                }
+                activeNode = null;
+                targetNode = null;
             }
         }
+
+        private void RecordToDic(LinkPort port)
+        {
+            var item = port.Body;
+
+            if (!ConnectedDic.ContainsKey(item))
+            {
+                ConnectedDic[item] = new List<LinkPort>();
+            }
+
+            ConnectedDic[item].Add(port);
+        }
+
     }
 }

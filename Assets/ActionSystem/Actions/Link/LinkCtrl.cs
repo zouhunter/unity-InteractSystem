@@ -9,8 +9,10 @@ namespace WorldActionSystem
 {
     public class LinkCtrl : OperateController
     {
-        private LinkObj linkObj;
-        public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return nodeConnectCtrl.ConnectedDic; } }
+        private LinkObj linkObj { get; set; }
+        private IHighLightItems highter;
+
+        private LinkConnectController linkConnectCtrl;
         public override ControllerType CtrlType
         {
             get
@@ -18,46 +20,48 @@ namespace WorldActionSystem
                 return ControllerType.Link;
             }
         }
-
         private PickUpController pickCtrl { get { return ActionSystem.Instence.pickUpCtrl; } }
-        private LinkNodeConnectController nodeConnectCtrl;
-        private IHighLightItems highter;
 
         public LinkCtrl()
         {
             highter = new ShaderHighLight();
-            nodeConnectCtrl = new LinkNodeConnectController();
+            linkConnectCtrl = new LinkConnectController();
+            linkConnectCtrl.onDisMatch = OnDisMath;
+            linkConnectCtrl.onMatch = OnMatch;
+            linkConnectCtrl.onConnected = OnConnected;
+            linkConnectCtrl.onDisconnected = OnDisConnected;
             pickCtrl.onPickup += (OnPickUp);
             pickCtrl.onPickdown += (OnPickDown);
             pickCtrl.onPickStay += (OnPickStay);
-            nodeConnectCtrl.onDisMatch += OnDisMath;
-            nodeConnectCtrl.onMatch += OnMatch;
-            nodeConnectCtrl.onConnected += OnConnected;
-            nodeConnectCtrl.onDisconnected += OnDisConnected;
         }
-
         public override void Update()
         {
-            if (nodeConnectCtrl != null)
-                nodeConnectCtrl.Update();
+            if (linkConnectCtrl != null)
+                linkConnectCtrl.Update();
         }
 
         void OnMatch(LinkPort item)
         {
             highter.HighLightTarget(item.gameObject, Color.green);
-            Debug.Log("OnMatch:" + item);
         }
         void OnDisMath(LinkPort item)
         {
             highter.UnHighLightTarget(item.gameObject);
-            Debug.Log("OnDisMath:" + item);
         }
         void OnPickUp(IPickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
-                nodeConnectCtrl.SetActiveItem(obj as LinkItem);
-                linkObj = (obj as LinkItem).GetComponentInParent<LinkObj>();
+                var linkItem = obj as LinkItem;
+                if (linkItem)
+                {
+                    linkObj = linkItem.GetComponentInParent<LinkObj>();
+                    if (linkObj)
+                    {
+                        linkConnectCtrl.SetState(linkObj.transform, linkObj.ConnectedDic);
+                        linkConnectCtrl.SetActiveItem(linkItem);
+                    }
+                }
             }
         }
 
@@ -65,13 +69,13 @@ namespace WorldActionSystem
         {
             if (obj is LinkItem)
             {
-                nodeConnectCtrl.SetDisableItem(obj as LinkItem);
-                TryComplete();
+                linkConnectCtrl.SetDisableItem(obj as LinkItem);
+                linkObj.TryComplete();
             }
         }
         void OnPickStay(IPickUpAbleItem go)
         {
-            nodeConnectCtrl.TryConnect();
+            linkConnectCtrl.TryConnect();
             pickCtrl.PickDown();
             Debug.Log("OnPickStatu");
         }
@@ -88,17 +92,6 @@ namespace WorldActionSystem
             foreach (var item in nodes)
             {
                 highter.UnHighLightTarget(item.gameObject);
-            }
-        }
-
-        void TryComplete()
-        {
-            if (linkObj != null)
-            {
-                if (linkObj.LinkItems.Length == ConnectedDic.Count)
-                {
-                    linkObj.OnEndExecute(false);
-                }
             }
         }
 

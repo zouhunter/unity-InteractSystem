@@ -1,20 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace WorldActionSystem
 {
-    public class LinkObj : ActionObj, IPickUpAbleItem
+    public class LinkObj : ActionObj
     {
-        [SerializeField]
-        private List<LinkItem> linkItems;
         public LinkItem[] LinkItems { get { return linkItems.ToArray(); } }
-
-        [SerializeField]
-        private List<LinkGroup> defultLink;
-
-        private Vector3[] startPositions;
-        private Quaternion[] startRotation;
-        private Coroutine coroutine;
         public override ControllerType CtrlType
         {
             get
@@ -24,26 +16,20 @@ namespace WorldActionSystem
         }
 
         [SerializeField]
-        private Collider _handle;
-        public Collider Collider { get { return _handle; } }
-        public bool PickUpAble
-        {
-            get
-            {
-                return Started && !Complete;
-            }
+        private List<LinkItem> linkItems;
+        [SerializeField]
+        private List<LinkGroup> defultLink;
 
-            set
-            {
-
-            }
-        }
+        private Vector3[] startPositions;
+        private Quaternion[] startRotation;
+        private Coroutine coroutine;
+        public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return _connectedDic; } }
+        private Dictionary<LinkItem, List<LinkPort>> _connectedDic = new Dictionary<LinkItem, List<LinkPort>>();
 
         protected override void Start()
         {
             base.Start();
             InitLinkItems();
-            InitLayer();
         }
 
         void InitLinkItems()
@@ -55,10 +41,6 @@ namespace WorldActionSystem
                 startPositions[i] = linkItems[i].transform.localPosition;
                 startRotation[i] = linkItems[i].transform.localRotation;
             }
-        }
-        void InitLayer()
-        {
-            Collider.gameObject.layer = Layers.pickUpElementLayer;
         }
         public override void OnStartExecute(bool auto = false)
         {
@@ -78,6 +60,7 @@ namespace WorldActionSystem
                 }
             }
         }
+
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
@@ -86,6 +69,29 @@ namespace WorldActionSystem
                 item.PickUpAble = false;
             }
         }
+
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            LinkUtil.DetachConnectedPorts(ConnectedDic, transform);
+            ResetPositions();
+        }
+        public void TryComplete()
+        {
+            if (LinkItems.Length == ConnectedDic.Count)
+            {
+                OnEndExecute(false);
+            }
+        }
+        private void ResetPositions()
+        {
+            for (int i = 0; i < startPositions.Length; i++)
+            {
+                linkItems[i].transform.localPosition = startPositions[i];
+                linkItems[i].transform.localRotation = startRotation[i];
+            }
+        }
+
         private IEnumerator AutoLinkItems()
         {
             List<LinkPort> stoped = new List<LinkPort>();
@@ -99,6 +105,7 @@ namespace WorldActionSystem
                 if (!stoped.Contains(portB))//将B移向A
                 {
                     yield return MoveBToA(portA, portB);
+                    LinkUtil.AttachNodes(portB, portA);
                     stoped.Add(portB);
                     if (!stoped.Contains(portA))
                     {
@@ -113,12 +120,10 @@ namespace WorldActionSystem
             }
         }
 
-        IEnumerator MoveBToA(LinkPort portA, LinkPort portB)
+        private IEnumerator MoveBToA(LinkPort portA, LinkPort portB)
         {
             var linkInfoA = portA.connectAble.Find(x => x.itemName == portB.Body.Name);
             var linkInfoB = portB.connectAble.Find(x => x.itemName == portA.Body.name);
-
-            portB.Attach(portA);
 
             var pos = portA.Body.Trans.TransformPoint(linkInfoB.relativePos);
             var forward = portA.Body.Trans.TransformDirection(linkInfoB.relativeDir);
@@ -132,23 +137,6 @@ namespace WorldActionSystem
                 yield return null;
             }
 
-        }
-
-        public void OnPickUp()
-        {
-        }
-
-        public void OnPickStay()
-        {
-        }
-
-        public void OnPickDown()
-        {
-        }
-
-        public void SetPosition(Vector3 pos)
-        {
-            transform.position = pos;
         }
     }
 }

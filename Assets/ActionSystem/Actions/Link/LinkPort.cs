@@ -54,6 +54,8 @@ namespace WorldActionSystem
         {
             item.ConnectedNode = this;
             ConnectedNode = item;
+            item.ResetTransform();
+            item.Body.transform.SetParent(Body.transform);
             return true;
         }
 
@@ -67,7 +69,7 @@ namespace WorldActionSystem
                 }
             }
         }
-        public LinkPort Detach()
+        public LinkPort Detach(Transform parent)
         {
             LinkPort outItem = ConnectedNode;
             if (ConnectedNode != null)
@@ -75,6 +77,7 @@ namespace WorldActionSystem
                 ConnectedNode.ConnectedNode = null;
                 ConnectedNode = null;
             }
+            outItem.transform.SetParent(parent);
             return outItem;
         }
     }
