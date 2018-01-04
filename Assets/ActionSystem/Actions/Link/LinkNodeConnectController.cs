@@ -154,9 +154,9 @@ namespace WorldActionSystem
         {
             if (activeNode != null && targetNode != null && !targetNode.Body.transform.IsChildOf(activeNode.Body.transform))
             {
-                RecordToDic(activeNode);
+                LinkUtil.RecordToDic(ConnectedDic,activeNode);
 
-                RecordToDic(targetNode);
+                LinkUtil.RecordToDic(ConnectedDic, targetNode);
 
                 LinkUtil.AttachNodes(activeNode, targetNode);
 
@@ -168,17 +168,7 @@ namespace WorldActionSystem
             }
         }
 
-        private void RecordToDic(LinkPort port)
-        {
-            var item = port.Body;
-
-            if (!ConnectedDic.ContainsKey(item))
-            {
-                ConnectedDic[item] = new List<LinkPort>();
-            }
-
-            ConnectedDic[item].Add(port);
-        }
+       
 
     }
 }

@@ -56,6 +56,7 @@ namespace WorldActionSystem
                 if (linkItem)
                 {
                     linkObj = linkItem.GetComponentInParent<LinkObj>();
+                    linkObj.TryActiveLinkPort(linkItem);
                     if (linkObj)
                     {
                         linkConnectCtrl.SetState(linkObj.transform, linkObj.ConnectedDic);
@@ -70,7 +71,7 @@ namespace WorldActionSystem
             if (obj is LinkItem)
             {
                 linkConnectCtrl.SetDisableItem(obj as LinkItem);
-                linkObj.TryComplete();
+                linkObj.TryActiveLinkItem ();
             }
         }
         void OnPickStay(IPickUpAbleItem go)

@@ -23,9 +23,28 @@ namespace WorldActionSystem
             staticPort.ConnectedNode = null;
             moveAblePort.transform.SetParent(parent);
         }
+        public static void RecordToDic(Dictionary<LinkItem, List<LinkPort>> ConnectedDic, LinkPort port)
+        {
+            var item = port.Body;
+
+            if (!ConnectedDic.ContainsKey(item))
+            {
+                ConnectedDic[item] = new List<LinkPort>();
+            }
+
+            ConnectedDic[item].Add(port);
+        }
         public static void DetachConnectedPorts(Dictionary<LinkItem, List<LinkPort>> dic, Transform parent)
         {
-
+            foreach (var item in dic)
+            {
+                var linkItem = item.Key;
+                var ports = item.Value;
+                linkItem.transform.SetParent(parent);
+                foreach (var port in ports){
+                    port.ConnectedNode = null;
+                }
+            }
         }
     }
 }

@@ -25,11 +25,12 @@ namespace WorldActionSystem
         private Coroutine coroutine;
         public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return _connectedDic; } }
         private Dictionary<LinkItem, List<LinkPort>> _connectedDic = new Dictionary<LinkItem, List<LinkPort>>();
-
+        private Transform angleTemp;
         protected override void Start()
         {
             base.Start();
             InitLinkItems();
+            angleTemp = anglePos;
         }
 
         void InitLinkItems()
@@ -58,7 +59,48 @@ namespace WorldActionSystem
                 {
                     item.PickUpAble = true;
                 }
+                TryActiveLinkItem();
             }
+        }
+
+        public void TryActiveLinkItem()
+        {
+            var notLinked = linkItems.Find(x => !ConnectedDic.ContainsKey(x));
+            if (notLinked != null)
+            {
+                angleCtrl.UnNotice(anglePos);
+                anglePos = notLinked.transform;
+            }
+            else
+            {
+                TryComplete();
+            }
+        }
+
+        public void TryActiveLinkPort(LinkItem pickedUp)
+        {
+            for (int i = 0; i < pickedUp.ChildNodes.Count; i++)
+            {
+                var node = pickedUp.ChildNodes[i];
+                if (node.ConnectedNode == null && node.connectAble.Count > 0)
+                {
+                    for (int j = 0; j < node.connectAble.Count; j++)
+                    {
+                        var info = node.connectAble[j];
+                        var otheritem = linkItems.Find(x => x.Name == info.itemName);
+                        if (otheritem != null) {
+
+                            var otherNode = otheritem.ChildNodes[info.nodeId];
+                            if (otherNode != null && otherNode.ConnectedNode == null)
+                            {
+                                angleCtrl.UnNotice(anglePos);
+                                anglePos = otherNode.transform;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         protected override void OnBeforeEnd(bool force)
@@ -74,6 +116,7 @@ namespace WorldActionSystem
         {
             base.OnUnDoExecute();
             LinkUtil.DetachConnectedPorts(ConnectedDic, transform);
+            ConnectedDic.Clear();
             ResetPositions();
         }
         public void TryComplete()
@@ -104,8 +147,13 @@ namespace WorldActionSystem
 
                 if (!stoped.Contains(portB))//将B移向A
                 {
+                    angleCtrl.UnNotice(anglePos);
+                    anglePos = portA.transform;
+
                     yield return MoveBToA(portA, portB);
                     LinkUtil.AttachNodes(portB, portA);
+                    LinkUtil.RecordToDic(ConnectedDic, portA);
+                    LinkUtil.RecordToDic(ConnectedDic, portB);
                     stoped.Add(portB);
                     if (!stoped.Contains(portA))
                     {
