@@ -59,7 +59,7 @@ namespace WorldActionSystem
                 LinkPort tempNode;
                 foreach (var item in pickedUpItem.ChildNodes)
                 {
-                    if (FindInstallableNode(item, out tempNode))
+                    if (LinkUtil. FindInstallableNode(item, out tempNode))
                     {
                         activeNode = item;
                         targetNode = tempNode;
@@ -70,39 +70,7 @@ namespace WorldActionSystem
 
             return false;
         }
-        private bool FindInstallableNode(LinkPort item, out LinkPort node)
-        {
-            if (item.ConnectedNode != null)
-            {
-                node = item.ConnectedNode;
-                return false;
-            }
-
-            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, 1 << Layers.nodeLayer);
-            if (colliders != null && colliders.Length > 0)
-            {
-                foreach (var collider in colliders)
-                {
-                    LinkPort tempNode = collider.GetComponentInParent<LinkPort>();
-                    if (tempNode == null)
-                    {
-                        //Debug.Log(collider + " have no iportItem");
-                        continue;
-                    }
-                    //主被动动连接点，非自身点，相同名，没有建立连接
-                    if (tempNode.Body != item.Body && tempNode.ConnectedNode == null)
-                    {
-                        if (tempNode.connectAble.Find((x) => x.itemName == item.Body.Name && x.nodeId == item.NodeID) != null)
-                        {
-                            node = tempNode;
-                            return true;
-                        }
-                    }
-                }
-            }
-            node = null;
-            return false;
-        }
+     
 
         public void SetActiveItem(LinkItem item)
         {

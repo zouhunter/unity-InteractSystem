@@ -7,7 +7,9 @@ namespace WorldActionSystem
     [System.Serializable]
     public class LinkGroup
     {
-        public LinkPort portA;
-        public LinkPort portB;
+        public int ItemA;
+        public int portA;
+        public int ItemB;
+        public int portB;
     }
 }

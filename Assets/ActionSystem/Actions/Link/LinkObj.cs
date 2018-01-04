@@ -25,12 +25,10 @@ namespace WorldActionSystem
         private Coroutine coroutine;
         public Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get { return _connectedDic; } }
         private Dictionary<LinkItem, List<LinkPort>> _connectedDic = new Dictionary<LinkItem, List<LinkPort>>();
-        private Transform angleTemp;
         protected override void Start()
         {
             base.Start();
             InitLinkItems();
-            angleTemp = anglePos;
         }
 
         void InitLinkItems()
@@ -43,26 +41,6 @@ namespace WorldActionSystem
                 startRotation[i] = linkItems[i].transform.localRotation;
             }
         }
-        public override void OnStartExecute(bool auto = false)
-        {
-            base.OnStartExecute(auto);
-            if (auto)
-            {
-                if (coroutine == null)
-                {
-                    StartCoroutine(AutoLinkItems());
-                }
-            }
-            else
-            {
-                foreach (var item in linkItems)
-                {
-                    item.PickUpAble = true;
-                }
-                TryActiveLinkItem();
-            }
-        }
-
         public void TryActiveLinkItem()
         {
             var notLinked = linkItems.Find(x => !ConnectedDic.ContainsKey(x));
@@ -88,7 +66,8 @@ namespace WorldActionSystem
                     {
                         var info = node.connectAble[j];
                         var otheritem = linkItems.Find(x => x.Name == info.itemName);
-                        if (otheritem != null) {
+                        if (otheritem != null)
+                        {
 
                             var otherNode = otheritem.ChildNodes[info.nodeId];
                             if (otherNode != null && otherNode.ConnectedNode == null)
@@ -103,9 +82,31 @@ namespace WorldActionSystem
 
         }
 
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            if (auto)
+            {
+                if (coroutine == null)
+                {
+                    coroutine = StartCoroutine(AutoLinkItems());
+                }
+            }
+            else
+            {
+                foreach (var item in linkItems)
+                {
+                    item.PickUpAble = true;
+                }
+                TryActiveLinkItem();
+            }
+        }
+
+
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
+            if (coroutine != null) StopCoroutine(coroutine);
             foreach (var item in linkItems)
             {
                 item.PickUpAble = false;
@@ -115,6 +116,11 @@ namespace WorldActionSystem
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
             LinkUtil.DetachConnectedPorts(ConnectedDic, transform);
             ConnectedDic.Clear();
             ResetPositions();
@@ -137,40 +143,28 @@ namespace WorldActionSystem
 
         private IEnumerator AutoLinkItems()
         {
-            List<LinkPort> stoped = new List<LinkPort>();
-
             for (int i = 0; i < defultLink.Count; i++)
             {
                 var linkGroup = defultLink[i];
-                var portA = linkGroup.portA;
-                var portB = linkGroup.portB;
 
-                if (!stoped.Contains(portB))//将B移向A
-                {
-                    angleCtrl.UnNotice(anglePos);
-                    anglePos = portA.transform;
+                var portA = linkItems[linkGroup.ItemA].ChildNodes[linkGroup.portA];
+                var portB = linkItems[linkGroup.ItemB].ChildNodes[linkGroup.portB];
 
-                    yield return MoveBToA(portA, portB);
-                    LinkUtil.AttachNodes(portB, portA);
-                    LinkUtil.RecordToDic(ConnectedDic, portA);
-                    LinkUtil.RecordToDic(ConnectedDic, portB);
-                    stoped.Add(portB);
-                    if (!stoped.Contains(portA))
-                    {
-                        stoped.Add(portA);
-                    }
-                }
-                else if (!stoped.Contains(portA))//将A移向B
-                {
-                    stoped.Add(portA);
-                    yield return MoveBToA(portB, portA);
-                }
+                angleCtrl.UnNotice(anglePos);
+                anglePos = portA.transform;
+
+                yield return MoveBToA(portA, portB);
+                LinkUtil.AttachNodes(portB, portA);
+                LinkUtil.RecordToDic(ConnectedDic, portA);
+                LinkUtil.RecordToDic(ConnectedDic, portB);
             }
+
+            TryComplete();
         }
 
         private IEnumerator MoveBToA(LinkPort portA, LinkPort portB)
         {
-            var linkInfoA = portA.connectAble.Find(x => x.itemName == portB.Body.Name);
+            //var linkInfoA = portA.connectAble.Find(x => x.itemName == portB.Body.Name);
             var linkInfoB = portB.connectAble.Find(x => x.itemName == portA.Body.name);
 
             var pos = portA.Body.Trans.TransformPoint(linkInfoB.relativePos);

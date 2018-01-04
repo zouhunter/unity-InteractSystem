@@ -14,6 +14,7 @@ namespace WorldActionSystem
         {
             get
             {
+                InitPorts();
                 return _childNodes;
             }
         }
@@ -46,11 +47,10 @@ namespace WorldActionSystem
         }
         private void InitPorts()
         {
-            var nodeItems = GetComponentsInChildren<LinkPort>(true);
-            _childNodes.AddRange(nodeItems);
-            foreach (var item in nodeItems)
+            if(_childNodes == null || _childNodes.Count == 0)
             {
-                item.Body = this;
+                var nodeItems = GetComponentsInChildren<LinkPort>(true);
+                _childNodes.AddRange(nodeItems);
             }
         }
 

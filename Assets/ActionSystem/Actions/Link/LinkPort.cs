@@ -11,7 +11,8 @@ namespace WorldActionSystem
     public class LinkPort : MonoBehaviour
     {
         #region Propertys
-        public LinkItem Body { get; set; }
+        private LinkItem _body;
+        public LinkItem Body { get { if (_body == null) _body = GetComponentInParent<LinkItem>();return _body; } }
         public LinkPort ConnectedNode { get; set; }
         public Vector3 Pos
         {
@@ -36,13 +37,10 @@ namespace WorldActionSystem
         private float _range = 0.5f;
         public List<LinkInfo> _connectAble;
 
-        void Awake()
-        {
-            InitLayer();
-        }
         private void OnEnable()
         {
             _nodeId = transform.GetSiblingIndex();
+            InitLayer();
         }
         private void InitLayer()
         {
