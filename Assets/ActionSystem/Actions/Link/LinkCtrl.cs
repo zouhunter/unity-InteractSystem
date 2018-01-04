@@ -29,7 +29,6 @@ namespace WorldActionSystem
             linkConnectCtrl.onDisMatch = OnDisMath;
             linkConnectCtrl.onMatch = OnMatch;
             linkConnectCtrl.onConnected = OnConnected;
-            linkConnectCtrl.onDisconnected = OnDisConnected;
             pickCtrl.onPickup += (OnPickUp);
             pickCtrl.onPickdown += (OnPickDown);
             pickCtrl.onPickStay += (OnPickStay);
@@ -85,16 +84,12 @@ namespace WorldActionSystem
         {
             foreach (var item in nodes)
             {
-                highter.UnHighLightTarget(item.gameObject);
+                var childNodes = item.Body.ChildNodes;
+                foreach (var node in childNodes)
+                {
+                    highter.UnHighLightTarget(node.gameObject);
+                }
             }
         }
-        void OnDisConnected(LinkPort[] nodes)
-        {
-            foreach (var item in nodes)
-            {
-                highter.UnHighLightTarget(item.gameObject);
-            }
-        }
-
     }
 }

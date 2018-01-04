@@ -65,10 +65,9 @@ namespace WorldActionSystem
                     for (int j = 0; j < node.connectAble.Count; j++)
                     {
                         var info = node.connectAble[j];
-                        var otheritem = linkItems.Find(x => x.Name == info.itemName);
+                        var otheritem = linkItems.Find(x => x.Name == info.itemName && x != pickedUp && !x.transform.IsChildOf(pickedUp.transform));
                         if (otheritem != null)
                         {
-
                             var otherNode = otheritem.ChildNodes[info.nodeId];
                             if (otherNode != null && otherNode.ConnectedNode == null)
                             {

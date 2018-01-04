@@ -22,7 +22,7 @@ namespace WorldActionSystem
         {
             moveAblePort.ConnectedNode = null;
             staticPort.ConnectedNode = null;
-            moveAblePort.transform.SetParent(parent);
+            moveAblePort.Body.transform.SetParent(parent);
         }
         public static void RecordToDic(Dictionary<LinkItem, List<LinkPort>> ConnectedDic, LinkPort port)
         {
