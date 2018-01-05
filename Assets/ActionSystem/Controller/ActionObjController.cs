@@ -42,7 +42,7 @@ namespace WorldActionSystem
             ExecuteAStep();
         }
 
-        internal void OnPickUpObj(IPickUpAbleItem obj)
+        internal void OnPickUpObj(PickUpAbleItem obj)
         {
             var prio = startedActions.Find(x => x.Name == obj.Name);
             if (prio != null)

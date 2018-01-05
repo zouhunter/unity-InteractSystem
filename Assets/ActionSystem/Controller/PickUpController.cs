@@ -9,7 +9,7 @@ namespace WorldActionSystem
 {
     public class PickUpController
     {
-        internal IPickUpAbleItem pickedUpObj { get; private set; }
+        internal PickUpAbleItem pickedUpObj { get; private set; }
         public bool PickedUp { get { return pickedUpObj != null; } }
         private Ray ray;
         private RaycastHit hit;
@@ -27,43 +27,55 @@ namespace WorldActionSystem
             }
         }
 
-        public event UnityAction<IPickUpAbleItem> onPickup;
-        public event UnityAction<IPickUpAbleItem> onPickdown;
-        public event UnityAction<IPickUpAbleItem> onPickStay;
+        public event UnityAction<PickUpAbleItem> onPickup;
+        public event UnityAction<PickUpAbleItem> onPickdown;
+        public event UnityAction<PickUpAbleItem> onPickStay;
+
         private float timer = 0f;
-
-
-        public void Update()
+        //private Coroutine coroutine;
+        //private MonoBehaviour holder;
+        public PickUpController(MonoBehaviour holder)
         {
-            if (LeftTriggered())
+            //this.holder = holder;
+           /* coroutine = */holder.StartCoroutine(Update());
+        }
+        private IEnumerator Update()
+        {
+            var fixedWait = new WaitForFixedUpdate();
+            while (true)
             {
-                if(HaveExecuteTwicePerSecond(ref timer))
-                {
-                    PickDown();
-                }
-                else if (!PickedUp)
-                {
-                    SelectAnElement();
-                }
-                else
-                {
-                    PickStay();
-                }
-            }
+                yield return fixedWait;
 
-            if (PickedUp)
-            {
-                elementDistence += Input.GetAxis("Mouse ScrollWheel");
-                MoveWithMouse();
-            }
+                if (LeftTriggered())
+                {
+                    if (HaveExecuteTwicePerSecond(ref timer))
+                    {
+                        PickDown();
+                    }
+                    else if (!PickedUp)
+                    {
+                        SelectAnElement();
+                    }
+                    else
+                    {
+                        PickStay();
+                    }
+                }
 
-            if (elementDistence < minDistence)
-            {
-                elementDistence = minDistence;
+                if (PickedUp)
+                {
+                    elementDistence += Input.GetAxis("Mouse ScrollWheel");
+                    MoveWithMouse();
+                }
+
+                if (elementDistence < minDistence)
+                {
+                    elementDistence = minDistence;
+                }
             }
         }
 
-        internal void PickUp(IPickUpAbleItem pickedUpObj)
+        internal void PickUp(PickUpAbleItem pickedUpObj)
         {
             if (pickedUpObj != null)
             {
@@ -161,7 +173,7 @@ namespace WorldActionSystem
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.pickUpElementLayer)))
             {
-                var pickedUpObj = hit.collider.gameObject.GetComponentInParent<IPickUpAbleItem>();
+                var pickedUpObj = hit.collider.gameObject.GetComponentInParent<PickUpAbleItem>();
                 if (pickedUpObj != null)
                 {
                     if (pickedUpObj.PickUpAble)

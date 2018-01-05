@@ -147,7 +147,7 @@ namespace WorldActionSystem
             current.PlaceObject(pos, pickup);
         }
 
-        public bool CanPlace(PlaceObj placeItem, IPickUpAbleItem element, out string why)
+        public bool CanPlace(PlaceObj placeItem, PickUpAbleItem element, out string why)
         {
             return current.CanPlace(placeItem, element, out why);
         }

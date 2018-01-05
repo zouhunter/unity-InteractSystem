@@ -9,7 +9,7 @@ namespace WorldActionSystem
     {
         ControllerType CtrlType { get; }
         void PlaceObject(PlaceObj pos, PickUpAbleElement pickup);
-        bool CanPlace(PlaceObj placeItem, IPickUpAbleItem element, out string why);
+        bool CanPlace(PlaceObj placeItem, PickUpAbleItem element, out string why);
         void PlaceWrong(PickUpAbleElement pickup);
     }
 }

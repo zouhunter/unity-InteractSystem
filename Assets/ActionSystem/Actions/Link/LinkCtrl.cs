@@ -47,7 +47,7 @@ namespace WorldActionSystem
         {
             highter.UnHighLightTarget(item.gameObject);
         }
-        void OnPickUp(IPickUpAbleItem obj)
+        void OnPickUp(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
@@ -65,7 +65,7 @@ namespace WorldActionSystem
             }
         }
 
-        void OnPickDown(IPickUpAbleItem obj)
+        void OnPickDown(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
@@ -73,7 +73,7 @@ namespace WorldActionSystem
                 linkObj.TryActiveLinkItem ();
             }
         }
-        void OnPickStay(IPickUpAbleItem go)
+        void OnPickStay(PickUpAbleItem go)
         {
             linkConnectCtrl.TryConnect();
             pickCtrl.PickDown();

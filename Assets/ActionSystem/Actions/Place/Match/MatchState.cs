@@ -16,7 +16,7 @@ namespace WorldActionSystem
         {
             this.placeCtrl = placeCtrl;
         }
-        public bool CanPlace(PlaceObj matchPos, IPickUpAbleItem element, out string why)
+        public bool CanPlace(PlaceObj matchPos, PickUpAbleItem element, out string why)
         {
             var matchAble = true;
             if (matchPos == null)

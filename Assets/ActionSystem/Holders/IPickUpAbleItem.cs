@@ -2,14 +2,22 @@
 
 namespace WorldActionSystem
 {
-    public interface IPickUpAbleItem
+    public abstract class PickUpAbleItem : MonoBehaviour
     {
-        string Name { get; }
-        bool PickUpAble { get; set; }
-        void OnPickUp();
-        void OnPickStay();
-        void OnPickDown();
-        void SetPosition(Vector3 pos);
-        Collider Collider { get; }
+        public virtual string Name { get { return name; } }
+        private bool _pickUpAble = true;
+        public virtual bool PickUpAble { get { return _pickUpAble; }set { _pickUpAble = value; } }
+        public virtual void OnPickUp() { }
+        public virtual void OnPickStay() { }
+        public virtual void OnPickDown() { }
+        public abstract void SetPosition(Vector3 pos);
+        private Collider _collider;
+        public Collider Collider { get { return _collider; } }
+        
+        protected virtual void Awake()
+        {
+            _collider = GetComponentInChildren<Collider>();
+            _collider.gameObject.layer = Layers.pickUpElementLayer;
+        }
     }
 }

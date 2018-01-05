@@ -871,6 +871,11 @@ Prefab:
       propertyPath: m_Name
       value: ActionGroupA
       objectReference: {fileID: 0}
+    - target: {fileID: 114393234882040368, guid: 2deab7bad05c22041a717ab39c511f0c,
+        type: 2}
+      propertyPath: color.a
+      value: 0.109
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2deab7bad05c22041a717ab39c511f0c, type: 2}
   m_IsPrefabParent: 0

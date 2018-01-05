@@ -63,7 +63,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : MonoBehaviour, IPickUpAbleItem, IPlaceItem, IRuntimeActive
+    public class PickUpAbleElement : PickUpAbleItem, IPlaceItem, IRuntimeActive
     {
         public string _name;
         private ActionGroup _system;
@@ -73,7 +73,7 @@ namespace WorldActionSystem
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
 
-        public virtual string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
+        public override string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
 
         public bool Started { get { return actived; } }
 
@@ -109,26 +109,18 @@ namespace WorldActionSystem
         protected bool StraightMove { get { return target ? target.straightMove : false; } }
         protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
         protected Transform Passby { get { return target ? target.passBy : null; } }
-        public Collider Collider
-        {
-            get
-            {
-                return _collider;
-            }
-        }
-        public bool PickUpAble { get; set; }
-        protected Collider _collider;
+        public override bool PickUpAble { get; set; }
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             elementCtrl.RegistElement(this);
             move = new Tweener(this);
         }
         protected virtual void Start()
         {
-            _collider = GetComponentInChildren<Collider>();
             InitRender();
             InitLayer();
             startPos = transform.position;
@@ -308,8 +300,9 @@ namespace WorldActionSystem
         /// <summary>
         /// 拿起事件
         /// </summary>
-        public virtual void OnPickUp()
+        public override void OnPickUp()
         {
+            base.OnPickUp();
             StopTween();
 
             if (onPickUp != null)
@@ -317,18 +310,17 @@ namespace WorldActionSystem
                 onPickUp.Invoke();
             }
         }
-        public void OnPickStay()
+
+        public override void OnPickDown()
         {
-        }
-        public virtual void OnPickDown()
-        {
+            base.OnPickDown();
             StopTween();
             if (onLayDown != null)
             {
                 onLayDown.Invoke();
             }
         }
-        public void SetPosition(Vector3 pos)
+        public override void SetPosition(Vector3 pos)
         {
             transform.SetPositionAndRotation(pos, transform.rotation);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ namespace WorldActionSystem
 {
     public class LinkObj : ActionObj
     {
-        public LinkItem[] LinkItems { get { return linkItems.ToArray(); } }
+        public LinkItem[] LinkItems { get { return linkItems; } }
         public override ControllerType CtrlType
         {
             get
@@ -16,7 +17,7 @@ namespace WorldActionSystem
         }
 
         [SerializeField]
-        private List<LinkItem> linkItems;
+        private LinkItem[] linkItems;
         [SerializeField]
         private List<LinkGroup> defultLink;
 
@@ -33,8 +34,8 @@ namespace WorldActionSystem
 
         void InitLinkItems()
         {
-            startPositions = new Vector3[linkItems.Count];
-            startRotation = new Quaternion[linkItems.Count];
+            startPositions = new Vector3[linkItems.Length];
+            startRotation = new Quaternion[linkItems.Length];
             for (int i = 0; i < startPositions.Length; i++)
             {
                 startPositions[i] = linkItems[i].transform.localPosition;
@@ -43,7 +44,7 @@ namespace WorldActionSystem
         }
         public void TryActiveLinkItem()
         {
-            var notLinked = linkItems.Find(x => !ConnectedDic.ContainsKey(x));
+            var notLinked = linkItems.Where(x => !ConnectedDic.ContainsKey(x)).FirstOrDefault();
             if (notLinked != null)
             {
                 angleCtrl.UnNotice(anglePos);
@@ -65,7 +66,10 @@ namespace WorldActionSystem
                     for (int j = 0; j < node.connectAble.Count; j++)
                     {
                         var info = node.connectAble[j];
-                        var otheritem = linkItems.Find(x => x.Name == info.itemName && x != pickedUp && !x.transform.IsChildOf(pickedUp.transform));
+                        var otheritem = (from x in linkItems
+                                         where(x.Name == info.itemName && x != pickedUp && !x.transform.IsChildOf(pickedUp.transform))
+                                         select x).FirstOrDefault();
+
                         if (otheritem != null)
                         {
                             var otherNode = otheritem.ChildNodes[info.nodeId];

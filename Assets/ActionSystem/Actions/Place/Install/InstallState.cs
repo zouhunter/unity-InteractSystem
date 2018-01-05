@@ -13,7 +13,7 @@ namespace WorldActionSystem
 
         public bool Active { get; private set; }
 
-        public bool CanPlace(PlaceObj placeObj, IPickUpAbleItem element, out string why)
+        public bool CanPlace(PlaceObj placeObj, PickUpAbleItem element, out string why)
         {
             why = null;
             var canplace = true;

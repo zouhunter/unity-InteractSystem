@@ -9,6 +9,7 @@ namespace WorldActionSystem
 {
     public class ActionSystem : MonoBehaviour
     {
+        #region Instence
         private static bool isQuit = false;
         private static ActionSystem _instence;
         public static ActionSystem Instence
@@ -17,60 +18,75 @@ namespace WorldActionSystem
             {
                 if (_instence == null && !isQuit)
                 {
+                    Debug.Log("_instence");
                     _instence = new GameObject("ActionSystem").AddComponent<ActionSystem>();
                 }
                 return _instence;
             }
         }
+        private void OnApplicationQuit()
+        {
+            isQuit = true;
+        }
+        #endregion
 
-        public ActionCtroller actionCtrl { get; private set; }
-        public CameraController cameraCtrl { get; private set; }
-        public AngleCtroller angleCtrl { get; private set; }
-        public PickUpController pickUpCtrl { get; private set; }
+        #region actionCtrl
+        private ActionCtroller _actionCtrl;
+        public ActionCtroller actionCtrl { get {
+                if (_actionCtrl == null)
+                {
+                    _actionCtrl = new ActionCtroller(this, pickUpCtrl);
+                }
+                return _actionCtrl;
+            } }
+        #endregion
+
+        #region CameraCtrl
+        private CameraController _cameraCtrl;
+        public CameraController cameraCtrl { get {
+                if (_cameraCtrl == null)
+                {
+                    _cameraCtrl = new CameraController(this);
+                }return _cameraCtrl;
+            } }
+        #endregion
+
+        #region AngleCtrl
+        private AngleCtroller _angleCtrl;
+        public AngleCtroller angleCtrl { get {
+
+                if (_angleCtrl == null)
+                {
+                    _angleCtrl = new AngleCtroller(this);
+                }
+                return _angleCtrl;
+            } }
+        #endregion
+
+        #region PickUpCtrl
+        private PickUpController _pickUpCtrl;
+        public PickUpController pickUpCtrl
+        {
+            get
+            {
+                if (_pickUpCtrl == null)
+                {
+                    _pickUpCtrl = new WorldActionSystem.PickUpController(this);
+                }
+                return _pickUpCtrl;
+            }
+        }
+        #endregion
+
         private List<ActionGroup> groupList = new List<ActionGroup>();
         private Dictionary<string, List<UnityAction<ActionGroup>>> waitDic = new Dictionary<string, List<UnityAction<ActionGroup>>>();
 
         private void Awake()
         {
-            if (_instence == null){
+            if (_instence == null)
+            {
                 _instence = this;
             }
-            InitControllers();
-        }
-        private void InitControllers()
-        {
-            if (pickUpCtrl == null)
-            {
-                pickUpCtrl = new PickUpController(/*this*/);
-            }
-            if (actionCtrl == null)
-            {
-                actionCtrl = new ActionCtroller();
-            }
-            if (cameraCtrl == null)
-            {
-                cameraCtrl = new CameraController(this);
-            }
-            if (angleCtrl == null)
-            {
-                angleCtrl = new AngleCtroller(this);
-            }
-        }
-
-        private void Update()
-        {
-            if(angleCtrl != null)
-            {
-                actionCtrl.Update();
-            }
-            if(pickUpCtrl != null)
-            {
-                pickUpCtrl.Update();
-            }
-        }
-        private void OnApplicationQuit()
-        {
-            isQuit = true;
         }
 
         public void RetriveAsync(string groupKey, UnityAction<ActionGroup> onRetrive)
@@ -110,7 +126,7 @@ namespace WorldActionSystem
         }
         public static void Clean()
         {
-            if(_instence != null)
+            if (_instence != null)
             {
                 Destroy(_instence.gameObject);
             }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class LinkItem : MonoBehaviour,IPickUpAbleItem
+    public class LinkItem : PickUpAbleItem
     {
         private List<LinkPort> _childNodes = new List<LinkPort>();
         public List<LinkPort> ChildNodes
@@ -18,14 +18,6 @@ namespace WorldActionSystem
                 return _childNodes;
             }
         }
-
-        public string Name {
-            get
-            {
-                return name;
-            }
-        }
-
         public Transform Trans
         {
             get
@@ -34,14 +26,9 @@ namespace WorldActionSystem
             }
         }
 
-        public bool PickUpAble { get; set; }
-
-        [SerializeField]
-        private Collider _collider;
-        public Collider Collider { get { if (_collider == null) _collider = GetComponent<Collider>();return _collider; } }
-
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             InitPorts();
             InitLayer();
         }
@@ -64,21 +51,9 @@ namespace WorldActionSystem
             transform.forward = otherParent.Trans.TransformDirection(rdDir);
         }
 
-        public void SetPosition(Vector3 pos)
+        public override void SetPosition(Vector3 pos)
         {
             transform.position = pos;
-        }
-
-        public void OnPickUp()
-        {
-        }
-
-        public void OnPickStay()
-        {
-        }
-
-        public void OnPickDown()
-        {
         }
     }
 
