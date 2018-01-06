@@ -41,7 +41,7 @@ namespace tarfmagougou
 #if UNITY_2017_AND_UP
 			Debug.unitylogger.logEnabled = false;
 #elif UNITY_5_3_AND_UP
-            Debug.logger.logEnabled = false;
+            Debug.unityLogger.logEnabled = false;
 #endif
         }
 
@@ -50,7 +50,7 @@ namespace tarfmagougou
 #if UNITY_2017_AND_UP
 			Debug.unitylogger.logEnabled = false;
 #elif UNITY_5_3_AND_UP
-            Debug.logger.logEnabled = true;
+            Debug.unityLogger.logEnabled = true;
 #endif
         }
 

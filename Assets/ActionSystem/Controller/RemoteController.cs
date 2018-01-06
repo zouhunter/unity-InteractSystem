@@ -97,14 +97,21 @@ namespace WorldActionSystem
         /// <summary>
         /// 结束已经开始的命令
         /// </summary>
-        public void OnEndExecuteCommand()
+        public void OnEndExecuteCommand(string stepName)
         {
-            started = false;
-            index++;
-
-            if (onEndExecute != null)
+            if (CurrCommand != null && CurrCommand.StepName == stepName)
             {
-                onEndExecute();
+                started = false;
+                index++;
+
+                if (onEndExecute != null)
+                {
+                    onEndExecute();
+                }
+            }
+            else
+            {
+               if(CurrCommand!=null) Debug.LogError("StepNotEqual:" + stepName + ":" + CurrCommand.StepName);
             }
         }
 

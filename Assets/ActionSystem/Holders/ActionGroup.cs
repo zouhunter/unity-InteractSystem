@@ -64,7 +64,27 @@ namespace WorldActionSystem
 
         #region Public Functions
         /// <summary>
-        /// 设置安装顺序并生成最终步骤
+        /// 传入command名称关联字典
+        /// </summary>
+        /// <param name="rule"></param>
+        public void LunchActionSystem(Dictionary<string,string[]> rule, UnityAction onLunchOK)
+        {
+            onCommandRegisted = (activeCommands) =>
+            {
+                var steps = activeCommands.ConvertAll<string>(x => x.StepName);
+                steps.Sort();
+                activeCommands = GetIActionCommandList(activeCommands, steps.ToArray());
+                remoteController = new TreeRemoteController(rule, activeCommands);
+                onLunchOK.Invoke();
+            };
+
+            if (commandCtrl.CommandRegisted)
+            {
+                onCommandRegisted.Invoke(commandCtrl.CommandList);
+            }
+        }
+        /// <summary>
+        /// 默认的按command名称进行排序
         /// </summary>
         public void LunchActionSystem(UnityAction<string[]> onLunchOK)
         {
@@ -128,14 +148,7 @@ namespace WorldActionSystem
         /// </summary>
         private void OnStepComplete(string stepName)
         {
-            if (remoteController.CurrCommand != null && remoteController.CurrCommand.StepName == stepName)
-            {
-                remoteController.OnEndExecuteCommand();
-            }
-            else
-            {
-                Debug.LogError("Not Step :" + stepName);
-            }
+            remoteController.OnEndExecuteCommand(stepName);
         }
 
         private void OnCommandExectute(string stepName, int totalCount, int currentID)
