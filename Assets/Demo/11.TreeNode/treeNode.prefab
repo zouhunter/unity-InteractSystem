@@ -739,6 +739,9 @@ MonoBehaviour:
   notice: {fileID: 114577944342268556}
   autoNext: {fileID: 114381473717502384}
   autoPlay: {fileID: 114502647394205316}
+  backNum: {fileID: 114087237319916918}
+  nextNum: {fileID: 114988845777021298}
+  jumpStep: {fileID: 114664805414392628}
   textShow: {fileID: 114597762613535918}
   group: {fileID: 0}
 --- !u!114 &114014585195296090

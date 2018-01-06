@@ -9,6 +9,7 @@ public partial class treeNode
     int backNumInput = 0;
     string jumpStapInput;
     int forwardNumInput = 0;
+   
     public Config config;
     public void OnbackNumInputEndEdit(string value)
     {
@@ -49,6 +50,10 @@ public partial class treeNode
     public Toggle notice;
     public Toggle autoNext;
     public Toggle autoPlay;
+
+    public InputField backNum;
+    public InputField nextNum;
+    public InputField jumpStep;
     /// <summary>
     /// 注册按扭事件
     /// </summary>
@@ -73,6 +78,11 @@ public partial class treeNode
         skipAStap.onClick.AddListener(OnStapChange);
         skipMutiStap.onClick.AddListener(OnStapChange);
         toEnd.onClick.AddListener(OnStapChange);
+
+        backNum.onValueChanged.AddListener(OnbackNumInputEndEdit);
+        jumpStep.onValueChanged.AddListener(OnjumpStapInputEndEdit);
+        nextNum.onValueChanged.AddListener(OnforwardNumInputEndEdit);
+        
     }
 
     private void OnAutoPlayStateChanged(bool arg0)
