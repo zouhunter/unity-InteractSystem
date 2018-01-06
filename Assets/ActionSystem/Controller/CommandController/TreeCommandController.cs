@@ -10,21 +10,21 @@ using System.Linq;
 namespace WorldActionSystem
 {
 
-    public class TreeRemoteController : IRemoteController
+    public class TreeCommandController : ICommandController
     {
-        public UnityAction onEndExecute;
-        IActionCommand rootCommand;
+        UnityAction onEndExecute { get; set; }
+        List<IActionCommand> rootCommands;
         Dictionary<IActionCommand, List<IActionCommand>> commandDic;
-        Dictionary<IActionCommand, IActionCommand> parentDic;
+        //Dictionary<IActionCommand, IActionCommand> parentDic;
         Stack<IActionCommand> executedCommands = new Stack<IActionCommand>();//正向执行过了记录
         Stack<IActionCommand> backupCommands = new Stack<IActionCommand>();//回退时记录
         List<IActionCommand> activeCommands = new List<IActionCommand>();
         public IActionCommand CurrCommand { get; private set; }
 
-        public TreeRemoteController(Dictionary<string, string[]> rule, List<IActionCommand> commandList)
+        public TreeCommandController(Dictionary<string, string[]> rule, List<IActionCommand> commandList)
         {
             this.commandDic = new Dictionary<IActionCommand, List<IActionCommand>>();
-            this.parentDic = new Dictionary<IActionCommand, IActionCommand>();
+            //this.parentDic = new Dictionary<IActionCommand, IActionCommand>();
             foreach (var item in rule)
             {
                 var key = commandList.Find(x => x.StepName == item.Key);
@@ -32,27 +32,27 @@ namespace WorldActionSystem
                 foreach (var child in item.Value)
                 {
                     var c = commandList.Find(x => x.StepName == child);
-                    parentDic.Add(c, key);
+                    //parentDic.Add(c, key);
                     values.Add(c);
                 }
                 commandDic[key] = values;
             }
-            rootCommand = SurchRootCommand(parentDic);
+            rootCommands = SurchRootCommands(commandDic);
         }
 
-        public TreeRemoteController(Dictionary<IActionCommand, List<IActionCommand>> commandDic)
+        public TreeCommandController(Dictionary<IActionCommand, List<IActionCommand>> commandDic)
         {
             this.commandDic = new Dictionary<IActionCommand, List<IActionCommand>>();
-            this.parentDic = new Dictionary<IActionCommand, IActionCommand>();
+            //this.parentDic = new Dictionary<IActionCommand, IActionCommand>();
             foreach (var item in commandDic)
             {
                 commandDic[item.Key] = new List<IActionCommand>(item.Value);
-                foreach (var child in item.Value)
-                {
-                    parentDic.Add(child, item.Key);
-                }
+                //foreach (var child in item.Value)
+                //{
+                //    parentDic.Add(child, item.Key);
+                //}
             }
-            rootCommand = SurchRootCommand(parentDic);
+            rootCommands = SurchRootCommands(commandDic);
         }
 
         /// <summary>
@@ -60,32 +60,30 @@ namespace WorldActionSystem
         /// </summary>
         public bool StartExecuteCommand(UnityAction onEndExecute, bool forceAuto)
         {
-            Debug.Assert(rootCommand != null, "root is Empty");
+            Debug.Assert(rootCommands != null || rootCommands.Count == 0, "root is Empty");
+
+            backupCommands.Clear();
 
             if (activeCommands.Count == 0)
             {
                 this.onEndExecute = onEndExecute;
-
                 if (CurrCommand == null)
                 {
-                    if (!rootCommand.Startd)
-                    {
-                        activeCommands.Add(rootCommand);
-                        rootCommand.StartExecute(forceAuto);
-                    }
+                    activeCommands.AddRange(rootCommands);
                 }
                 else
                 {
                     if (commandDic.ContainsKey(CurrCommand))
                     {
-                        foreach (var cmd in commandDic[CurrCommand])
-                        {
-                            if (!cmd.Startd)
-                            {
-                                activeCommands.Add(cmd);
-                                cmd.StartExecute(forceAuto);
-                            }
-                        }
+                        activeCommands.AddRange(commandDic[CurrCommand]);
+                    }
+                }
+
+                foreach (var cmd in activeCommands)
+                {
+                    if (!cmd.Startd)
+                    {
+                        cmd.StartExecute(forceAuto);
                     }
                 }
 
@@ -104,33 +102,18 @@ namespace WorldActionSystem
         /// </summary>
         public bool EndExecuteCommand()
         {
-            if (activeCommands.Count == 0)
+            if (backupCommands.Count > 0)
             {
-                if (backupCommands.Count > 0)
-                {
-                    CurrCommand = backupCommands.Pop();
-                    CurrCommand.StartExecute(false);
-                    CurrCommand.EndExecute();
-
-                    if (onEndExecute != null)
-                    {
-                        onEndExecute();
-                    }
-
-                    return true;
-                }
-                return false;
+                CurrCommand = backupCommands.Pop();
+                executedCommands.Push(CurrCommand);
+                CurrCommand.EndExecute();
+                return true;
             }
             else
             {
-                if (backupCommands.Count > 0)
-                {
-                    backupCommands.Clear();
-                }
+
                 return false;
             }
-
-
         }
 
         /// <summary>
@@ -168,18 +151,31 @@ namespace WorldActionSystem
         /// <returns></returns>
         public bool UnDoCommand()
         {
+            //清除已经开始的步骤
             if (activeCommands.Count > 0)
             {
                 foreach (var cmd in activeCommands)
                 {
                     cmd.UnDoExecute();
                 }
+                activeCommands.Clear();
             }
 
+            //回退
             if (executedCommands.Count > 0)
             {
-                CurrCommand = executedCommands.Pop();
-                CurrCommand.UnDoExecute();
+                var cmd = executedCommands.Pop();
+                backupCommands.Push(cmd);
+                cmd.UnDoExecute();
+
+                if (executedCommands.Count > 0)
+                {
+                    CurrCommand = executedCommands.Peek();
+                }
+                else
+                {
+                    CurrCommand = null;
+                }
                 return true;
             }
             else
@@ -194,7 +190,47 @@ namespace WorldActionSystem
         /// <param name="step"></param>
         public bool ExecuteMutliCommand(int step)
         {
-            return false;
+            if (step < 0)
+            {
+                bool haveLast = false;
+                while (step < 0)
+                {
+                    haveLast = UnDoCommand();
+                    if (!haveLast)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        step++;
+                    }
+                }
+                return haveLast;
+            }
+            else if (step > 0)
+            {
+                bool haveNext = true;
+
+                while (step > 0)
+                {
+                    haveNext = EndExecuteCommand();
+                    if (haveNext)
+                    {
+                        step--;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                return haveNext;
+            }
+            else
+            {
+                UnDoCommand();
+                return true;
+            }
+
         }
 
         /// <summary>
@@ -202,7 +238,7 @@ namespace WorldActionSystem
         /// </summary>
         public void ToAllCommandStart()
         {
-            while (executedCommands.Count >0)
+            while (executedCommands.Count > 0)
             {
                 UnDoCommand();
             }
@@ -225,26 +261,46 @@ namespace WorldActionSystem
         /// <param name="stepName"></param>
         public bool ToTargetCommand(string stepName)
         {
-            var commandList = new List<IActionCommand>();
+            if (executedCommands.Where(x => x.StepName == stepName).Count() > 0)//在已经执行过的步骤中
+            {
+                while (executedCommands.Peek().StepName != stepName)
+                {
+                    UnDoCommand();
+                }
+                UnDoCommand();
+                return true;
+            }
+            else if (backupCommands.Where(x => x.StepName == stepName).Count() > 0)//在回退的步骤中
+            {
+                while (backupCommands.Peek().StepName != stepName)
+                {
+                    EndExecuteCommand();
+                }
+                return true;
+            }
             return false;
         }
 
-        private static IActionCommand SurchRootCommand(Dictionary<IActionCommand, IActionCommand> parentDic)
+        private static List<IActionCommand> SurchRootCommands(Dictionary<IActionCommand, List<IActionCommand>> commandDic)
         {
-            var parent = parentDic.Keys.First();
-            while (parentDic.ContainsKey(parent))
+            var parents = new List<IActionCommand>();
+            foreach (var item in commandDic)
             {
-                var newParent = parentDic[parent];
-                if (newParent != parent)
+                var maybe = item.Key;
+                var haveparent = false;
+                foreach (var item0 in commandDic)
                 {
-                    parent = newParent;
+                    if (item0.Value.Contains(maybe))
+                    {
+                        haveparent = true;
+                    }
                 }
-                else
+                if (!haveparent)
                 {
-                    break;
+                    parents.Add(maybe);
                 }
             }
-            return parent;
+            return parents;
         }
     }
 

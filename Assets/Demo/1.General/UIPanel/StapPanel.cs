@@ -172,7 +172,7 @@ namespace WorldActionSystem
             {
                 OnAcceptButtonCilcked();
             }
-
+            OnStapChange();
         }
         void OnNoticeStateChanged(bool isOn)
         {
@@ -185,7 +185,7 @@ namespace WorldActionSystem
         public string groupName;
         public GameObject panel;
         private ActionGroup group;
-        IRemoteController remoteController { get { return group.RemoteController; } }
+        ICommandController remoteController { get { return group.RemoteController; } }
         public Step[] steps;
         void Start()
         {

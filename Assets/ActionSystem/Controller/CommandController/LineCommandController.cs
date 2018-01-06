@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public class RemoteController : IRemoteController
+    public class LineCommandController : ICommandController
     {
         int index = 0;
         bool started = false;
@@ -19,7 +19,7 @@ namespace WorldActionSystem
         {
             get { return HaveCommand(index) ? commandList[index] : null; }
         }
-        public RemoteController(IEnumerable<IActionCommand> commandList)
+        public LineCommandController(IEnumerable<IActionCommand> commandList)
         {
             this.commandList = new List<IActionCommand>(commandList);
         }

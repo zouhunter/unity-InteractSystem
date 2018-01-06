@@ -19,7 +19,7 @@ namespace WorldActionSystem
         #endregion
 
         #region Propertys
-        internal IRemoteController RemoteController { get { return remoteController; } }
+        internal ICommandController RemoteController { get { return remoteController; } }
         internal CommandController CommandCtrl
         {
             get
@@ -38,7 +38,7 @@ namespace WorldActionSystem
 
         #region Private
         //private IActionStap[] steps;
-        private IRemoteController remoteController;
+        private ICommandController remoteController;
         private CommandController commandCtrl = new CommandController();
         private EventController eventCtrl = new EventController();
         private RegistCommandList onCommandRegisted { get; set; }
@@ -74,7 +74,7 @@ namespace WorldActionSystem
                 var steps = activeCommands.ConvertAll<string>(x => x.StepName);
                 steps.Sort();
                 activeCommands = GetIActionCommandList(activeCommands, steps.ToArray());
-                remoteController = new TreeRemoteController(rule, activeCommands);
+                remoteController = new TreeCommandController(rule, activeCommands);
                 onLunchOK.Invoke();
             };
 
@@ -93,7 +93,7 @@ namespace WorldActionSystem
                 var steps = activeCommands.ConvertAll<string>(x => x.StepName);
                 steps.Sort();
                 activeCommands = GetIActionCommandList(activeCommands, steps.ToArray());
-                remoteController = new RemoteController(activeCommands);
+                remoteController = new LineCommandController(activeCommands);
                 onLunchOK.Invoke(steps.ToArray());
             };
 
@@ -112,7 +112,7 @@ namespace WorldActionSystem
             {
                 var stepsWorp = ConfigSteps(activeCommands, steps);//重新计算步骤
                 activeCommands = GetIActionCommandList(activeCommands, stepsWorp);
-                remoteController = new RemoteController(activeCommands);
+                remoteController = new LineCommandController(activeCommands);
                 onLunchOK.Invoke(stepsWorp);
             };
 
@@ -131,7 +131,7 @@ namespace WorldActionSystem
             {
                 var stepsWorp = ConfigSteps<T>(activeCommands, steps);//重新计算步骤
                 activeCommands = GetIActionCommandList(activeCommands,Array.ConvertAll<IActionStap,string>( stepsWorp,x=>x.StapName));
-                remoteController = new RemoteController(activeCommands);
+                remoteController = new LineCommandController(activeCommands);
                 onLunchOK.Invoke(Array.ConvertAll<IActionStap, T>(stepsWorp, x => (T)x));
             };
 

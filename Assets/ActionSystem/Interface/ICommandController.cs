@@ -4,7 +4,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 状态控制器
     /// </summary>
-    public interface IRemoteController
+    public interface ICommandController
     {
         IActionCommand CurrCommand { get; }
         bool StartExecuteCommand(UnityAction onEndExecute,bool forceAuto);//返回操作成功与否

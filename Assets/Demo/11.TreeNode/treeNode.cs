@@ -173,11 +173,12 @@ public partial class treeNode
 public partial class treeNode : MonoBehaviour {
     [SerializeField]
     private ActionGroup group;
-    private IRemoteController remoteController { get { return group.RemoteController; } }
+    private ICommandController remoteController { get { return group.RemoteController; } }
     // Use this for initialization
     void Start()
     {
         var dic = new Dictionary<string, string[]>();
+        dic.Add("command00", new string[] { "command03_a1", "command03_a2" });
         dic.Add("command01", new string[] { "command02_a", "command02_b" });
         dic.Add("command02_a", new string[] { "command03_a1", "command03_a2" });
         dic.Add("command02_b", new string[] { "command04_b1", "command04_b2" });
