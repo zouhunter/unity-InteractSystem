@@ -8,63 +8,65 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class Tweener
-    {
-        private MonoBehaviour holder;
-        private Vector3[] positons;
-        private float animTime;
-        private UnityAction onComplete;
-        private Transform target;
-        private Coroutine coroutine;
-        private UnityAction<int> onwayPointChanged { get; set; }
-        public Tweener(MonoBehaviour holder)
-        {
-            this.holder = holder;
-        }
-
-        internal void DOPath(Transform transform, Vector3[] vector3, int animTime, UnityAction onComplete)
-        {
-            this.positons = vector3;
-            this.animTime = animTime;
-            this.onComplete = onComplete;
-            this.target = transform;
-            coroutine = holder.StartCoroutine(MoveCore());
-        }
-
-        IEnumerator MoveCore()
-        {
-            float d_time = animTime / (positons.Length - 1);
-            for (int i = 0; i < positons.Length - 1; i++)
-            {
-                if (onwayPointChanged != null) onwayPointChanged(i);
-                var startPos = positons[i];
-                var targetPos = positons[i + 1];
-                for (float j = 0; j < d_time; j+=Time.deltaTime)
-                {
-                    target.position = Vector3.Lerp(startPos, targetPos, j);
-                    yield return null;
-                }
-            }
-            if (onwayPointChanged != null) onwayPointChanged(positons.Length - 1);
-            if (onComplete != null) onComplete();
-        }
-        internal void Kill()
-        {
-            if(coroutine != null)
-            {
-                holder.StopCoroutine(coroutine);
-            }
-        }
-        internal void OnWaypointChange(UnityAction<int> p)
-        {
-            onwayPointChanged = p;
-        }
-    }
+  
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
     public class PickUpAbleElement : PickUpAbleItem, IPlaceItem, IRuntimeActive
     {
+        public class Tweener
+        {
+            private MonoBehaviour holder;
+            private Vector3[] positons;
+            private float animTime;
+            private UnityAction onComplete;
+            private Transform target;
+            private Coroutine coroutine;
+            private UnityAction<int> onwayPointChanged { get; set; }
+            public Tweener(MonoBehaviour holder)
+            {
+                this.holder = holder;
+            }
+
+            internal void DOPath(Transform transform, Vector3[] vector3, int animTime, UnityAction onComplete)
+            {
+                this.positons = vector3;
+                this.animTime = animTime;
+                this.onComplete = onComplete;
+                this.target = transform;
+                coroutine = holder.StartCoroutine(MoveCore());
+            }
+
+            IEnumerator MoveCore()
+            {
+                float d_time = animTime / (positons.Length - 1);
+                for (int i = 0; i < positons.Length - 1; i++)
+                {
+                    if (onwayPointChanged != null) onwayPointChanged(i);
+                    var startPos = positons[i];
+                    var targetPos = positons[i + 1];
+                    for (float j = 0; j < d_time; j += Time.deltaTime)
+                    {
+                        target.position = Vector3.Lerp(startPos, targetPos, j);
+                        yield return null;
+                    }
+                }
+                if (onwayPointChanged != null) onwayPointChanged(positons.Length - 1);
+                if (onComplete != null) onComplete();
+            }
+            internal void Kill()
+            {
+                if (coroutine != null)
+                {
+                    holder.StopCoroutine(coroutine);
+                }
+            }
+            internal void OnWaypointChange(UnityAction<int> p)
+            {
+                onwayPointChanged = p;
+            }
+        }
+
         public string _name;
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
@@ -81,17 +83,10 @@ namespace WorldActionSystem
 
         public event UnityAction onInstallOkEvent;
         public event UnityAction onUnInstallOkEvent;
+#if ActionSystem_G
         [HideInInspector]
-        public UnityEvent onPickUp;
-        [HideInInspector]
-        public UnityEvent onLayDown;
-
-        [HideInInspector]
-        public UnityEvent onStepActive;
-        [HideInInspector]
-        public UnityEvent onStepComplete;
-        [HideInInspector]
-        public UnityEvent onStepUnDo;
+#endif
+        public UnityEvent onPickUp, onPickDown, onStepActive, onStepComplete, onStepUnDo;
 
         [SerializeField]
         private Renderer m_render;
@@ -315,9 +310,9 @@ namespace WorldActionSystem
         {
             base.OnPickDown();
             StopTween();
-            if (onLayDown != null)
+            if (onPickDown != null)
             {
-                onLayDown.Invoke();
+                onPickDown.Invoke();
             }
         }
         public override void SetPosition(Vector3 pos)

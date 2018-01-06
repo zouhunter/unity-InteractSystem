@@ -27,15 +27,13 @@ namespace WorldActionSystem
 
         protected IActionObj[] actionObjs;
         private ActionObjCtroller objectCtrl;
-        [EnumMask, HideInInspector]
-        public ControllerType commandType;//用于editor
+        [HideInInspector]
+        public ControllerType commandType;
 
+#if ActionSystem_G
         [HideInInspector]
-        public InputField.OnChangeEvent onBeforeActive;
-        [HideInInspector]
-        public InputField.OnChangeEvent onBeforeUnDo;
-        [HideInInspector]
-        public InputField.OnChangeEvent onBeforePlayEnd;
+#endif
+        public InputField.OnChangeEvent onBeforeActive, onBeforePlayEnd,onBeforeUnDo;
 
         private bool started;
         private bool completed;

@@ -14,7 +14,7 @@ public class PickUpElementBinding : MonoBehaviour {
     {
         pickUpElement = GetComponent<PickUpAbleElement>();
         pickUpElement.onPickUp.AddListener(OnPickUp);
-        pickUpElement.onLayDown.AddListener(OnLayDown);
+        pickUpElement.onPickDown.AddListener(OnLayDown);
         pickUpElement.onInstallOkEvent += OnInstallOK;
     }
 

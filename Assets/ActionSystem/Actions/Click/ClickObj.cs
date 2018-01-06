@@ -19,13 +19,11 @@ namespace WorldActionSystem
         }
 
         private Coroutine waitCoroutine;
+#if ActionSystem_G
         [HideInInspector]
-        public UnityEvent onMouseDown;
-        [HideInInspector]
-        public UnityEvent onMouseEnter;
-        [HideInInspector]
-        public UnityEvent onMouseExit;
-
+#endif
+        public UnityEvent onMouseDown, onMouseEnter, onMouseExit;
+      
         protected override void Start(){
             base.Start();
             InitLayer();

@@ -31,14 +31,8 @@ namespace WorldActionSystem
                 serializedObject.Update();
                 ModifyType();
                 SwitchDrawing();
-                DrawOptionDatas();
                 serializedObject.ApplyModifiedProperties();
             }
-        }
-
-        private void DrawOptionDatas()
-        {
-            EditorGUILayout.PropertyField(commandTypeProp);
         }
         private void SwitchDrawing()
         {

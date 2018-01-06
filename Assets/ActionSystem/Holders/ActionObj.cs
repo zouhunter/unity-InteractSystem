@@ -37,11 +37,14 @@ namespace WorldActionSystem
         public string CameraID { get { return _cameraID; } }
         public Transform anglePos;
         public UnityAction onEndExecute { get; set; }
+
+#if ActionSystem_G
         [HideInInspector]
-        public Toggle.ToggleEvent onStartExecute;
+#endif
+        public Toggle.ToggleEvent onStartExecute, onBeforeComplete;
+#if ActionSystem_G
         [HideInInspector]
-        public Toggle.ToggleEvent onBeforeComplete;
-        [HideInInspector]
+#endif
         public UnityEvent onUnDoExecute;
         private ActionHook[] hooks;//外部结束钩子
         public ActionHook[] Hooks { get { return hooks; } }
