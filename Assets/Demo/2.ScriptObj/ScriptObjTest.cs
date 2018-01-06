@@ -31,7 +31,7 @@ public class ScriptObjTest : MonoBehaviour
     {
         Debug.Log("LoopExecute");
 
-        if (group.RemoteController.StartExecuteCommand(() => { Debug.Log("COMPLETE"); }, false))
+        if (group.RemoteController.StartExecuteCommand((x) => { Debug.Log("COMPLETE"); }, false))
         {
             Debug.Log("current:" + group.RemoteController.CurrCommand);
         }

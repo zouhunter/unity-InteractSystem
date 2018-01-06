@@ -166,13 +166,17 @@ namespace WorldActionSystem
                 textShow.text = "点击接收任务";
             }
         }
-        void OnEndExecute()
+        void OnEndExecute(bool haveNext)
         {
-            if (autoNext.isOn)
+            if ( haveNext)
             {
-                OnAcceptButtonCilcked();
+               if(autoNext.isOn) OnAcceptButtonCilcked();
+                OnStapChange();
             }
-            OnStapChange();
+            if (!haveNext)
+            {
+                textShow.text = "完成";
+            }
         }
         void OnNoticeStateChanged(bool isOn)
         {

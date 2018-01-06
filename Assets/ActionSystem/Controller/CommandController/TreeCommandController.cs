@@ -12,7 +12,7 @@ namespace WorldActionSystem
 
     public class TreeCommandController : ICommandController
     {
-        UnityAction onEndExecute { get; set; }
+        UnityAction<bool> onEndExecute { get; set; }
         List<IActionCommand> rootCommands;
         Dictionary<IActionCommand, List<IActionCommand>> commandDic;
         //Dictionary<IActionCommand, IActionCommand> parentDic;
@@ -58,7 +58,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 开启一个命令,并返回正常执行与否
         /// </summary>
-        public bool StartExecuteCommand(UnityAction onEndExecute, bool forceAuto)
+        public bool StartExecuteCommand(UnityAction<bool> onEndExecute, bool forceAuto)
         {
             Debug.Assert(rootCommands != null || rootCommands.Count == 0, "root is Empty");
 
@@ -121,6 +121,7 @@ namespace WorldActionSystem
         /// </summary>
         public void OnEndExecuteCommand(string step)
         {
+            bool haveNext = true;
             if (activeCommands.Count > 0)
             {
                 foreach (var item in activeCommands)
@@ -129,20 +130,23 @@ namespace WorldActionSystem
                     {
                         CurrCommand = item;
                         executedCommands.Push(item);
+                        haveNext = commandDic.ContainsKey(item);
                     }
                     else
                     {
                         item.UnDoExecute();
                     }
                 }
+
+                activeCommands.Clear();
+
+                if (onEndExecute != null)
+                {
+                    onEndExecute(haveNext);
+                }
             }
 
-            activeCommands.Clear();
-
-            if (onEndExecute != null)
-            {
-                onEndExecute();
-            }
+            
         }
 
         /// <summary>
@@ -238,10 +242,10 @@ namespace WorldActionSystem
         /// </summary>
         public void ToAllCommandStart()
         {
-            while (executedCommands.Count > 0)
-            {
+            while (executedCommands.Count > 0){
                 UnDoCommand();
             }
+            CurrCommand = null;
         }
 
         /// <summary>

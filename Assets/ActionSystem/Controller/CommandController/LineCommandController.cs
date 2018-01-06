@@ -12,7 +12,7 @@ namespace WorldActionSystem
     {
         int index = 0;
         bool started = false;
-        public UnityAction onEndExecute;
+        public UnityAction<bool> onEndExecute;
         List<IActionCommand> commandList;
 
         public IActionCommand CurrCommand
@@ -55,7 +55,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 开启一个命令,并返回正常执行与否
         /// </summary>
-        public bool StartExecuteCommand(UnityAction onEndExecute, bool forceAuto)
+        public bool StartExecuteCommand(UnityAction<bool> onEndExecute, bool forceAuto)
         {
             if (!started && HaveCommand(index))
             {
@@ -86,7 +86,7 @@ namespace WorldActionSystem
 
                 if (onEndExecute != null)
                 {
-                    onEndExecute();
+                    onEndExecute(HaveNext());
                 }
                 return true;
             }
@@ -106,7 +106,7 @@ namespace WorldActionSystem
 
                 if (onEndExecute != null)
                 {
-                    onEndExecute();
+                    onEndExecute(HaveNext());
                 }
             }
             else

@@ -166,13 +166,24 @@ public partial class treeNode
             textShow.text = "点击接收任务";
         }
     }
-    void OnEndExecute()
+    void OnEndExecute(bool haveNext)
     {
-        if (autoNext.isOn)
+        if(haveNext)
         {
+            if (autoNext.isOn)
+            {
+                OnAcceptButtonCilcked();
+            }
+            OnStapChange();
+        }
+        else
+        {
+            textShow.text = "完成";
+
+            remoteController.ToAllCommandStart();
             OnAcceptButtonCilcked();
         }
-        OnStapChange();
+
     }
     void OnNoticeStateChanged(bool isOn)
     {

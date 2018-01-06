@@ -21,7 +21,7 @@ public class eventBinding : MonoBehaviour {
             Debug.Log("InitOK:" + worpedSteps.Length);
             if (worpedSteps.Length > 0)
             {
-                LoopExecute();
+                LoopExecute(true);
             }
         });
         group.onUserError += OnUserError;
@@ -32,7 +32,7 @@ public class eventBinding : MonoBehaviour {
         Debug.Log(step + ":" + info);
     }
 
-    private void LoopExecute()
+    private void LoopExecute(bool haveNext)
     {
         Debug.Log("LoopExecute");
 
@@ -47,7 +47,7 @@ public class eventBinding : MonoBehaviour {
         {
             Debug.Log("ToAllCommandStart");
             group.RemoteController.ToAllCommandStart();
-            LoopExecute();
+            LoopExecute(true);
         }
     }
     private void OnGUI()

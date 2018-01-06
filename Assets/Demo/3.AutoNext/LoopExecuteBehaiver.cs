@@ -20,7 +20,7 @@ public class LoopExecuteBehaiver : MonoBehaviour {
         group.LunchActionSystem(steps, (worpedSteps) =>
         {
             Debug.Log("InitOK");
-            LoopExecute();
+            LoopExecute(true);
         });
         group.onUserError += OnUserError;
     }
@@ -30,7 +30,7 @@ public class LoopExecuteBehaiver : MonoBehaviour {
         Debug.Log(step + ":" + info);
     }
 
-    private void LoopExecute()
+    private void LoopExecute(bool haveNext)
     {
         Debug.Log("LoopExecute");
 
@@ -45,7 +45,7 @@ public class LoopExecuteBehaiver : MonoBehaviour {
         {
             Debug.Log("ToAllCommandStart");
             group.RemoteController.ToAllCommandStart();
-            LoopExecute();
+            LoopExecute(true);
         }
     }
     private void OnGUI()
