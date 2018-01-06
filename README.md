@@ -18,5 +18,8 @@
 ## 8.旋转步骤
 ![RotateObj](Pics/8.png)
 ## 9.拉拽步骤(soon)
-## 10.拔除步骤(soon)
-## 11.....
+![Drag](Pics/9.png)
+## 11.组装步骤(soon)
+![Link](Pics/10.png)
+## 11.拔除步骤(soon)
+## 12.....
