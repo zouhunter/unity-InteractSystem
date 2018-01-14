@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.Assertions.Comparers;
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.RotObj)]
     public class RotObj : ActionObj
     {
         public override ControllerType CtrlType

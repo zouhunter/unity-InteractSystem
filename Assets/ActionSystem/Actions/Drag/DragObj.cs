@@ -7,7 +7,7 @@ using System;
 
 namespace WorldActionSystem
 {
-
+    [AddComponentMenu(MenuName.DragObj)]
     public class DragObj : ActionObj
     {
         [SerializeField, Header("target (child transform)")]

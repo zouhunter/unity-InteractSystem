@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.AnimObj)]
     public class AnimObj : ActionObj, IOutSideRegister
     {
         public float delyTime = 0f;

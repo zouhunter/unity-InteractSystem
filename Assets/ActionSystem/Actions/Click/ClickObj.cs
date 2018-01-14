@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.ClickObj)]
     public class ClickObj : ActionObj
     {
         private float autoCompleteTime { get { return Config.autoExecuteTime; } }

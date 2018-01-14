@@ -7,6 +7,7 @@ using System;
 
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.ConnectObj)]
     public class ConnectObj : ActionObj
     {
         public float lineWight = 0.1f;

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.ActionCommand)]
     public class ActionCommand : MonoBehaviour, IActionCommand, IComparable<ActionCommand>
     {
         [SerializeField]

@@ -11,6 +11,7 @@ using UnityEngine.Assertions.Comparers;
 using System.Collections;
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.AutoObj)]
     public sealed class AutoObj : ActionObj
     {
         public Coroutine autocoroutine;

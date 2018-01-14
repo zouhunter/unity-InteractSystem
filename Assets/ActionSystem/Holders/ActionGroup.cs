@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.ActionGroup)]
     public class ActionGroup : MonoBehaviour
     {
         public string groupKey;

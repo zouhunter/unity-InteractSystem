@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.MatchObj)]
     public class MatchObj : PlaceObj
     {
         public bool completeMoveBack = true;//结束时退回

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.RopeObj)]
     public class RopeObj : ActionObj
     {
         public bool completeHide;

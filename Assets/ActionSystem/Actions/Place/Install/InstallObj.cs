@@ -12,6 +12,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 模拟安装坐标功能
     /// </summary>
+    [AddComponentMenu(MenuName.InstallObj)]
     public class InstallObj : PlaceObj
     {
         public override ControllerType CtrlType

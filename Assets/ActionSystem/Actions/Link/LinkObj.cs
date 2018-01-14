@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.LinkObj)]
     public class LinkObj : ActionObj
     {
         public LinkItem[] LinkItems { get { return linkItems; } }
