@@ -17,7 +17,7 @@ namespace WorldActionSystem
         protected virtual void Awake()
         {
             _collider = GetComponentInChildren<Collider>();
-            _collider.gameObject.layer = Layers.pickUpElementLayer;
+            _collider.gameObject.layer = LayerMask.NameToLayer( Layers.pickUpElementLayer);
         }
     }
 }

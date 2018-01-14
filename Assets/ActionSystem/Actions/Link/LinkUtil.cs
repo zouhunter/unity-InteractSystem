@@ -98,7 +98,7 @@ namespace WorldActionSystem
         public static bool FindTriggerNodes(LinkPort item, out List<LinkPort> nodes)
         {
             nodes = null;
-            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, 1 << Layers.nodeLayer);
+            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask( Layers.linknodeLayer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)
@@ -133,7 +133,7 @@ namespace WorldActionSystem
                 return false;
             }
 
-            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, 1 << Layers.nodeLayer);
+            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask(Layers.linknodeLayer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)

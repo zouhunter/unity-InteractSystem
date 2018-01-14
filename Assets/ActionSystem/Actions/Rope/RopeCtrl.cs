@@ -26,6 +26,9 @@ namespace WorldActionSystem
         private RaycastHit disHit;
         private RaycastHit[] hits;
         private string resonwhy;
+        private int ropePosLayerMask { get { return LayerMask.GetMask(Layers.ropePosLayer); } }
+        private int ropeNodeLayerMask { get { return LayerMask.GetMask(Layers.ropeNodeLayer); } }
+        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer); } }
         private float hitDistence { get { return Config.hitDistence; } }
 
         public override void Update()
@@ -46,7 +49,7 @@ namespace WorldActionSystem
         private void TrySelectNode()
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.ropeNodeLayer)))
+            if (Physics.Raycast(ray, out hit, hitDistence, ropeNodeLayerMask))
             {
                 var obj = hit.collider.GetComponentInParent<RopeObj>();
                 if (obj != null && obj.Started && !obj.Complete)//正在进行操作
@@ -69,7 +72,7 @@ namespace WorldActionSystem
             else
             {
                 ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-                hits = Physics.RaycastAll(ray, hitDistence, (1 << Layers.ropePosLayer));
+                hits = Physics.RaycastAll(ray, hitDistence, ropePosLayerMask);
                 if (hits != null || hits.Length > 0)
                 {
                     bool hited = false;
@@ -96,7 +99,7 @@ namespace WorldActionSystem
         private void RopeNodeMoveWithMouse(float distence)
         {
             disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(disRay, out disHit, distence, 1 << Layers.obstacleLayer))
+            if (Physics.Raycast(disRay, out disHit, distence, obstacleLayerMask))
             {
                 if (!ropeSelected.TryMoveToPos(pickUpedRopeNode, disHit.point))
                 {

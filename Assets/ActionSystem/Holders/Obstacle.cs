@@ -16,7 +16,7 @@ namespace WorldActionSystem
             var colliders = GetComponentsInChildren<Collider>();
             foreach (var item in colliders)
             {
-                item. gameObject.layer = Layers.obstacleLayer;
+                item. gameObject.layer =LayerMask.NameToLayer( Layers.obstacleLayer);
             }
         }
     }

@@ -44,7 +44,7 @@ namespace WorldActionSystem
         }
         private void InitLayer()
         {
-            gameObject.GetComponentInChildren<Collider>().gameObject.layer = Layers.nodeLayer;
+            gameObject.GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer( Layers.linknodeLayer);
 
         }
 

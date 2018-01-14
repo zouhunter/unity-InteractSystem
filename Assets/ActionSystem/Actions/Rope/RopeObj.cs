@@ -55,8 +55,8 @@ namespace WorldActionSystem
             for (int i = 0; i < ropeNodeStartPos.Length; i++)
             {
                 ropeNodeStartPos[i] = ropeNodeFrom[i].transform.position;
-                ropeNodeTo[i].gameObject.layer = Layers.ropePosLayer;
-                ropeNodeFrom[i].gameObject.layer = Layers.ropeNodeLayer;
+                ropeNodeTo[i].gameObject.layer = LayerMask.NameToLayer( Layers.ropePosLayer);
+                ropeNodeFrom[i].gameObject.layer = LayerMask.NameToLayer(Layers.ropeNodeLayer);
             }
         }
 

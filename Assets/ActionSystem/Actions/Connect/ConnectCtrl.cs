@@ -91,7 +91,7 @@ namespace WorldActionSystem
         private bool TryHitNode(out Collider collider)
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, hitDistence, 1 << Layers.connectItemLayer))
+            if (Physics.Raycast(ray, out hit, hitDistence, LayerMask.GetMask( Layers.connectItemLayer)))
             {
                 if (onHoverItem != null) onHoverItem(hit.collider);
                 if (Input.GetMouseButtonDown(0))

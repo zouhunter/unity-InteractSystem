@@ -62,7 +62,7 @@ namespace WorldActionSystem
 
         private bool TryHitBtnObj(out ClickObj obj)
         {
-            if (Physics.Raycast(ray, out hit, distence, (1 << Layers.clickItemLayer)))
+            if (Physics.Raycast(ray, out hit, distence,LayerMask.GetMask(Layers.clickItemLayer)))
             {
                 obj = hit.collider.GetComponentInParent<ClickObj>();
                 return true;

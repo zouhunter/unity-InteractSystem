@@ -14,8 +14,6 @@ namespace WorldActionSystem
         public bool straightMove;//直线移动
         public bool ignoreMiddle;//忽略中间点
         public bool hideOnInstall;//安装完后隐藏
-        public int layer { get { return Layers.placePosLayer; } }
-
         public virtual GameObject Go { get { return gameObject; } }
         public virtual bool AlreadyPlaced { get { return obj != null; } }
         public virtual PickUpAbleElement obj { get; protected set; }
@@ -26,7 +24,7 @@ namespace WorldActionSystem
         }
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = layer;
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.placePosLayer);
         }
     
         public override void OnStartExecute(bool auto = false)

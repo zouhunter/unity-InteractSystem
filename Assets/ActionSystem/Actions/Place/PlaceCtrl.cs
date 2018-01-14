@@ -18,7 +18,8 @@ namespace WorldActionSystem
         public bool activeNotice { get { return Config.highLightNotice; } }
         public float hitDistence { get { return Config.hitDistence; } }
 
-        public int PlacePoslayerMask { get { return 1<< Layers.placePosLayer; } }
+        private int _placePosLayerMask = 0;
+        public int PlacePoslayerMask { get { if(_placePosLayerMask == 0) _placePosLayerMask = LayerMask.GetMask(Layers.placePosLayer); return _placePosLayerMask; } }
 
         public override ControllerType CtrlType
         {

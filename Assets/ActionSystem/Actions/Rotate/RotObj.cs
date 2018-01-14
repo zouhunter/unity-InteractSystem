@@ -45,7 +45,7 @@ namespace WorldActionSystem
 
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = Layers.rotateItemLayer;
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer( Layers.rotateItemLayer);
         }
         private void InitDirection()
         {

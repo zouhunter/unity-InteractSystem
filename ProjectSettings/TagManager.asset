@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - momo
   layers:
   - Default
   - TransparentFX
@@ -13,16 +14,16 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - w:pickupelement
+  - w:rotateitem
+  - w:clickitem
+  - w:connectitem
+  - w:obstacle
+  - w:ropepos
+  - w:ropenode
+  - w:placepos
+  - w:dragitem
+  - w:linknode
   - 
   - 
   - 

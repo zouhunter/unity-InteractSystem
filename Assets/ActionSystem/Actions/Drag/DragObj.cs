@@ -36,7 +36,7 @@ namespace WorldActionSystem
         }
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = Layers.dragItemLayer;
+            GetComponentInChildren<Collider>().gameObject.layer =LayerMask.NameToLayer( Layers.dragItemLayer);
         }
         private void InitPositions()
         {

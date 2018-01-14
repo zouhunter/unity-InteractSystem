@@ -11,7 +11,7 @@ namespace WorldActionSystem
     {
         public float lineWight = 0.1f;
         public Material lineMaterial;
-        
+
         private float autoTime { get { return Config.autoExecuteTime; } }
         [System.Serializable]
         public class PointGroup
@@ -99,7 +99,7 @@ namespace WorldActionSystem
                 var collider = child.GetComponent<Collider>();
                 if (collider != null)
                 {
-                    collider.gameObject.layer = Layers.connectItemLayer;
+                    collider.gameObject.layer = LayerMask.NameToLayer(Layers.connectItemLayer);
                     nodes.Add(collider);
                 }
             }
@@ -123,7 +123,7 @@ namespace WorldActionSystem
                 OnOneNodeConnected();
             }
         }
-        public  void TrySelectFirstCollider(Collider collider)
+        public void TrySelectFirstCollider(Collider collider)
         {
             if (nodes.Contains(collider))
             {
@@ -156,7 +156,7 @@ namespace WorldActionSystem
                 }
             }
         }
-        public  bool TryConnectNode(Collider collider1, Collider collider2)
+        public bool TryConnectNode(Collider collider1, Collider collider2)
         {
             if (nodes.Contains(collider1) && nodes.Contains(collider2))
             {

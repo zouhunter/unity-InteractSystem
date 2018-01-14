@@ -10,6 +10,7 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.Assertions.Comparers;
 using System.Collections;
 using System.Collections.Generic;
+
 namespace WorldActionSystem
 {
     /// <summary>
@@ -17,16 +18,16 @@ namespace WorldActionSystem
     /// </summary>
     public class Layers
     {
-        internal const int pickUpElementLayer = 8;
-        internal const int rotateItemLayer = 10;
-        internal const int clickItemLayer = 11;
-        internal const int connectItemLayer = 12;
-        internal static int obstacleLayer = 13;
-        internal static int ropePosLayer = 14;
-        internal static int ropeNodeLayer = 15;
-        internal const int placePosLayer = 16;
-        internal const int dragItemLayer = 17;
-        internal const int nodeLayer = 18;
+        public const string pickUpElementLayer = "w:pickupelement";
+        public const string rotateItemLayer = "w:rotateitem";
+        public const string clickItemLayer = "w:clickitem";
+        public const string connectItemLayer = "w:connectitem";
+        public static string obstacleLayer = "w:obstacle";
+        public static string ropePosLayer = "w:ropepos";
+        public static string ropeNodeLayer = "w:ropenode";
+        public const string placePosLayer = "w:placepos";
+        public const string dragItemLayer = "w:dragitem";
+        public const string linknodeLayer = "w:linknode";
     }
 
 }

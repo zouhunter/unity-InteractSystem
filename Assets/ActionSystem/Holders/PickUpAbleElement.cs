@@ -124,7 +124,7 @@ namespace WorldActionSystem
         }
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = Layers.pickUpElementLayer;
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer( Layers.pickUpElementLayer);
         }
 
         protected virtual void OnDestroy()

@@ -18,7 +18,8 @@ namespace WorldActionSystem
         private RaycastHit disHit;
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
-       
+        private int pickUpElementLayerMask { get { return LayerMask.GetMask(Layers.pickUpElementLayer); } }
+        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer); } }
         protected Camera viewCamera
         {
             get
@@ -137,7 +138,7 @@ namespace WorldActionSystem
         private void MoveWithMouse()
         {
             disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(disRay, out disHit, elementDistence, 1 << Layers.obstacleLayer | 1 << Layers.placePosLayer))
+            if (Physics.Raycast(disRay, out disHit, elementDistence, obstacleLayerMask))
             {
                 pickedUpObj.SetPosition(GetPositionFromHit());
             }
@@ -171,7 +172,7 @@ namespace WorldActionSystem
         private void SelectAnElement()
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, hitDistence, (1 << Layers.pickUpElementLayer)))
+            if (Physics.Raycast(ray, out hit, hitDistence, pickUpElementLayerMask))
             {
                 var pickedUpObj = hit.collider.gameObject.GetComponentInParent<PickUpAbleItem>();
                 if (pickedUpObj != null)

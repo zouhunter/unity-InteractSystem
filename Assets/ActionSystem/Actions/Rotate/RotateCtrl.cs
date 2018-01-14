@@ -16,7 +16,7 @@ namespace WorldActionSystem
         private Ray ray;
         private Vector3 axis;
         private Vector3 previousMousePosition;
-
+        private int rotateItemLayerMask { get { return LayerMask.GetMask(Layers.rotateItemLayer); } }
         private float distence { get { return Config.hitDistence; } }
 
         public override void Update()
@@ -36,7 +36,7 @@ namespace WorldActionSystem
 
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, distence, (1 << Layers.rotateItemLayer)))
+            if (Physics.Raycast(ray, out hit, distence, rotateItemLayerMask))
             {
                 selectedObj = hit.collider.GetComponentInParent<RotObj>();
             }

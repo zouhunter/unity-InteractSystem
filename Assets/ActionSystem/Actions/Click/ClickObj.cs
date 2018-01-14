@@ -30,7 +30,7 @@ namespace WorldActionSystem
         }
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = Layers.clickItemLayer;
+            GetComponentInChildren<Collider>().gameObject.layer =LayerMask.NameToLayer( Layers.clickItemLayer);
         }
 
         public override void OnStartExecute(bool auto = false)

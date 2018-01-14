@@ -7,6 +7,7 @@ using System;
 
 namespace WorldActionSystem
 {
+    [AddComponentMenu(MenuName.ActionSystem)]
     public class ActionSystem : MonoBehaviour
     {
         #region Instence

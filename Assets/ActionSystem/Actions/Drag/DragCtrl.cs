@@ -41,7 +41,7 @@ namespace WorldActionSystem
 
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, distence, (1 << Layers.dragItemLayer)))
+            if (Physics.Raycast(ray, out hit, distence, LayerMask.GetMask( Layers.dragItemLayer)))
             {
                 var obj = hit.collider.GetComponentInParent<DragObj>();
                 if (obj.Started && !obj.Complete)

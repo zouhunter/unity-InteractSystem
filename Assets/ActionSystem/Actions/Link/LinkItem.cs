@@ -43,7 +43,7 @@ namespace WorldActionSystem
 
         private void InitLayer()
         {
-            Collider.gameObject.layer = Layers.pickUpElementLayer;
+            Collider.gameObject.layer =LayerMask.NameToLayer( Layers.pickUpElementLayer);
         }
         public void ResetBodyTransform(LinkItem otherParent, Vector3 rPos, Vector3 rdDir)
         {
