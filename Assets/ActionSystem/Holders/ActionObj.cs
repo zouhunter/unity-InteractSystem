@@ -64,11 +64,11 @@ namespace WorldActionSystem
             {
                 hookCtrl = new HookCtroller(this);
             }
-            gameObject.SetActive(startActive);
             if (anglePos == null){
                 anglePos = transform;
             }
             WorpCameraID();
+            gameObject.SetActive(startActive);
         }
         private void WorpCameraID()
         {

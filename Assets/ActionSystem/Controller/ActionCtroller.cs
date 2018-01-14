@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace WorldActionSystem
 {
@@ -23,11 +24,11 @@ namespace WorldActionSystem
             }
         }
         private PickUpController pickupCtrl { get; set; }
-        private MonoBehaviour holder;
+        //private MonoBehaviour holder;
 
         public ActionCtroller(MonoBehaviour holder,PickUpController pickupCtrl)
         {
-            this.holder = holder;
+            //this.holder = holder;
             this.pickupCtrl = pickupCtrl;
             RegisterControllers();
             coroutine = holder.StartCoroutine(Update());
@@ -53,14 +54,20 @@ namespace WorldActionSystem
         {
             pickupCtrl.onPickup += (OnPickUpObj);
             Debug.Log("RegisterControllers");
-            controllerList.Add(new LinkCtrl());
-            controllerList.Add(new PlaceCtrl());
-            controllerList.Add(new ClickCtrl());
-            controllerList.Add(new RopeCtrl());
-            controllerList.Add(new RotateCtrl());
-            controllerList.Add(new ConnectCtrl());
-            controllerList.Add(new DragCtrl());
-
+            var types = this.GetType().Assembly.GetTypes();
+            foreach (var t in types)
+            {
+                //是否是類
+                if (t.IsClass)
+                {
+                    //是否是當前類的派生類
+                    if (t.IsSubclassOf(typeof(OperateController)))
+                    {
+                        controllerList.Add(System.Activator.CreateInstance(t) as IOperateController);
+                    }
+                }
+            }
+          
             foreach (var ctrl in controllerList)
             {
                 ctrl.userErr = OnUserError;

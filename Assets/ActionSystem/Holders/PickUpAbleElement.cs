@@ -12,7 +12,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : PickUpAbleItem, IPlaceItem, IRuntimeActive
+    public class PickUpAbleElement : PickUpAbleItem, IPlaceItem,ISupportElement
     {
         public class Tweener
         {

@@ -28,12 +28,35 @@ namespace WorldActionSystem
 
             if (!AlreadyPlaced)
             {
-                PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
+                PickUpAbleElement obj = GetUnInstalledObj(Name);
                 Attach(obj);
                 obj.QuickInstall(this);
                 obj.StepComplete();
             }
         }
+
+        /// <summary>
+        /// 找出一个没有安装的元素
+        /// </summary>
+        /// <param name="elementName"></param>
+        /// <returns></returns>
+        public PickUpAbleElement GetUnInstalledObj(string elementName)
+        {
+            var elements = elementCtrl.GetElements<PickUpAbleElement>(elementName);
+            if (elements != null)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    if (!elements[i].HaveBinding)
+                    {
+                        return elements[i];
+                    }
+                }
+            }
+            throw new Exception("配制错误,缺少" + elementName);
+        }
+
+
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
@@ -48,14 +71,15 @@ namespace WorldActionSystem
 
         protected override void OnInstallComplete()
         {
-            if (!Complete){
+            if (!Complete)
+            {
                 OnEndExecute(false);
             }
         }
 
         protected override void OnUnInstallComplete()
         {
-            if(Started)
+            if (Started)
             {
                 if (AlreadyPlaced)
                 {
@@ -68,7 +92,7 @@ namespace WorldActionSystem
 
         protected override void OnAutoInstall()
         {
-            PickUpAbleElement obj = elementCtrl.GetUnInstalledObj(Name);
+            PickUpAbleElement obj = GetUnInstalledObj(Name);
             Attach(obj);
             obj.StepActive();
             if (Config.quickMoveElement && !ignorePass)
@@ -80,6 +104,8 @@ namespace WorldActionSystem
                 obj.NormalInstall(this);
             }
         }
+      
+
     }
 
 }

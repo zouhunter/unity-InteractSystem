@@ -12,11 +12,9 @@ using System.Collections;
 namespace WorldActionSystem
 {
 
-    public interface IRuntimeActive
-    {
-        void StepActive();
-        void StepComplete();
-        void StepUnDo();
-    }
+    //public interface IRuntimeActive
+    //{
+       
+    //}
 
 }

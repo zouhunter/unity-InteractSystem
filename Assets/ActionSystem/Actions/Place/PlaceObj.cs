@@ -17,11 +17,19 @@ namespace WorldActionSystem
         public virtual GameObject Go { get { return gameObject; } }
         public virtual bool AlreadyPlaced { get { return obj != null; } }
         public virtual PickUpAbleElement obj { get; protected set; }
-
+        private static List<ActionObj> lockQueue = new List<ActionObj>();
         protected virtual void Awake()
         {
             InitLayer();
         }
+        protected virtual void OnDestroy()
+        {
+            if(lockQueue.Contains(this))
+            {
+                lockQueue.Remove(this);
+            }
+        }
+
         private void InitLayer()
         {
             GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.placePosLayer);
@@ -30,7 +38,7 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            elementCtrl.ActiveElements(this);
+            ActiveElements(this);
             if (auto || autoInstall){
                 OnAutoInstall();
             }
@@ -38,12 +46,12 @@ namespace WorldActionSystem
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            elementCtrl.CompleteElements(this, true);
+            CompleteElements(this, true);
         }
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
-            elementCtrl.CompleteElements(this, false);
+            CompleteElements(this, false);
         }
         protected abstract void OnAutoInstall();
 
@@ -71,5 +79,55 @@ namespace WorldActionSystem
             obj = default(PickUpAbleElement);
             return old;
         }
+
+        private void ActiveElements(ActionObj element) 
+        {
+            var actived = lockQueue.Find(x => x.Name == element.Name);
+            if (actived == null)
+            {
+                var objs = ElementController.Instence.GetElements<PickUpAbleElement>(element.Name);
+                if (objs == null) return;
+                for (int i = 0; i < objs.Count; i++)
+                {
+                    if (log) Debug.Log("ActiveElements:" + element.Name + (!objs[i].Started && !objs[i].HaveBinding));
+
+                    if (!objs[i].Started && !objs[i].HaveBinding)
+                    {
+                        objs[i].StepActive();
+                    }
+                }
+            }
+            lockQueue.Add(element);
+        }
+
+        private void CompleteElements(ActionObj element, bool undo)
+        {
+            lockQueue.Remove(element);
+            var active = lockQueue.Find(x => x.Name == element.Name);
+            if (active == null)
+            {
+                var objs = ElementController.Instence.GetElements<PickUpAbleElement>(element.Name);
+                if (objs == null) return;
+                for (int i = 0; i < objs.Count; i++)
+                {
+                    if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Started);
+
+                    if (objs[i].Started)
+                    {
+                        if (undo)
+                        {
+                            objs[i].StepUnDo();
+                        }
+                        else
+                        {
+                            objs[i].StepComplete();
+                        }
+                    }
+                }
+            }
+
+
+        }
+
     }
 }

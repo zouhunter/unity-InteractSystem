@@ -40,7 +40,7 @@ namespace WorldActionSystem
         }
         protected override void OnAutoInstall()
         {
-            var obj = elementCtrl.GetUnInstalledObj(Name);
+            var obj = GetUnInstalledObj(Name);
             Attach(obj);
             if (Config.quickMoveElement && !ignorePass)
             {
@@ -57,6 +57,26 @@ namespace WorldActionSystem
             {
                 obj.NormalInstall(this, false,false);
             }
+        }
+        /// <summary>
+        /// 找出一个没有安装的元素
+        /// </summary>
+        /// <param name="elementName"></param>
+        /// <returns></returns>
+        public PickUpAbleElement GetUnInstalledObj(string elementName)
+        {
+            var elements = elementCtrl.GetElements<PickUpAbleElement>(elementName);
+            if (elements != null)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    if (!elements[i].HaveBinding)
+                    {
+                        return elements[i];
+                    }
+                }
+            }
+            throw new Exception("配制错误,缺少" + elementName);
         }
 
         protected override void OnInstallComplete()

@@ -12,5 +12,6 @@ namespace WorldActionSystem
         Rope = 1 << 5,//绳索
         Drag = 1 << 6,//拖拽
         Link = 1 << 7,//关联
+        Charge = 1 << 8,//填充
     }
 }

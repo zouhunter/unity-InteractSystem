@@ -19,7 +19,6 @@ namespace WorldActionSystem
             {
                 if (_instence == null && !isQuit)
                 {
-                    Debug.Log("_instence");
                     _instence = new GameObject("ActionSystem").AddComponent<ActionSystem>();
                 }
                 return _instence;

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace WorldActionSystem
 {
-
     public class MenuName
     {
         public const string BaseName = "WorldActionSystem/";

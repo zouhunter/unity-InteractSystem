@@ -14,7 +14,7 @@ namespace WorldActionSystem
         {
             get
             {
-                if(_instence == null)
+                if (_instence == null)
                 {
                     _instence = new ElementController();
                 }
@@ -22,36 +22,29 @@ namespace WorldActionSystem
             }
         }
 
-        private Dictionary<string, List<PickUpAbleElement>> objectList = new Dictionary<string, List<PickUpAbleElement>>();
-        private List<PlaceObj> lockQueue = new List<PlaceObj>();
+        private List<ISupportElement> elementList = new List<ISupportElement>();
         public bool log = false;
 
         /// <summary>
         /// 外部添加Element
         /// </summary>
-        public void RegistElement(PickUpAbleElement item)
+        public void RegistElement(ISupportElement item)
         {
-            if (objectList.ContainsKey((string)item.Name))
+            if (!elementList.Contains(item))
             {
-                objectList[(string)item.Name].Add((PickUpAbleElement)item);
+                elementList.Add(item);
             }
             else
             {
-                objectList[(string)item.Name] = new System.Collections.Generic.List<PickUpAbleElement>() { item };
+                Debug.LogError("不要重复注册：" + item);
             }
         }
 
-        public void RemoveElement(PickUpAbleElement item)
+        public void RemoveElement(ISupportElement item)
         {
-            foreach (var objItem in objectList)
+            if(elementList.Contains(item))
             {
-                if(item.Name == objItem.Key)
-                {
-                    if(objItem.Value.Contains(item))
-                    {
-                        objItem.Value.Remove(item);
-                    }
-                }
+                elementList.Remove(item);
             }
         }
 
@@ -60,88 +53,34 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public List<PickUpAbleElement> GetElements(string elementName)
+        public List<T> GetElements<T>(string elementName) where T : ISupportElement
         {
-            if (objectList.ContainsKey(elementName))
-            {
-                return objectList[elementName];
+            var list = elementList.FindAll(x => x.Name == elementName && x is T);
+            if(list.Count > 0){
+                return list.ConvertAll<T>(x => (T)x) ;   
             }
-            else
-            {
-                Debug.LogWarning("配制错误,缺少" + elementName);
-                return null;
-            }
+            Debug.LogWarning("配制错误,缺少" + elementName);
+            return null;
+            
         }
 
         /// <summary>
-        /// 找出一个没有安装的元素
+        /// 获取所有T的类型
         /// </summary>
-        /// <param name="elementName"></param>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public PickUpAbleElement GetUnInstalledObj(string elementName)
+        public List<T> GetElements<T>()
         {
-            List<PickUpAbleElement> listObj;
-
-            if (objectList.TryGetValue(elementName, out listObj))
+            var list = elementList.FindAll(x =>x is T);
+            if (list.Count > 0)
             {
-                for (int i = 0; i < listObj.Count; i++)
-                {
-                    if (!listObj[i].HaveBinding)
-                    {
-                        return listObj[i];
-                    }
-                }
+                return list.ConvertAll<T>(x => (T)x);
             }
-            throw new Exception("配制错误,缺少" + elementName);
+            Debug.LogWarning("配制错误,缺少" + typeof(T).ToString());
+            return null;
         }
 
-        public void ActiveElements(PlaceObj element)
-        {
-            var actived = lockQueue.Find(x => x.Name == element.Name);
-            if (actived == null)
-            {
-                var objs = GetElements(element.Name);
-                if (objs == null) return;
-                for (int i = 0; i < objs.Count; i++)
-                {
-                    if (log) Debug.Log("ActiveElements:" + element.Name + (!objs[i].Started && !objs[i].HaveBinding));
 
-                    if (!objs[i].Started && !objs[i].HaveBinding){
-                        objs[i].StepActive();
-                    }
-                }
-            }
-            lockQueue.Add(element);
-        }
-
-        public void CompleteElements(PlaceObj element, bool undo)
-        {
-            lockQueue.Remove(element);
-            var active = lockQueue.Find(x => x.Name == element.Name);
-            if (active == null)
-            {
-                var objs = GetElements(element.Name);
-                if (objs == null) return;
-                for (int i = 0; i < objs.Count; i++)
-                {
-                    if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Started);
-
-                    if (objs[i].Started)
-                    {
-                        if (undo)
-                        {
-                            objs[i].StepUnDo();
-                        }
-                        else
-                        {
-                            objs[i].StepComplete();
-                        }
-                    }
-                }
-            }
-
-
-        }
     }
 
 }
