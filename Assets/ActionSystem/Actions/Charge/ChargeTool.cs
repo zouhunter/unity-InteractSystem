@@ -15,8 +15,9 @@ namespace WorldActionSystem
         [SerializeField]
         private List<string> _supportType;
         [SerializeField]
-        private float capacity;
-
+        private float _capacity;
+        [SerializeField]
+        private float triggerRange = 0.5f;
         private Vector3 startPos;
         private ChargeData? chargeData;
         public ChargeEvent onLoad;
@@ -24,8 +25,11 @@ namespace WorldActionSystem
         public List<string> supportTypes { get { return _supportType; } }
         public bool charged { get { return chargeData != null; } }
         public ChargeData data { get { return (ChargeData)chargeData; } }
-    
+        public float capacity { get { return _capacity; } }
+      
         public bool Started { get; private set; }
+        public float Range { get { return triggerRange; } }
+
         private ElementController elementCtrl;
 
         protected override void Awake()
@@ -51,10 +55,16 @@ namespace WorldActionSystem
         {
             base.OnPickUp();
         }
+        public override void OnPickStay()
+        {
+            base.OnPickStay();
+
+        }
         public override void SetPosition(Vector3 pos)
         {
             transform.position = pos;
         }
+
 
         internal bool CanLoad(string type)
         {
@@ -75,8 +85,7 @@ namespace WorldActionSystem
         /// </summary>
         internal void Charge()
         {
-            if (onLoad != null)
-            {
+            if (onLoad != null){
                 var d = new ChargeData(data.type, -data.value);
                 onLoad.Invoke(d);
             }

@@ -329,7 +329,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 228547805}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.04, y: 0, z: -2.63}
+  m_LocalPosition: {x: -0.04, y: 0, z: 0.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1229214593}
@@ -349,7 +349,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _supportType:
   - water
-  capacity: 1
+  _capacity: 0.3
+  triggerRange: 0.5
   onLoad:
     m_PersistentCalls:
       m_Calls:
@@ -984,7 +985,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1045295475}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.08, y: -0.38, z: -2.36}
+  m_LocalPosition: {x: -2.08, y: -0.38, z: 0.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1221699107}
@@ -1004,7 +1005,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startData:
     type: water
-    value: 0.5
+    value: 0.8
   onChange:
     m_PersistentCalls:
       m_Calls:
@@ -1547,7 +1548,7 @@ Transform:
   m_GameObject: {fileID: 1418027688}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.985, z: 0}
-  m_LocalScale: {x: 1, y: 0.74, z: 1}
+  m_LocalScale: {x: 1, y: 0, z: 1}
   m_Children:
   - {fileID: 1252686683}
   m_Father: {fileID: 1229214593}
@@ -1594,7 +1595,7 @@ MonoBehaviour:
   _stepName: charge
   _queueID: 0
   _cameraID: 
-  commandType: 0
+  commandType: 256
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1617,7 +1618,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1456384650}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -2.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1957512226}
@@ -1909,9 +1910,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   startDatas: []
-  completeDatas:
+  _completeDatas:
   - type: water
-    value: 1
+    value: 0.5
   onCharge:
     m_PersistentCalls:
       m_Calls:

@@ -59,7 +59,7 @@ namespace WorldActionSystem
                 LinkPort tempNode;
                 foreach (var item in pickedUpItem.ChildNodes)
                 {
-                    if (LinkUtil. FindInstallableNode(item, out tempNode))
+                    if (LinkUtil.FindInstallableNode(item, out tempNode))
                     {
                         activeNode = item;
                         targetNode = tempNode;

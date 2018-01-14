@@ -28,13 +28,13 @@ namespace WorldActionSystem
 
         protected IActionObj[] actionObjs;
         private ActionObjCtroller objectCtrl;
-        [HideInInspector]
+        [EnumMask]
         public ControllerType commandType;
 
 #if ActionSystem_G
         [HideInInspector]
 #endif
-        public InputField.OnChangeEvent onBeforeActive, onBeforePlayEnd,onBeforeUnDo;
+        public InputField.OnChangeEvent onBeforeActive, onBeforePlayEnd, onBeforeUnDo;
 
         private bool started;
         private bool completed;

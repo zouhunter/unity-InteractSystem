@@ -22,9 +22,11 @@ namespace WorldActionSystem
         public const string rotateItemLayer = "w:rotateitem";
         public const string clickItemLayer = "w:clickitem";
         public const string connectItemLayer = "w:connectitem";
-        public static string obstacleLayer = "w:obstacle";
-        public static string ropePosLayer = "w:ropepos";
-        public static string ropeNodeLayer = "w:ropenode";
+        public const string obstacleLayer = "w:obstacle";
+        public const string ropePosLayer = "w:ropepos";
+        public const string ropeNodeLayer = "w:ropenode";
+        public const string chargeResourceLayer = "w:chargeresource";
+        public const string chargeObjLayer = "w:chargeobj";
         public const string placePosLayer = "w:placepos";
         public const string dragItemLayer = "w:dragitem";
         public const string linknodeLayer = "w:linknode";

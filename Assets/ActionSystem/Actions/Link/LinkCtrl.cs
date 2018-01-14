@@ -75,9 +75,12 @@ namespace WorldActionSystem
         }
         void OnPickStay(PickUpAbleItem go)
         {
-            linkConnectCtrl.TryConnect();
-            pickCtrl.PickDown();
-            Debug.Log("OnPickStatu");
+            if(go is LinkItem)
+            {
+                linkConnectCtrl.TryConnect();
+                pickCtrl.PickDown();
+                Debug.Log("OnPickStatu");
+            }
         }
 
         void OnConnected(LinkPort[] nodes)

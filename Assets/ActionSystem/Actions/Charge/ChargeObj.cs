@@ -13,8 +13,9 @@ namespace WorldActionSystem
         [SerializeField]
         private ChargeData[] startDatas;
         [SerializeField]
-        private List<ChargeData> completeDatas;
+        private List<ChargeData> _completeDatas;
 
+        public List<ChargeData> completeDatas { get { return _completeDatas; } }
         //[SerializeField]
         //private List<string> chargeTools;
         //[SerializeField]
@@ -33,6 +34,7 @@ namespace WorldActionSystem
         {
             base.Start();
             InitStartData();
+            InitLayer();
         }
 
         protected virtual void OnDestroy()
@@ -49,6 +51,16 @@ namespace WorldActionSystem
             {
                 AutoComplete();
             }
+        }
+        protected override void OnBeforeEnd(bool force)
+        {
+            base.OnBeforeEnd(force);
+            CompleteElements(this, false);
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            CompleteElements(this, false);
         }
 
         public virtual bool Charge(ChargeData data)
@@ -69,14 +81,28 @@ namespace WorldActionSystem
 
         private void JudgeComplete()
         {
+            foreach (var item in completeDatas)
+            {
+                var current = currentList.Find(x => x.type == item.type);
+                if(string.IsNullOrEmpty(current.type) || current.value < item.value)
+                {
+                    return;
+                }
+            }
 
+            OnEndExecute(false);
         }
 
         private void AutoComplete()
         {
-
+            //找到一个tool和resourcee
+            //让tool去吸然后来填
         }
 
+        private void InitLayer()
+        {
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.chargeObjLayer);
+        }
         private void ActiveElements(ChargeObj element)
         {
             var actived = lockQueue.Find(x => x.Name == element.Name);

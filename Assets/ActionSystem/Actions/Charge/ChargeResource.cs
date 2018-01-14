@@ -15,7 +15,6 @@ namespace WorldActionSystem
         #region ISupportElement
         public string Name { get { return name; } }
         public bool Started { get; private set; }
-        public bool HaveBinding { get; private set; }
 
         public void StepActive()
         {
@@ -28,7 +27,9 @@ namespace WorldActionSystem
 
         public void StepUnDo()
         {
+
         }
+
         #endregion
         private ElementController elementCtrl;
 
@@ -36,6 +37,7 @@ namespace WorldActionSystem
         {
             elementCtrl = ElementController.Instence;
             elementCtrl.RegistElement(this);
+            InitLayer();
         }
         private void OnDestroy()
         {
@@ -56,6 +58,10 @@ namespace WorldActionSystem
         {
             current = startData.value;
             onChange.Invoke(new ChargeData(type, current));
+        }
+        private void InitLayer()
+        {
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.chargeResourceLayer);
         }
     }
 
