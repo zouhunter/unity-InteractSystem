@@ -36,7 +36,7 @@ namespace WorldActionSystem
         public ActionCtroller actionCtrl { get {
                 if (_actionCtrl == null)
                 {
-                    _actionCtrl = new ActionCtroller(this, pickUpCtrl);
+                    _actionCtrl = new ActionCtroller(this,pickupCtrl);
                 }
                 return _actionCtrl;
             } }
@@ -65,16 +65,16 @@ namespace WorldActionSystem
         #endregion
 
         #region PickUpCtrl
-        private PickUpController _pickUpCtrl;
-        public PickUpController pickUpCtrl
+        private PickUpController _pickupCtrl;
+        public PickUpController pickupCtrl
         {
             get
             {
-                if (_pickUpCtrl == null)
+                if (_pickupCtrl == null)
                 {
-                    _pickUpCtrl = new WorldActionSystem.PickUpController(this);
+                    _pickupCtrl = new PickUpController(this);
                 }
-                return _pickUpCtrl;
+                return _pickupCtrl;
             }
         }
         #endregion

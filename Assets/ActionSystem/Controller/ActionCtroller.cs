@@ -25,7 +25,7 @@ namespace WorldActionSystem
         private PickUpController pickupCtrl { get; set; }
         private MonoBehaviour holder;
 
-        public ActionCtroller(MonoBehaviour holder,PickUpController pickUpCtrl)
+        public ActionCtroller(MonoBehaviour holder,PickUpController pickupCtrl)
         {
             this.holder = holder;
             this.pickupCtrl = pickupCtrl;
@@ -35,16 +35,15 @@ namespace WorldActionSystem
 
         private IEnumerator Update()
         {
-            var fixedWait = new WaitForFixedUpdate();
+            var wait = new WaitForFixedUpdate();
             while (true)
             {
-                yield return fixedWait;
+                yield return wait;//要保证在PickUpCtrl之前执行才不会有问题，否则拿起来就被放下了！！！
                 foreach (var ctrl in controllerList)
                 {
                     if ((ctrl.CtrlType & activeTypes) != 0)
                     {
                         ctrl.Update();
-
                     }
                 }
             }
@@ -52,12 +51,8 @@ namespace WorldActionSystem
         }
         private void RegisterControllers()
         {
-            if (pickupCtrl == null)
-            {
-                pickupCtrl = new PickUpController(holder);
-            }
             pickupCtrl.onPickup += (OnPickUpObj);
-
+            Debug.Log("RegisterControllers");
             controllerList.Add(new LinkCtrl());
             controllerList.Add(new PlaceCtrl());
             controllerList.Add(new ClickCtrl());

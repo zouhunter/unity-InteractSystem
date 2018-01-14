@@ -10,7 +10,9 @@ namespace WorldActionSystem
     public sealed class PlaceCtrl : OperateController, IPlaceState
     {
         public IHighLightItems highLight;
-        public PickUpController pickCtrl { get { return ActionSystem.Instence.pickUpCtrl; } }
+        private PickUpController pickCtrl { get { return ActionSystem.Instence.pickupCtrl; } }
+
+
         public PickUpAbleElement pickedUpObj { get { return pickCtrl.pickedUpObj is PickUpAbleElement ? pickCtrl.pickedUpObj as PickUpAbleElement : null; } }
         public PlaceObj installPos;
         public bool installAble;

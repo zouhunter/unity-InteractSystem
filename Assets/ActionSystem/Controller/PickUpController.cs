@@ -37,20 +37,21 @@ namespace WorldActionSystem
         //private MonoBehaviour holder;
         public PickUpController(MonoBehaviour holder)
         {
+            Debug.Log("New PickUpController");
             //this.holder = holder;
            /* coroutine = */holder.StartCoroutine(Update());
         }
         private IEnumerator Update()
         {
-            var fixedWait = new WaitForFixedUpdate();
             while (true)
             {
-                yield return fixedWait;
+                yield return null;
 
                 if (LeftTriggered())
                 {
                     if (HaveExecuteTwicePerSecond(ref timer))
                     {
+                        Debug.Log("HaveExecuteTwicePerSecond");
                         PickDown();
                     }
                     else if (!PickedUp)

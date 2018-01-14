@@ -20,7 +20,7 @@ namespace WorldActionSystem
                 return ControllerType.Link;
             }
         }
-        private PickUpController pickCtrl { get { return ActionSystem.Instence.pickUpCtrl; } }
+        private PickUpController pickCtrl { get { return ActionSystem.Instence.pickupCtrl; } }
 
         public LinkCtrl()
         {
