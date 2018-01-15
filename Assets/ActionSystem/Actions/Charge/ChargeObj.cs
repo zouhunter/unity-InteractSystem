@@ -61,7 +61,16 @@ namespace WorldActionSystem
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            CompleteElements(this, false);
+            CompleteElements(this, true);
+            var currentListArray = currentList.ToArray();
+            foreach (var item in currentListArray)
+            {
+                var temp = item;
+                temp.value = -item.value;
+                Charge(temp, null);
+            }
+            currentList.Clear();
+            InitStartData();
         }
 
         /// <summary>
@@ -82,7 +91,6 @@ namespace WorldActionSystem
                 }
                 _currentList.Add(data);
             }
-            JudgeComplete();
         }
         /// <summary>
         /// 判断并填充
@@ -116,7 +124,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 结束与否判断
         /// </summary>
-        private void JudgeComplete()
+        public void JudgeComplete()
         {
             foreach (var item in completeDatas)
             {
@@ -254,8 +262,7 @@ namespace WorldActionSystem
 
         private void InitStartData()
         {
-            foreach (var item in startDatas)
-            {
+            foreach (var item in startDatas){
                 Charge(item,null);
             }
         }

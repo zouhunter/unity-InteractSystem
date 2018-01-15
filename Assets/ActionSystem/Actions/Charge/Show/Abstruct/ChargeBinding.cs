@@ -36,7 +36,9 @@ namespace WorldActionSystem
         {
             asyncActive = false;
             if (onComplete != null){
-                onComplete.Invoke();
+                var action = onComplete;
+                onComplete = null;
+                action.Invoke();
             }
         }
     }

@@ -105,7 +105,7 @@ namespace WorldActionSystem
                     if(!string.IsNullOrEmpty(worpData.type)){
                         currTool.PickUpAble = false;
                         currTool.OnCharge(chargeObj.transform.position, worpData.value,()=> { currTool.PickUpAble = true; });
-                        chargeObj.Charge(worpData, () => { });
+                        chargeObj.Charge(worpData, () => { chargeObj.JudgeComplete(); });
                     }
                     highter.UnHighLightTarget(chargeObj.gameObject);
                     lastMatchChargeObj = null;
