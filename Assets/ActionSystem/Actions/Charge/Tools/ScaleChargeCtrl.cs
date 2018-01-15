@@ -18,6 +18,7 @@ namespace WorldActionSystem
         private float lerpTime = 2f;
         private Transform transform;
         private bool asyncActive;
+        private float capicty;
 
         public void Sub(ChargeData arg0)
         {
@@ -44,20 +45,21 @@ namespace WorldActionSystem
 
         private void QuickSet()
         {
-            transform.localScale = new Vector3(transform.localScale.x, currentValue, transform.localScale.z);
+            transform.localScale = new Vector3(transform.localScale.x, currentValue / capicty, transform.localScale.z);
         }
 
         private void AsyncSet(float lerpTime)
         {
             this.lerpTime = lerpTime;
             startScale = transform.localScale;
-            targetScale = new Vector3(transform.localScale.x, currentValue, transform.localScale.z);
+            targetScale = new Vector3(transform.localScale.x, currentValue/ capicty, transform.localScale.z);
             timer = 0;
             asyncActive = true;
         }
 
-        public ScaleChargeCtrl(Transform transform)
+        public ScaleChargeCtrl(Transform transform,float capicty)
         {
+            this.capicty = capicty;
             this.transform = transform;
         }
 

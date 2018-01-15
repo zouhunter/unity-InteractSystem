@@ -35,7 +35,6 @@ namespace WorldActionSystem
                 {
                     if (ChargeUtil.FindChargeObj(chargeTool, out chargeObj))
                     {
-                        Debug.Log(chargeObj);
                         if(chargeObj != lastMatchChargeObj)
                         {
                             if (lastMatchChargeObj != null)
@@ -59,7 +58,6 @@ namespace WorldActionSystem
                 {
                     if (ChargeUtil.FindResource(chargeTool, out chargeResource))
                     {
-                        Debug.Log(chargeResource);
                         if (chargeResource != lastMatchChargeResource)
                         {
                             if (lastMatchChargeResource != null)

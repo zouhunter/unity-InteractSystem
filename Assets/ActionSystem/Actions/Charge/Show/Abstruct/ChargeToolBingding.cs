@@ -8,7 +8,7 @@ using System;
 namespace WorldActionSystem
 {
     [RequireComponent(typeof(ChargeTool))]
-    public abstract class ChargeToolBingding : MonoBehaviour
+    public abstract class ChargeToolBingding : ChargeBinding
     {
         protected ChargeTool target;
         protected virtual void Awake()
@@ -17,7 +17,6 @@ namespace WorldActionSystem
             target.onCharge = OnCharge;
             target.onLoad = OnLoad;
         }
-
         protected abstract void OnLoad(Vector3 center, ChargeData data, UnityAction onComplete);
         protected abstract void OnCharge(Vector3 center, ChargeData data, UnityAction onComplete);
     }

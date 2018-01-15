@@ -14,6 +14,10 @@ namespace WorldActionSystem
         private ChargeData[] startDatas;
         [SerializeField]
         private List<ChargeData> _completeDatas;
+        [SerializeField]
+        private float _capacity =1;
+        public float capacity { get { return _capacity; } }
+
         public List<ChargeData> completeDatas { get { return _completeDatas; } }
         private List<ChargeData> _currentList = new List<ChargeData>();
         public ChargeEvent onCharge { get; set; }
@@ -26,7 +30,6 @@ namespace WorldActionSystem
             }
         }
         private static List<ChargeObj> lockQueue = new List<ChargeObj>();
-
         protected override void Start()
         {
             base.Start();

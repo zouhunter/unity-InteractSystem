@@ -10,9 +10,12 @@ namespace WorldActionSystem
     {
         [SerializeField]
         private ChargeData startData;
+        [SerializeField]
+        private float _capacity =1;
         public string type { get { return startData.type; } }
         public float current { get; private set; }
         public ChargeEvent onChange { get; set; }
+        public float capacity { get { return _capacity; } }
 
         #region ISupportElement
         public string Name { get { return name; } }
@@ -55,8 +58,7 @@ namespace WorldActionSystem
         public void Subtruct(float value, UnityAction onComplete)
         {
             current -= value;
-            if (onChange != null)
-            {
+            if (onChange != null){
                 onChange.Invoke(transform.position, new ChargeData(type, -value), onComplete);
             }
             else

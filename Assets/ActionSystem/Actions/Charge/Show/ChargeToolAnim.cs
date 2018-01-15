@@ -7,7 +7,6 @@ using WorldActionSystem;
 using System;
 namespace WorldActionSystem
 {
-
     public class ChargeToolAnim : ChargeToolBingding
     {
         [SerializeField]
@@ -20,35 +19,20 @@ namespace WorldActionSystem
         private string chargeAnimName;
         [SerializeField]
         private Transform scaleTrans;
-        [SerializeField]
-        private float animTime = 2;
-
-
+     
         private ScaleChargeCtrl scaleCtrl;
         private AnimChargeCtrl animCtrl;
-
-        private float timer = 0;
-        private bool asyncActive = false;
-        private UnityAction onComplete;
-
+        
         protected override void Awake()
         {
             base.Awake();
-            scaleCtrl = new ScaleChargeCtrl(scaleTrans);
+            scaleCtrl = new ScaleChargeCtrl(scaleTrans,target.capacity);
             animCtrl = new AnimChargeCtrl(animParent, anim);
         }
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             scaleCtrl.Update();
-
-            if (asyncActive && timer < animTime)
-            {
-                timer += Time.deltaTime;
-                if (timer > animTime)
-                {
-                    CompleteAsync();
-                }
-            }
         }
 
         protected override void OnCharge(Vector3 center, ChargeData data, UnityAction onComplete)
@@ -78,19 +62,10 @@ namespace WorldActionSystem
                 scaleCtrl.Add(data);
             }
         }
-
-        private void StartAsync(UnityAction onComplete)
+        protected override void CompleteAsync()
         {
-            this.onComplete = onComplete;
-            asyncActive = true;
-            timer = 0;
-        }
-        private void CompleteAsync()
-        {
-            asyncActive = false;
-            if (onComplete != null)
-            {
-                onComplete.Invoke();
+            base.CompleteAsync();
+            if(animCtrl != null){
                 animCtrl.StopAnim();
             }
         }

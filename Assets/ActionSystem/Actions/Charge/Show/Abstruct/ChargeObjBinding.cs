@@ -8,7 +8,7 @@ using System;
 namespace WorldActionSystem
 {
     [RequireComponent(typeof(ChargeObj))]
-    public abstract class ChargeObjBinding : MonoBehaviour
+    public abstract class ChargeObjBinding : ChargeBinding
     {
         protected ChargeObj target;
         protected virtual void Awake()
