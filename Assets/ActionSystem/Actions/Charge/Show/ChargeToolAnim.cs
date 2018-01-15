@@ -39,9 +39,10 @@ namespace WorldActionSystem
         {
             if (onComplete != null)
             {
+                StartAsync(onComplete);//先执行异步计时，不然重置动画的依据不足
+
                 scaleCtrl.SubAsync(data, animTime);
                 animCtrl.PlayAnim(chargeAnimName, center, animTime);
-                StartAsync(onComplete);
             }
             else
             {
@@ -53,19 +54,21 @@ namespace WorldActionSystem
         {
             if (onComplete != null)
             {
+                StartAsync(onComplete);//先执行异步计时，不然重置动画的依据不足
+
                 scaleCtrl.AddAsync(data, animTime);
                 animCtrl.PlayAnim(loadAnimName, center, animTime);
-                StartAsync(onComplete);
             }
             else
             {
                 scaleCtrl.Add(data);
             }
         }
-        protected override void CompleteAsync()
+        protected override void OnBeforeCompleteAsync()
         {
-            base.CompleteAsync();
-            if(animCtrl != null){
+            base.OnBeforeCompleteAsync();
+            if(animCtrl != null && animCtrl.Started)//异步开始后开始
+            {
                 animCtrl.StopAnim();
             }
         }

@@ -69,7 +69,8 @@ namespace WorldActionSystem
             }
             else
             {
-                if (onComplete != null) onComplete.Invoke();
+                if (onComplete != null)
+                    onComplete.Invoke();
             }
         }
         private void InitCurrent()
