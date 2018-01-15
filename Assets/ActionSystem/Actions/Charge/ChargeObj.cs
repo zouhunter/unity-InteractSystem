@@ -14,14 +14,10 @@ namespace WorldActionSystem
         private ChargeData[] startDatas;
         [SerializeField]
         private List<ChargeData> _completeDatas;
-
         public List<ChargeData> completeDatas { get { return _completeDatas; } }
-        //[SerializeField]
-        //private List<string> chargeTools;
-        //[SerializeField]
-        //private List<string> chargeResources;
-        private List<ChargeData> currentList = new List<ChargeData>();
+        private List<ChargeData> _currentList = new List<ChargeData>();
         public ChargeEvent onCharge;
+        public List<ChargeData> currentList { get { return _currentList; } }
         public override ControllerType CtrlType
         {
             get
@@ -30,6 +26,7 @@ namespace WorldActionSystem
             }
         }
         private static List<ChargeObj> lockQueue = new List<ChargeObj>();
+
         protected override void Start()
         {
             base.Start();
@@ -39,7 +36,8 @@ namespace WorldActionSystem
 
         protected virtual void OnDestroy()
         {
-            if (lockQueue.Contains(this)){
+            if (lockQueue.Contains(this))
+            {
                 lockQueue.Remove(this);
             }
         }
@@ -47,7 +45,7 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(auto);
             ActiveElements(this);
-            if(auto)
+            if (auto)
             {
                 AutoComplete();
             }
@@ -63,28 +61,72 @@ namespace WorldActionSystem
             CompleteElements(this, false);
         }
 
-        public virtual bool Charge(ChargeData data)
+        /// <summary>
+        /// 返回一个比0大的数
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public virtual float Charge(ChargeData data)
         {
-            if (completeDatas.FindAll(x => x.type == data.type).Count > 0)
+            var complete = completeDatas.Find(x => x.type == data.type);
+            if (!string.IsNullOrEmpty(complete.type))
             {
-                if (onCharge != null)
-                    onCharge.Invoke(data);
-                currentList.Add(data);
+                float left = JudgeLeft(complete, data, (charged) =>
+                {
+                    if (onCharge != null)
+                        onCharge.Invoke(charged);
+                    _currentList.Add(charged);
+                });
                 JudgeComplete();
-                return true;
+                return left;
             }
             else
             {
-                return false;
+                return data.value;
             }
         }
 
+        /// <summary>
+        /// 判断并填充
+        /// </summary>
+        /// <param name="complete"></param>
+        /// <param name="data"></param>
+        /// <param name="onCharge"></param>
+        /// <returns></returns>
+        private float JudgeLeft(ChargeData complete, ChargeData data, UnityAction<ChargeData> onCharge)
+        {
+            var currents = _currentList.FindAll(x => x.type == data.type);
+            float full = 0;
+            foreach (var item in currents)
+            {
+                full += item.value;
+            }
+            float left = (full + data.value) - complete.value;
+            left = left > 0 ? left : 0;
+            var charge = new ChargeData(data.type, data.value - left);
+            onCharge(charge);
+            return left;
+        }
+
+        /// <summary>
+        /// 结束与否判断
+        /// </summary>
         private void JudgeComplete()
         {
             foreach (var item in completeDatas)
             {
-                var current = currentList.Find(x => x.type == item.type);
-                if(string.IsNullOrEmpty(current.type) || current.value < item.value)
+                var currentItems = _currentList.FindAll(x => x.type == item.type);
+                if (currentItems.Count == 0)
+                {
+                    return;
+                }
+
+                float full = 0;
+                foreach (var charge in currentItems)
+                {
+                    full += charge.value;
+                }
+                if (full < item.value)
                 {
                     return;
                 }
@@ -93,6 +135,9 @@ namespace WorldActionSystem
             OnEndExecute(false);
         }
 
+        /// <summary>
+        /// 自动填充
+        /// </summary>
         private void AutoComplete()
         {
             //找到一个tool和resourcee
@@ -103,6 +148,7 @@ namespace WorldActionSystem
         {
             GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.chargeObjLayer);
         }
+
         private void ActiveElements(ChargeObj element)
         {
             var actived = lockQueue.Find(x => x.Name == element.Name);
@@ -114,7 +160,7 @@ namespace WorldActionSystem
                 {
                     for (int i = 0; i < tools.Count; i++)
                     {
-                        if (tools[i].supportTypes.Find(x => completeDatas.FindAll(y => y.type == x).Count > 0) == null) continue;
+                        if (completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
 
                         if (log) Debug.Log("ActiveElements:" + element.Name + (!tools[i].Started));
 
@@ -126,7 +172,7 @@ namespace WorldActionSystem
                 }
 
                 var resources = ElementController.Instence.GetElements<ChargeResource>();
-                if(resources != null)
+                if (resources != null)
                 {
                     for (int i = 0; i < resources.Count; i++)
                     {
@@ -158,7 +204,7 @@ namespace WorldActionSystem
                     {
                         if (log) Debug.Log("CompleteElements:" + element.Name + tools[i].Started);
 
-                        if (tools[i].supportTypes.Find(x => completeDatas.FindAll(y => y.type == x).Count > 0) == null) continue;
+                        if (completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
 
                         if (tools[i].Started)
                         {

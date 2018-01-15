@@ -13,17 +13,18 @@ namespace WorldActionSystem
     public class ChargeTool : PickUpAbleItem, ISupportElement
     {
         [SerializeField]
+        private ChargeData startData;
+        [SerializeField]
         private List<string> _supportType;
         [SerializeField]
         private float _capacity;
         [SerializeField]
         private float triggerRange = 0.5f;
         private Vector3 startPos;
-        private ChargeData? chargeData;
+        private ChargeData chargeData;
         public ChargeEvent onLoad;
 
-        public List<string> supportTypes { get { return _supportType; } }
-        public bool charged { get { return chargeData != null; } }
+        public bool charged { get { return chargeData.type != null && chargeData.value > 0; } }
         public ChargeData data { get { return (ChargeData)chargeData; } }
         public float capacity { get { return _capacity; } }
       
@@ -40,6 +41,7 @@ namespace WorldActionSystem
         }
         private void OnEnable(){
             startPos = transform.localPosition;
+            LoadData(startData);
         }
         private void OnDestroy()
         {
@@ -64,8 +66,6 @@ namespace WorldActionSystem
         {
             transform.position = pos;
         }
-
-
         internal bool CanLoad(string type)
         {
             return _supportType.Contains(type);
@@ -80,16 +80,18 @@ namespace WorldActionSystem
             if (onLoad != null)
                 onLoad.Invoke(data);
         }
+
         /// <summary>
         /// 导出
         /// </summary>
-        internal void Charge()
+        internal void OnCharge(float value)
         {
+            var left = data.value - value;
             if (onLoad != null){
-                var d = new ChargeData(data.type, -data.value);
+                var d = new ChargeData(data.type, -value);
                 onLoad.Invoke(d);
             }
-            chargeData = null;
+            chargeData.value = left;
         }
 
         public void StepActive()
@@ -105,7 +107,7 @@ namespace WorldActionSystem
         public void StepUnDo()
         {
             PickUpAble = false;
-            chargeData = null;
+            chargeData = startData;
         }
     }
 }

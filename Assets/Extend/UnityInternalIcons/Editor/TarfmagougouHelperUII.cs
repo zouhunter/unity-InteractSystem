@@ -38,8 +38,8 @@ namespace tarfmagougou
         public static void DisableLogging()
         {
 
-#if UNITY_2017_AND_UP
-			Debug.unitylogger.logEnabled = false;
+#if UNITY_5_6_OR_NEWER
+			Debug.logger.logEnabled = false;
 #elif UNITY_5_3_AND_UP
             Debug.unityLogger.logEnabled = false;
 #endif
@@ -47,8 +47,8 @@ namespace tarfmagougou
 
         public static void EnableLogging()
         {
-#if UNITY_2017_AND_UP
-			Debug.unitylogger.logEnabled = false;
+#if UNITY_5_6_OR_NEWER
+            Debug.logger.logEnabled = false;
 #elif UNITY_5_3_AND_UP
             Debug.unityLogger.logEnabled = true;
 #endif

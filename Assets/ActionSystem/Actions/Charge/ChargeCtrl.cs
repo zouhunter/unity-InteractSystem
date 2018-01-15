@@ -99,9 +99,11 @@ namespace WorldActionSystem
                 else if (chargeObj != null)
                 {
                     var data = chargeTool.data;
-                    chargeObj.Charge(data);
-                    chargeTool.Charge();
-
+                    float left = chargeObj.Charge(data);
+                    if(left > 0){
+                        data.value -= left;
+                    }
+                    chargeTool.OnCharge(data.value);
                     highter.UnHighLightTarget(chargeObj.gameObject);
                     lastMatchChargeObj = null;
                 }

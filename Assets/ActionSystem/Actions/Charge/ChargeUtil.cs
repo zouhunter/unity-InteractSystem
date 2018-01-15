@@ -22,7 +22,7 @@ namespace WorldActionSystem
                 foreach (var collider in colliders)
                 {
                     ChargeResource temp = collider.GetComponentInParent<ChargeResource>();
-                    if(temp != null && item.supportTypes.Contains(temp.type))
+                    if(temp != null && item.CanLoad(temp.type))
                     {
                         resourceItem = temp;
                         return true;
