@@ -86,24 +86,29 @@ namespace WorldActionSystem
         {
             if (item is ChargeTool)
             {
+                var currTool = chargeTool;
                 if (chargeResource != null)
                 {
-                    var value = Mathf.Min(chargeTool.capacity, chargeResource.current);
+                    var value = Mathf.Min(currTool.capacity, chargeResource.current);
                     var type = chargeResource.type;
-                    chargeTool.LoadData(new ChargeData(type, value));
-                    chargeResource.Subtruct(value);
+                    currTool.PickUpAble = false;
+                    currTool.LoadData(chargeResource.transform.position,new ChargeData(type, value),()=> {
+                        currTool.PickUpAble = true;
+                    });
+                    chargeResource.Subtruct(value,()=> { });
 
                     highter.UnHighLightTarget(chargeResource.gameObject);
                     lastMatchChargeResource = chargeResource = null;
                 }
                 else if (chargeObj != null)
                 {
-                    var data = chargeTool.data;
-                    float left = chargeObj.Charge(data);
-                    if(left > 0){
-                        data.value -= left;
+                    var data = currTool.data;
+                    ChargeData worpData = chargeObj.JudgeLeft(data);
+                    if(!string.IsNullOrEmpty(worpData.type)){
+                        currTool.PickUpAble = false;
+                        currTool.OnCharge(chargeObj.transform.position, worpData.value,()=> { currTool.PickUpAble = true; });
+                        chargeObj.Charge(worpData, () => { });
                     }
-                    chargeTool.OnCharge(data.value);
                     highter.UnHighLightTarget(chargeObj.gameObject);
                     lastMatchChargeObj = null;
                 }

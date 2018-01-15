@@ -6,9 +6,5 @@ using UnityEngine.Events;
 
 namespace WorldActionSystem
 {
-    [System.Serializable]
-    public class ChargeEvent : UnityEvent<ChargeData>
-    {
-
-    }
+    public delegate void ChargeEvent(Vector3 center, ChargeData data, UnityAction onComplete);
 }

@@ -22,12 +22,13 @@ namespace WorldActionSystem
         private float triggerRange = 0.5f;
         private Vector3 startPos;
         private ChargeData chargeData;
-        public ChargeEvent onLoad;
+        public ChargeEvent onLoad { get; set; }
+        public ChargeEvent onCharge { get; set; }
 
         public bool charged { get { return chargeData.type != null && chargeData.value > 0; } }
         public ChargeData data { get { return (ChargeData)chargeData; } }
         public float capacity { get { return _capacity; } }
-      
+
         public bool Started { get; private set; }
         public float Range { get { return triggerRange; } }
 
@@ -39,14 +40,15 @@ namespace WorldActionSystem
             elementCtrl = ElementController.Instence;
             elementCtrl.RegistElement(this);
         }
-        private void OnEnable(){
+        private void OnEnable()
+        {
             startPos = transform.localPosition;
-            LoadData(startData);
+            LoadData(transform.position, startData, null);
         }
         private void OnDestroy()
         {
-            if(elementCtrl != null)
-            elementCtrl.RemoveElement(this);
+            if (elementCtrl != null)
+                elementCtrl.RemoveElement(this);
         }
         public override void OnPickDown()
         {
@@ -74,22 +76,35 @@ namespace WorldActionSystem
         /// 吸入
         /// </summary>
         /// <param name="chargeResource"></param>
-        internal void LoadData(ChargeData data)
+        internal void LoadData(Vector3 center, ChargeData data, UnityAction onComplete)
         {
             chargeData = data;
+
             if (onLoad != null)
-                onLoad.Invoke(data);
+            {
+                onLoad.Invoke(center, data, onComplete);
+            }
+            else
+            {
+                if (onComplete != null)
+                    onComplete.Invoke();
+            }
         }
 
         /// <summary>
         /// 导出
         /// </summary>
-        internal void OnCharge(float value)
+        internal void OnCharge(Vector3 center, float value, UnityAction onComplete)
         {
             var left = data.value - value;
-            if (onLoad != null){
-                var d = new ChargeData(data.type, -value);
-                onLoad.Invoke(d);
+            if (onCharge != null)
+            {
+                var d = new ChargeData(data.type, value);
+                onCharge.Invoke(center, d, onComplete);
+            }
+            else
+            {
+                if (onComplete != null) onComplete.Invoke();
             }
             chargeData.value = left;
         }

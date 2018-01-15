@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
+
 namespace WorldActionSystem
 {
     public class ChargeResource : MonoBehaviour, ISupportElement
@@ -10,7 +12,7 @@ namespace WorldActionSystem
         private ChargeData startData;
         public string type { get { return startData.type; } }
         public float current { get; private set; }
-        public ChargeEvent onChange;
+        public ChargeEvent onChange { get; set; }
 
         #region ISupportElement
         public string Name { get { return name; } }
@@ -18,7 +20,7 @@ namespace WorldActionSystem
 
         public void StepActive()
         {
-            
+
         }
 
         public void StepComplete()
@@ -31,6 +33,7 @@ namespace WorldActionSystem
         }
 
         #endregion
+
         private ElementController elementCtrl;
 
         protected void Awake()
@@ -48,16 +51,25 @@ namespace WorldActionSystem
         {
             InitCurrent();
         }
-      
-        public void Subtruct(float value)
+
+        public void Subtruct(float value, UnityAction onComplete)
         {
             current -= value;
-            onChange.Invoke(new ChargeData(type,-value));
+            if (onChange != null)
+            {
+                onChange.Invoke(transform.position, new ChargeData(type, -value), onComplete);
+            }
+            else
+            {
+                if (onComplete != null) onComplete.Invoke();
+            }
         }
         private void InitCurrent()
         {
             current = startData.value;
-            onChange.Invoke(new ChargeData(type, current));
+            if (onChange != null) {
+                onChange.Invoke(transform.position, new ChargeData(type, current), null);
+            }
         }
         private void InitLayer()
         {

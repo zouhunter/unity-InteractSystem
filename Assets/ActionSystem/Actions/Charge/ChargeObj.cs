@@ -16,7 +16,7 @@ namespace WorldActionSystem
         private List<ChargeData> _completeDatas;
         public List<ChargeData> completeDatas { get { return _completeDatas; } }
         private List<ChargeData> _currentList = new List<ChargeData>();
-        public ChargeEvent onCharge;
+        public ChargeEvent onCharge { get; set; }
         public List<ChargeData> currentList { get { return _currentList; } }
         public override ControllerType CtrlType
         {
@@ -66,26 +66,21 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public virtual float Charge(ChargeData data)
+        public virtual void Charge(ChargeData data,UnityAction onComplete)
         {
             var complete = completeDatas.Find(x => x.type == data.type);
             if (!string.IsNullOrEmpty(complete.type))
             {
-                float left = JudgeLeft(complete, data, (charged) =>
+                if (onCharge != null)
+                    onCharge.Invoke(transform.position,data, onComplete);
+                else
                 {
-                    if (onCharge != null)
-                        onCharge.Invoke(charged);
-                    _currentList.Add(charged);
-                });
-                JudgeComplete();
-                return left;
+                    if (onComplete != null) onComplete.Invoke();
+                }
+                _currentList.Add(data);
             }
-            else
-            {
-                return data.value;
-            }
+            JudgeComplete();
         }
-
         /// <summary>
         /// 判断并填充
         /// </summary>
@@ -93,19 +88,26 @@ namespace WorldActionSystem
         /// <param name="data"></param>
         /// <param name="onCharge"></param>
         /// <returns></returns>
-        private float JudgeLeft(ChargeData complete, ChargeData data, UnityAction<ChargeData> onCharge)
+        public ChargeData JudgeLeft(ChargeData data)
         {
-            var currents = _currentList.FindAll(x => x.type == data.type);
-            float full = 0;
-            foreach (var item in currents)
+            var complete = completeDatas.Find(x => x.type == data.type);
+            if (!string.IsNullOrEmpty(complete.type))
             {
-                full += item.value;
+                var currents = _currentList.FindAll(x => x.type == data.type);
+                float full = 0;
+                foreach (var item in currents)
+                {
+                    full += item.value;
+                }
+                float left = (full + data.value) - complete.value;
+                left = left > 0 ? left : 0;
+                var charge = new ChargeData(data.type, data.value - left);
+                return charge;
             }
-            float left = (full + data.value) - complete.value;
-            left = left > 0 ? left : 0;
-            var charge = new ChargeData(data.type, data.value - left);
-            onCharge(charge);
-            return left;
+            else
+            {
+                return default(ChargeData);
+            }
         }
 
         /// <summary>
@@ -251,7 +253,7 @@ namespace WorldActionSystem
         {
             foreach (var item in startDatas)
             {
-                Charge(item);
+                Charge(item,null);
             }
         }
     }

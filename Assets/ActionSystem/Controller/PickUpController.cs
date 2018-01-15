@@ -97,6 +97,7 @@ namespace WorldActionSystem
                 if (onPickStay != null)
                     onPickStay(pickedUpObj);
 
+                pickedUpObj = null;
             }
         }
 
@@ -108,6 +109,7 @@ namespace WorldActionSystem
                 if (onPickdown != null) onPickdown(pickedUpObj);
 
                 pickedUpObj.OnPickDown();
+
                 pickedUpObj = null;
             }
         }
