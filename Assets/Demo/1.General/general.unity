@@ -361,12 +361,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80270e047a77a1e4bb9a3bdef9514be9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animTime: 2
   anim: {fileID: 1229214597}
   animParent: {fileID: 228547806}
   loadAnimName: loadcharge
   chargeAnimName: loadcharge
   scaleTrans: {fileID: 1418027689}
-  animTime: 2
 --- !u!1 &305567129
 GameObject:
   m_ObjectHideFlags: 0
@@ -969,6 +969,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1045295476}
   - component: {fileID: 1045295477}
+  - component: {fileID: 1045295478}
   m_Layer: 0
   m_Name: chargeResource
   m_TagString: Untagged
@@ -1004,6 +1005,20 @@ MonoBehaviour:
   startData:
     type: water
     value: 0.8
+  _capacity: 2
+--- !u!114 &1045295478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1045295475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a058ca92927e8f9438377be3960f0ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animTime: 2
+  scaleTrans: {fileID: 1920882514}
 --- !u!1 &1046978952
 GameObject:
   m_ObjectHideFlags: 0
@@ -1818,6 +1833,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1957512226}
   - component: {fileID: 1957512227}
+  - component: {fileID: 1957512228}
   m_Layer: 0
   m_Name: chargeObjA
   m_TagString: Untagged
@@ -1876,6 +1892,20 @@ MonoBehaviour:
   _completeDatas:
   - type: water
     value: 0.5
+  _capacity: 1
+--- !u!114 &1957512228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1957512225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0162fb1e79a4584caa8f0bd1257366f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animTime: 2
+  scaleTrans: {fileID: 1976141392}
 --- !u!1 &1976141391
 GameObject:
   m_ObjectHideFlags: 0

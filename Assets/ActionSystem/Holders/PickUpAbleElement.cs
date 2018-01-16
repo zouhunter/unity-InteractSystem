@@ -8,11 +8,11 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-  
+
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : PickUpAbleItem, IPlaceItem,ISupportElement
+    public class PickUpAbleElement : PickUpAbleItem, IPlaceItem, ISupportElement
     {
         public class Tweener
         {
@@ -107,7 +107,7 @@ namespace WorldActionSystem
         public override bool PickUpAble { get; set; }
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
-
+        protected Vector3 lastPos;
         protected override void Awake()
         {
             base.Awake();
@@ -124,7 +124,7 @@ namespace WorldActionSystem
         }
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer( Layers.pickUpElementLayer);
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
         }
 
         protected virtual void OnDestroy()
@@ -317,7 +317,11 @@ namespace WorldActionSystem
         }
         public override void SetPosition(Vector3 pos)
         {
-            transform.SetPositionAndRotation(pos, transform.rotation);
+            if (lastPos != pos)
+            {
+                lastPos = pos;
+                transform.position = pos;
+            }
         }
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）

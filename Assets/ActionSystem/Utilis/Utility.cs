@@ -12,7 +12,6 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
     public static class Utility
     {
         public const string commandParentName = "Triggers";

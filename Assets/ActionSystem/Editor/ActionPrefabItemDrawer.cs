@@ -36,6 +36,9 @@ namespace WorldActionSystem
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            FindCommonPropertys(property);
+            prefabProp = property.FindPropertyRelative("prefab");
+
             if (prefabProp.objectReferenceValue != null){
                 label = new GUIContent(prefabProp.objectReferenceValue.name);
             }

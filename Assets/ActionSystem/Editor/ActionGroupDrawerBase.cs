@@ -4,8 +4,8 @@ using UnityEngine.Events;
 using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
-using Rotorz.ReorderableList;
-using Rotorz.ReorderableList.Internal;
+using UnityEditorInternal;
+using System;
 
 namespace WorldActionSystem
 {
@@ -22,10 +22,10 @@ namespace WorldActionSystem
         protected SerializedProperty groupKeyProp;
         protected SerializedProperty totalCommandProp;
         protected SerializedProperty prefabListProp;
-        protected DragAdapt prefabListPropAdapt;
+        //protected DragAdapt prefabListPropAdapt;
 
         protected SerializedProperty prefabListWorp;
-        protected DragAdapt prefabListWorpAdapt;
+        //protected DragAdapt prefabListWorpAdapt;
         protected static int selected = 0;
         protected static SortType currSortType;
         protected GUIContent[] selectables;
@@ -46,19 +46,19 @@ namespace WorldActionSystem
             }
         }
 
+        protected ReorderableList prefabList_r;
+        protected ReorderableList prefabListWorp_r;
         private void OnEnable()
         {
             script = serializedObject.FindProperty("m_Script");
             totalCommandProp = serializedObject.FindProperty("totalCommand");
             groupKeyProp = serializedObject.FindProperty("groupKey");
             prefabListProp = serializedObject.FindProperty("prefabList");
-            prefabListPropAdapt = new DragAdapt(prefabListProp, "prefabList");
-            var sobj = new SerializedObject(ScriptableObject.CreateInstance<ActionGroupObj>());
-
-            prefabListWorp = sobj.FindProperty("prefabList");
-            prefabListWorpAdapt = new DragAdapt(prefabListWorp, "prefabList");
+            //prefabListPropAdapt = new DragAdapt(prefabListProp, "prefabList");
+            //prefabListWorpAdapt = new DragAdapt(prefabListWorp, "prefabList");
             MarchList();
             CalcuteCommandCount();
+            InitReorderList();
         }
 
         private void OnDisable()
@@ -80,6 +80,52 @@ namespace WorldActionSystem
             DrawRuntimeItems();
             DrawAcceptRegion();
             serializedObject.ApplyModifiedProperties();
+        }
+        private void InitReorderList()
+        {
+            prefabList_r = new ReorderableList(serializedObject, prefabListProp);
+            prefabList_r.elementHeightCallback += GetElementHeight;
+            prefabList_r.drawHeaderCallback += DrawPrefabListHeader;
+            prefabList_r.drawElementCallback += DrawListElement;
+            var sobj = new SerializedObject(ScriptableObject.CreateInstance<ActionGroupObj>());
+            prefabListWorp = sobj.FindProperty("prefabList");
+            prefabListWorp_r = new ReorderableList(sobj, prefabListWorp);
+            prefabListWorp_r.drawHeaderCallback += DrawWorpListHeader;
+            prefabListWorp_r.drawElementCallback += DrawWorpListElement;
+            prefabListWorp_r.elementHeightCallback += GetWorpElementHeight;
+        }
+
+        private float GetWorpElementHeight(int index)
+        {
+            var property = prefabListWorp.GetArrayElementAtIndex(index);
+            return (property.isExpanded ? 2 : 1) * EditorGUIUtility.singleLineHeight;
+        }
+
+        private float GetElementHeight(int index)
+        {
+            var property = prefabListProp.GetArrayElementAtIndex(index);
+            return (property.isExpanded ? 2 : 1) * EditorGUIUtility.singleLineHeight;
+        }
+
+        private void DrawWorpListElement(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            var prop = prefabListWorp.GetArrayElementAtIndex(index);
+            if (prop != null) EditorGUI.PropertyField(rect, prop, true);
+        }
+        private void DrawListElement(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            var prop = prefabListProp.GetArrayElementAtIndex(index);
+            if (prop != null) EditorGUI.PropertyField(rect, prop, true);
+        }
+
+        private void DrawWorpListHeader(Rect rect)
+        {
+            EditorGUI.LabelField(rect, "[March]", EditorStyles.boldLabel);
+        }
+
+        private void DrawPrefabListHeader(Rect rect)
+        {
+            EditorGUI.LabelField(rect, "元素列表", EditorStyles.boldLabel);
         }
 
         private void DrawSelection()
@@ -115,15 +161,13 @@ namespace WorldActionSystem
 
         protected virtual void DrawRuntimeItems()
         {
-            if (selected == 0)
+            if (string.IsNullOrEmpty(query) && selected == 0)
             {
-                ReorderableListGUI.Title("元素列表");
-                Rotorz.ReorderableList.ReorderableListGUI.ListField(prefabListPropAdapt);
+                prefabList_r.DoLayoutList();
             }
             else
             {
-                ReorderableListGUI.Title("[March]");
-                Rotorz.ReorderableList.ReorderableListGUI.ListField(prefabListWorpAdapt);
+                prefabListWorp_r.DoLayoutList();
             }
 
         }
@@ -170,7 +214,7 @@ namespace WorldActionSystem
                 }
 
                 prefabListWorp.InsertArrayElementAtIndex(0);
-                SerializedPropertyUtility.CopyPropertyValue(prefabListWorp.GetArrayElementAtIndex(0), prefabListProp.GetArrayElementAtIndex(i));
+                ActionEditorUtility.CopyPropertyValue(prefabListWorp.GetArrayElementAtIndex(0), prefabListProp.GetArrayElementAtIndex(i));
             }
         }
 
@@ -421,7 +465,7 @@ namespace WorldActionSystem
                         {
                             if (newrematrixProp.boolValue == rematrixProp.boolValue && rematrixProp.boolValue == false)
                             {
-                                SerializedPropertyUtility.CopyPropertyValue(prop, newProp);
+                                ActionEditorUtility.CopyPropertyValue(prop, newProp);
                             }
                             contain = true;
                         }
@@ -438,7 +482,7 @@ namespace WorldActionSystem
                 prefabListProp.InsertArrayElementAtIndex(0);
                 var newProp = needAdd[i];
                 var prop = prefabListProp.GetArrayElementAtIndex(0);
-                SerializedPropertyUtility.CopyPropertyValue(prop, newProp);
+                ActionEditorUtility.CopyPropertyValue(prop, newProp);
             }
         }
     }
