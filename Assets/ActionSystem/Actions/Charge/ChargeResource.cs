@@ -23,16 +23,22 @@ namespace WorldActionSystem
 
         public void StepActive()
         {
-
+            Started = true;
         }
 
         public void StepComplete()
         {
+            Started = true;
         }
 
         public void StepUnDo()
         {
-
+            var extro = current - startData.value;
+            if (onChange != null){//把多的去掉
+                onChange.Invoke(transform.position, new ChargeData(type, -extro), null);
+            }
+            current = startData.value;
+            Started = false;
         }
 
         #endregion
@@ -63,7 +69,8 @@ namespace WorldActionSystem
             }
             else
             {
-                if (onComplete != null) onComplete.Invoke();
+                if (onComplete != null)
+                    onComplete.Invoke();
             }
         }
         private void InitCurrent()
@@ -73,6 +80,7 @@ namespace WorldActionSystem
                 onChange.Invoke(transform.position, new ChargeData(type, current), null);
             }
         }
+
         private void InitLayer()
         {
             GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.chargeResourceLayer);

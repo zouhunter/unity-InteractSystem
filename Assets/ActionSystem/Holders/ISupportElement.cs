@@ -7,5 +7,9 @@ namespace WorldActionSystem
     public interface ISupportElement
     {
         string Name { get; }
+        bool Started { get; }
+        void StepActive();
+        void StepComplete();
+        void StepUnDo();
     }
 }

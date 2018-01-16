@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -30,6 +31,7 @@ namespace WorldActionSystem
             }
         }
         private static List<ChargeObj> lockQueue = new List<ChargeObj>();
+        private int index;
         protected override void Start()
         {
             base.Start();
@@ -57,11 +59,37 @@ namespace WorldActionSystem
         {
             base.OnBeforeEnd(force);
             CompleteElements(this, false);
+            CompleteCurrentCharge();
         }
+
+        private void CompleteCurrentCharge()
+        {
+            var currentListArray = currentList.ToArray();
+            foreach (var item in currentListArray){
+                var temp = item;
+                temp.value = -item.value;
+                Charge(temp, null);
+            }
+            currentList.Clear();
+            foreach (var item in completeDatas)
+            {
+                Charge(item, null);
+            }
+        }
+
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            CompleteElements(this, false);
+            CompleteElements(this, true);
+            var currentListArray = currentList.ToArray();
+            foreach (var item in currentListArray)
+            {
+                var temp = item;
+                temp.value = -item.value;
+                Charge(temp, null);
+            }
+            currentList.Clear();
+            InitStartData();
         }
 
         /// <summary>
@@ -82,7 +110,6 @@ namespace WorldActionSystem
                 }
                 _currentList.Add(data);
             }
-            JudgeComplete();
         }
         /// <summary>
         /// 判断并填充
@@ -116,7 +143,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 结束与否判断
         /// </summary>
-        private void JudgeComplete()
+        public void JudgeComplete()
         {
             foreach (var item in completeDatas)
             {
@@ -145,8 +172,80 @@ namespace WorldActionSystem
         /// </summary>
         private void AutoComplete()
         {
-            //找到一个tool和resourcee
-            //让tool去吸然后来填
+            index = 0;
+            AutoCompleteInternal();
+        }
+
+        private void AutoCompleteInternal()
+        {
+            if(index < completeDatas.Count)
+            {
+                CompleteOneElement(completeDatas[index], AutoCompleteInternal);
+                index++;
+            }
+            else
+            {
+                OnEndExecute(false);
+            }
+        }
+        private void CompleteOneElement(ChargeData complete,UnityAction onComplete)
+        {
+            var currents = currentList.FindAll(x => x.type == complete.type);
+            float total = 0;
+            foreach (var item in currents){
+                total += item.value;
+            }
+
+            if(complete.value - total > 0)
+            {
+                var tools = elementCtrl.GetElements<ChargeTool>();
+                var tool = tools.Find(x => x.CanLoad(complete.type) && x.Started);
+                UnityAction chargeObjAction = () =>
+                {
+                    ChargeCurrentObj(tool, () =>
+                    {
+                        CompleteOneElement(complete, onComplete);
+                    });
+                };
+                if (!tool.charged){
+                    ChargeOneTool(tool, chargeObjAction);
+                }
+                else
+                {
+                    chargeObjAction.Invoke();
+                }
+            }
+            else
+            {
+                onComplete.Invoke();
+                Debug.Log("Charge Complete:" + complete.type);
+            }
+        }
+        private void ChargeOneTool(ChargeTool tool,UnityAction onComplete)
+        {
+            var resources = elementCtrl.GetElements<ChargeResource>();
+            var chargeResource = resources.Find(x => tool.CanLoad(x.type) && x.Started);
+            var value = Mathf.Min(tool.capacity, chargeResource.current);
+            var type = chargeResource.type;
+            tool.PickUpAble = false;
+            tool.LoadData(chargeResource.transform.position, new ChargeData(type, value), () => {
+                tool.PickUpAble = true;
+            });
+            chargeResource.Subtruct(value, () => { onComplete.Invoke(); });
+        }
+
+        private void ChargeCurrentObj(ChargeTool tool, UnityAction onComplete)
+        {
+            var data = tool.data;
+            ChargeData worpData = JudgeLeft(data);
+            if (!string.IsNullOrEmpty(worpData.type))
+            {
+                tool.PickUpAble = false;
+                tool.OnCharge(transform.position, worpData.value, () => { tool.PickUpAble = true; });
+                Charge(worpData, () => {
+                    onComplete();
+                });
+            }
         }
 
         private void InitLayer()
@@ -254,8 +353,7 @@ namespace WorldActionSystem
 
         private void InitStartData()
         {
-            foreach (var item in startDatas)
-            {
+            foreach (var item in startDatas){
                 Charge(item,null);
             }
         }

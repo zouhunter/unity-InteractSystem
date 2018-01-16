@@ -12,7 +12,7 @@ namespace WorldActionSystem
 
         protected float timer = 0;
         protected bool asyncActive = false;
-        protected UnityAction onComplete;
+        protected UnityAction onComplete { get; set; }
 
         protected virtual void Update()
         {
@@ -27,17 +27,31 @@ namespace WorldActionSystem
         }
         protected virtual void StartAsync(UnityAction onComplete)
         {
+            TryCleanLast();
             this.onComplete = onComplete;
             asyncActive = true;
             timer = 0;
         }
 
-        protected virtual void CompleteAsync()
+        private void CompleteAsync()
         {
             asyncActive = false;
+            OnBeforeCompleteAsync();
             if (onComplete != null){
-                onComplete.Invoke();
+                var action = onComplete;
+                onComplete = null;
+                action.Invoke();
             }
         }
+        private void TryCleanLast()
+        {
+            OnBeforeCompleteAsync();
+            if (onComplete != null)
+            {
+                onComplete.Invoke();
+                onComplete = null;
+            }
+        }
+        protected virtual void OnBeforeCompleteAsync() { }
     }
 }

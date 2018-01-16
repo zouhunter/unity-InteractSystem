@@ -40,7 +40,7 @@ namespace WorldActionSystem
             elementCtrl = ElementController.Instence;
             elementCtrl.RegistElement(this);
         }
-        private void OnEnable()
+        private void Start()
         {
             startPos = transform.localPosition;
             LoadData(transform.position, startData, null);
@@ -112,17 +112,21 @@ namespace WorldActionSystem
         public void StepActive()
         {
             PickUpAble = true;
+            Started = true;
         }
 
         public void StepComplete()
         {
             PickUpAble = false;
+            Started = true;
         }
 
         public void StepUnDo()
         {
             PickUpAble = false;
-            chargeData = startData;
+            if(!string.IsNullOrEmpty(chargeData.type)) OnCharge(transform.position, chargeData.value, null);
+            LoadData(transform.position, startData, null);
+            Started = false;
         }
     }
 }
