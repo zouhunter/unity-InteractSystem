@@ -975,7 +975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groupKey: ActionGroupA
-  totalCommand: 0
+  totalCommand: 1
   prefabList:
   - instanceID: 0
     containsCommand: 1
@@ -1000,7 +1000,7 @@ MonoBehaviour:
       e33: 1
     prefab: {fileID: 112782, guid: a05f9d0606850084d8c48609a5b8cb2c, type: 2}
     ignore: 1
-  - instanceID: -188612
+  - instanceID: 0
     containsCommand: 1
     containsPickup: 0
     rematrix: 0
@@ -1115,7 +1115,7 @@ MonoBehaviour:
       e33: 0
     prefab: {fileID: 197876, guid: 0eaa9aec7d94cbe4295db86a232e0671, type: 2}
     ignore: 1
-  - instanceID: 0
+  - instanceID: -376288
     containsCommand: 1
     containsPickup: 0
     rematrix: 0
@@ -1137,7 +1137,7 @@ MonoBehaviour:
       e32: 0
       e33: 0
     prefab: {fileID: 1199506402164644, guid: 10ddb7b03c2601a45be3cd5094575e99, type: 2}
-    ignore: 1
+    ignore: 0
   - instanceID: -190038
     containsCommand: 1
     containsPickup: 0
@@ -1206,6 +1206,29 @@ MonoBehaviour:
       e32: 0
       e33: 0
     prefab: {fileID: 1549365231531504, guid: edf69fa7965c6334fb8dd92fa64b8ed9, type: 2}
+    ignore: 1
+  - instanceID: 0
+    containsCommand: 0
+    containsPickup: 0
+    rematrix: 0
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    prefab: {fileID: 1181895514274634, guid: 455bfcc5925a7324ab79e2bf37389dee, type: 2}
     ignore: 1
   - instanceID: 0
     containsCommand: 1

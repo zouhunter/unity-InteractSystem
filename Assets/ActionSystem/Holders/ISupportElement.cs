@@ -8,7 +8,7 @@ namespace WorldActionSystem
     {
         string Name { get; }
         bool IsRuntimeCreated { get; set; }
-        bool Started { get; }
+        bool Active { get; }
         void StepActive();
         void StepComplete();
         void StepUnDo();

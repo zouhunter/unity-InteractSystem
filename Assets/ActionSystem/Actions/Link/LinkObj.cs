@@ -9,7 +9,6 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.LinkObj)]
     public class LinkObj : ActionObj
     {
-
         public override ControllerType CtrlType
         {
             get
@@ -192,7 +191,7 @@ namespace WorldActionSystem
         {
             foreach (var item in linkItemsName)
             {
-                var linkItem = linkPool.Find(x => !x.Started && x.Name == item);
+                var linkItem = linkPool.Find(x => !x.Active && x.Name == item);
                 if(linkItem != null)
                 {
                     linkItem.BindingTarget = this;

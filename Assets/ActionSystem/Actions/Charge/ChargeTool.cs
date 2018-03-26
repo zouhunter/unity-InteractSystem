@@ -30,7 +30,7 @@ namespace WorldActionSystem
         public ChargeData data { get { return (ChargeData)chargeData; } }
         public float capacity { get { return _capacity; } }
 
-        public bool Started { get; private set; }
+        public bool Active { get; private set; }
         public float Range { get { return triggerRange; } }
 
         public bool IsRuntimeCreated { get; set; }
@@ -115,13 +115,13 @@ namespace WorldActionSystem
         public void StepActive()
         {
             PickUpAble = true;
-            Started = true;
+            Active = true;
         }
 
         public void StepComplete()
         {
             PickUpAble = false;
-            Started = true;
+            Active = true;
         }
 
         public void StepUnDo()
@@ -129,7 +129,7 @@ namespace WorldActionSystem
             PickUpAble = false;
             if(!string.IsNullOrEmpty(chargeData.type)) OnCharge(transform.position, chargeData.value, null);
             LoadData(transform.position, startData, null);
-            Started = false;
+            Active = false;
         }
     }
 }

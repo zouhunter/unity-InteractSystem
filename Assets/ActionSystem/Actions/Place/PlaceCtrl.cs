@@ -25,7 +25,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return ControllerType.Install | ControllerType.Match | ControllerType.Rope;
+                return ControllerType.Install | ControllerType.Match;
             }
         }
 
@@ -61,7 +61,7 @@ namespace WorldActionSystem
 
         public void UpdatePlaceState()
         {
-            if (!pickedUpObj.Started)
+            if (!pickedUpObj.Active)
             {
                 resonwhy = "当前步骤无需该零件!";
                 installAble = false;

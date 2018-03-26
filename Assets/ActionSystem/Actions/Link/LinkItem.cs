@@ -39,7 +39,7 @@ namespace WorldActionSystem
             }
         }
         public bool IsRuntimeCreated { get; set; }
-        public bool Started { get; protected set; }
+        public bool Active { get; protected set; }
         public LinkObj BindingTarget { get; set; }
         public bool Connected { get; set; }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
@@ -120,19 +120,19 @@ namespace WorldActionSystem
         public void StepActive()
         {
             PickUpAble = true;
-            Started = true;
+            Active = true;
         }
 
         public void StepComplete()
         {
             PickUpAble = false;
-            Started = false;
+            Active = false;
         }
 
         public void StepUnDo()
         {
             PickUpAble = false;
-            Started = false;
+            Active = false;
             transform.position = startPos;
             transform.rotation = startRot;
         }

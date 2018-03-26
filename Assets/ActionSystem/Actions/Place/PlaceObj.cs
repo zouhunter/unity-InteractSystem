@@ -89,9 +89,9 @@ namespace WorldActionSystem
                 if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {
-                    if (log) Debug.Log("ActiveElements:" + element.Name + (!objs[i].Started && !objs[i].HaveBinding));
+                    if (log) Debug.Log("ActiveElements:" + element.Name + (!objs[i].Active && !objs[i].HaveBinding));
 
-                    if (!objs[i].Started && !objs[i].HaveBinding)
+                    if (!objs[i].Active && !objs[i].HaveBinding)
                     {
                         objs[i].StepActive();
                     }
@@ -110,9 +110,9 @@ namespace WorldActionSystem
                 if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {
-                    if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Started);
+                    if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Active);
 
-                    if (objs[i].Started)
+                    if (objs[i].Active)
                     {
                         if (undo)
                         {

@@ -19,18 +19,18 @@ namespace WorldActionSystem
 
         #region ISupportElement
         public string Name { get { return name; } }
-        public bool Started { get; private set; }
+        public bool Active { get; private set; }
 
         public bool IsRuntimeCreated { get; set; }
 
         public void StepActive()
         {
-            Started = true;
+            Active = true;
         }
 
         public void StepComplete()
         {
-            Started = true;
+            Active = true;
         }
 
         public void StepUnDo()
@@ -40,7 +40,7 @@ namespace WorldActionSystem
                 onChange.Invoke(transform.position, new ChargeData(type, -extro), null);
             }
             current = startData.value;
-            Started = false;
+            Active = false;
         }
   
         #endregion

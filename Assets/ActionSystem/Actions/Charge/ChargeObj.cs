@@ -199,7 +199,7 @@ namespace WorldActionSystem
             if(complete.value - total > 0)
             {
                 var tools = elementCtrl.GetElements<ChargeTool>();
-                var tool = tools.Find(x => x.CanLoad(complete.type) && x.Started);
+                var tool = tools.Find(x => x.CanLoad(complete.type) && x.Active);
                 UnityAction chargeObjAction = () =>
                 {
                     ChargeCurrentObj(tool, () =>
@@ -224,7 +224,7 @@ namespace WorldActionSystem
         private void ChargeOneTool(ChargeTool tool,UnityAction onComplete)
         {
             var resources = elementCtrl.GetElements<ChargeResource>();
-            var chargeResource = resources.Find(x => tool.CanLoad(x.type) && x.Started);
+            var chargeResource = resources.Find(x => tool.CanLoad(x.type) && x.Active);
             var value = Mathf.Min(tool.capacity, chargeResource.current);
             var type = chargeResource.type;
             tool.PickUpAble = false;
@@ -266,9 +266,9 @@ namespace WorldActionSystem
                     {
                         if (completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
 
-                        if (log) Debug.Log("ActiveElements:" + element.Name + (!tools[i].Started));
+                        if (log) Debug.Log("ActiveElements:" + element.Name + (!tools[i].Active));
 
-                        if (!tools[i].Started)
+                        if (!tools[i].Active)
                         {
                             tools[i].StepActive();
                         }
@@ -282,9 +282,9 @@ namespace WorldActionSystem
                     {
                         if (completeDatas.FindAll(y => y.type == resources[i].type).Count == 0) continue;
 
-                        if (log) Debug.Log("ActiveElements:" + element.Name + (!resources[i].Started));
+                        if (log) Debug.Log("ActiveElements:" + element.Name + (!resources[i].Active));
 
-                        if (!resources[i].Started)
+                        if (!resources[i].Active)
                         {
                             resources[i].StepActive();
                         }
@@ -306,11 +306,11 @@ namespace WorldActionSystem
                 {
                     for (int i = 0; i < tools.Count; i++)
                     {
-                        if (log) Debug.Log("CompleteElements:" + element.Name + tools[i].Started);
+                        if (log) Debug.Log("CompleteElements:" + element.Name + tools[i].Active);
 
                         if (completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
 
-                        if (tools[i].Started)
+                        if (tools[i].Active)
                         {
                             if (undo)
                             {
@@ -329,11 +329,11 @@ namespace WorldActionSystem
                 {
                     for (int i = 0; i < resources.Count; i++)
                     {
-                        if (log) Debug.Log("CompleteElements:" + element.Name + resources[i].Started);
+                        if (log) Debug.Log("CompleteElements:" + element.Name + resources[i].Active);
 
                         if (completeDatas.FindAll(y => y.type == resources[i].type).Count == 0) continue;
 
-                        if (resources[i].Started)
+                        if (resources[i].Active)
                         {
                             if (undo)
                             {
