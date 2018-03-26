@@ -9,38 +9,69 @@ namespace WorldActionSystem
 {
     public static class LinkUtil
     {
+        public static void UpdateBrotherPos(LinkItem target,List<LinkItem> context)
+        {
+            if (target.ChildNodes == null || target.ChildNodes.Count == 0) return;
+
+            context.Add(target);
+
+            foreach (var item in target.ChildNodes)
+            {
+                if (item.ConnectedNode != null)
+                {
+                    var targetNode = item.ConnectedNode.Body;
+                    var linkInfo = item.ConnectedNode.connectAble.Find(x => x.itemName == target.Name && x.nodeId == item.NodeID);
+                    LinkUtil.ResetTargetTranform(targetNode, target, linkInfo.relativePos, linkInfo.relativeDir);
+
+                    if (!context.Contains(targetNode))
+                    {
+                        UpdateBrotherPos(targetNode, context);
+                    }
+                }
+            }
+        }
+
+        internal static void ResetTargetTranform(LinkItem target, LinkItem otherParent,Vector3 rPos,Vector3 rdDir)
+        {
+            target.Trans.position = otherParent.Trans.TransformPoint(rPos);
+            target.Trans.forward = otherParent.Trans.TransformDirection(rdDir);
+        }
 
         public static void AttachNodes(LinkPort moveAblePort, LinkPort staticPort)
         {
             moveAblePort.ConnectedNode = staticPort;
             staticPort.ConnectedNode = moveAblePort;
             moveAblePort.ResetTransform();
-            moveAblePort.Body.transform.SetParent(staticPort.Body.transform);
         }
 
-        public static void DetachNodes(LinkPort moveAblePort, LinkPort staticPort, Transform parent)
+        public static void DetachNodes(LinkPort moveAblePort, LinkPort staticPort)
         {
             moveAblePort.ConnectedNode = null;
             staticPort.ConnectedNode = null;
-            moveAblePort.Body.transform.SetParent(parent);
         }
-        public static void RecordToDic(Dictionary<LinkItem, List<LinkPort>> ConnectedDic, LinkPort port)
+        public static void RecordToDic(LinkHold[] ConnectedDic, LinkPort port)
         {
-            var item = port.Body;
-
-            if (!ConnectedDic.ContainsKey(item))
+            var item = Array.Find(ConnectedDic, x => x.linkItem == port.Body);
+            if(item == null)
             {
-                ConnectedDic[item] = new List<LinkPort>();
+                item = Array.Find(ConnectedDic, x => x.linkItem == null);
+                item.linkItem = port.Body;
             }
-
-            ConnectedDic[item].Add(port);
+            
+            if (item != null)
+            {
+                if(!item.linkedPorts.Contains(port))
+                {
+                    item.linkedPorts.Add(port);
+                }
+            }
         }
-        public static void DetachConnectedPorts(Dictionary<LinkItem, List<LinkPort>> dic, Transform parent)
+        public static void DetachConnectedPorts(LinkHold[] dic, Transform parent)
         {
             foreach (var item in dic)
             {
-                var linkItem = item.Key;
-                var ports = item.Value;
+                var linkItem = item.linkItem;
+                var ports = item.linkedPorts;
                 linkItem.transform.SetParent(parent);
                 foreach (var port in ports)
                 {
@@ -120,6 +151,8 @@ namespace WorldActionSystem
             return nodes != null && nodes.Count > 0;
         }
 
+     
+
         /// <summary>
         /// 空间查找可以可以连接的点
         /// </summary>
@@ -142,14 +175,17 @@ namespace WorldActionSystem
                     LinkPort tempNode = collider.GetComponentInParent<LinkPort>();
                     if (tempNode == null || tempNode == item || tempNode.Body == item.Body || tempNode.ConnectedNode != null)
                     {
-                        Debug.Log("ignore:" + tempNode);
                         continue;
                     }
                     //主被动动连接点，非自身点，相同名，没有建立连接
                     if (tempNode.connectAble.Find((x) => x.itemName == item.Body.Name && x.nodeId == item.NodeID) != null)
                     {
-                        node = tempNode;
-                        return true;
+                        //同属于一个源
+                        if(tempNode.Body.BindingTarget == item.Body.BindingTarget)
+                        {
+                            node = tempNode;
+                            return true;
+                        }
                     }
                 }
             }

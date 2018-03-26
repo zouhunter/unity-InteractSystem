@@ -11,9 +11,7 @@ namespace WorldActionSystem
     {
         public IHighLightItems highLight;
         private PickUpController pickCtrl { get { return ActionSystem.Instence.pickupCtrl; } }
-
-
-        public PickUpAbleElement pickedUpObj { get { return pickCtrl.pickedUpObj is PickUpAbleElement ? pickCtrl.pickedUpObj as PickUpAbleElement : null; } }
+        public PlaceElement pickedUpObj { get { return pickCtrl.pickedUpObj is PlaceElement ? pickCtrl.pickedUpObj as PlaceElement : null; } }
         public PlaceObj installPos;
         public bool installAble;
         public string resonwhy;
@@ -145,7 +143,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
+        public void PlaceObject(PlaceObj pos, PlaceElement pickup)
         {
             current.PlaceObject(pos, pickup);
         }
@@ -155,7 +153,7 @@ namespace WorldActionSystem
             return current.CanPlace(placeItem, element, out why);
         }
 
-        public void PlaceWrong(PickUpAbleElement pickup)
+        public void PlaceWrong(PlaceElement pickup)
         {
             current.PlaceWrong(pickup);
         }

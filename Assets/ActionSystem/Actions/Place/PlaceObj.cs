@@ -16,7 +16,7 @@ namespace WorldActionSystem
         public bool hideOnInstall;//安装完后隐藏
         public virtual GameObject Go { get { return gameObject; } }
         public virtual bool AlreadyPlaced { get { return obj != null; } }
-        public virtual PickUpAbleElement obj { get; protected set; }
+        public virtual PlaceElement obj { get; protected set; }
         private static List<ActionObj> lockQueue = new List<ActionObj>();
         protected virtual void Awake()
         {
@@ -55,7 +55,7 @@ namespace WorldActionSystem
         }
         protected abstract void OnAutoInstall();
 
-        public virtual void Attach(PickUpAbleElement obj)
+        public virtual void Attach(PlaceElement obj)
         {
             if (this.obj != null)
             {
@@ -71,12 +71,12 @@ namespace WorldActionSystem
 
         protected virtual void OnUnInstallComplete() { }
 
-        public virtual PickUpAbleElement Detach()
+        public virtual PlaceElement Detach()
         {
-            PickUpAbleElement old = obj;
+            PlaceElement old = obj;
             old.onInstallOkEvent -= OnInstallComplete;
             old.onUnInstallOkEvent -= OnUnInstallComplete;
-            obj = default(PickUpAbleElement);
+            obj = default(PlaceElement);
             return old;
         }
 
@@ -85,7 +85,7 @@ namespace WorldActionSystem
             var actived = lockQueue.Find(x => x.Name == element.Name);
             if (actived == null)
             {
-                var objs = ElementController.Instence.GetElements<PickUpAbleElement>(element.Name);
+                var objs = ElementController.Instence.GetElements<PlaceElement>(element.Name);
                 if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {
@@ -106,7 +106,7 @@ namespace WorldActionSystem
             var active = lockQueue.Find(x => x.Name == element.Name);
             if (active == null)
             {
-                var objs = ElementController.Instence.GetElements<PickUpAbleElement>(element.Name);
+                var objs = ElementController.Instence.GetElements<PlaceElement>(element.Name);
                 if (objs == null) return;
                 for (int i = 0; i < objs.Count; i++)
                 {

@@ -31,7 +31,7 @@ namespace WorldActionSystem
         public event UnityAction<PickUpAbleItem> onPickup;
         public event UnityAction<PickUpAbleItem> onPickdown;
         public event UnityAction<PickUpAbleItem> onPickStay;
-
+        public event UnityAction<PickUpAbleItem> onPickTwince;
         private float timer = 0f;
         //private Coroutine coroutine;
         //private MonoBehaviour holder;
@@ -52,7 +52,10 @@ namespace WorldActionSystem
                     if (HaveExecuteTwicePerSecond(ref timer))
                     {
                         Debug.Log("HaveExecuteTwicePerSecond");
-                        PickDown();
+                        if(PickedUp && onPickTwince != null)
+                        {
+                            onPickTwince.Invoke(pickedUpObj);
+                        }
                     }
                     else if (!PickedUp)
                     {
@@ -83,7 +86,8 @@ namespace WorldActionSystem
             {
                 this.pickedUpObj = pickedUpObj;
                 pickedUpObj.OnPickUp();
-                if (this.onPickup != null) onPickup.Invoke(pickedUpObj);
+                if (this.onPickup != null)
+                    onPickup.Invoke(pickedUpObj);
                 elementDistence = Vector3.Distance(viewCamera.transform.position, pickedUpObj.Collider.transform.position);
             }
         }

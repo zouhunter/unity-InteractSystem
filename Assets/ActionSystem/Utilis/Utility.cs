@@ -45,10 +45,10 @@ namespace WorldActionSystem
 
         }
 
-        public static void RetivePickElement(Transform trans, UnityAction<PickUpAbleElement> onRetive)
+        public static void RetivePickElement(Transform trans, UnityAction<PlaceElement> onRetive)
         {
             if (!trans.gameObject.activeSelf) return;
-            var com = trans.GetComponent<PickUpAbleElement>();
+            var com = trans.GetComponent<PlaceElement>();
             if (com)
             {
                 onRetive(com);

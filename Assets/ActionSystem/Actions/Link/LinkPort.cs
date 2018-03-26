@@ -63,7 +63,8 @@ namespace WorldActionSystem
             {
                 LinkInfo connect = connectAble.Find(x => { return x.itemName == ConnectedNode.Body.Name && x.nodeId == ConnectedNode.NodeID; });
                 if (connect != null){
-                    Body.ResetBodyTransform(ConnectedNode.Body, connect.relativePos, connect.relativeDir);
+                    LinkUtil.ResetTargetTranform(Body,ConnectedNode.Body, connect.relativePos, connect.relativeDir);
+                    Body.OnTranformChanged();
                 }
             }
         }

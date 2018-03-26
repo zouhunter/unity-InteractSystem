@@ -28,7 +28,7 @@ namespace WorldActionSystem
 
             if (!AlreadyPlaced)
             {
-                PickUpAbleElement obj = GetUnInstalledObj(Name);
+                PlaceElement obj = GetUnInstalledObj(Name);
                 Attach(obj);
                 obj.QuickInstall(this);
                 obj.StepComplete();
@@ -40,9 +40,9 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public PickUpAbleElement GetUnInstalledObj(string elementName)
+        public PlaceElement GetUnInstalledObj(string elementName)
         {
-            var elements = elementCtrl.GetElements<PickUpAbleElement>(elementName);
+            var elements = elementCtrl.GetElements<PlaceElement>(elementName);
             if (elements != null)
             {
                 for (int i = 0; i < elements.Count; i++)
@@ -63,9 +63,9 @@ namespace WorldActionSystem
 
             if (AlreadyPlaced)
             {
-                var obj = Detach();
-                obj.QuickUnInstall();
-                obj.StepUnDo();
+                var detachedObj = Detach();
+                detachedObj.QuickUnInstall();
+                detachedObj.StepUnDo();
             }
         }
 
@@ -92,7 +92,7 @@ namespace WorldActionSystem
 
         protected override void OnAutoInstall()
         {
-            PickUpAbleElement obj = GetUnInstalledObj(Name);
+            PlaceElement obj = GetUnInstalledObj(Name);
             Attach(obj);
             obj.StepActive();
             if (Config.quickMoveElement && !ignorePass)

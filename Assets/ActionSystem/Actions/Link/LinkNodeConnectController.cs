@@ -13,8 +13,7 @@ namespace WorldActionSystem
         public UnityAction<LinkPort> onMatch { get; set; }
         public UnityAction<LinkPort> onDisMatch { get; set; }
         public UnityAction<LinkPort[]> onDisconnected { get; set; }
-        private Dictionary<LinkItem, List<LinkPort>> ConnectedDic { get; set; }
-        private Transform Parent { get; set; }
+        private LinkHold[] ConnectedDic { get; set; }
         private float timer;
         private const float spanTime = 0.5f;
         private LinkItem pickedUpItem;
@@ -57,7 +56,7 @@ namespace WorldActionSystem
             if (pickedUpItem != null)
             {
                 LinkPort tempNode;
-                foreach (var item in pickedUpItem.ChildNodes)
+                foreach (var item in pickedUpItem.GroupNodes)
                 {
                     if (LinkUtil.FindInstallableNode(item, out tempNode))
                     {
@@ -72,43 +71,40 @@ namespace WorldActionSystem
         }
      
 
-        public void SetActiveItem(LinkItem item)
+        public void SetActiveItem(LinkItem item,bool detach)
         {
             this.pickedUpItem = item;
 
             List<LinkPort> disconnected = new List<LinkPort>();
-
-            if (ConnectedDic.ContainsKey(item))
+            var hold = Array.Find(ConnectedDic, x => x.linkItem == item);
+            if (hold != null)
             {
-                LinkPort[] connectedPort = ConnectedDic[item].ToArray();
-                for (int i = 0; i < connectedPort.Length; i++)
+                LinkPort[] connectedPort = hold.linkedPorts.ToArray();
+                if (detach)
                 {
-                    LinkPort port = ConnectedDic[item][i];
-                    LinkPort otherPort = port.ConnectedNode;
+                    for (int i = 0; i < connectedPort.Length; i++)
+                    {
+                        LinkPort port = connectedPort[i];
+                        LinkPort otherPort = port.ConnectedNode;
 
-                    if (otherPort.Body.transform.IsChildOf(item.transform))
-                    {
-                        continue;//子对象不用清除
-                    }
-                    else
-                    {
-                        ConnectedDic[item].Remove(port);
-                        ConnectedDic[otherPort.Body].Remove(otherPort);
-                        LinkUtil.DetachNodes(port, otherPort, Parent);
+                        hold.linkedPorts.Remove(port);
+                        var other = Array.Find(ConnectedDic, x => x.linkItem == otherPort.Body);
+                        other.linkedPorts.Remove(otherPort);
+                        LinkUtil.DetachNodes(port, otherPort);
                         disconnected.Add(port);
                         disconnected.Add(otherPort);
                     }
                 }
+                   
 
                 if (onDisconnected != null)
                     onDisconnected.Invoke(disconnected.ToArray());
             }
         }
 
-        public void SetState(Transform parent, Dictionary<LinkItem, List<LinkPort>> ConnectedDic)
+        public void SetState(LinkHold[] ConnectedDic)
         {
             this.ConnectedDic = ConnectedDic;
-            this.Parent = parent;
         }
 
         public void SetDisableItem(LinkItem item)
@@ -120,7 +116,7 @@ namespace WorldActionSystem
 
         public void TryConnect()
         {
-            if (activeNode != null && targetNode != null && !targetNode.Body.transform.IsChildOf(activeNode.Body.transform))
+            if (activeNode != null && targetNode != null && activeNode.Body.BindingTarget == targetNode.Body.BindingTarget)
             {
                 LinkUtil.RecordToDic(ConnectedDic,activeNode);
 

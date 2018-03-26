@@ -44,14 +44,14 @@ namespace WorldActionSystem
             return canplace;
         }
 
-        public void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
+        public void PlaceObject(PlaceObj pos, PlaceElement pickup)
         {
             pos.Attach(pickup);
             pickup.QuickInstall(pos);
             pickup.PickUpAble = false;
         }
 
-        public void PlaceWrong(PickUpAbleElement pickup)
+        public void PlaceWrong(PlaceElement pickup)
         {
             if (pickup)
             {

@@ -63,9 +63,9 @@ namespace WorldActionSystem
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public PickUpAbleElement GetUnInstalledObj(string elementName)
+        public PlaceElement GetUnInstalledObj(string elementName)
         {
-            var elements = elementCtrl.GetElements<PickUpAbleElement>(elementName);
+            var elements = elementCtrl.GetElements<PlaceElement>(elementName);
             if (elements != null)
             {
                 for (int i = 0; i < elements.Count; i++)

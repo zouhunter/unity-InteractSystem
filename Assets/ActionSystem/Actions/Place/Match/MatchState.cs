@@ -48,13 +48,13 @@ namespace WorldActionSystem
             return matchAble;
         }
 
-        public void PlaceObject(PlaceObj pos, PickUpAbleElement pickup)
+        public void PlaceObject(PlaceObj pos, PlaceElement pickup)
         {
             pos.Attach(placeCtrl.pickedUpObj);
             placeCtrl.pickedUpObj.QuickInstall(pos, false, false);
         }
 
-        public void PlaceWrong(PickUpAbleElement pickup)
+        public void PlaceWrong(PlaceElement pickup)
         {
             if (pickup)
             {

@@ -21,6 +21,8 @@ namespace WorldActionSystem
         public string Name { get { return name; } }
         public bool Started { get; private set; }
 
+        public bool IsRuntimeCreated { get; set; }
+
         public void StepActive()
         {
             Started = true;
@@ -40,7 +42,7 @@ namespace WorldActionSystem
             current = startData.value;
             Started = false;
         }
-
+  
         #endregion
 
         private ElementController elementCtrl;
@@ -51,6 +53,7 @@ namespace WorldActionSystem
             elementCtrl.RegistElement(this);
             InitLayer();
         }
+
         private void OnDestroy()
         {
             if (elementCtrl != null)
@@ -85,6 +88,8 @@ namespace WorldActionSystem
         {
             GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.chargeResourceLayer);
         }
+
+     
     }
 
 }

@@ -24,7 +24,9 @@ namespace WorldActionSystem
 
         private List<ISupportElement> elementList = new List<ISupportElement>();
         public bool log = false;
-
+        public event UnityAction<ISupportElement> onRegistElememt;
+        public event UnityAction<ISupportElement> onRemoveElememt;
+        public Func<string, ISupportElement> CreateElement { get; set; } 
         /// <summary>
         /// 外部添加Element
         /// </summary>
@@ -33,6 +35,9 @@ namespace WorldActionSystem
             if (!elementList.Contains(item))
             {
                 elementList.Add(item);
+                if (onRegistElememt != null){
+                    onRegistElememt.Invoke(item);
+                }
             }
             else
             {
@@ -45,7 +50,35 @@ namespace WorldActionSystem
             if(elementList.Contains(item))
             {
                 elementList.Remove(item);
+                if (onRemoveElememt != null){
+                    onRemoveElememt.Invoke(item);
+                }
             }
+        }
+
+        /// <summary>
+        /// 尝试创建一个元素
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="elementName"></param>
+        /// <returns></returns>
+        public T TryCreateElement<T>(string elementName) where T : ISupportElement
+        {
+            T element = default(T);
+            if (CreateElement != null)
+            {
+                var e = CreateElement(elementName);
+                if (e is T)
+                {
+                    element = (T)e;
+                    element.IsRuntimeCreated = true;
+                }
+                else
+                {
+                    Debug.LogError(e + "is not an " + typeof(T).FullName);
+                }
+            }
+            return element;
         }
 
         /// <summary>
@@ -59,7 +92,10 @@ namespace WorldActionSystem
             if(list.Count > 0){
                 return list.ConvertAll<T>(x => (T)x) ;   
             }
-            Debug.LogWarning("配制错误,缺少" + elementName);
+            else
+            {
+                Debug.LogWarning("配制错误,缺少" + elementName);
+            }
             return null;
             
         }
@@ -79,8 +115,6 @@ namespace WorldActionSystem
             Debug.LogWarning("配制错误,缺少" + typeof(T).ToString());
             return null;
         }
-
-
     }
 
 }

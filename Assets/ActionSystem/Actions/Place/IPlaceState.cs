@@ -8,8 +8,8 @@ namespace WorldActionSystem
     public interface IPlaceState
     {
         ControllerType CtrlType { get; }
-        void PlaceObject(PlaceObj pos, PickUpAbleElement pickup);
+        void PlaceObject(PlaceObj pos, PlaceElement pickup);
         bool CanPlace(PlaceObj placeItem, PickUpAbleItem element, out string why);
-        void PlaceWrong(PickUpAbleElement pickup);
+        void PlaceWrong(PlaceElement pickup);
     }
 }

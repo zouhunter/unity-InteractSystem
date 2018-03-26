@@ -12,7 +12,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    public class PickUpAbleElement : PickUpAbleItem, IPlaceItem, ISupportElement
+    public class PlaceElement : PickUpAbleItem, ISupportElement
     {
         public class Tweener
         {
@@ -78,7 +78,7 @@ namespace WorldActionSystem
         public override string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
 
         public bool Started { get { return actived; } }
-
+        public bool IsRuntimeCreated { get; set; }
         public Renderer Render { get { return m_render; } }
 
         public event UnityAction onInstallOkEvent;
@@ -122,15 +122,29 @@ namespace WorldActionSystem
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
         }
-        private void InitLayer()
+        protected virtual void Update()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
+            if (!Config.highLightNotice) return;
+            if (m_render == null) return;
+            if (actived)
+            {
+                highLighter.HighLightTarget(m_render, highLightColor);
+            }
+            else
+            {
+                highLighter.UnHighLightTarget(m_render);
+            }
         }
 
         protected virtual void OnDestroy()
         {
             move.Kill();
             elementCtrl.RemoveElement(this);
+        }
+
+        private void InitLayer()
+        {
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
         }
         protected virtual void InitRender()
         {
@@ -323,6 +337,7 @@ namespace WorldActionSystem
                 transform.position = pos;
             }
         }
+
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
         /// </summary>
@@ -340,8 +355,7 @@ namespace WorldActionSystem
         {
             actived = false;
             onStepComplete.Invoke();
-            if (tweening)
-            {
+            if (tweening){
                 StopTween();
                 OnTweenComplete();
             }
@@ -357,20 +371,7 @@ namespace WorldActionSystem
             gameObject.SetActive(startActive);
         }
 
-        protected virtual void Update()
-        {
-            if (!Config.highLightNotice) return;
-            if (m_render == null) return;
-            if (actived)
-            {
-                highLighter.HighLightTarget(m_render, highLightColor);
-            }
-            else
-            {
-                highLighter.UnHighLightTarget(m_render);
-            }
-        }
-
+      
         protected virtual void StopTween()
         {
             move.Kill();
@@ -378,8 +379,7 @@ namespace WorldActionSystem
 
         protected virtual void OnInstallComplete(bool complete)
         {
-            if (hideOnInstall)
-            {
+            if (hideOnInstall){
                 gameObject.SetActive(false);
             }
 
@@ -392,6 +392,9 @@ namespace WorldActionSystem
         {
             if (onUnInstallOkEvent != null)
                 onUnInstallOkEvent();
+
+            if (IsRuntimeCreated)
+                Destroy(gameObject);
         }
         protected virtual void Binding(PlaceObj target)
         {

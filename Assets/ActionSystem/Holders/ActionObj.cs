@@ -69,7 +69,25 @@ namespace WorldActionSystem
             }
             WorpCameraID();
             gameObject.SetActive(startActive);
+
+            elementCtrl.onRegistElememt += OnRegistElement;
+            elementCtrl.onRemoveElememt += OnRemoveElement;
         }
+
+        protected virtual void OnDestroy()
+        {
+            elementCtrl.onRegistElememt -= OnRegistElement;
+            elementCtrl.onRemoveElememt -= OnRemoveElement;
+        }
+
+        protected virtual void OnRegistElement(ISupportElement arg0)
+        {
+        }
+        protected virtual void OnRemoveElement(ISupportElement arg0)
+        {
+        }
+
+
         private void WorpCameraID()
         {
             if (string.IsNullOrEmpty(_cameraID))

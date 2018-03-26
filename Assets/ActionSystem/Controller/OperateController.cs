@@ -10,7 +10,6 @@ namespace WorldActionSystem
     {
         public abstract ControllerType CtrlType { get; }
         public UnityAction<string> userErr { get; set; }
-        public UnityAction<IPlaceItem> onSelect { get; set; }
         private CameraController cameraCtrl
         {
             get

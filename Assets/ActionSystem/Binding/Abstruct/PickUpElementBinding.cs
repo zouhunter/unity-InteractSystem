@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using WorldActionSystem;
 using System;
 
-[RequireComponent(typeof(PickUpAbleElement))]
+[RequireComponent(typeof(PlaceElement))]
 
 public class PickUpElementBinding : MonoBehaviour {
-    protected PickUpAbleElement pickUpElement;
+    protected PlaceElement pickUpElement;
     protected virtual void Awake()
     {
-        pickUpElement = GetComponent<PickUpAbleElement>();
+        pickUpElement = GetComponent<PlaceElement>();
         pickUpElement.onPickUp.AddListener(OnPickUp);
         pickUpElement.onPickDown.AddListener(OnLayDown);
         pickUpElement.onInstallOkEvent += OnInstallOK;

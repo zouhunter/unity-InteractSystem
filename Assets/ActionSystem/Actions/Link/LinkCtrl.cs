@@ -32,6 +32,7 @@ namespace WorldActionSystem
             pickCtrl.onPickup += (OnPickUp);
             pickCtrl.onPickdown += (OnPickDown);
             pickCtrl.onPickStay += (OnPickStay);
+            pickCtrl.onPickTwince += (OnPickTwince);
         }
         public override void Update()
         {
@@ -54,28 +55,38 @@ namespace WorldActionSystem
                 var linkItem = obj as LinkItem;
                 if (linkItem)
                 {
-                    linkObj = linkItem.GetComponentInParent<LinkObj>();
+                    linkObj = linkItem.BindingTarget;
                     linkObj.TryActiveLinkPort(linkItem);
                     if (linkObj)
                     {
-                        linkConnectCtrl.SetState(linkObj.transform, linkObj.ConnectedDic);
-                        linkConnectCtrl.SetActiveItem(linkItem);
+                        linkConnectCtrl.SetState(linkObj.linkedItems);
+                        linkConnectCtrl.SetActiveItem(linkItem, false);
                     }
                 }
             }
         }
-
+        void OnPickTwince(PickUpAbleItem obj)
+        {
+            if (obj is LinkItem)
+            {
+                var linkItem = obj as LinkItem;
+                if (linkItem)
+                {
+                    linkConnectCtrl.SetActiveItem(linkItem, true);
+                }
+            }
+        }
         void OnPickDown(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
                 linkConnectCtrl.SetDisableItem(obj as LinkItem);
-                linkObj.TryActiveLinkItem ();
+                linkObj.ActiveOneLinkItem();
             }
         }
         void OnPickStay(PickUpAbleItem go)
         {
-            if(go is LinkItem)
+            if (go is LinkItem)
             {
                 linkConnectCtrl.TryConnect();
                 pickCtrl.PickDown();

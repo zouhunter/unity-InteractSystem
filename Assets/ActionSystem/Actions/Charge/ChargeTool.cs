@@ -24,6 +24,7 @@ namespace WorldActionSystem
         private ChargeData chargeData;
         public ChargeEvent onLoad { get; set; }
         public ChargeEvent onCharge { get; set; }
+        
 
         public bool charged { get { return chargeData.type != null && chargeData.value > 0; } }
         public ChargeData data { get { return (ChargeData)chargeData; } }
@@ -31,6 +32,8 @@ namespace WorldActionSystem
 
         public bool Started { get; private set; }
         public float Range { get { return triggerRange; } }
+
+        public bool IsRuntimeCreated { get; set; }
 
         private ElementController elementCtrl;
 
