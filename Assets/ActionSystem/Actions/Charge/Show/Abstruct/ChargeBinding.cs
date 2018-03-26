@@ -45,7 +45,7 @@ namespace WorldActionSystem
         }
         private void TryCleanLast()
         {
-            OnBeforeCompleteAsync();
+            //OnBeforeCompleteAsync();
             if (onComplete != null)
             {
                 onComplete.Invoke();

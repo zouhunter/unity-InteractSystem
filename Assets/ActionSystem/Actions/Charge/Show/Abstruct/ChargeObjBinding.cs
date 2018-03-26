@@ -17,6 +17,12 @@ namespace WorldActionSystem
             target.onCharge = OnCharge;
         }
 
-        protected abstract void OnCharge(Vector3 center, ChargeData data, UnityAction onComplete);
+        protected virtual void OnCharge(Vector3 center, ChargeData data, UnityAction onComplete)
+        {
+            if (onComplete != null)
+            {
+                StartAsync(onComplete);
+            }
+        }
     }
 }
