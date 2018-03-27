@@ -68,13 +68,12 @@ namespace WorldActionSystem
             foreach (var item in currentListArray){
                 var temp = item;
                 temp.value = -item.value;
-                CompleteInternal(temp);
+                Charge(temp, null);
             }
             currentList.Clear();
             foreach (var item in completeDatas)
             {
-                CompleteInternal(item);
-
+                Charge(item, null);
             }
         }
 
@@ -87,7 +86,7 @@ namespace WorldActionSystem
             {
                 var temp = item;
                 temp.value = -item.value;
-                CompleteInternal(temp);
+                Charge(temp, null);
             }
             currentList.Clear();
             InitStartData();
@@ -112,19 +111,12 @@ namespace WorldActionSystem
                 _currentList.Add(data);
             }
         }
-
-        private void CompleteInternal(ChargeData data)
-        {
-            var complete = completeDatas.Find(x => x.type == data.type);
-            if (!string.IsNullOrEmpty(complete.type))
-            {
-                _currentList.Add(data);
-            }
-        }
         /// <summary>
         /// 判断并填充
         /// </summary>
+        /// <param name="complete"></param>
         /// <param name="data"></param>
+        /// <param name="onCharge"></param>
         /// <returns></returns>
         public ChargeData JudgeLeft(ChargeData data)
         {

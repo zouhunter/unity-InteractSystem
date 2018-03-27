@@ -63,7 +63,6 @@ namespace WorldActionSystem
             {
                 scaleCtrl.Add(data);
             }
-            Debug.Log("OnLoad:" + data);
         }
         protected override void OnBeforeCompleteAsync()
         {

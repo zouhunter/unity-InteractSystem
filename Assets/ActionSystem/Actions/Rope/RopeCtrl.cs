@@ -141,7 +141,7 @@ namespace WorldActionSystem
                 {
                     ropeTarget.PickDownCollider(pickUpedRopeNode);
                     pickUpedRopeNode = null;
-                    ropeSelected = null;
+                    //ropeSelected = null;
                 }
             }
             else
@@ -151,7 +151,7 @@ namespace WorldActionSystem
                 {
                     ropeTarget.PickDownCollider(pickUpedRopeNode);
                     pickUpedRopeNode = null;
-                    ropeSelected = null;
+                    //ropeSelected = null;
                 }
             }
         }
@@ -169,14 +169,14 @@ namespace WorldActionSystem
                 userErr(resonwhy);
             }
             pickUpedRopeNode = null;
-            ropeSelected = null;
+            //ropeSelected = null;
             pickDownAble = false;
         }
 
         private static bool CanPlaceNode(RopeObj ropeTarget, RopeItem ropeSelected, Collider collider, out string resonwhy)
         {
             resonwhy = null;
-            if (ropeSelected != ropeTarget)
+            if (ropeSelected.BindingTarget != ropeTarget)
             {
                 resonwhy = "对象不匹配";
             }

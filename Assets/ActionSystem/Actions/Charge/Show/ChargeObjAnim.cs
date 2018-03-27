@@ -25,11 +25,10 @@ namespace WorldActionSystem
         }
         protected override void OnCharge(Vector3 center, ChargeData data, UnityAction onComplete)
         {
-            base.OnCharge(center, data, onComplete);
-
             if (onComplete != null)
             {
                 scaleCtrl.AddAsync(data, animTime);
+                StartAsync(onComplete);
             }
             else
             {
