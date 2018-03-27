@@ -69,6 +69,9 @@ namespace WorldActionSystem
             viewCamera.transform.SetParent(holder.transform);
             viewCamera.gameObject.SetActive(!mainCamera.isActiveAndEnabled);
         }
+
+     
+
         private void OnMainCameraCallBack()
         {
             if (lastAction != null) lastAction.Invoke();
@@ -78,6 +81,13 @@ namespace WorldActionSystem
             if (!cameraNodes.Contains(node))
             {
                 cameraNodes.Add(node);
+            }
+        }
+        internal void RemoveNode(CameraNode node)
+        {
+            if (cameraNodes.Contains(node))
+            {
+                cameraNodes.Remove(node);
             }
         }
 

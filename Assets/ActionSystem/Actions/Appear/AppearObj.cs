@@ -16,19 +16,42 @@ namespace WorldActionSystem
         public class AppearHold
         {
             public string objName;
-            public ISupportElement body;
+            public Transform autoPos;
+            public ISupportElement element;
         }
-
         [SerializeField]
-        private List<AppearHold> objectNames;
+        private float spanTime = 1f;
+        [SerializeField]
+        private List<AppearHold> hoders;
         public override ControllerType CtrlType
         {
             get
             {
-               return ControllerType.Create;
+                return ControllerType.Create;
             }
         }
 
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            if (auto)
+            {
+                StartCoroutine(AutoAppear());
+            }
+        }
+
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            foreach (var item in hoders)
+            {
+                if (item.element != null && item.element.Body != null)
+                {
+                    Destroy(item.element.Body);
+                    item.element = null;
+                }
+            }
+        }
         /// <summary>
         /// 元素动态注册
         /// </summary>
@@ -36,16 +59,16 @@ namespace WorldActionSystem
         protected override void OnRegistElement(ISupportElement arg0)
         {
             base.OnRegistElement(arg0);
-            if(arg0.IsRuntimeCreated)
+            if (arg0.IsRuntimeCreated)
             {
 
-                if (objectNames.Find(x=>x.body == arg0) == null)
+                if (hoders.Find(x => x.element == arg0) == null)
                 {
-                   var hold = objectNames.Find(x => x.objName == arg0.Name && x.body == null);
+                    var hold = hoders.Find(x => x.objName == arg0.Name && x.element == null);
                     Debug.Log(hold);
                     if (hold != null)
                     {
-                        hold.body = arg0;
+                        hold.element = arg0;
                         TryComplete();
                     }
                 }
@@ -57,14 +80,49 @@ namespace WorldActionSystem
             base.OnRemoveElement(arg0);
             if (arg0.IsRuntimeCreated)
             {
-                var old = objectNames.Find(x => x.body == arg0);
-                old.body = null;
+                var old = hoders.Find(x => x.element == arg0);
+                if (old != null)
+                {
+                    old.element = null;
+                }
             }
         }
 
         private void TryComplete()
         {
-            if (objectNames.Find(x => x.body == null) == null)
+            if (hoders.Find(x => x.element == null) == null)
+            {
+                OnEndExecute(false);
+            }
+        }
+
+        IEnumerator AutoAppear()
+        {
+            bool haveError = false;
+            for (int i = 0; i < hoders.Count; i++)
+            {
+                var hoder = hoders[i];
+                if (hoder.element == null)
+                {
+                    var item = elementCtrl.TryCreateElement<ISupportElement>(hoders[i].objName);
+                    if (item == null)
+                    {
+                        Debug.Log("can not create:" + hoders[i].objName);
+                        haveError = true;
+                    }
+                    else
+                    {
+                        if (hoder.autoPos)
+                        {
+                            item.Body.transform.position = hoder.autoPos.transform.position;
+                            item.Body.transform.rotation = hoder.autoPos.transform.rotation;
+                        }
+
+                        yield return new WaitForSeconds(spanTime);
+                    }
+                }
+            }
+            if (!haveError)
             {
                 OnEndExecute(false);
             }

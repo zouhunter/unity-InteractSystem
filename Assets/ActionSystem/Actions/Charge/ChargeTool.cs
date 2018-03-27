@@ -24,8 +24,15 @@ namespace WorldActionSystem
         private ChargeData chargeData;
         public ChargeEvent onLoad { get; set; }
         public ChargeEvent onCharge { get; set; }
-        
 
+
+        public GameObject Body
+        {
+            get
+            {
+                return gameObject;
+            }
+        }
         public bool charged { get { return chargeData.type != null && chargeData.value > 0; } }
         public ChargeData data { get { return (ChargeData)chargeData; } }
         public float capacity { get { return _capacity; } }

@@ -42,13 +42,14 @@ namespace WorldActionSystem
             {
                 _rotate = transform.rotation;
             }
-
+            cameraCtrl.RegistNode(this);
         }
-        private void Start()
+
+        private void OnDestroy()
         {
-            if(cameraCtrl != null)
+            if (cameraCtrl != null)
             {
-                cameraCtrl.RegistNode(this);
+                cameraCtrl.RemoveNode(this);
             }
         }
     }

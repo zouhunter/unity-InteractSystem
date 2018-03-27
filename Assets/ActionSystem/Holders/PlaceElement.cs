@@ -77,6 +77,13 @@ namespace WorldActionSystem
 
         public override string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
 
+        public GameObject Body
+        {
+            get
+            {
+                return gameObject;
+            }
+        }
         public bool Active { get { return actived; } }
         public bool IsRuntimeCreated { get; set; }
         public Renderer Render { get { return m_render; } }

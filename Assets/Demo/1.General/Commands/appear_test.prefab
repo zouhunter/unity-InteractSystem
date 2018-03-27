@@ -38,9 +38,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 187164}
-  m_LocalRotation: {x: 0.12431465, y: 0.6538024, z: -0.1100665, w: 0.7382233}
-  m_LocalPosition: {x: -3.7744906, y: 4.564784, z: 1.3156734}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.36802158, y: -0.15867437, z: 0.06390086, w: -0.9139471}
+  m_LocalPosition: {x: -9.941145, y: 26.012695, z: -23.429716}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4424816789710466}
   m_RootOrder: 0
@@ -154,8 +154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_name: 
-  startActive: 0
-  endActive: 0
+  startActive: 1
+  endActive: 1
   queueID: 0
   _queueInAuto: 1
   _cameraID: 
@@ -175,6 +175,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  objectNames:
+  spanTime: 1
+  hoders:
   - objName: appear_item1
+    autoPos: {fileID: 0}
   - objName: appear_item2
+    autoPos: {fileID: 0}

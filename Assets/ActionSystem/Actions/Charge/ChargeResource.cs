@@ -23,6 +23,14 @@ namespace WorldActionSystem
 
         public bool IsRuntimeCreated { get; set; }
 
+        public GameObject Body
+        {
+            get
+            {
+                return gameObject;
+            }
+        }
+
         public void StepActive()
         {
             Active = true;

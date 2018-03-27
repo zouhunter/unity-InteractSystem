@@ -7,6 +7,7 @@ namespace WorldActionSystem
     public interface ISupportElement
     {
         string Name { get; }
+        GameObject Body { get; }
         bool IsRuntimeCreated { get; set; }
         bool Active { get; }
         void StepActive();

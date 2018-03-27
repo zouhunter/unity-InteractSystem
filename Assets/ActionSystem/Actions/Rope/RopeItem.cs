@@ -22,6 +22,14 @@ namespace WorldActionSystem
                 return _name;
             }
         }
+
+        public GameObject Body
+        {
+            get
+            {
+                return gameObject;
+            }
+        }
         public bool completeHide;
         [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();

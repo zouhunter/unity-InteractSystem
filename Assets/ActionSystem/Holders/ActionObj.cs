@@ -67,7 +67,9 @@ namespace WorldActionSystem
             if (anglePos == null){
                 anglePos = transform;
             }
+
             WorpCameraID();
+
             gameObject.SetActive(startActive);
 
             elementCtrl.onRegistElememt += OnRegistElement;

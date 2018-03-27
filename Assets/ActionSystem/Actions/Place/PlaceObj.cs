@@ -22,8 +22,9 @@ namespace WorldActionSystem
         {
             InitLayer();
         }
-        protected virtual void OnDestroy()
+        protected override  void OnDestroy()
         {
+            base.OnDestroy();
             if(lockQueue.Contains(this))
             {
                 lockQueue.Remove(this);

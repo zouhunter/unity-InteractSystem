@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ede9def9b1c7454fa41a2a6dcd1c4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: appear_item2
+  _name: appear_item1
   startActive: 1
   onPickUp:
     m_PersistentCalls:

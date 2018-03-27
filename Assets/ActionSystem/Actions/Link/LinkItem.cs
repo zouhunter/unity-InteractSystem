@@ -22,6 +22,14 @@ namespace WorldActionSystem
                 return _name;
             }
         }
+
+        public GameObject Body
+        {
+            get
+            {
+                return gameObject;
+            }
+        }
         private List<LinkPort> _childNodes = new List<LinkPort>();
         public List<LinkPort> ChildNodes
         {

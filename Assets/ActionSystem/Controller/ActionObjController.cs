@@ -213,6 +213,7 @@ namespace WorldActionSystem
                 }
                 else
                 {
+                    Debug.Log(cameraCtrl == null);
                     StartAction(obj);
                 }
             }
