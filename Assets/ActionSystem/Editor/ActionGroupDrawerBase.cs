@@ -427,7 +427,7 @@ namespace WorldActionSystem
                     var containsPickupProp = itemProp.FindPropertyRelative("containsPickup");
                     if (matrixProp != null)
                     {
-                        ActionEditorUtility.LoadPrefab(prefabProp, containsCommandProp, containsPickupProp, instanceIDProp, rematrixProp, matrixProp);
+                        ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, containsCommandProp, containsPickupProp,  rematrixProp, matrixProp);
                     }
                     else
                     {

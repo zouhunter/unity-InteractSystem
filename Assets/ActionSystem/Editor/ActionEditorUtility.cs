@@ -102,6 +102,7 @@ namespace WorldActionSystem
                 parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
                 GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
                 instanceIDProp.intValue = go.GetInstanceID();
+                instanceIDProp.serializedObject.ApplyModifiedProperties();
                 go.transform.SetParent(parent, false);
 
                 if (rematrixProp.boolValue)

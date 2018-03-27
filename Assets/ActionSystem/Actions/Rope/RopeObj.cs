@@ -35,8 +35,9 @@ namespace WorldActionSystem
         private RopeItem ropeItem;
 
         #region UnityAPI 
-        protected void Awake()
+        protected  override void Awake()
         {
+            base.Awake();
             RegistNodes();
         }
 

@@ -34,7 +34,8 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            if (auto)
+            var completed = TryComplete();
+            if (!completed && auto)
             {
                 StartCoroutine(AutoAppear());
             }
@@ -80,7 +81,7 @@ namespace WorldActionSystem
                 {
                     var hold = hoders.Find(x => x.objName == arg0.Name && x.element == null);
                     Debug.Log(hold);
-                    if (hold != null)
+                    if (hold != null && Started)
                     {
                         hold.element = arg0;
                         TryComplete();
@@ -102,12 +103,14 @@ namespace WorldActionSystem
             }
         }
 
-        private void TryComplete()
+        private bool TryComplete()
         {
             if (hoders.Find(x => x.element == null) == null)
             {
                 OnEndExecute(false);
+                return true;
             }
+            return false;
         }
 
         IEnumerator AutoAppear()

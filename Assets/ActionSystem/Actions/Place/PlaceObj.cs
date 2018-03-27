@@ -18,8 +18,9 @@ namespace WorldActionSystem
         public virtual bool AlreadyPlaced { get { return obj != null; } }
         public virtual PlaceElement obj { get; protected set; }
         private static List<ActionObj> lockQueue = new List<ActionObj>();
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             InitLayer();
         }
         protected override  void OnDestroy()

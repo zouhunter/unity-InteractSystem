@@ -12,7 +12,6 @@ namespace WorldActionSystem
     {
         public string groupKey;
         public int totalCommand;
-        [UnityEngine.Serialization.FormerlySerializedAs("prefabList")]
         public List<AutoPrefabItem> autoLoadElement = new List<AutoPrefabItem>();
         public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
 
