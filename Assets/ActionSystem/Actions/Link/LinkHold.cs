@@ -9,7 +9,7 @@ namespace WorldActionSystem
     public class LinkHold
     {
         public string elementName;
-       public LinkItem linkItem;
-       public List<LinkPort> linkedPorts = new List<LinkPort>();
+        public LinkItem linkItem;
+        //public List<LinkPort> linkedPorts = new List<LinkPort>();
     }
 }

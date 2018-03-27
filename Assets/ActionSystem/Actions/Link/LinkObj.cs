@@ -21,7 +21,7 @@ namespace WorldActionSystem
         [SerializeField]
         private List<LinkGroup> defultLink;
         private Coroutine coroutine;
-
+        private List<string> elementKeys = new List<string>();
         private List<LinkItem> linkPool = new List<LinkItem>();
 
         protected override void Start()
@@ -36,93 +36,29 @@ namespace WorldActionSystem
         private void TryFindElements()
         {
             linkPool.Clear();
+            elementKeys.Clear();
             for (int i = 0; i < linkItems.Length; i++)
             {
-                var links = elementCtrl.GetElements<LinkItem>(linkItems[i].elementName);
-                if (links != null)
+                var elementName = linkItems[i].elementName;
+                if (!elementKeys.Contains(elementName))
                 {
-                    foreach (var item in links)
+                    elementKeys.Add(elementName);
+                    var links = elementCtrl.GetElements<LinkItem>(elementName);
+                    if (links != null)
                     {
-                        if (!linkPool.Contains(item))
+                        foreach (var item in links)
                         {
-                            linkPool.Add(item);
-                            item.BindingLinkObj(this);
+                            if (!linkPool.Contains(item))
+                            {
+                                linkPool.Add(item);
+                                item.linkObjs.Add(this);
+                            }
                         }
                     }
                 }
+                
             }
         }
-
-        /// <summary>
-        /// 注册
-        /// </summary>
-        /// <param name="arg0"></param>
-        protected override void OnRegistElement(ISupportElement arg0)
-        {
-            base.OnRegistElement(arg0);
-            if (arg0 is LinkItem)
-            {
-                if (Array.Find(linkItems, x => x.elementName == arg0.Name) != null)
-                {
-                    var linkItem = arg0 as LinkItem;
-                    if (!linkPool.Contains(linkItem))
-                    {
-                        linkPool.Add(linkItem);
-                        linkItem.BindingLinkObj(this);
-                        if (Started)
-                        {
-                            linkItem.StepActive();
-                            ActiveOneLinkItem();
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// 注销
-        /// </summary>
-        /// <param name="arg0"></param>
-        protected override void OnRemoveElement(ISupportElement arg0)
-        {
-            base.OnRemoveElement(arg0);
-            if (arg0.IsRuntimeCreated && arg0 is LinkItem)
-            {
-                var linkItem = arg0 as LinkItem;
-                linkItem.UnBindingLinkObj(this);
-                if (linkPool.Contains(linkItem))
-                {
-                    linkPool.Remove(linkItem);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 激活连接点
-        /// </summary>
-        public void ActiveOneLinkItem()
-        {
-            var notLinked = linkPool.Where(x => x != null && !HaveConnected(x)).FirstOrDefault();
-            if (notLinked != null)
-            {
-                angleCtrl.UnNotice(anglePos);
-                anglePos = notLinked.transform;
-            }
-            else
-            {
-                TryComplete();
-            }
-        }
-
-        /// <summary>
-        /// 判断是否已经连接过了
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        private bool HaveConnected(LinkItem item)
-        {
-            return Array.Find(linkItems, x => x.linkItem == item) != null;
-        }
-
         /// <summary>
         /// 激活匹配点
         /// </summary>
@@ -155,6 +91,82 @@ namespace WorldActionSystem
                 }
             }
         }
+        /// <summary>
+        /// 注册
+        /// </summary>
+        /// <param name="arg0"></param>
+        protected override void OnRegistElement(ISupportElement arg0)
+        {
+            base.OnRegistElement(arg0);
+            if (arg0 is LinkItem)
+            {
+                if(elementKeys.Contains(arg0.Name))
+                {
+                    var linkItem = arg0 as LinkItem;
+                    if (!linkPool.Contains(linkItem))
+                    {
+                        linkPool.Add(linkItem);
+                        linkItem.linkObjs.Add(this);
+
+                        if (Started){
+                            linkItem.StepActive();
+                            ActiveOneLinkItem();
+                        }
+                    }
+                }
+               
+            }
+        }
+        /// <summary>
+        /// 注销
+        /// </summary>
+        /// <param name="arg0"></param>
+        protected override void OnRemoveElement(ISupportElement arg0)
+        {
+            base.OnRemoveElement(arg0);
+            if (arg0.IsRuntimeCreated && arg0 is LinkItem)
+            {
+                var linkItem = arg0 as LinkItem;
+                if (linkPool.Contains(linkItem))
+                {
+                    linkItem.linkObjs.Add(this);
+                    linkPool.Remove(linkItem);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 激活连接点
+        /// </summary>
+        public void ActiveOneLinkItem()
+        {
+            if(!TryComplete())
+            {
+                var notLinked = linkPool.Where(x => x != null && !HaveConnected(x)).FirstOrDefault();
+                if (notLinked != null)
+                {
+                    angleCtrl.UnNotice(anglePos);
+                    anglePos = notLinked.transform;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 判断是否已经连接过了
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private bool HaveConnected(LinkItem item)
+        {
+            bool connected = false;
+            foreach (var child in item.ChildNodes)
+            {
+                connected |= (child.ConnectedNode != null);
+            }
+            return connected;
+        }
+
+       
 
         public override void OnStartExecute(bool auto = false)
         {
@@ -183,8 +195,8 @@ namespace WorldActionSystem
         {
             foreach (var item in linkItems)
             {
-                var linkItem = linkPool.Find(x => !x.Active && x.Name == item.elementName);
-                if (linkItem != null && !linkItem.Used)
+                var linkItem = linkPool.Find(x => x.Name == item.elementName);
+                if (linkItem != null)
                 {
                     linkItem.StepActive();
                 }
@@ -212,19 +224,49 @@ namespace WorldActionSystem
                 StopCoroutine(coroutine);
                 coroutine = null;
             }
-            LinkUtil.DetachConnectedPorts(linkItems, transform);
             ResetConnected();
         }
-        public void TryComplete()
+        /// <summary>
+        /// 找到满足条件的连接体
+        /// </summary>
+        public bool TryComplete()
         {
+            Debug.Log("TryComplete");
             bool allConnected = true;
+            var mark = new List<object>();
+
             foreach (var item in linkItems)
             {
-                allConnected &= (item.linkItem != null);
+                var linkItem = linkPool.Find(x =>x.Name == item.elementName && HaveConnected(x) && !mark.Contains(x));
+                if(linkItem != null)
+                {
+                    item.linkItem = linkItem;
+                    mark.Add(linkItem);
+                    //item.linkedPorts = linkItem.Connected
+                }
+                else
+                {
+                    allConnected = false;
+                    CleanRecord();
+                    break;
+                }
             }
+
             if (allConnected)
             {
                 OnEndExecute(false);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private void CleanRecord()
+        {
+            foreach (var litem in linkItems)
+            {
+                litem.linkItem = null;
             }
         }
 
@@ -237,7 +279,7 @@ namespace WorldActionSystem
                 {
                     item.linkItem.StepUnDo();
                     linkItems[i].linkItem = null;
-                    linkItems[i].linkedPorts = new List<LinkPort>();
+                    //linkItems[i].linkedPorts = new List<LinkPort>();
                 }
             }
         }
@@ -262,8 +304,6 @@ namespace WorldActionSystem
 
                 yield return MoveBToA(portA, portB);
                 LinkUtil.AttachNodes(portB, portA);
-                LinkUtil.RecordToDic(linkItems, portA);
-                LinkUtil.RecordToDic(linkItems, portB);
             }
             TryComplete();
         }
@@ -271,7 +311,6 @@ namespace WorldActionSystem
         private LinkItem TryUseOneLinkItem(int id)
         {
             if (linkItems.Length <= id) return null;
-
 
             if (linkItems[id].linkItem == null)
             {
@@ -285,12 +324,6 @@ namespace WorldActionSystem
                         break;
                     }
                 }
-            }
-
-
-            if (linkItems[id].linkItem != null)
-            {
-                linkItems[id].linkItem.Connected = true;
             }
 
             return linkItems[id].linkItem;

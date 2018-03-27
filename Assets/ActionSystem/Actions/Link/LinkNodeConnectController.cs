@@ -79,7 +79,7 @@ namespace WorldActionSystem
             var hold = Array.Find(ConnectedDic, x => x.linkItem == item);
             if (hold != null)
             {
-                LinkPort[] connectedPort = hold.linkedPorts.ToArray();
+                LinkPort[] connectedPort = hold.linkItem.GetLinkPorts();//.linkedPorts.ToArray();
                 if (detach)
                 {
                     for (int i = 0; i < connectedPort.Length; i++)
@@ -87,9 +87,6 @@ namespace WorldActionSystem
                         LinkPort port = connectedPort[i];
                         LinkPort otherPort = port.ConnectedNode;
 
-                        hold.linkedPorts.Remove(port);
-                        var other = Array.Find(ConnectedDic, x => x.linkItem == otherPort.Body);
-                        other.linkedPorts.Remove(otherPort);
                         LinkUtil.DetachNodes(port, otherPort);
                         disconnected.Add(port);
                         disconnected.Add(otherPort);
@@ -118,10 +115,6 @@ namespace WorldActionSystem
         {
             if (activeNode != null && targetNode != null)
             {
-                LinkUtil.RecordToDic(ConnectedDic,activeNode);
-
-                LinkUtil.RecordToDic(ConnectedDic, targetNode);
-
                 LinkUtil.AttachNodes(activeNode, targetNode);
 
                 if (onConnected != null)

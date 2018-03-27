@@ -49,43 +49,6 @@ namespace WorldActionSystem
             moveAblePort.ConnectedNode = null;
             staticPort.ConnectedNode = null;
         }
-        public static void RecordToDic(LinkHold[] ConnectedDic, LinkPort port)
-        {
-            var item = Array.Find(ConnectedDic, x => x.linkItem == port.Body);
-            if (item == null)
-            {
-                item = Array.Find(ConnectedDic, x => x.linkItem == null);
-                if (item != null)
-                {
-                    item.linkItem = port.Body;
-                }
-            }
-
-            if (item != null)
-            {
-                if (!item.linkedPorts.Contains(port))
-                {
-                    item.linkedPorts.Add(port);
-                }
-            }
-        }
-        public static void DetachConnectedPorts(LinkHold[] dic, Transform parent)
-        {
-            foreach (var item in dic)
-            {
-                var linkItem = item.linkItem;
-                if (linkItem != null)
-                {
-                    var ports = item.linkedPorts;
-                    linkItem.transform.SetParent(parent);
-                    foreach (var port in ports)
-                    {
-                        port.ConnectedNode = null;
-                    }
-                }
-
-            }
-        }
 
         public static void ClampRotation(Transform target)
         {

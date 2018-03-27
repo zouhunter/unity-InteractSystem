@@ -54,13 +54,14 @@ namespace WorldActionSystem
             if (obj is LinkItem)
             {
                 var linkItem = obj as LinkItem;
-                if (linkItem &&! linkItem.Used)
+                if (linkItem && !linkItem.Used)
                 {
-                    if(linkItem.linkObjects.Count > 0)
+                    if (linkItem.linkObjs.Count > 0)
                     {
-                        var linkObj = linkItem.linkObjects[0];
+                        var linkObj = linkItem.linkObjs.Find(x => x.Started && !x.Complete);
+
                         linkObj.TryActiveLinkPort(linkItem);
-                        foreach (var item in linkItem.linkObjects)
+                        foreach (var item in linkItem.linkObjs)
                         {
                             linkObj = item;
                             if (linkObj)
@@ -69,12 +70,13 @@ namespace WorldActionSystem
                                 linkConnectCtrl.SetActiveItem(linkItem, false);
                             }
                         }
-                        
+
                     }
-                   
+
                 }
             }
         }
+       
         void OnPickTwince(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
@@ -82,12 +84,11 @@ namespace WorldActionSystem
                 var linkItem = obj as LinkItem;
                 if (linkItem && !linkItem.Used)
                 {
-                    foreach (var linkObj in linkItem.linkObjects)
+                    foreach (var linkObj in linkItem.linkObjs)
                     {
                         linkConnectCtrl.SetState(linkObj.linkItems);
                         linkConnectCtrl.SetActiveItem(linkItem, true);
                     }
-                   
                 }
             }
         }
@@ -96,14 +97,16 @@ namespace WorldActionSystem
             if (obj is LinkItem)
             {
                 var linkItem = obj as LinkItem;
-                linkConnectCtrl.SetDisableItem(obj as LinkItem);
-                foreach (var item in linkItem.linkObjects)
+                if (linkItem && !linkItem.Used)
                 {
-                    var linkObj = item;
-                    if (linkObj)
-                        linkObj.ActiveOneLinkItem();
+                    linkConnectCtrl.SetDisableItem(obj as LinkItem);
+                    foreach (var item in linkItem.linkObjs)
+                    {
+                        var linkObj = item;
+                        if (linkObj)
+                            linkObj.ActiveOneLinkItem();
+                    }
                 }
-               
             }
         }
         void OnPickStay(PickUpAbleItem go)

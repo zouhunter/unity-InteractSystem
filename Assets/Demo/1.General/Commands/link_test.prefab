@@ -238,11 +238,15 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  linkItemsName:
-  - LinkItem
-  - LinkItem
-  - LinkItem
-  - LinkItem
+  linkItems:
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
   defultLink:
   - ItemA: 0
     portA: 1
@@ -326,11 +330,15 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  linkItemsName:
-  - LinkItem
-  - LinkItem
-  - LinkItem
-  - LinkItem
+  linkItems:
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
+  - elementName: LinkItem
+    linkItem: {fileID: 0}
   defultLink:
   - ItemA: 0
     portA: 1

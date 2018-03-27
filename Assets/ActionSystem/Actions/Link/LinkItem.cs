@@ -49,8 +49,6 @@ namespace WorldActionSystem
         }
         public bool IsRuntimeCreated { get; set; }
         public bool Active { get { return true; } }
-        //public LinkObj BindingTarget { get; set; }
-        public bool Connected { get; set; }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
 
      
@@ -68,7 +66,7 @@ namespace WorldActionSystem
                 return _groupNodes;
             }
         }
-        public List<LinkObj> linkObjects = new List<LinkObj>();
+        public List<LinkObj> linkObjs = new List<LinkObj>();
         protected override void Awake()
         {
             base.Awake();
@@ -86,23 +84,6 @@ namespace WorldActionSystem
         {
             elementCtrl.RemoveElement(this);
         }
-
-        public void BindingLinkObj(LinkObj linkObj)
-        {
-            if (!linkObjects.Contains(linkObj))
-            {
-                linkObjects.Add(linkObj);
-            }
-        }
-
-        public void UnBindingLinkObj(LinkObj linkObj)
-        {
-            if (linkObjects.Contains(linkObj))
-            {
-                linkObjects.Remove(linkObj);
-            }
-        }
-
         private void InitPorts()
         {
             if (_childNodes == null || _childNodes.Count == 0)
@@ -110,6 +91,34 @@ namespace WorldActionSystem
                 var nodeItems = GetComponentsInChildren<LinkPort>(true);
                 _childNodes.AddRange(nodeItems);
             }
+        }
+
+        public void RegistLinkObj(LinkObj linkObj)
+        {
+            if(!linkObjs .Contains(linkObj))
+            {
+                linkObjs.Add(linkObj);
+            }
+        }
+        public void RemoveLinkObj(LinkObj linkObj)
+        {
+            if (linkObjs.Contains(linkObj))
+            {
+                linkObjs.Remove(linkObj);
+            }
+        }
+
+        internal LinkPort[] GetLinkPorts()
+        {
+            var connenctedPos = new List<LinkPort>();
+            foreach (var item in ChildNodes)
+            {
+                if(item.ConnectedNode != null)
+                {
+                    connenctedPos.Add(item);
+                }
+            }
+            return connenctedPos.ToArray();
         }
 
         private void RetiveNodes(List<LinkItem> context, LinkItem linkItem)
