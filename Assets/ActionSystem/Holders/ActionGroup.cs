@@ -12,7 +12,9 @@ namespace WorldActionSystem
     {
         public string groupKey;
         public int totalCommand;
-        public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
+        [UnityEngine.Serialization.FormerlySerializedAs("prefabList")]
+        public List<AutoPrefabItem> autoLoadElement = new List<AutoPrefabItem>();
+        public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
 
         #region Events
         public event UserError onUserError;//步骤操作错误
@@ -54,11 +56,13 @@ namespace WorldActionSystem
                    if (onCommandRegisted != null)
                        onCommandRegisted.Invoke(x);
                });
-            Utility.CreateRunTimeObjects(transform, prefabList);
+            Utility.CreateRunTimeObjects(transform, autoLoadElement);
+            ElementController.Instence.RegistRunTimeElements(runTimeElements);
             ActionSystem.Instence.RegistGroup(this);
         }
         private void OnDestroy()
         {
+            ElementController.Instence.RemoveRunTimeElements(runTimeElements);
             ActionSystem.Instence.RemoveGroup(this);
         }
         #endregion

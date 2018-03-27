@@ -9,6 +9,8 @@ namespace WorldActionSystem
     {
         public string groupKey;
         public int totalCommand;
-        public List<ActionPrefabItem> prefabList = new List<ActionPrefabItem>();
+        [UnityEngine.Serialization.FormerlySerializedAs("prefabList")]
+        public List<AutoPrefabItem> autoLoadElement = new List<AutoPrefabItem>();
+        public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
     }
 }

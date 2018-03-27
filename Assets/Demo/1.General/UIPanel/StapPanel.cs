@@ -55,7 +55,6 @@ namespace WorldActionSystem
 
         public InputField nameField;
         public Button create;
-        public List<GameObject> prefabs;
 
         /// <summary>
         /// 注册按扭事件
@@ -86,23 +85,7 @@ namespace WorldActionSystem
 
         private void CreateAnElement()
         {
-            CreateByName(nameField.text);
-        }
-
-        private  ISupportElement CreateByName(string objName)
-        {
-            var prefab = prefabs.Find(x => x.name == objName);
-            if (prefab)
-            {
-                var pos = UnityEngine.Random.insideUnitSphere * 5;
-                var item = Instantiate(prefab, pos, Quaternion.identity, null).GetComponent<ISupportElement>();
-                if (item != null)
-                {
-                    item.IsRuntimeCreated = true;
-                    return item;
-                }
-            }
-            return null;
+            ElementController.Instence.TryCreateElement<ISupportElement>(nameField.text);
         }
 
         private void OnAutoPlayStateChanged(bool arg0)
@@ -221,7 +204,6 @@ namespace WorldActionSystem
         void Start()
         {
             panel.SetActive(false);
-            ElementController.Instence.CreateElement = CreateByName;
             ActionSystem.Instence.RetriveAsync(groupName, (group) =>
             {
                 this.group = group;

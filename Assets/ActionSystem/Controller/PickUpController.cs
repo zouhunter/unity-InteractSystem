@@ -9,7 +9,7 @@ namespace WorldActionSystem
 {
     public class PickUpController
     {
-        internal PickUpAbleItem pickedUpObj { get; private set; }
+        internal PickUpAbleItem pickedUpObj { get; set; }
         public bool PickedUp { get { return pickedUpObj != null; } }
         private Ray ray;
         private RaycastHit hit;

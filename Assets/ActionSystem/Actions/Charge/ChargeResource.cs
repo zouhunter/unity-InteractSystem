@@ -16,7 +16,7 @@ namespace WorldActionSystem
         public float current { get; private set; }
         public ChargeEvent onChange { get; set; }
         public float capacity { get { return _capacity; } }
-
+        public bool Used { get; set; }
         #region ISupportElement
         public string Name { get { return name; } }
         public bool Active { get; private set; }

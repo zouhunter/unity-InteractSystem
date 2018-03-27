@@ -47,8 +47,20 @@ namespace WorldActionSystem
             {
                 if (item.element != null && item.element.Body != null)
                 {
-                    Destroy(item.element.Body);
+                    item.element.Used = false;
                     item.element = null;
+                }
+            }
+            ElementController.Instence.ClearRuntimeCreated();
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            foreach (var item in hoders)
+            {
+                if(item.element != null)
+                {
+                    item.element.Used = true;
                 }
             }
         }
@@ -59,9 +71,9 @@ namespace WorldActionSystem
         protected override void OnRegistElement(ISupportElement arg0)
         {
             base.OnRegistElement(arg0);
+
             if (arg0.IsRuntimeCreated)
             {
-
                 if (hoders.Find(x => x.element == arg0) == null)
                 {
                     var hold = hoders.Find(x => x.objName == arg0.Name && x.element == null);

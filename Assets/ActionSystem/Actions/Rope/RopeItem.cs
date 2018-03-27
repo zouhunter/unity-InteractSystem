@@ -37,6 +37,7 @@ namespace WorldActionSystem
         private List<Collider> ropeList = new List<Collider>();
         [SerializeField]
         private UltimateRope rope;
+        public bool Used { get; set; }
         public bool IsRuntimeCreated { get; set; }
         private List<float> lengthList = new List<float>();
         public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }

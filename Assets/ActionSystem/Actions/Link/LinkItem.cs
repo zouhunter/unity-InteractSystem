@@ -30,6 +30,7 @@ namespace WorldActionSystem
                 return gameObject;
             }
         }
+        public bool Used { get; set; }
         private List<LinkPort> _childNodes = new List<LinkPort>();
         public List<LinkPort> ChildNodes
         {

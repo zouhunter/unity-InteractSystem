@@ -15,9 +15,9 @@ namespace WorldActionSystem
         protected override void RemoveDouble()
         {
             var actionSystem = target as ActionGroupObj;
-            var newList = new List<ActionPrefabItem>();
-            var needRemove = new List<ActionPrefabItem>();
-            foreach (var item in actionSystem.prefabList)
+            var newList = new List<AutoPrefabItem>();
+            var needRemove = new List<AutoPrefabItem>();
+            foreach (var item in actionSystem.autoLoadElement)
             {
                 if (newList.Find(x => x.ID == item.ID) == null)
                 {
@@ -30,7 +30,7 @@ namespace WorldActionSystem
             }
             foreach (var item in needRemove)
             {
-                actionSystem.prefabList.Remove(item);
+                actionSystem.autoLoadElement.Remove(item);
             }
             EditorUtility.SetDirty(actionSystem);
         }

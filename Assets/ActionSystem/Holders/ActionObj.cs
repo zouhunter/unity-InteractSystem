@@ -57,6 +57,11 @@ namespace WorldActionSystem
         public abstract ControllerType CtrlType { get; }
         public static bool log = true;
         protected bool notice;
+        protected virtual void Awake()
+        {
+            elementCtrl.onRegistElememt += OnRegistElement;
+            elementCtrl.onRemoveElememt += OnRemoveElement;
+        }
         protected virtual void Start()
         {
             hooks = GetComponentsInChildren<ActionHook>(false);
@@ -71,9 +76,6 @@ namespace WorldActionSystem
             WorpCameraID();
 
             gameObject.SetActive(startActive);
-
-            elementCtrl.onRegistElememt += OnRegistElement;
-            elementCtrl.onRemoveElememt += OnRemoveElement;
         }
 
         protected virtual void OnDestroy()

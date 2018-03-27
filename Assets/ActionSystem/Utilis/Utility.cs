@@ -64,7 +64,7 @@ namespace WorldActionSystem
 
         }
 
-        public static void CreateRunTimeObjects(Transform transform, List<ActionPrefabItem> prefabList)
+        public static void CreateRunTimeObjects(Transform transform, List<AutoPrefabItem> prefabList)
         {
            
             foreach (var item in prefabList)

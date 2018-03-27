@@ -48,7 +48,36 @@ namespace WorldActionSystem
             }
         }
 
-        internal static void LoadPrefab(SerializedProperty prefabProp,SerializedProperty ct_commandProp,SerializedProperty ct_pickProp, SerializedProperty instanceIDProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)
+        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp)
+        {
+            if (prefabProp.objectReferenceValue == null)
+            {
+                return;
+            }
+
+            if (instanceIDProp.intValue != 0)
+            {
+                var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
+
+                if (gitem != null)
+                {
+                    return;
+                }
+            }
+
+            GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
+            if (gopfb != null)
+            {
+                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                var parent = actionSystem == null ? null : actionSystem.transform;
+                GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
+                instanceIDProp.intValue = go.GetInstanceID();
+                go.transform.SetParent(parent, false);
+            }
+        }
+
+
+        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty ct_commandProp, SerializedProperty ct_pickProp,  SerializedProperty rematrixProp, SerializedProperty matrixProp)
         {
             if (prefabProp.objectReferenceValue == null)
             {
@@ -72,10 +101,7 @@ namespace WorldActionSystem
                 var parent = actionSystem == null ? null : actionSystem.transform;
                 parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
                 GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
-
                 instanceIDProp.intValue = go.GetInstanceID();
-
-               
                 go.transform.SetParent(parent, false);
 
                 if (rematrixProp.boolValue)
@@ -84,7 +110,16 @@ namespace WorldActionSystem
                 }
             }
         }
-
+        internal static void SavePrefab(SerializedProperty instanceIDProp)
+        {
+            var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
+            if (gitem != null)
+            {
+                ActionEditorUtility.ApplyPrefab(gitem as GameObject);
+                GameObject.DestroyImmediate(gitem);
+            }
+            instanceIDProp.intValue = 0;
+        }
         internal static void SavePrefab(SerializedProperty instanceIDProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)
         {
             var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);

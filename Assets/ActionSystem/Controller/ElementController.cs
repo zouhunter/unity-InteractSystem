@@ -21,12 +21,13 @@ namespace WorldActionSystem
                 return _instence;
             }
         }
-
+        private List<ISupportElement> runTimeElementPrefabs = new List<ISupportElement>();
         private List<ISupportElement> elementList = new List<ISupportElement>();
+        private List<ISupportElement> rutimeCreatedList = new List<ISupportElement>();
         public bool log = false;
         public event UnityAction<ISupportElement> onRegistElememt;
         public event UnityAction<ISupportElement> onRemoveElememt;
-        public Func<string, ISupportElement> CreateElement { get; set; } 
+
         /// <summary>
         /// 外部添加Element
         /// </summary>
@@ -35,7 +36,8 @@ namespace WorldActionSystem
             if (!elementList.Contains(item))
             {
                 elementList.Add(item);
-                if (onRegistElememt != null){
+                if (onRegistElememt != null)
+                {
                     onRegistElememt.Invoke(item);
                 }
             }
@@ -45,12 +47,24 @@ namespace WorldActionSystem
             }
         }
 
+        internal void ClearRuntimeCreated()
+        {
+            foreach (var item in rutimeCreatedList)
+            {
+                if(!item.Used)
+                {
+                    GameObject.Destroy(item.Body);
+                }
+            }
+        }
+
         public void RemoveElement(ISupportElement item)
         {
-            if(elementList.Contains(item))
+            if (elementList.Contains(item))
             {
                 elementList.Remove(item);
-                if (onRemoveElememt != null){
+                if (onRemoveElememt != null)
+                {
                     onRemoveElememt.Invoke(item);
                 }
             }
@@ -65,13 +79,15 @@ namespace WorldActionSystem
         public T TryCreateElement<T>(string elementName) where T : ISupportElement
         {
             T element = default(T);
-            if (CreateElement != null)
+            var prefab = runTimeElementPrefabs.Find(x => x.Name == elementName);
+            if (prefab != null)
             {
-                var e = CreateElement(elementName);
+                var e = CreateElement(prefab);
                 if (e is T)
                 {
                     element = (T)e;
                     element.IsRuntimeCreated = true;
+                    rutimeCreatedList.Add(element);
                 }
                 else
                 {
@@ -79,6 +95,40 @@ namespace WorldActionSystem
                 }
             }
             return element;
+        }
+
+        private ISupportElement CreateElement(ISupportElement prefab)
+        {
+            var instence = UnityEngine.Object.Instantiate(prefab.Body);
+            var element = instence.GetComponent<ISupportElement>();
+            element.IsRuntimeCreated = true;
+            return element;
+        }
+
+        internal void RemoveRunTimeElements(List<RunTimePrefabItem> elements)
+        {
+            foreach (var item in elements)
+            {
+                if (item == null && item.prefab) continue;
+                var element = item.prefab.GetComponent<ISupportElement>();
+                if (element != null && runTimeElementPrefabs.Contains(element))
+                {
+                    runTimeElementPrefabs.Remove(element);
+                }
+            }
+        }
+
+        internal void RegistRunTimeElements(List<RunTimePrefabItem> elements)
+        {
+            foreach (var item in elements)
+            {
+                if (item == null && item.prefab) continue;
+                var element = item.prefab.GetComponent<ISupportElement>();
+                if (element != null && !runTimeElementPrefabs.Contains(element))
+                {
+                    runTimeElementPrefabs.Add(element);
+                }
+            }
         }
 
         /// <summary>
@@ -89,15 +139,16 @@ namespace WorldActionSystem
         public List<T> GetElements<T>(string elementName) where T : ISupportElement
         {
             var list = elementList.FindAll(x => x.Name == elementName && x is T);
-            if(list.Count > 0){
-                return list.ConvertAll<T>(x => (T)x) ;   
+            if (list.Count > 0)
+            {
+                return list.ConvertAll<T>(x => (T)x);
             }
             else
             {
                 Debug.LogWarning("配制错误,缺少" + elementName);
             }
             return null;
-            
+
         }
 
         /// <summary>
@@ -107,7 +158,7 @@ namespace WorldActionSystem
         /// <returns></returns>
         public List<T> GetElements<T>()
         {
-            var list = elementList.FindAll(x =>x is T);
+            var list = elementList.FindAll(x => x is T);
             if (list.Count > 0)
             {
                 return list.ConvertAll<T>(x => (T)x);

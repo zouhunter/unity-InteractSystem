@@ -25,7 +25,7 @@ namespace WorldActionSystem
         public ChargeEvent onLoad { get; set; }
         public ChargeEvent onCharge { get; set; }
 
-
+        public bool Used { get; set; }
         public GameObject Body
         {
             get

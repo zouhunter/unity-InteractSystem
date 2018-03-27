@@ -24,7 +24,7 @@ public class ScriptObjTest : MonoBehaviour
         var holder = new GameObject("GroupTemp").AddComponent<ActionGroup>();
         holder.groupKey = obj.groupKey;
         holder.totalCommand = obj.totalCommand;
-        Utility.CreateRunTimeObjects(holder.transform, obj.prefabList);
+        Utility.CreateRunTimeObjects(holder.transform, obj.autoLoadElement);
         return holder;
     }
     private void LoopExecute()

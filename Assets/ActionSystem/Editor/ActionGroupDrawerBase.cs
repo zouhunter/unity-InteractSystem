@@ -18,14 +18,16 @@ namespace WorldActionSystem
         }
         protected bool swink;
         protected string query;
+        protected string runtimeQuery;
         protected SerializedProperty script;
         protected SerializedProperty groupKeyProp;
         protected SerializedProperty totalCommandProp;
-        protected SerializedProperty prefabListProp;
-        //protected DragAdapt prefabListPropAdapt;
+        protected SerializedProperty autoLoadListProp;
+        protected SerializedProperty autoLoadListWorp;
 
-        protected SerializedProperty prefabListWorp;
-        //protected DragAdapt prefabListWorpAdapt;
+        protected SerializedProperty runTimeElementProp;
+        protected SerializedProperty runTimeElementWorp;
+
         protected static int selected = 0;
         protected static SortType currSortType;
         protected GUIContent[] selectables;
@@ -48,18 +50,23 @@ namespace WorldActionSystem
 
         protected ReorderableList prefabList_r;
         protected ReorderableList prefabListWorp_r;
+
+        protected ReorderableList runtimeElement_r;
+        protected ReorderableList runtimeElementWorp_r;
+
         private void OnEnable()
         {
             script = serializedObject.FindProperty("m_Script");
             totalCommandProp = serializedObject.FindProperty("totalCommand");
             groupKeyProp = serializedObject.FindProperty("groupKey");
-            prefabListProp = serializedObject.FindProperty("prefabList");
-            //prefabListPropAdapt = new DragAdapt(prefabListProp, "prefabList");
-            //prefabListWorpAdapt = new DragAdapt(prefabListWorp, "prefabList");
+            autoLoadListProp = serializedObject.FindProperty("autoLoadElement");
+            runTimeElementProp = serializedObject.FindProperty("runTimeElements");
             MarchList();
             CalcuteCommandCount();
-            InitReorderList();
+            InitAutoLoadReorderList();
+            InitRunTimeReorderList();
         }
+
 
         private void OnDisable()
         {
@@ -71,50 +78,105 @@ namespace WorldActionSystem
         {
             serializedObject.Update();
             DrawScript();
-            using (var hor = new EditorGUILayout.HorizontalScope())
-            {
-                DrawToolButtons();
-            }
             DrawControllers();
-            DrawSelection();
-            DrawRuntimeItems();
-            DrawAcceptRegion();
+            DrawAutoLoadList();
+            DrawRuntimeLoadList();
             serializedObject.ApplyModifiedProperties();
         }
-        private void InitReorderList()
+
+        private void DrawAutoLoadList()
         {
-            prefabList_r = new ReorderableList(serializedObject, prefabListProp);
+            using (var hor = new EditorGUILayout.HorizontalScope())
+            {
+                DrawToolButtons(autoLoadListProp, autoLoadListWorp);
+                if (GUILayout.Button(new GUIContent("反向忽略"), EditorStyles.miniButton, GUILayout.Width(60)))
+                {
+                    IgnoreNotIgnored(autoLoadListProp);
+                }
+                GUILayout.FlexibleSpace();
+                GUILayout.Label("(初始化便自动加载)");
+            }
+            DrawSelection();
+            DrawAutoItems();
+            DrawAcceptRegion(autoLoadListProp);
+        }
+
+        private void DrawRuntimeLoadList()
+        {
+            using (var hor = new EditorGUILayout.HorizontalScope())
+            {
+                DrawToolButtons(runTimeElementProp, runTimeElementWorp);
+                GUILayout.FlexibleSpace();
+                GUILayout.Label("(手动调用选择加载)");
+            }
+            DrawRunTimeItems();
+            DrawAcceptRegion(runTimeElementProp);
+        }
+
+        private void InitAutoLoadReorderList()
+        {
+            prefabList_r = new ReorderableList(serializedObject, autoLoadListProp);
             prefabList_r.elementHeightCallback += GetElementHeight;
             prefabList_r.drawHeaderCallback += DrawPrefabListHeader;
             prefabList_r.drawElementCallback += DrawListElement;
+
             var sobj = new SerializedObject(ScriptableObject.CreateInstance<ActionGroupObj>());
-            prefabListWorp = sobj.FindProperty("prefabList");
-            prefabListWorp_r = new ReorderableList(sobj, prefabListWorp);
+            autoLoadListWorp = sobj.FindProperty("autoLoadElement");
+            prefabListWorp_r = new ReorderableList(sobj, autoLoadListWorp);
             prefabListWorp_r.drawHeaderCallback += DrawWorpListHeader;
             prefabListWorp_r.drawElementCallback += DrawWorpListElement;
             prefabListWorp_r.elementHeightCallback += GetWorpElementHeight;
         }
+        private void InitRunTimeReorderList()
+        {
+            runtimeElement_r = new ReorderableList(serializedObject, runTimeElementProp);
+            runtimeElement_r.drawHeaderCallback += (rect) =>
+            {
+                if (GUI.Button(rect, "动态元素列表", EditorStyles.boldLabel))
+                {
+                    RemoveDouble();
+                }
+            };
+            runtimeElement_r.drawElementCallback += DrawRuntimeElements;
+            var sobj = new SerializedObject(ScriptableObject.CreateInstance<ActionGroupObj>());
+            runTimeElementWorp = sobj.FindProperty("runTimeElements");
+            runtimeElementWorp_r = new ReorderableList(sobj, runTimeElementWorp);
+            runtimeElementWorp_r.drawHeaderCallback += DrawWorpListHeader;
+            runtimeElementWorp_r.drawElementCallback += DrawRuntimeElementsWorp;
+        }
+
+        private void DrawRuntimeElements(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            var prop = runTimeElementProp.GetArrayElementAtIndex(index);
+            if (prop != null) EditorGUI.PropertyField(rect, prop, true);
+        }
+        private void DrawRuntimeElementsWorp(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            var prop = runTimeElementWorp.GetArrayElementAtIndex(index);
+            if (prop != null) EditorGUI.PropertyField(rect, prop, true);
+        }
 
         private float GetWorpElementHeight(int index)
         {
-            var property = prefabListWorp.GetArrayElementAtIndex(index);
+            var property = autoLoadListWorp.GetArrayElementAtIndex(index);
             return (property.isExpanded ? 2 : 1) * EditorGUIUtility.singleLineHeight;
         }
 
         private float GetElementHeight(int index)
         {
-            var property = prefabListProp.GetArrayElementAtIndex(index);
+            var property = autoLoadListProp.GetArrayElementAtIndex(index);
             return (property.isExpanded ? 2 : 1) * EditorGUIUtility.singleLineHeight;
         }
 
         private void DrawWorpListElement(Rect rect, int index, bool isActive, bool isFocused)
         {
-            var prop = prefabListWorp.GetArrayElementAtIndex(index);
+            var prop = autoLoadListWorp.GetArrayElementAtIndex(index);
             if (prop != null) EditorGUI.PropertyField(rect, prop, true);
         }
+
         private void DrawListElement(Rect rect, int index, bool isActive, bool isFocused)
         {
-            var prop = prefabListProp.GetArrayElementAtIndex(index);
+            var prop = autoLoadListProp.GetArrayElementAtIndex(index);
             if (prop != null) EditorGUI.PropertyField(rect, prop, true);
         }
 
@@ -125,7 +187,10 @@ namespace WorldActionSystem
 
         private void DrawPrefabListHeader(Rect rect)
         {
-            EditorGUI.LabelField(rect, "元素列表", EditorStyles.boldLabel);
+            if (GUI.Button(rect, "静态元素列表", EditorStyles.boldLabel))
+            {
+                RemoveDouble();
+            }
         }
 
         private void DrawSelection()
@@ -144,7 +209,10 @@ namespace WorldActionSystem
 
         private void DrawControllers()
         {
-            EditorGUILayout.PropertyField(groupKeyProp);
+            using (var hor = new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.PropertyField(groupKeyProp);
+            }
 
             if (string.IsNullOrEmpty(groupKeyProp.stringValue))
             {
@@ -159,7 +227,19 @@ namespace WorldActionSystem
             EditorGUI.EndDisabledGroup();
         }
 
-        protected virtual void DrawRuntimeItems()
+        protected virtual void DrawRunTimeItems()
+        {
+            if (string.IsNullOrEmpty(runtimeQuery))
+            {
+                runtimeElement_r.DoLayoutList();
+            }
+            else
+            {
+                runtimeElementWorp_r.DoLayoutList();
+            }
+
+        }
+        protected virtual void DrawAutoItems()
         {
             if (string.IsNullOrEmpty(query) && selected == 0)
             {
@@ -176,11 +256,11 @@ namespace WorldActionSystem
         {
             if (string.IsNullOrEmpty(query) && selected == 0) return;
 
-            prefabListWorp.ClearArray();
+            autoLoadListWorp.ClearArray();
 
-            for (int i = 0; i < prefabListProp.arraySize; i++)
+            for (int i = 0; i < autoLoadListProp.arraySize; i++)
             {
-                var prop = prefabListProp.GetArrayElementAtIndex(i);
+                var prop = autoLoadListProp.GetArrayElementAtIndex(i);
                 var prefabProp = prop.FindPropertyRelative("prefab");
 
                 if (prefabProp.objectReferenceValue == null || !prefabProp.objectReferenceValue.name.ToLower().Contains(query.ToLower()))
@@ -213,38 +293,29 @@ namespace WorldActionSystem
                     }
                 }
 
-                prefabListWorp.InsertArrayElementAtIndex(0);
-                ActionEditorUtility.CopyPropertyValue(prefabListWorp.GetArrayElementAtIndex(0), prefabListProp.GetArrayElementAtIndex(i));
+                autoLoadListWorp.InsertArrayElementAtIndex(0);
+                ActionEditorUtility.CopyPropertyValue(autoLoadListWorp.GetArrayElementAtIndex(0), autoLoadListProp.GetArrayElementAtIndex(i));
             }
         }
 
-        private void DrawToolButtons()
+        private void DrawToolButtons(SerializedProperty property, SerializedProperty worpProperty)
         {
-            var btnStyle = EditorStyles.toolbarButton;
-            if (GUILayout.Button(new GUIContent("%", "移除重复"), btnStyle))
+            var btnStyle = EditorStyles.miniButton;
+
+            if (GUILayout.Button(new GUIContent("排序"), btnStyle, GUILayout.Width(60)))
             {
-                RemoveDouble();
+                SortPrefabs(selected == 0 ? property : worpProperty);
             }
-            if (GUILayout.Button(new GUIContent("！", "排序"), btnStyle))
+            if (GUILayout.Button(new GUIContent("批量加载"), btnStyle, GUILayout.Width(60)))
             {
-                SortPrefabs(selected == 0 ? prefabListProp : prefabListWorp);
+                GroupLoadPrefabs(selected == 0 ? property : worpProperty);
             }
-            if (GUILayout.Button(new GUIContent("o", "批量加载"), btnStyle))
+            if (GUILayout.Button(new GUIContent("批量关闭"), btnStyle, GUILayout.Width(60)))
             {
-                GroupLoadPrefabs(selected == 0 ? prefabListProp : prefabListWorp);
+                CloseAllCreated(selected == 0 ? property : worpProperty);
             }
-            if (GUILayout.Button(new GUIContent("c", "批量关闭"), btnStyle))
-            {
-                CloseAllCreated(selected == 0 ? prefabListProp : prefabListWorp);
-            }
-            if (GUILayout.Button(new GUIContent("i", "反向忽略"), btnStyle))
-            {
-                IgnoreNotIgnored(prefabListProp);
-            }
+
         }
-
-        protected abstract void RemoveDouble();
-
         protected void SortPrefabs(SerializedProperty property)
         {
             if (currSortType == SortType.ByName)
@@ -272,52 +343,57 @@ namespace WorldActionSystem
             for (int i = 0; i < prefabListProp.arraySize; i++)
             {
                 var ignorePorp = prefabListProp.GetArrayElementAtIndex(i).FindPropertyRelative("ignore");
-                ignorePorp.boolValue = !ignorePorp.boolValue;
+                if (ignorePorp != null)
+                {
+                    ignorePorp.boolValue = !ignorePorp.boolValue;
+                }
             }
         }
+        protected abstract void RemoveDouble();
 
         /// <summary>
         /// 绘制作快速导入的区域
         /// </summary>
-        private void DrawAcceptRegion()
+        private void DrawAcceptRegion(SerializedProperty property)
         {
-            var rect = GUILayoutUtility.GetRect(new GUIContent("哈哈"), EditorStyles.toolbarButton);
+            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight);
             rect.y -= EditorGUIUtility.singleLineHeight;
-            switch (Event.current.type)
+            if (rect.Contains(Event.current.mousePosition))
             {
-                case EventType.DragUpdated:
-                    if (rect.Contains(Event.current.mousePosition))
-                    {
+                switch (Event.current.type)
+                {
+                    case EventType.DragUpdated:
+
                         DragAndDrop.visualMode = DragAndDropVisualMode.Move;
-                    }
-                    break;
-                case EventType.DragPerform:
-                    if (DragAndDrop.objectReferences.Length > 0)
-                    {
-                        var objs = DragAndDrop.objectReferences;
-                        for (int i = 0; i < objs.Length; i++)
+                        break;
+                    case EventType.DragPerform:
+                        if (DragAndDrop.objectReferences.Length > 0)
                         {
-                            var obj = objs[i];
-                            var prefab = PrefabUtility.GetPrefabParent(obj);
-                            UnityEngine.Object goodObj = null;
-                            if (prefab != null)
+                            var objs = DragAndDrop.objectReferences;
+                            for (int i = 0; i < objs.Length; i++)
                             {
-                                goodObj = PrefabUtility.FindPrefabRoot(prefab as GameObject);
-                            }
-                            else
-                            {
-                                var path = AssetDatabase.GetAssetPath(obj);
-                                if (!string.IsNullOrEmpty(path))
+                                var obj = objs[i];
+                                var prefab = PrefabUtility.GetPrefabParent(obj);
+                                UnityEngine.Object goodObj = null;
+                                if (prefab != null)
                                 {
-                                    goodObj = obj;
+                                    goodObj = PrefabUtility.FindPrefabRoot(prefab as GameObject);
                                 }
+                                else
+                                {
+                                    var path = AssetDatabase.GetAssetPath(obj);
+                                    if (!string.IsNullOrEmpty(path))
+                                    {
+                                        goodObj = obj;
+                                    }
+                                }
+                                property.InsertArrayElementAtIndex(property.arraySize);
+                                var itemprefab = property.GetArrayElementAtIndex(property.arraySize - 1);
+                                itemprefab.FindPropertyRelative("prefab").objectReferenceValue = goodObj;
                             }
-                            prefabListProp.InsertArrayElementAtIndex(prefabListProp.arraySize);
-                            var itemprefab = prefabListProp.GetArrayElementAtIndex(prefabListProp.arraySize - 1);
-                            itemprefab.FindPropertyRelative("prefab").objectReferenceValue = goodObj;
                         }
-                    }
-                    break;
+                        break;
+                }
             }
         }
 
@@ -349,7 +425,14 @@ namespace WorldActionSystem
                     var rematrixProp = itemProp.FindPropertyRelative("rematrix");
                     var containsCommandProp = itemProp.FindPropertyRelative("containsCommand");
                     var containsPickupProp = itemProp.FindPropertyRelative("containsPickup");
-                    ActionEditorUtility.LoadPrefab(prefabProp, containsCommandProp, containsPickupProp, instanceIDProp, rematrixProp, matrixProp);
+                    if (matrixProp != null)
+                    {
+                        ActionEditorUtility.LoadPrefab(prefabProp, containsCommandProp, containsPickupProp, instanceIDProp, rematrixProp, matrixProp);
+                    }
+                    else
+                    {
+                        ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp);
+                    }
                     itemProp.isExpanded = true;
                 }
 
@@ -369,7 +452,14 @@ namespace WorldActionSystem
                 {
                     var matrixProp = itemProp.FindPropertyRelative("matrix");
                     var rematrixProp = itemProp.FindPropertyRelative("rematrix");
-                    ActionEditorUtility.SavePrefab(instanceIDPorp, rematrixProp, matrixProp);
+                    if (rematrixProp != null)
+                    {
+                        ActionEditorUtility.SavePrefab(instanceIDPorp, rematrixProp, matrixProp);
+                    }
+                    else
+                    {
+                        ActionEditorUtility.SavePrefab(instanceIDPorp);
+                    }
                     DestroyImmediate(obj);
                 }
                 itemProp.isExpanded = false;
@@ -409,9 +499,9 @@ namespace WorldActionSystem
             }
 
 
-            for (int i = 0; i < prefabListProp.arraySize; i++)
+            for (int i = 0; i < autoLoadListProp.arraySize; i++)
             {
-                var prop = prefabListProp.GetArrayElementAtIndex(i);
+                var prop = autoLoadListProp.GetArrayElementAtIndex(i);
                 var ignore = prop.FindPropertyRelative("ignore");
 
                 var pfb = prop.FindPropertyRelative("prefab");
@@ -448,17 +538,17 @@ namespace WorldActionSystem
         {
             List<SerializedProperty> needAdd = new List<SerializedProperty>();
 
-            if (prefabListWorp.arraySize > 0)
+            if (autoLoadListWorp.arraySize > 0)
             {
-                for (int i = 0; i < prefabListWorp.arraySize; i++)
+                for (int i = 0; i < autoLoadListWorp.arraySize; i++)
                 {
-                    var newProp = prefabListWorp.GetArrayElementAtIndex(i);
+                    var newProp = autoLoadListWorp.GetArrayElementAtIndex(i);
                     var newprefabProp = newProp.FindPropertyRelative("prefab");
                     var newrematrixProp = newProp.FindPropertyRelative("rematrix");
                     bool contain = false;
-                    for (int j = 0; j < prefabListProp.arraySize; j++)
+                    for (int j = 0; j < autoLoadListProp.arraySize; j++)
                     {
-                        var prop = prefabListProp.GetArrayElementAtIndex(j);
+                        var prop = autoLoadListProp.GetArrayElementAtIndex(j);
                         var prefabProp = prop.FindPropertyRelative("prefab");
                         var rematrixProp = prop.FindPropertyRelative("rematrix");
                         if (prefabProp.objectReferenceValue == newprefabProp.objectReferenceValue)
@@ -479,9 +569,9 @@ namespace WorldActionSystem
 
             for (int i = 0; i < needAdd.Count; i++)
             {
-                prefabListProp.InsertArrayElementAtIndex(0);
+                autoLoadListProp.InsertArrayElementAtIndex(0);
                 var newProp = needAdd[i];
-                var prop = prefabListProp.GetArrayElementAtIndex(0);
+                var prop = autoLoadListProp.GetArrayElementAtIndex(0);
                 ActionEditorUtility.CopyPropertyValue(prop, newProp);
             }
         }

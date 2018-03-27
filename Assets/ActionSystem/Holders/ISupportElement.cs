@@ -10,6 +10,7 @@ namespace WorldActionSystem
         GameObject Body { get; }
         bool IsRuntimeCreated { get; set; }
         bool Active { get; }
+        bool Used { get; set; }
         void StepActive();
         void StepComplete();
         void StepUnDo();

@@ -74,7 +74,7 @@ namespace WorldActionSystem
         public int animTime { get { return Config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
-
+        public bool Used { get; set; }
         public override string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
 
         public GameObject Body

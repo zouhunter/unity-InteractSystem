@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEditor;
 namespace WorldActionSystem
 {
-    [CustomPropertyDrawer(typeof(ActionPrefabItem), true)]
+    [CustomPropertyDrawer(typeof(AutoPrefabItem), true)]
     public class ActionPrefabItemDrawer : PropertyDrawer
     {
         protected SerializedProperty containsCommandProp;
