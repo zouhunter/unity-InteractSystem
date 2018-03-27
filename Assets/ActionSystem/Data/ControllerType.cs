@@ -13,5 +13,6 @@ namespace WorldActionSystem
         Drag = 1 << 6,//拖拽
         Link = 1 << 7,//关联
         Charge = 1 << 8,//填充
+        Create = 1<<9,//创建
     }
 }

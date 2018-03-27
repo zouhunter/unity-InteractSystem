@@ -248,7 +248,8 @@ namespace WorldActionSystem
                 if(item.linkItem != null)
                 {
                     item.linkItem.StepUnDo();
-                    linkedItems[i] = null;
+                    linkedItems[i].linkItem = null;
+                    linkedItems[i].linkedPorts = new List<LinkPort>();
                 }
             }
         }

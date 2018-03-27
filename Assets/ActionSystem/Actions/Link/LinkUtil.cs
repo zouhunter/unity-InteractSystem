@@ -71,12 +71,16 @@ namespace WorldActionSystem
             foreach (var item in dic)
             {
                 var linkItem = item.linkItem;
-                var ports = item.linkedPorts;
-                linkItem.transform.SetParent(parent);
-                foreach (var port in ports)
+                if(linkItem != null)
                 {
-                    port.ConnectedNode = null;
+                    var ports = item.linkedPorts;
+                    linkItem.transform.SetParent(parent);
+                    foreach (var port in ports)
+                    {
+                        port.ConnectedNode = null;
+                    }
                 }
+            
             }
         }
 
