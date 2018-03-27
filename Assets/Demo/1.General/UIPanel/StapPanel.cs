@@ -52,6 +52,11 @@ namespace WorldActionSystem
         public Toggle notice;
         public Toggle autoNext;
         public Toggle autoPlay;
+
+        public InputField nameField;
+        public Button create;
+        public List<GameObject> prefabs;
+
         /// <summary>
         /// 注册按扭事件
         /// </summary>
@@ -68,6 +73,7 @@ namespace WorldActionSystem
             toEnd.onClick.AddListener(ToEndButtonClicked);
             notice.onValueChanged.AddListener(OnNoticeStateChanged);
             autoPlay.onValueChanged.AddListener(OnAutoPlayStateChanged);
+            create.onClick.AddListener(CreateAnElement);
             //accept.onClick.AddListener(OnSelected);
             start.onClick.AddListener(OnStapChange);
             backAstep.onClick.AddListener(OnStapChange);
@@ -76,6 +82,27 @@ namespace WorldActionSystem
             skipAStap.onClick.AddListener(OnStapChange);
             skipMutiStap.onClick.AddListener(OnStapChange);
             toEnd.onClick.AddListener(OnStapChange);
+        }
+
+        private void CreateAnElement()
+        {
+            CreateByName(nameField.text);
+        }
+
+        private  ISupportElement CreateByName(string objName)
+        {
+            var prefab = prefabs.Find(x => x.name == objName);
+            if (prefab)
+            {
+                var pos = UnityEngine.Random.insideUnitSphere * 5;
+                var item = Instantiate(prefab, pos, Quaternion.identity, null).GetComponent<ISupportElement>();
+                if (item != null)
+                {
+                    item.IsRuntimeCreated = true;
+                    return item;
+                }
+            }
+            return null;
         }
 
         private void OnAutoPlayStateChanged(bool arg0)
@@ -168,9 +195,9 @@ namespace WorldActionSystem
         }
         void OnEndExecute(bool haveNext)
         {
-            if ( haveNext)
+            if (haveNext)
             {
-               if(autoNext.isOn) OnAcceptButtonCilcked();
+                if (autoNext.isOn) OnAcceptButtonCilcked();
                 OnStapChange();
             }
             if (!haveNext)
@@ -194,6 +221,7 @@ namespace WorldActionSystem
         void Start()
         {
             panel.SetActive(false);
+            ElementController.Instence.CreateElement = CreateByName;
             ActionSystem.Instence.RetriveAsync(groupName, (group) =>
             {
                 this.group = group;
@@ -204,11 +232,12 @@ namespace WorldActionSystem
                     group.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
                     panel.SetActive(true);
                 });
+
             });
 
 
         }
     }
 
-   
+
 }

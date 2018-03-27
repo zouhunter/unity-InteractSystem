@@ -38,10 +38,12 @@ namespace WorldActionSystem
             base.OnRegistElement(arg0);
             if(arg0.IsRuntimeCreated)
             {
-                if(objectNames.Find(x=>x.body == arg0) == null)
+
+                if (objectNames.Find(x=>x.body == arg0) == null)
                 {
                    var hold = objectNames.Find(x => x.objName == arg0.Name && x.body == null);
-                    if(hold != null)
+                    Debug.Log(hold);
+                    if (hold != null)
                     {
                         hold.body = arg0;
                         TryComplete();

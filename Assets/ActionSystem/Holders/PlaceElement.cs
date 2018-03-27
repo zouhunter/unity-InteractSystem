@@ -111,7 +111,6 @@ namespace WorldActionSystem
         protected override void Awake()
         {
             base.Awake();
-            elementCtrl.RegistElement(this);
             move = new Tweener(this);
         }
         protected virtual void Start()
@@ -121,6 +120,7 @@ namespace WorldActionSystem
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
+            elementCtrl.RegistElement(this);
         }
         protected virtual void Update()
         {
