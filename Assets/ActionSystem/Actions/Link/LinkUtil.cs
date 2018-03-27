@@ -9,7 +9,7 @@ namespace WorldActionSystem
 {
     public static class LinkUtil
     {
-        public static void UpdateBrotherPos(LinkItem target,List<LinkItem> context)
+        public static void UpdateBrotherPos(LinkItem target, List<LinkItem> context)
         {
             if (target.ChildNodes == null || target.ChildNodes.Count == 0) return;
 
@@ -31,7 +31,7 @@ namespace WorldActionSystem
             }
         }
 
-        internal static void ResetTargetTranform(LinkItem target, LinkItem otherParent,Vector3 rPos,Vector3 rdDir)
+        internal static void ResetTargetTranform(LinkItem target, LinkItem otherParent, Vector3 rPos, Vector3 rdDir)
         {
             target.Trans.position = otherParent.Trans.TransformPoint(rPos);
             target.Trans.forward = otherParent.Trans.TransformDirection(rdDir);
@@ -52,15 +52,18 @@ namespace WorldActionSystem
         public static void RecordToDic(LinkHold[] ConnectedDic, LinkPort port)
         {
             var item = Array.Find(ConnectedDic, x => x.linkItem == port.Body);
-            if(item == null)
+            if (item == null)
             {
                 item = Array.Find(ConnectedDic, x => x.linkItem == null);
-                item.linkItem = port.Body;
+                if (item != null)
+                {
+                    item.linkItem = port.Body;
+                }
             }
-            
+
             if (item != null)
             {
-                if(!item.linkedPorts.Contains(port))
+                if (!item.linkedPorts.Contains(port))
                 {
                     item.linkedPorts.Add(port);
                 }
@@ -71,7 +74,7 @@ namespace WorldActionSystem
             foreach (var item in dic)
             {
                 var linkItem = item.linkItem;
-                if(linkItem != null)
+                if (linkItem != null)
                 {
                     var ports = item.linkedPorts;
                     linkItem.transform.SetParent(parent);
@@ -80,7 +83,7 @@ namespace WorldActionSystem
                         port.ConnectedNode = null;
                     }
                 }
-            
+
             }
         }
 
@@ -133,7 +136,7 @@ namespace WorldActionSystem
         public static bool FindTriggerNodes(LinkPort item, out List<LinkPort> nodes)
         {
             nodes = null;
-            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask( Layers.linknodeLayer));
+            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask(Layers.linknodeLayer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)
@@ -155,7 +158,7 @@ namespace WorldActionSystem
             return nodes != null && nodes.Count > 0;
         }
 
-     
+
 
         /// <summary>
         /// 空间查找可以可以连接的点
@@ -185,11 +188,8 @@ namespace WorldActionSystem
                     if (tempNode.connectAble.Find((x) => x.itemName == item.Body.Name && x.nodeId == item.NodeID) != null)
                     {
                         //同属于一个源
-                        if(tempNode.Body.BindingTarget == item.Body.BindingTarget)
-                        {
-                            node = tempNode;
-                            return true;
-                        }
+                        node = tempNode;
+                        return true;
                     }
                 }
             }

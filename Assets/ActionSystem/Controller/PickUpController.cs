@@ -108,9 +108,11 @@ namespace WorldActionSystem
         public void PickDown()
         {
             Debug.Log("PickDown");
+
             if (pickedUpObj != null)
             {
-                if (onPickdown != null) onPickdown(pickedUpObj);
+                if (onPickdown != null)
+                    onPickdown(pickedUpObj);
 
                 pickedUpObj.OnPickDown();
 

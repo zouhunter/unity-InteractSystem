@@ -116,7 +116,7 @@ namespace WorldActionSystem
 
         public void TryConnect()
         {
-            if (activeNode != null && targetNode != null && activeNode.Body.BindingTarget == targetNode.Body.BindingTarget)
+            if (activeNode != null && targetNode != null)
             {
                 LinkUtil.RecordToDic(ConnectedDic,activeNode);
 

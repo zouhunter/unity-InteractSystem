@@ -48,10 +48,12 @@ namespace WorldActionSystem
             }
         }
         public bool IsRuntimeCreated { get; set; }
-        public bool Active { get; protected set; }
-        public LinkObj BindingTarget { get; set; }
+        public bool Active { get { return true; } }
+        //public LinkObj BindingTarget { get; set; }
         public bool Connected { get; set; }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
+
+     
         private Vector3 startPos;
         private Quaternion startRot;
         private List<LinkPort> _groupNodes = new List<LinkPort>();
@@ -66,7 +68,7 @@ namespace WorldActionSystem
                 return _groupNodes;
             }
         }
-
+        public List<LinkObj> linkObjects = new List<LinkObj>();
         protected override void Awake()
         {
             base.Awake();
@@ -83,6 +85,22 @@ namespace WorldActionSystem
         protected virtual void OnDestroy()
         {
             elementCtrl.RemoveElement(this);
+        }
+
+        public void BindingLinkObj(LinkObj linkObj)
+        {
+            if (!linkObjects.Contains(linkObj))
+            {
+                linkObjects.Add(linkObj);
+            }
+        }
+
+        public void UnBindingLinkObj(LinkObj linkObj)
+        {
+            if (linkObjects.Contains(linkObj))
+            {
+                linkObjects.Remove(linkObj);
+            }
         }
 
         private void InitPorts()
@@ -129,19 +147,16 @@ namespace WorldActionSystem
         public void StepActive()
         {
             PickUpAble = true;
-            Active = true;
         }
 
         public void StepComplete()
         {
             PickUpAble = false;
-            Active = false;
         }
 
         public void StepUnDo()
         {
             PickUpAble = false;
-            Active = false;
             transform.position = startPos;
             transform.rotation = startRot;
         }

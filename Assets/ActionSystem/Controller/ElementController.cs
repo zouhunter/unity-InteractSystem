@@ -49,10 +49,12 @@ namespace WorldActionSystem
 
         internal void ClearRuntimeCreated()
         {
-            foreach (var item in rutimeCreatedList)
+            var list = rutimeCreatedList.ToArray();
+            foreach (var item in list)
             {
-                if(!item.Used)
+                if (!item.Used)
                 {
+                    rutimeCreatedList.Remove(item);
                     GameObject.Destroy(item.Body);
                 }
             }
@@ -142,10 +144,6 @@ namespace WorldActionSystem
             if (list.Count > 0)
             {
                 return list.ConvertAll<T>(x => (T)x);
-            }
-            else
-            {
-                Debug.LogWarning("配制错误,缺少" + elementName);
             }
             return null;
 

@@ -8,7 +8,8 @@ namespace WorldActionSystem
     [System.Serializable]
     public class LinkHold
     {
-        public LinkItem linkItem;
-        public List<LinkPort> linkedPorts = new List<LinkPort>();
+        public string elementName;
+       public LinkItem linkItem;
+       public List<LinkPort> linkedPorts = new List<LinkPort>();
     }
 }

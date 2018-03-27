@@ -17,35 +17,28 @@ namespace WorldActionSystem
             }
         }
 
-        [SerializeField]
-        private string[] linkItemsName;
+        public LinkHold[] linkItems;
         [SerializeField]
         private List<LinkGroup> defultLink;
-
         private Coroutine coroutine;
-        public LinkHold[] linkedItems { get; private set; }
 
         private List<LinkItem> linkPool = new List<LinkItem>();
+
         protected override void Start()
         {
             base.Start();
             TryFindElements();
         }
+
         /// <summary>
         /// 从场景中找到已经存在的元素
         /// </summary>
         private void TryFindElements()
         {
-            linkedItems = new LinkHold[linkItemsName.Length];
-            for (int i = 0; i < linkedItems.Length; i++)
-            {
-                linkedItems[i] = new LinkHold();
-            }
-
             linkPool.Clear();
-            for (int i = 0; i < linkItemsName.Length; i++)
+            for (int i = 0; i < linkItems.Length; i++)
             {
-                var links = elementCtrl.GetElements<LinkItem>(linkItemsName[i]);
+                var links = elementCtrl.GetElements<LinkItem>(linkItems[i].elementName);
                 if (links != null)
                 {
                     foreach (var item in links)
@@ -53,6 +46,7 @@ namespace WorldActionSystem
                         if (!linkPool.Contains(item))
                         {
                             linkPool.Add(item);
+                            item.BindingLinkObj(this);
                         }
                     }
                 }
@@ -68,21 +62,19 @@ namespace WorldActionSystem
             base.OnRegistElement(arg0);
             if (arg0 is LinkItem)
             {
-                var linkItem = arg0 as LinkItem;
-                if (!linkPool.Contains(linkItem))
+                if (Array.Find(linkItems, x => x.elementName == arg0.Name) != null)
                 {
-                    linkPool.Add(linkItem);
-                    if (Started)
+                    var linkItem = arg0 as LinkItem;
+                    if (!linkPool.Contains(linkItem))
                     {
-                        linkItem.StepActive();
-                        linkItem.BindingTarget = this;
-                        ActiveOneLinkItem();
+                        linkPool.Add(linkItem);
+                        linkItem.BindingLinkObj(this);
+                        if (Started)
+                        {
+                            linkItem.StepActive();
+                            ActiveOneLinkItem();
+                        }
                     }
-                    arg0.IsRuntimeCreated = true;
-                }
-                else
-                {
-                    arg0.IsRuntimeCreated = false;
                 }
             }
         }
@@ -96,6 +88,7 @@ namespace WorldActionSystem
             if (arg0.IsRuntimeCreated && arg0 is LinkItem)
             {
                 var linkItem = arg0 as LinkItem;
+                linkItem.UnBindingLinkObj(this);
                 if (linkPool.Contains(linkItem))
                 {
                     linkPool.Remove(linkItem);
@@ -108,7 +101,7 @@ namespace WorldActionSystem
         /// </summary>
         public void ActiveOneLinkItem()
         {
-            var notLinked = linkPool.Where(x => x != null && x.BindingTarget == this && !HaveConnected(x)).FirstOrDefault();
+            var notLinked = linkPool.Where(x => x != null && !HaveConnected(x)).FirstOrDefault();
             if (notLinked != null)
             {
                 angleCtrl.UnNotice(anglePos);
@@ -127,7 +120,7 @@ namespace WorldActionSystem
         /// <returns></returns>
         private bool HaveConnected(LinkItem item)
         {
-            return Array.Find(linkedItems, x => x.linkItem == item) != null;
+            return Array.Find(linkItems, x => x.linkItem == item) != null;
         }
 
         /// <summary>
@@ -146,7 +139,7 @@ namespace WorldActionSystem
                         var info = node.connectAble[j];
 
                         var otheritem = (from x in linkPool
-                                         where (x != null && x != pickedUp && x.Name == info.itemName && x.BindingTarget == this)
+                                         where (x != null && x != pickedUp && x.Name == info.itemName)
                                          select x).FirstOrDefault();
 
                         if (otheritem != null)
@@ -161,7 +154,6 @@ namespace WorldActionSystem
                     }
                 }
             }
-
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -189,17 +181,12 @@ namespace WorldActionSystem
         /// </summary>
         private void OnStepActive()
         {
-            foreach (var item in linkItemsName)
+            foreach (var item in linkItems)
             {
-                var linkItem = linkPool.Find(x => !x.Active && x.Name == item);
-                if(linkItem != null)
+                var linkItem = linkPool.Find(x => !x.Active && x.Name == item.elementName);
+                if (linkItem != null && !linkItem.Used)
                 {
-                    linkItem.BindingTarget = this;
                     linkItem.StepActive();
-                }
-                else
-                {
-                    linkItem = elementCtrl.TryCreateElement<LinkItem>(item);
                 }
             }
         }
@@ -211,7 +198,7 @@ namespace WorldActionSystem
             if (coroutine != null)
                 StopCoroutine(coroutine);
 
-            foreach (var item in linkedItems)
+            foreach (var item in linkItems)
             {
                 item.linkItem.PickUpAble = false;
             }
@@ -225,16 +212,17 @@ namespace WorldActionSystem
                 StopCoroutine(coroutine);
                 coroutine = null;
             }
-            LinkUtil.DetachConnectedPorts(linkedItems, transform);
+            LinkUtil.DetachConnectedPorts(linkItems, transform);
             ResetConnected();
         }
         public void TryComplete()
         {
             bool allConnected = true;
-            foreach (var item in linkedItems){
+            foreach (var item in linkItems)
+            {
                 allConnected &= (item.linkItem != null);
             }
-            if(allConnected)
+            if (allConnected)
             {
                 OnEndExecute(false);
             }
@@ -242,14 +230,14 @@ namespace WorldActionSystem
 
         private void ResetConnected()
         {
-            for (int i = 0; i < linkedItems.Length; i++)
+            for (int i = 0; i < linkItems.Length; i++)
             {
-                var item = linkedItems[i];
-                if(item.linkItem != null)
+                var item = linkItems[i];
+                if (item.linkItem != null)
                 {
                     item.linkItem.StepUnDo();
-                    linkedItems[i].linkItem = null;
-                    linkedItems[i].linkedPorts = new List<LinkPort>();
+                    linkItems[i].linkItem = null;
+                    linkItems[i].linkedPorts = new List<LinkPort>();
                 }
             }
         }
@@ -274,41 +262,38 @@ namespace WorldActionSystem
 
                 yield return MoveBToA(portA, portB);
                 LinkUtil.AttachNodes(portB, portA);
-                LinkUtil.RecordToDic(linkedItems, portA);
-                LinkUtil.RecordToDic(linkedItems, portB);
+                LinkUtil.RecordToDic(linkItems, portA);
+                LinkUtil.RecordToDic(linkItems, portB);
             }
             TryComplete();
         }
 
         private LinkItem TryUseOneLinkItem(int id)
         {
-            if (linkedItems.Length <= id) return null;
-           
+            if (linkItems.Length <= id) return null;
 
-            if (linkedItems[id].linkItem == null)
+
+            if (linkItems[id].linkItem == null)
             {
-                var mayLinks = linkPool.FindAll(x => x.Name == linkItemsName[id] && x.BindingTarget == this);
+                var mayLinks = linkPool.FindAll(x => x.Name == linkItems[id].elementName);
                 foreach (var linkItem in mayLinks)
                 {
-                    if (Array.Find(linkedItems, x => x.linkItem == linkItem) == null)
+                    if (Array.Find(linkItems, x => x.linkItem == linkItem) == null)
                     {
-                        linkedItems[id].linkItem = linkItem;
+                        linkItems[id].linkItem = linkItem;
+                        linkItems[id].linkItem.Used = true;
                         break;
                     }
                 }
             }
 
-            if (linkedItems[id].linkItem == null)
+
+            if (linkItems[id].linkItem != null)
             {
-                linkedItems[id].linkItem = elementCtrl.TryCreateElement<LinkItem>(linkItemsName[id]);
+                linkItems[id].linkItem.Connected = true;
             }
 
-            if (linkedItems[id].linkItem != null)
-            {
-                linkedItems[id].linkItem.Connected = true;
-            }
-
-            return linkedItems[id].linkItem;
+            return linkItems[id].linkItem;
         }
 
         private IEnumerator MoveBToA(LinkPort portA, LinkPort portB)

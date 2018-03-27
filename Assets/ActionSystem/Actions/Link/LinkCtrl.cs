@@ -9,7 +9,7 @@ namespace WorldActionSystem
 {
     public class LinkCtrl : OperateController
     {
-        private LinkObj linkObj { get; set; }
+        //private LinkObj linkObj { get; set; }
         private IHighLightItems highter;
 
         private LinkConnectController linkConnectCtrl;
@@ -34,6 +34,7 @@ namespace WorldActionSystem
             pickCtrl.onPickStay += (OnPickStay);
             pickCtrl.onPickTwince += (OnPickTwince);
         }
+
         public override void Update()
         {
             if (linkConnectCtrl != null)
@@ -53,15 +54,24 @@ namespace WorldActionSystem
             if (obj is LinkItem)
             {
                 var linkItem = obj as LinkItem;
-                if (linkItem)
+                if (linkItem &&! linkItem.Used)
                 {
-                    linkObj = linkItem.BindingTarget;
-                    linkObj.TryActiveLinkPort(linkItem);
-                    if (linkObj)
+                    if(linkItem.linkObjects.Count > 0)
                     {
-                        linkConnectCtrl.SetState(linkObj.linkedItems);
-                        linkConnectCtrl.SetActiveItem(linkItem, false);
+                        var linkObj = linkItem.linkObjects[0];
+                        linkObj.TryActiveLinkPort(linkItem);
+                        foreach (var item in linkItem.linkObjects)
+                        {
+                            linkObj = item;
+                            if (linkObj)
+                            {
+                                linkConnectCtrl.SetState(linkObj.linkItems);
+                                linkConnectCtrl.SetActiveItem(linkItem, false);
+                            }
+                        }
+                        
                     }
+                   
                 }
             }
         }
@@ -70,9 +80,14 @@ namespace WorldActionSystem
             if (obj is LinkItem)
             {
                 var linkItem = obj as LinkItem;
-                if (linkItem)
+                if (linkItem && !linkItem.Used)
                 {
-                    linkConnectCtrl.SetActiveItem(linkItem, true);
+                    foreach (var linkObj in linkItem.linkObjects)
+                    {
+                        linkConnectCtrl.SetState(linkObj.linkItems);
+                        linkConnectCtrl.SetActiveItem(linkItem, true);
+                    }
+                   
                 }
             }
         }
@@ -80,8 +95,15 @@ namespace WorldActionSystem
         {
             if (obj is LinkItem)
             {
+                var linkItem = obj as LinkItem;
                 linkConnectCtrl.SetDisableItem(obj as LinkItem);
-                linkObj.ActiveOneLinkItem();
+                foreach (var item in linkItem.linkObjects)
+                {
+                    var linkObj = item;
+                    if (linkObj)
+                        linkObj.ActiveOneLinkItem();
+                }
+               
             }
         }
         void OnPickStay(PickUpAbleItem go)

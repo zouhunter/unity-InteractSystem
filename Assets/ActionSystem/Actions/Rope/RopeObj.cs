@@ -234,10 +234,6 @@ namespace WorldActionSystem
             {
                 ropeItem = ropes.Find(x => x.BindingTarget == this || x.BindingTarget == null);
             }
-            else
-            {
-                ropeItem = elementCtrl.TryCreateElement<RopeItem>(Name);
-            }
 
             if (ropeItem != null)
             {

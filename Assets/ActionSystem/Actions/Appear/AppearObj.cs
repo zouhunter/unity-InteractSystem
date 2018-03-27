@@ -45,7 +45,7 @@ namespace WorldActionSystem
             base.OnUnDoExecute();
             foreach (var item in hoders)
             {
-                if (item.element != null && item.element.Body != null)
+                if (item.element != null)
                 {
                     item.element.Used = false;
                     item.element = null;
@@ -53,6 +53,7 @@ namespace WorldActionSystem
             }
             ElementController.Instence.ClearRuntimeCreated();
         }
+
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
@@ -63,6 +64,7 @@ namespace WorldActionSystem
                     item.element.Used = true;
                 }
             }
+            ElementController.Instence.ClearRuntimeCreated();
         }
         /// <summary>
         /// 元素动态注册
@@ -116,18 +118,20 @@ namespace WorldActionSystem
                 var hoder = hoders[i];
                 if (hoder.element == null)
                 {
-                    var item = elementCtrl.TryCreateElement<ISupportElement>(hoders[i].objName);
-                    if (item == null)
+                    hoder.element = elementCtrl.TryCreateElement<ISupportElement>(hoders[i].objName);
+                    if (hoder.element == null)
                     {
                         Debug.Log("can not create:" + hoders[i].objName);
                         haveError = true;
                     }
                     else
                     {
+                        hoder.element.Used = true;
+
                         if (hoder.autoPos)
                         {
-                            item.Body.transform.position = hoder.autoPos.transform.position;
-                            item.Body.transform.rotation = hoder.autoPos.transform.rotation;
+                            hoder.element.Body.transform.position = hoder.autoPos.transform.position;
+                            hoder.element.Body.transform.rotation = hoder.autoPos.transform.rotation;
                         }
 
                         yield return new WaitForSeconds(spanTime);
