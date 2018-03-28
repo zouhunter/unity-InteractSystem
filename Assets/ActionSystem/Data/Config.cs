@@ -38,6 +38,7 @@ namespace WorldActionSystem
         public float _lineWidth = 0.2f;
         public Color _highLightColor = Color.green;
         public GameObject _angleObj = null;
+        public GameObject[] _angleObjs = null;
 
         public static int autoExecuteTime { get { return Defult._autoExecuteTime; } }
         public static int hitDistence { get { return Defult._hitDistence; } }

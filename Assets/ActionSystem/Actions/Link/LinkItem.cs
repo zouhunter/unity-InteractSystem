@@ -9,8 +9,6 @@ namespace WorldActionSystem
 {
     public class LinkItem : PickUpAbleItem, ISupportElement
     {
-        [SerializeField]
-        private string _name;
         public override string Name
         {
             get
@@ -22,7 +20,6 @@ namespace WorldActionSystem
                 return _name;
             }
         }
-
         public GameObject Body
         {
             get
@@ -30,16 +27,7 @@ namespace WorldActionSystem
                 return gameObject;
             }
         }
-        public bool Used { get; set; }
         private List<LinkPort> _childNodes = new List<LinkPort>();
-        public List<LinkPort> ChildNodes
-        {
-            get
-            {
-                InitPorts();
-                return _childNodes;
-            }
-        }
         public Transform Trans
         {
             get
@@ -48,42 +36,86 @@ namespace WorldActionSystem
             }
         }
         public bool IsRuntimeCreated { get; set; }
-        public bool Active { get { return true; } }
-        private ElementController elementCtrl { get { return ElementController.Instence; } }
-
-     
-        private Vector3 startPos;
-        private Quaternion startRot;
-        private List<LinkPort> _groupNodes = new List<LinkPort>();
-        private List<LinkItem> _context = new List<LinkItem>();
+        public bool Active { get { return active; } }
+        public ElementController elementCtrl { get { return ElementController.Instence; } }
         public List<LinkPort> GroupNodes
         {
             get
             {
                 _groupNodes.Clear();
-                _context.Clear();
-                RetiveNodes(_context, this);
+                linkLock.Clear();
+                RetiveNodes(linkLock, this);
                 return _groupNodes;
             }
         }
-        public List<LinkObj> linkObjs = new List<LinkObj>();
+        public List<LinkPort> ChildNodes
+        {
+            get
+            {
+                InitPorts();
+                return _childNodes;
+            }
+        }
+        public bool Used { get { return elementCtrl.IsLocked(this); } }
+        public bool Connected { get { return HaveConnected(this); } }
+
+        public Action onConnected { get; internal set; }
+
+        [SerializeField]
+        private string _name;
+        [SerializeField]
+        private Renderer m_render;//可选择提示
+        [SerializeField]
+        private Color highLightColor = Color.green;
+
+
+        private bool active;//激活状态
+        private IHighLightItems highLighter;
+        private Vector3 startPos;
+        private Quaternion startRot;
+        private List<LinkPort> _groupNodes = new List<LinkPort>();
+        private List<LinkItem> linkLock = new List<LinkItem>();
+
         protected override void Awake()
         {
             base.Awake();
             InitPorts();
             InitLayer();
-            elementCtrl.RegistElement(this);
+            InitHighLighter();
         }
 
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
             startPos = transform.position;
             startRot = transform.rotation;
+            elementCtrl.RegistElement(this);
         }
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             elementCtrl.RemoveElement(this);
         }
+        protected override void Update()
+        {
+            base.Update();
+            if (m_render == null) return;
+
+            if (Active)
+            {
+                highLighter.HighLightTarget(m_render, highLightColor);
+            }
+            else
+            {
+                highLighter.UnHighLightTarget(m_render);
+            }
+        }
+        private void InitHighLighter()
+        {
+            if (m_render == null) m_render = GetComponentInChildren<Renderer>();
+            highLighter = new ShaderHighLight();
+        }
+
         private void InitPorts()
         {
             if (_childNodes == null || _childNodes.Count == 0)
@@ -93,22 +125,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void RegistLinkObj(LinkObj linkObj)
-        {
-            if(!linkObjs .Contains(linkObj))
-            {
-                linkObjs.Add(linkObj);
-            }
-        }
-        public void RemoveLinkObj(LinkObj linkObj)
-        {
-            if (linkObjs.Contains(linkObj))
-            {
-                linkObjs.Remove(linkObj);
-            }
-        }
-
-        internal LinkPort[] GetLinkPorts()
+        public LinkPort[] GetLinkedPorts()
         {
             var connenctedPos = new List<LinkPort>();
             foreach (var item in ChildNodes)
@@ -149,26 +166,83 @@ namespace WorldActionSystem
 
         public void OnTranformChanged()
         {
-            _context.Clear();
-            LinkUtil.UpdateBrotherPos(this, _context);
+            linkLock.Clear();
+            LinkUtil.UpdateBrotherPos(this, linkLock);
         }
 
         public void StepActive()
         {
+            active = true;
             PickUpAble = true;
         }
 
         public void StepComplete()
         {
+            active = false;
             PickUpAble = false;
         }
 
         public void StepUnDo()
         {
+            active = false;
             PickUpAble = false;
             transform.position = startPos;
             transform.rotation = startRot;
         }
+        /// <summary>
+        /// 判断是否已经连接过了
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private bool HaveConnected(LinkItem item)
+        {
+            bool connected = false;
+            foreach (var child in item.ChildNodes)
+            {
+                connected |= (child.ConnectedNode != null);
+            }
+            return connected;
+        }
+
+        public void OnConnected()
+        {
+            if(this.onConnected != null)
+            {
+                onConnected.Invoke();
+            }
+        }
+        /// <summary>
+        /// 激活匹配点
+        /// </summary>
+        /// <param name="pickedUp"></param>
+        //public void TryActiveLinkPort(LinkItem pickedUp)
+        //{
+        //    for (int i = 0; i < pickedUp.ChildNodes.Count; i++)
+        //    {
+        //        var node = pickedUp.ChildNodes[i];
+        //        if (node.ConnectedNode == null && node.connectAble.Count > 0)
+        //        {
+        //            for (int j = 0; j < node.connectAble.Count; j++)
+        //            {
+        //                var info = node.connectAble[j];
+
+        //                var otheritem = (from x in linkPool
+        //                                 where (x != null && x != pickedUp && x.Name == info.itemName)
+        //                                 select x).FirstOrDefault();
+
+        //                if (otheritem != null)
+        //                {
+        //                    var otherNode = otheritem.ChildNodes[info.nodeId];
+        //                    if (otherNode != null && otherNode.ConnectedNode == null)
+        //                    {
+        //                        angleCtrl.UnNotice(anglePos);
+        //                        anglePos = otherNode.transform;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 
 }

@@ -9,7 +9,6 @@ namespace WorldActionSystem
     public class ElementController
     {
         public static ElementController _instence;
-        private ElementController() { }
         public static ElementController Instence
         {
             get
@@ -21,13 +20,21 @@ namespace WorldActionSystem
                 return _instence;
             }
         }
-        private List<ISupportElement> runTimeElementPrefabs = new List<ISupportElement>();
-        private List<ISupportElement> elementList = new List<ISupportElement>();
-        private List<ISupportElement> rutimeCreatedList = new List<ISupportElement>();
-        public bool log = false;
+
+        public static bool log = false;
         public event UnityAction<ISupportElement> onRegistElememt;
         public event UnityAction<ISupportElement> onRemoveElememt;
-
+        //所有元素列表
+        private ElementPool elementList = new ElementPool();
+        //动态元素预制体
+        private ElementPool runTimeElementPrefabs = new ElementPool();
+        //动态创建的元素
+        private ElementPool rutimeCreatedList = new ElementPool();
+        //元素锁
+        private Dictionary<ISupportElement, List<object>> lockDic = new Dictionary<ISupportElement, List<object>>();
+        private ElementController() { }
+      
+       
         /// <summary>
         /// 外部添加Element
         /// </summary>
@@ -35,7 +42,7 @@ namespace WorldActionSystem
         {
             if (!elementList.Contains(item))
             {
-                elementList.Add(item);
+                elementList.ScureAdd(item);
                 if (onRegistElememt != null)
                 {
                     onRegistElememt.Invoke(item);
@@ -47,24 +54,16 @@ namespace WorldActionSystem
             }
         }
 
-        internal void ClearRuntimeCreated()
-        {
-            var list = rutimeCreatedList.ToArray();
-            foreach (var item in list)
-            {
-                if (!item.Used)
-                {
-                    rutimeCreatedList.Remove(item);
-                    GameObject.Destroy(item.Body);
-                }
-            }
-        }
 
+        /// <summary>
+        /// 移除Eelement
+        /// </summary>
+        /// <param name="item"></param>
         public void RemoveElement(ISupportElement item)
         {
             if (elementList.Contains(item))
             {
-                elementList.Remove(item);
+                elementList.ScureRemove(item);
                 if (onRemoveElememt != null)
                 {
                     onRemoveElememt.Invoke(item);
@@ -72,6 +71,79 @@ namespace WorldActionSystem
             }
         }
 
+        /// <summary>
+        /// 清除所有动态创建的元素
+        /// </summary>
+        public void ClearExtraCreated()
+        {
+            var list = rutimeCreatedList.ToArray();
+            foreach (var item in list)
+            {
+                if (TryDestroyElement(item))
+                {
+                    rutimeCreatedList.ScureRemove(item);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 判断元素是否被占用
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool IsLocked(ISupportElement item)
+        {
+            return lockDic.ContainsKey(item) &&
+            lockDic[item] != null &&
+            lockDic[item].Count > 0;
+        }
+
+        /// <summary>
+        /// 元素加锁
+        /// </summary>
+        /// <param name="item"></param>
+        public void LockElement(ISupportElement item,object lk)
+        {
+            if(lockDic.ContainsKey(item))
+            {
+                if(!lockDic[item].Contains(lk))
+                {
+                    lockDic[item].Add(lk);
+                }
+            }
+            else
+            {
+                lockDic[item] = new List<object>() { lk };
+            }
+        }
+
+        /// <summary>
+        /// 元素解锁
+        /// </summary>
+        /// <param name="item"></param>
+        public bool UnLockElement(ISupportElement item,object lk)
+        {
+            if (lockDic.ContainsKey(item) && lockDic[item].Contains(lk))
+            {
+                lockDic[item].Remove(lk);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 尝试销毁一个元素
+        /// </summary>
+        /// <param name="item"></param>
+        public bool TryDestroyElement(ISupportElement item)
+        {
+            if (!IsLocked(item))
+            {
+                GameObject.Destroy(item.Body);
+                return true;
+            }
+            return false;
+        }
         /// <summary>
         /// 尝试创建一个元素
         /// </summary>
@@ -89,12 +161,16 @@ namespace WorldActionSystem
                 {
                     element = (T)e;
                     element.IsRuntimeCreated = true;
-                    rutimeCreatedList.Add(element);
+                    rutimeCreatedList.ScureAdd(element);
                 }
                 else
                 {
                     Debug.LogError(e + "is not an " + typeof(T).FullName);
                 }
+            }
+            else
+            {
+                Debug.Log("prefab not exist:" + elementName);
             }
             return element;
         }
@@ -115,7 +191,7 @@ namespace WorldActionSystem
                 var element = item.prefab.GetComponent<ISupportElement>();
                 if (element != null && runTimeElementPrefabs.Contains(element))
                 {
-                    runTimeElementPrefabs.Remove(element);
+                    runTimeElementPrefabs.ScureRemove(element);
                 }
             }
         }
@@ -128,7 +204,7 @@ namespace WorldActionSystem
                 var element = item.prefab.GetComponent<ISupportElement>();
                 if (element != null && !runTimeElementPrefabs.Contains(element))
                 {
-                    runTimeElementPrefabs.Add(element);
+                    runTimeElementPrefabs.ScureAdd(element);
                 }
             }
         }

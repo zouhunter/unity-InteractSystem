@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.RopeObj)]
-    public class RopeObj : ActionObj
+    public class RopeObj : RuntimeObj
     {
         public override ControllerType CtrlType
         {
@@ -159,7 +159,6 @@ namespace WorldActionSystem
         /// <param name="arg0"></param>
         protected override void OnRegistElement(ISupportElement arg0)
         {
-            base.OnRegistElement(arg0);
             if(ropeItem == null && arg0 is RopeItem)
             {
                 ropeItem = arg0 as RopeItem;
@@ -177,7 +176,6 @@ namespace WorldActionSystem
         /// <param name="arg0"></param>
         protected override void OnRemoveElement(ISupportElement arg0)
         {
-            base.OnRemoveElement(arg0);
             ropeItem.BindingTarget = null;
             ropeItem = null;
         }

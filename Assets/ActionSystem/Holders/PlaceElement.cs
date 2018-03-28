@@ -155,7 +155,8 @@ namespace WorldActionSystem
         }
         protected virtual void InitRender()
         {
-            if (m_render == null) m_render = gameObject.GetComponentInChildren<Renderer>();
+            if (m_render == null)
+                m_render = gameObject.GetComponentInChildren<Renderer>();
             highLighter = new ShaderHighLight();
         }
 

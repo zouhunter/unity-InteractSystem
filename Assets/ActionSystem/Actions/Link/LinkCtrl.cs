@@ -9,9 +9,7 @@ namespace WorldActionSystem
 {
     public class LinkCtrl : OperateController
     {
-        //private LinkObj linkObj { get; set; }
         private IHighLightItems highter;
-
         private LinkConnectController linkConnectCtrl;
         public override ControllerType CtrlType
         {
@@ -21,6 +19,7 @@ namespace WorldActionSystem
             }
         }
         private PickUpController pickCtrl { get { return ActionSystem.Instence.pickupCtrl; } }
+        private AngleCtroller angleCtrl { get { return ActionSystem.Instence.angleCtrl; } }
 
         public LinkCtrl()
         {
@@ -29,6 +28,7 @@ namespace WorldActionSystem
             linkConnectCtrl.onDisMatch = OnDisMath;
             linkConnectCtrl.onMatch = OnMatch;
             linkConnectCtrl.onConnected = OnConnected;
+
             pickCtrl.onPickup += (OnPickUp);
             pickCtrl.onPickdown += (OnPickDown);
             pickCtrl.onPickStay += (OnPickStay);
@@ -49,34 +49,25 @@ namespace WorldActionSystem
         {
             highter.UnHighLightTarget(item.gameObject);
         }
+
         void OnPickUp(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
                 var linkItem = obj as LinkItem;
-                if (linkItem && !linkItem.Used)
+                if (linkItem)
                 {
-                    if (linkItem.linkObjs.Count > 0)
-                    {
-                        var linkObj = linkItem.linkObjs.Find(x => x.Started && !x.Complete);
-
-                        linkObj.TryActiveLinkPort(linkItem);
-                        foreach (var item in linkItem.linkObjs)
-                        {
-                            linkObj = item;
-                            if (linkObj)
-                            {
-                                linkConnectCtrl.SetState(linkObj.linkItems);
-                                linkConnectCtrl.SetActiveItem(linkItem, false);
-                            }
-                        }
-
-                    }
-
+                    linkConnectCtrl.SetActiveItem(linkItem, false);
+                    //显示可以所有可以安装的点
+                    //TryActiveLinkPort(linkItem);
                 }
             }
         }
-       
+
+        /// <summary>
+        /// 解除连接
+        /// </summary>
+        /// <param name="obj"></param>
         void OnPickTwince(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
@@ -84,31 +75,29 @@ namespace WorldActionSystem
                 var linkItem = obj as LinkItem;
                 if (linkItem && !linkItem.Used)
                 {
-                    foreach (var linkObj in linkItem.linkObjs)
-                    {
-                        linkConnectCtrl.SetState(linkObj.linkItems);
-                        linkConnectCtrl.SetActiveItem(linkItem, true);
-                    }
+                    linkConnectCtrl.SetActiveItem(linkItem, true);
                 }
             }
         }
+
+        /// <summary>
+        /// 放下
+        /// </summary>
+        /// <param name="obj"></param>
         void OnPickDown(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
                 var linkItem = obj as LinkItem;
-                if (linkItem && !linkItem.Used)
+                if (linkItem)
                 {
-                    linkConnectCtrl.SetDisableItem(obj as LinkItem);
-                    foreach (var item in linkItem.linkObjs)
-                    {
-                        var linkObj = item;
-                        if (linkObj)
-                            linkObj.ActiveOneLinkItem();
-                    }
+                    linkConnectCtrl.SetDisableItem();
+                    //显示可以操作的元素
+                    //ActiveOneLinkItem();
                 }
             }
         }
+
         void OnPickStay(PickUpAbleItem go)
         {
             if (go is LinkItem)
@@ -119,16 +108,29 @@ namespace WorldActionSystem
             }
         }
 
+        //void ActiveAngle()
+        //{
+        //    var notLinked = linkPool.Where(x => x != null && !HaveConnected(x)).FirstOrDefault();
+        //    if (notLinked != null)
+        //    {
+        //        angleCtrl.UnNotice(anglePos);
+        //        anglePos = notLinked.transform;
+        //    }
+        //}
+
         void OnConnected(LinkPort[] nodes)
         {
             foreach (var item in nodes)
             {
+                item.Body.OnConnected();
                 var childNodes = item.Body.ChildNodes;
                 foreach (var node in childNodes)
                 {
                     highter.UnHighLightTarget(node.gameObject);
                 }
             }
+
+            Debug.Log("Connected");
         }
     }
 }

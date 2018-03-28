@@ -12,6 +12,7 @@ namespace WorldActionSystem {
         protected GameObject viewObj { get { return Config.angleObj; } }
         protected Color highLightColor { get { return Config.highLightColor; } }
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
+        private Dictionary<string, Queue<GameObject>> objectDicQueue = new Dictionary<string, Queue<GameObject>>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
         private ActionSystem actionSystem;
@@ -32,14 +33,14 @@ namespace WorldActionSystem {
             }
         }
 
-        public void Notice(Transform target,bool update = false)
+        public void Notice(Transform target,bool update = false,string angleName = null)
         {
             if (!Config.highLightNotice) return;
             if (!Config.angleObj) return;
 
             if (!actived.ContainsKey(target))
             {
-                actived.Add(target, GetAnAngle(target));
+                actived.Add(target, GetAngleByName(target,angleName));
             }
             else
             {
@@ -50,9 +51,10 @@ namespace WorldActionSystem {
             }
         }
 
-        private GameObject GetAnAngle(Transform target)
+        private GameObject GetDefultAngle(Transform target)
         {
             GameObject angle = null;
+           
             if (objectQueue.Count > 0)
             {
                 angle = objectQueue.Dequeue();
@@ -74,6 +76,17 @@ namespace WorldActionSystem {
             HighLighter(angle);
             return angle;
         }
+
+        private GameObject GetAngleByName(Transform target,string angleName)
+        {
+            
+            //if (!string.IsNullOrEmpty(angleName) && objectDicQueue.ContainsKey(angleName))
+            //{
+               
+            //}
+            return GetDefultAngle(target);
+        }
+
 
         private static Highlighter InitHighLighter(GameObject angle)
         {

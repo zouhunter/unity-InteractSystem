@@ -19,5 +19,10 @@ namespace WorldActionSystem
             _collider = GetComponentInChildren<Collider>();
             _collider.gameObject.layer = LayerMask.NameToLayer( Layers.pickUpElementLayer);
         }
+        protected virtual void Start() { }
+        protected virtual void OnEnable() { }
+        protected virtual void Update() { }
+        protected virtual void OnDestroy() { }
+        protected virtual void OnDisable() { }
     }
 }

@@ -13,7 +13,6 @@ namespace WorldActionSystem
         public UnityAction<LinkPort> onMatch { get; set; }
         public UnityAction<LinkPort> onDisMatch { get; set; }
         public UnityAction<LinkPort[]> onDisconnected { get; set; }
-        private LinkHold[] ConnectedDic { get; set; }
         private float timer;
         private const float spanTime = 0.5f;
         private LinkItem pickedUpItem;
@@ -75,11 +74,12 @@ namespace WorldActionSystem
         {
             this.pickedUpItem = item;
 
-            List<LinkPort> disconnected = new List<LinkPort>();
-            var hold = Array.Find(ConnectedDic, x => x.linkItem == item);
-            if (hold != null)
+            ///如果目标已经被使用，阻止和其他元素断开
+            if (item.Used)
             {
-                LinkPort[] connectedPort = hold.linkItem.GetLinkPorts();//.linkedPorts.ToArray();
+                List<LinkPort> disconnected = new List<LinkPort>();
+                LinkPort[] connectedPort = item.GetLinkedPorts();
+
                 if (detach)
                 {
                     for (int i = 0; i < connectedPort.Length; i++)
@@ -91,20 +91,17 @@ namespace WorldActionSystem
                         disconnected.Add(port);
                         disconnected.Add(otherPort);
                     }
+
+                    if (onDisconnected != null)
+                        onDisconnected.Invoke(disconnected.ToArray());
                 }
                    
 
-                if (onDisconnected != null)
-                    onDisconnected.Invoke(disconnected.ToArray());
+               
             }
         }
 
-        public void SetState(LinkHold[] ConnectedDic)
-        {
-            this.ConnectedDic = ConnectedDic;
-        }
-
-        public void SetDisableItem(LinkItem item)
+        public void SetDisableItem()
         {
             pickedUpItem = null;
             targetNode = null;
@@ -124,8 +121,5 @@ namespace WorldActionSystem
                 targetNode = null;
             }
         }
-
-       
-
     }
 }
