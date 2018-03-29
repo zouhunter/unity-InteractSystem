@@ -29,6 +29,7 @@ namespace WorldActionSystem
                 return commandCtrl;
             }
         }
+        private EventController eventCtrl = new EventController();
         internal EventController EventCtrl
         {
             get
@@ -42,7 +43,6 @@ namespace WorldActionSystem
         //private IActionStap[] steps;
         private ICommandController remoteController;
         private CommandController commandCtrl = new CommandController();
-        private EventController eventCtrl = new EventController();
         private RegistCommandList onCommandRegisted { get; set; }
         #endregion
 

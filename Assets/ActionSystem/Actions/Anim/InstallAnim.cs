@@ -10,6 +10,8 @@ namespace WorldActionSystem
         protected Transform bodyTrans;
         [SerializeField]
         protected Transform targetTrans;
+        [SerializeField]
+        protected bool from;
         [SerializeField, Range(-10, 10)]
         protected float rotateSpeed;
         [SerializeField]
@@ -23,19 +25,21 @@ namespace WorldActionSystem
         protected override void Awake()
         {
             base.Awake();
-            startPosition = bodyTrans.localPosition;
+            InitPostions();
+        }
 
-            if (targetTrans != null)
-            {
-                targetPosition = targetTrans.transform.localPosition;
-                targetRotation = targetTrans.transform.localRotation;
-            }
+        private void InitPostions()
+        {
+            startPosition = bodyTrans.localPosition;
+            startRotation = bodyTrans.localRotation;
+
+            targetPosition = targetTrans.transform.localPosition;
+            targetRotation = targetTrans.transform.localRotation;
         }
 
         public override void StepActive()
         {
             time = 1f / duration;
-            bodyTrans.localPosition = startPosition;
             coroutine = StartCoroutine(MoveAnim(onAutoPlayEnd));
         }
 
@@ -46,8 +50,18 @@ namespace WorldActionSystem
                 StopCoroutine(coroutine);
                 coroutine = null;
             }
-            bodyTrans.localPosition = targetPosition;
-            bodyTrans.localRotation = targetRotation;
+
+            if(from)
+            {
+                bodyTrans.localPosition = startPosition;
+                bodyTrans.localRotation = startRotation;
+            }
+            else
+            {
+                bodyTrans.localPosition = targetPosition;
+                bodyTrans.localRotation = targetRotation;
+            }
+           
         }
 
         public override void StepUnDo()
@@ -58,9 +72,12 @@ namespace WorldActionSystem
                 StopCoroutine(coroutine);
                 coroutine = null;
             }
+
             bodyTrans.localPosition = startPosition;
             bodyTrans.localRotation = startRotation;
         }
+
+
 
         public override void SetPosition(Vector3 pos)
         {
@@ -69,19 +86,21 @@ namespace WorldActionSystem
 
         protected IEnumerator MoveAnim(UnityAction onComplete)
         {
-            var startPos = bodyTrans.localPosition;
-            var startRot = bodyTrans.localRotation;
-            var dir = targetPosition - startPos;
+            var startPos = from ? targetPosition : startPosition;
+            //var startRot = from ? targetRotation : startRotation;
+            var targetPos = from ? startPosition : targetPosition;
+            var targetRot = from ? startRotation : targetRotation;
+
+            var dir = from ? startPos - targetPosition : targetPosition - startPos;
             var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {
-                bodyTrans.localPosition = Vector3.Lerp(startPos, targetPosition, i / time);
+                bodyTrans.localPosition = Vector3.Lerp(startPos, targetPos, i / time);
                 bodyTrans.localRotation = rot * bodyTrans.localRotation;
                 yield return null;
             }
-          
-            bodyTrans.localPosition = targetPosition;
-            bodyTrans.localRotation = targetRotation;
+
+            bodyTrans.localRotation = targetRot;
 
             if (onComplete != null)
             {
@@ -90,6 +109,10 @@ namespace WorldActionSystem
             }
         }
 
-
+        public override void SetVisible(bool visible)
+        {
+            if(bodyTrans)
+                bodyTrans.gameObject.SetActive(visible);
+        }
     }
 }

@@ -106,13 +106,14 @@ namespace WorldActionSystem
             }
             return parent;
         }
-        private static GameObject CreateRunTimeObject(GameObject prefab,Transform parent)
+        public static GameObject CreateRunTimeObject(GameObject prefab,Transform parent)
         {
             prefab.gameObject.SetActive(true);
-            var created = GameObject.Instantiate(prefab);
+            var created = Object.Instantiate(prefab);
             created.name = prefab.name;
             created.transform.SetParent(parent, false);
             return created;
         }
+       
     }
 }

@@ -56,13 +56,24 @@ namespace WorldActionSystem
         {
             base.OnBeforeEnd(force);
             if (delyPlay != null) StopCoroutine(delyPlay);
-            if (animPlayer != null) animPlayer.StepComplete();
+            if (animPlayer != null)
+            {
+                animPlayer.BindingTarget = this;
+                animPlayer.StepComplete();
+                animPlayer.SetVisible(endActive);
+                animPlayer.gameObject.SetActive(endActive);
+            }
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
             if (delyPlay != null) StopCoroutine(delyPlay);
-            if (animPlayer != null) animPlayer.StepUnDo();
+            if (animPlayer != null)
+            {
+                animPlayer.StepUnDo();
+                animPlayer.BindingTarget = null;
+                animPlayer = null;
+            }
         }
 
         private void FindAnimCore()
@@ -73,17 +84,18 @@ namespace WorldActionSystem
                 var elements = elementCtrl.GetElements<AnimPlayer>(Name);
                 if(elements != null && elements.Count > 0)
                 {
-                    animPlayer = elements[0];
+                    animPlayer = elements.Find(x => x.Body != null && x.BindingTarget == null);//[0];
                 }
             }
 
             if(animPlayer)
             {
-                animPlayer.transform.SetParent(transform, true);
-                if(playAtPostion)
+                animPlayer.gameObject.SetActive(true);
+
+                if (playAtPostion)
                 {
-                    animPlayer.transform.transform.localPosition = Vector3.zero;
-                    animPlayer.transform.transform.localRotation = Quaternion.identity;
+                    animPlayer.transform.localPosition = transform.position;
+                    animPlayer.transform.localRotation = transform.rotation;
                 }
             }
         }

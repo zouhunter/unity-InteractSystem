@@ -12,7 +12,7 @@ namespace WorldActionSystem
     {
         ActionObjCtroller ActionObjCtrl { get; }
         string StepName { get; }
-        bool Startd { get; }
+        bool Started { get; }
         bool Completed { get; }
         bool StartExecute(bool forceAuto);
         bool EndExecute();

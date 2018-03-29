@@ -417,6 +417,10 @@ namespace WorldActionSystem
             return old;
         }
 
+        public void SetVisible(bool visible)
+        {
+            gameObject.SetActive(visible);
+        }
     }
 
 }

@@ -38,8 +38,14 @@ namespace WorldActionSystem
         }
         public bool Used { get { return elementCtrl.IsLocked(this); } }
         public bool Connected { get { return HaveConnected(this); } }
-
-        public Action onConnected { get; internal set; }
+        public bool CanUse
+        {
+            get
+            {
+                return CalcuteConnected() < ChildNodes.Count;
+            }
+        }
+        public event UnityAction onConnected;
 
         [SerializeField]
         private Renderer m_render;//可选择提示
@@ -66,13 +72,8 @@ namespace WorldActionSystem
             base.Start();
             startPos = transform.position;
             startRot = transform.rotation;
-            elementCtrl.RegistElement(this);
         }
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            elementCtrl.RemoveElement(this);
-        }
+
         protected override void Update()
         {
             base.Update();
@@ -134,6 +135,19 @@ namespace WorldActionSystem
             Collider.gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
         }
 
+        private int CalcuteConnected()
+        {
+            int count = 0;
+            foreach (var child in ChildNodes)
+            {
+                if(child.ConnectedNode != null)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
 
         public override void SetPosition(Vector3 pos)
         {
@@ -187,6 +201,10 @@ namespace WorldActionSystem
             Active = false;
             transform.position = startPos;
             transform.rotation = startRot;
+        }
+        public override void SetVisible(bool visible)
+        {
+            gameObject.SetActive(visible);
         }
         /// <summary>
         /// 激活匹配点

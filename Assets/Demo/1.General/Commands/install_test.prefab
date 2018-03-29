@@ -739,7 +739,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   delyTime: 0
+  animPlayer: {fileID: 0}
   speed: 1
+  playAtPostion: 0
 --- !u!114 &114052800397594248
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -751,6 +753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a4dcf5d61226342ac30a8aa38d0b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: 
   anim: {fileID: 0}
   animName: 
 --- !u!114 &114174211120228286
@@ -844,6 +847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a4dcf5d61226342ac30a8aa38d0b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: 
   anim: {fileID: 0}
   animName: 
 --- !u!114 &114516076264908024
@@ -880,7 +884,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   delyTime: 0
+  animPlayer: {fileID: 0}
   speed: 1
+  playAtPostion: 0
 --- !u!114 &114575716006097406
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -943,50 +949,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ede9def9b1c7454fa41a2a6dcd1c4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pickUpAble: 0
-  _collider: {fileID: 0}
   _name: 
-  _system: {fileID: 0}
   startActive: 1
   onPickUp:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onPickDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onStepActive:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onStepComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onStepUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   m_render: {fileID: 0}
-  highLightColor:
-    r: 0
-    g: 1
-    b: 0
-    a: 1
-  startRotation: {x: 0, y: 0, z: 0}
-  startPos: {x: 0, y: 0, z: 0}
-  smooth: 50
-  actived: 0
-  target: {fileID: 0}
-  <PickUpAble>k__BackingField: 0
-  tweening: 0
-  lastPos: {x: 0, y: 0, z: 0}
+  highLightColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &114706632247430326
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1015,50 +1006,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ede9def9b1c7454fa41a2a6dcd1c4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pickUpAble: 0
-  _collider: {fileID: 0}
   _name: 
-  _system: {fileID: 0}
   startActive: 1
   onPickUp:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onPickDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onStepActive:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onStepComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onStepUnDo:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: 556e697479456e67696e652e4576656e74732e556e6974794576656e742c20556e697479456e67696e652c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
-    m_CallsDirty: 1
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   m_render: {fileID: 0}
-  highLightColor:
-    r: 0
-    g: 1
-    b: 0
-    a: 1
-  startRotation: {x: 0, y: 0, z: 0}
-  startPos: {x: 0, y: 0, z: 0}
-  smooth: 50
-  actived: 0
-  target: {fileID: 0}
-  <PickUpAble>k__BackingField: 0
-  tweening: 0
-  lastPos: {x: 0, y: 0, z: 0}
+  highLightColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &114748753484121222
 MonoBehaviour:
   m_ObjectHideFlags: 1

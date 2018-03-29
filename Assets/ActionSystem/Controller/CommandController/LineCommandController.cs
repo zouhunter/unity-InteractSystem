@@ -36,7 +36,7 @@ namespace WorldActionSystem
 
         bool HaveNext()
         {
-            if (index < commandList.Count - 1)
+            if (index < commandList.Count/* - 1*/)
             {
                 return true;
             }
@@ -61,7 +61,7 @@ namespace WorldActionSystem
             {
                 started = true;
                 this.onEndExecute = onEndExecute;
-                if (!CurrCommand.Startd)
+                if (!CurrCommand.Started)
                     CurrCommand.StartExecute(forceAuto);
                 return true;
             }

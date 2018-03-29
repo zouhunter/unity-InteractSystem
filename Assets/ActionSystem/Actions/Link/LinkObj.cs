@@ -20,13 +20,28 @@ namespace WorldActionSystem
                 return ControllerType.Link;
             }
         }
-        private List<string> linkItems { get { return linkData.linkItems; } }
+        public List<string> linkItems { get { return linkData.linkItems; } }
         private List<LinkGroup> defultLink { get { return linkData.defultLink; } }
+        [SerializeField]
+        private bool quickLink;
+        [SerializeField]
+        private float autoLinkTime = 1f;
         [SerializeField]
         private LinkData linkData;
         private ElementPool<LinkItem> linkPool = new ElementPool<LinkItem>();
         private Coroutine coroutine;
         private LinkItem[] finalGroup;
+
+        private static List<LinkObj> lockQueue = new List<LinkObj>();
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (lockQueue.Contains(this))
+            {
+                lockQueue.Remove(this);
+            }
+        }
         /// <summary>
         /// 注册
         /// </summary>
@@ -73,7 +88,7 @@ namespace WorldActionSystem
             base.OnStartExecute(auto);
             UpdateLinkPool();
             OnStepActive();
-
+            lockQueue.Add(this);
             if (auto)
             {
                 if (coroutine == null)
@@ -96,11 +111,8 @@ namespace WorldActionSystem
                 StopCoroutine(coroutine);
                 coroutine = null;
             }
-               
-            linkPool.ForEach(linkItem =>
-            {
-                linkItem.StepComplete();
-            });
+
+            CompleteElements(this, false);
         }
 
         public override void OnUnDoExecute()
@@ -122,10 +134,41 @@ namespace WorldActionSystem
                 });
             }
 
-            linkPool.ForEach(linkItem =>
+            CompleteElements(this, true);
+        }
+
+        private void CompleteElements(LinkObj element, bool undo)
+        {
+            lockQueue.Remove(element);
+                
+            foreach (var linkItem in linkItems)
             {
-                linkItem.StepUnDo();
-            });
+                var active = lockQueue.Find(x => x.linkItems.Contains(linkItem));
+                if(active  == null)
+                {
+                    var objs = linkPool.FindAll(x=>x.Name == linkItem);
+                    if (objs == null) return;
+                    for (int i = 0; i < objs.Count; i++)
+                    {
+                        if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Active);
+
+                        if (objs[i].Active)
+                        {
+                            objs[i].onConnected -= TryComplete;
+
+                            if (undo)
+                            {
+                                objs[i].StepUnDo();
+                            }
+                            else
+                            {
+                                objs[i].StepComplete();
+                            }
+                        }
+                    }
+                }
+            }
+            
         }
 
         /// <summary>
@@ -158,7 +201,7 @@ namespace WorldActionSystem
             linkPool.ForEach(linkItem =>
             {
                 linkItem.StepActive();
-                linkItem.onConnected = TryComplete;
+                linkItem.onConnected += TryComplete;
             });
         }
 
@@ -168,7 +211,7 @@ namespace WorldActionSystem
         /// </summary>
         private void TryComplete()
         {
-            Debug.Log("TryComplete");
+            //Debug.Log("TryComplete");
             //所有可能的元素组合
             var combinations = CreateCombinations();
             //对每一个组合进行判断
@@ -201,7 +244,7 @@ namespace WorldActionSystem
 
         private void OnCombinationOK(List<LinkItem> combination)
         {
-            Debug.Log("OnCombinationOK");
+            //Debug.Log("OnCombinationOK");
             finalGroup = combination.ToArray();
             foreach (var item in combination)
             {
@@ -296,7 +339,7 @@ namespace WorldActionSystem
             List<LinkItem> linkItemGroup = new List<LinkItem>();
             foreach (var itemName in linkItems)
             {
-                var item = linkPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x));
+                var item = linkPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x) && x.CanUse);
                 Debug.Assert(item != null, "缺少：" + itemName);
                 linkItemGroup.Add(item);
             }
@@ -309,16 +352,30 @@ namespace WorldActionSystem
             var linkInfoB = portB.connectAble.Find(x => x.itemName == portA.Body.Name);
 
             var pos = portA.Body.Trans.TransformPoint(linkInfoB.relativePos);
-            var forward = portA.Body.Trans.TransformDirection(linkInfoB.relativeDir);
+            var forward = portA.Body.Trans.TransformVector(linkInfoB.relativeDir);
+            //var forward = portA.Body.Trans.TransformDirection(linkInfoB.relativeDir);
             var startPos = portB.Body.transform.localPosition;
             var startforward = portB.Body.transform.forward;
 
-            for (float j = 0; j < 1f; j += Time.deltaTime)
+            if(quickLink || autoLinkTime < 0.1f)
             {
-                portB.Body.transform.localPosition = Vector3.Lerp(startPos, pos, j);
-                portB.Body.transform.forward = Vector3.Lerp(startforward, forward, j);
-                yield return null;
+                yield return new WaitForSeconds(autoLinkTime);
+                portB.Body.transform.eulerAngles = forward;
+                portB.Body.transform.position =pos;
+                LinkUtil.UpdateBrotherPos(portB.Body, new List<LinkItem>());
             }
+            else
+            {
+                var context = new List<LinkItem>();
+                for (float j = 0; j < autoLinkTime; j += Time.deltaTime)
+                {
+                    portB.Body.transform.position = Vector3.Lerp(startPos, pos, j / autoLinkTime);
+                    portB.Body.transform.eulerAngles = Vector3.Lerp(startforward, forward, j/ autoLinkTime);
+                    LinkUtil.UpdateBrotherPos(portB.Body, context);
+                    yield return null;
+                }
+            }
+          
         }
     }
 }

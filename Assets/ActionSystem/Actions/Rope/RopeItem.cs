@@ -137,6 +137,10 @@ namespace WorldActionSystem
         {
             rope.Regenerate(false);
         }
+        public override void SetVisible(bool visible)
+        {
+            gameObject.SetActive(visible);
+        }
     }
 
 }

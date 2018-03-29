@@ -46,7 +46,7 @@ namespace WorldActionSystem
                     foreach (var item in targetItem.ChildNodes)
                     {
                         List<LinkPort> otherPorts;
-                        if(LinkUtil.FindTriggerNodes(item, out otherPorts))
+                        if (LinkUtil.FindTriggerNodes(item, out otherPorts))
                         {
                             for (int i = 0; i < otherPorts.Count; i++)
                             {
@@ -60,7 +60,7 @@ namespace WorldActionSystem
                 {
                     if (Selection.instanceIDs != null && Selection.instanceIDs.Length == 2)
                     {
-                        
+                        Debug.Log("还未实现接口");
                     }
                 }
                 if (GUILayout.Button("ClampRot", style))
@@ -76,49 +76,54 @@ namespace WorldActionSystem
 
         }
 
-        private void TryRecordConnect(LinkPort node_A,LinkPort node_B)
+        private void TryRecordConnect(LinkPort node_A, LinkPort node_B)
         {
             if (!node_A || !node_B) return;
             LinkItem item_A = node_A.GetComponentInParent<LinkItem>();
             LinkItem item_B = node_B.GetComponentInParent<LinkItem>();
 
-            if (node_A == null || node_B == null || item_A == null || item_B == null){
+            if (node_A == null || node_B == null || item_A == null || item_B == null)
+            {
                 return;
             }
 
-            LinkInfo nodeArecored = node_A.connectAble.Find((x) => x.itemName == item_B.name && x.nodeId == node_B.NodeID);
-            LinkInfo nodeBrecored = node_B.connectAble.Find((x) => x.itemName == item_A.name && x.nodeId == node_A.NodeID);
-            //已经记录过
-            if (nodeArecored == null)
+            var confer = EditorUtility.DisplayDialog("[connected]", item_A.Name + ":" + (node_A.NodeID) + "<->" + item_B.Name + ":" + (node_B.NodeID), "确认");
+            if (confer)
             {
-                nodeArecored = new LinkInfo();
-                node_A.connectAble.Add(nodeArecored);
+                LinkInfo nodeArecored = node_A.connectAble.Find((x) => x.itemName == item_B.name && x.nodeId == node_B.NodeID);
+                LinkInfo nodeBrecored = node_B.connectAble.Find((x) => x.itemName == item_A.name && x.nodeId == node_A.NodeID);
+                //已经记录过
+                if (nodeArecored == null)
+                {
+                    nodeArecored = new LinkInfo();
+                    node_A.connectAble.Add(nodeArecored);
+                }
+                if (nodeBrecored == null)
+                {
+                    nodeBrecored = new LinkInfo();
+                    node_B.connectAble.Add(nodeBrecored);
+                }
+
+                nodeArecored.itemName = item_B.name;
+                nodeBrecored.itemName = item_A.name;
+                nodeArecored.nodeId = node_B.NodeID;
+                nodeBrecored.nodeId = node_A.NodeID;
+
+
+                RecordTransform(nodeArecored, nodeBrecored, item_A.transform, item_B.transform);
+                EditorUtility.SetDirty(node_A);
+                EditorUtility.SetDirty(node_B);
             }
-            if (nodeBrecored == null)
-            {
-                nodeBrecored = new LinkInfo();
-                node_B.connectAble.Add(nodeBrecored);
-            }
 
-            nodeArecored.itemName = item_B.name;
-            nodeBrecored.itemName = item_A.name;
-            nodeArecored.nodeId = node_B.NodeID;
-            nodeBrecored.nodeId = node_A.NodeID;
-
-            RecordTransform(nodeArecored, nodeBrecored, item_A.transform, item_B.transform);
-
-            EditorUtility.SetDirty(node_A);
-            EditorUtility.SetDirty(node_B);
-            EditorUtility.DisplayDialog("[connected]", item_A.Name+":" + (node_A.NodeID + 1) + "<->"+ item_B.Name + ":" + (node_B.NodeID + 1), "确认");
         }
 
         void RecordTransform(LinkInfo nodeArecored, LinkInfo nodeBrecored, Transform ourItem, Transform otherItem)
         {
+            nodeArecored.relativeDir = otherItem.InverseTransformDirection(ourItem.eulerAngles); //Quaternion.Inverse(ourItem.rotation) * otherItem.rotation;
             nodeArecored.relativePos = otherItem.InverseTransformPoint(ourItem.position);
-            nodeArecored.relativeDir = otherItem.InverseTransformDirection(ourItem.forward); //Quaternion.Inverse(ourItem.rotation) * otherItem.rotation;
 
+            nodeBrecored.relativeDir = ourItem.InverseTransformDirection(otherItem.eulerAngles);// Quaternion.Inverse(otherItem.rotation) * ourItem.rotation;
             nodeBrecored.relativePos = ourItem.InverseTransformPoint(otherItem.position);
-            nodeBrecored.relativeDir = ourItem.InverseTransformDirection(otherItem.forward);// Quaternion.Inverse(otherItem.rotation) * ourItem.rotation;
         }
     }
 }

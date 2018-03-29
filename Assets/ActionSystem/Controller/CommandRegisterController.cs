@@ -14,7 +14,6 @@ namespace WorldActionSystem
         public Dictionary<string, List<ActionCommand>> CommandDic { get { return actionDic; } }
         private List<IActionCommand> _commandList = new List<IActionCommand>();
         private Dictionary<string, List<ActionCommand>> actionDic = new Dictionary<string, List<ActionCommand>>();//触发器
-        private Dictionary<string, SequencesCommand> seqDic = new Dictionary<string, SequencesCommand>();
         private int totalCommand;
         private int currentCommand;
         private StepComplete onStepComplete;
@@ -57,19 +56,11 @@ namespace WorldActionSystem
             }
         }
 
-        private void OnOneCommandComplete(string stepName)
+        private void OnOneCommandComplete(IActionCommand command)
         {
-            if (seqDic.ContainsKey(stepName))
+            if(onStepComplete != null)
             {
-                var cmd = seqDic[stepName];
-                if (!cmd.ContinueExecute())
-                {
-                    onStepComplete(stepName);
-                }
-            }
-            else
-            {
-                onStepComplete(stepName);
+                onStepComplete(command.StepName);
             }
         }
 
@@ -83,23 +74,10 @@ namespace WorldActionSystem
                     var stepName = item.Key;
                     if (item.Value.Count > 1)//多命令
                     {
-                        item.Value.Sort();
-                        var list = new List<IActionCommand>();
-                        var total = item.Value.Count;
-                        for (int i = 0; i < item.Value.Count; i++)
-                        {
-                            int index = i;
-                            int totalcmd = total;
-                            item.Value[index].RegistComplete(OnOneCommandComplete);
-                            item.Value[index].RegistAsOperate(OnUserError);
-                            item.Value[index].onBeforeActive.AddListener((x) =>
-                            {
-                                OnCommandStartExecute(stepName, totalcmd, index);
-                            });
-                            list.Add(item.Value[index]);
-                        }
-                        var cmd = new SequencesCommand(stepName, list);
-                        seqDic.Add(stepName, cmd);
+                        var cmd = new GroupCommand(stepName, item.Value);
+                        cmd.RegistComplete(OnOneCommandComplete);
+                        cmd.RegistAsOperate(OnUserError);
+                        cmd.RegistCommandChanged(OnCommandStartExecute);
                         _commandList.Add(cmd);
                     }
                     else//单命令
@@ -107,6 +85,7 @@ namespace WorldActionSystem
                         var cmd = item.Value[0];
                         cmd.RegistComplete(OnOneCommandComplete);
                         cmd.RegistAsOperate(OnUserError);
+
                         cmd.onBeforeActive.AddListener((x) =>
                         {
                             OnCommandStartExecute(stepName, 1, 1);

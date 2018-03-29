@@ -13,27 +13,16 @@ namespace WorldActionSystem
     [CustomEditor(typeof(ActionGroup)), CanEditMultipleObjects]
     public class ActionGroupDrawer : ActionGroupDrawerBase
     {
-        protected override void RemoveDouble()
+        protected override List<AutoPrefabItem> GetAutoPrefabs()
         {
-            var actionSystem = target as ActionGroup;
-            var newList = new List<AutoPrefabItem>();
-            var needRemove = new List<AutoPrefabItem>();
-            foreach (var item in actionSystem.autoLoadElement)
-            {
-                if (newList.Find(x => x.ID == item.ID) == null)
-                {
-                    newList.Add(item);
-                }
-                else
-                {
-                    needRemove.Add(item);
-                }
-            }
-            foreach (var item in needRemove)
-            {
-                actionSystem.autoLoadElement.Remove(item);
-            }
-            EditorUtility.SetDirty(actionSystem);
+            var group = target as ActionGroup;
+            return group.autoLoadElement;
         }
+        protected override List<RunTimePrefabItem> GetRunTimePrefabs()
+        {
+            var group = target as ActionGroup;
+            return group.runTimeElements;
+        }
+
     }
 }

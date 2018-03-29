@@ -32,14 +32,14 @@ namespace WorldActionSystem
 
         public float Range { get { return _range; } }
         #endregion
+        [SerializeField]
         private int _nodeId;
         [SerializeField,Range(0.1f,100)]
         private float _range = 0.5f;
-        public List<LinkInfo> _connectAble;
+        public List<LinkInfo> _connectAble = new List<LinkInfo>();
 
         private void OnEnable()
         {
-            _nodeId = transform.GetSiblingIndex();
             InitLayer();
         }
         private void InitLayer()

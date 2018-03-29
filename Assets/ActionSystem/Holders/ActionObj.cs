@@ -14,8 +14,8 @@ namespace WorldActionSystem
     {
         [SerializeField]
         protected string m_name;
-        public bool startActive;
-        public bool endActive;
+        public bool startActive = true;
+        public bool endActive = true;
         protected bool _complete;
         public string Name { get { if (string.IsNullOrEmpty(m_name)) m_name = name; return m_name; } }
         public bool Complete { get { return _complete; } }
@@ -57,7 +57,7 @@ namespace WorldActionSystem
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         public abstract ControllerType CtrlType { get; }
-        public static bool log = true;
+        public static bool log = false;
         protected bool notice;
 
         protected virtual void Awake() { }

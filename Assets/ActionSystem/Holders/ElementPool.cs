@@ -7,7 +7,10 @@ using System;
 
 namespace WorldActionSystem
 {
-    public class ElementPool : ElementPool<ISupportElement> { }
+    public class ElementPool : ElementPool<ISupportElement> {
+
+    }
+
     public class ElementPool<T> : List<T> where T : ISupportElement
     {
         /// <summary>

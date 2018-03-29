@@ -85,5 +85,13 @@ namespace WorldActionSystem
         {
             transform.position = pos;
         }
+
+        public override void SetVisible(bool visible)
+        {
+            if (anim != null)
+            {
+                anim.gameObject.SetActive(visible);
+            }
+        }
     }
 }

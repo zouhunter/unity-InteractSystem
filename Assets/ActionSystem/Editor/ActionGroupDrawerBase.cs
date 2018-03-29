@@ -134,7 +134,8 @@ namespace WorldActionSystem
             {
                 if (GUI.Button(rect, "动态元素列表", EditorStyles.boldLabel))
                 {
-                    RemoveDouble();
+                    RemoveRuntimeElements(GetRunTimePrefabs());
+                    EditorUtility.SetDirty(target);
                 }
             };
             runtimeElement_r.drawElementCallback += DrawRuntimeElements;
@@ -189,7 +190,8 @@ namespace WorldActionSystem
         {
             if (GUI.Button(rect, "静态元素列表", EditorStyles.boldLabel))
             {
-                RemoveDouble();
+                RemoveAutoPrefabs(GetAutoPrefabs());
+                EditorUtility.SetDirty(target);
             }
         }
 
@@ -251,7 +253,48 @@ namespace WorldActionSystem
             }
 
         }
-
+        protected abstract List<AutoPrefabItem> GetAutoPrefabs();
+        protected abstract List<RunTimePrefabItem> GetRunTimePrefabs();
+        private void RemoveAutoPrefabs(List<AutoPrefabItem> list)
+        {
+            var newList = new List<AutoPrefabItem>();
+            var needRemove = new List<AutoPrefabItem>();
+            foreach (var item in list)
+            {
+                if (newList.Find(x => x.ID == item.ID) == null)
+                {
+                    newList.Add(item);
+                }
+                else
+                {
+                    needRemove.Add(item);
+                }
+            }
+            foreach (var item in needRemove)
+            {
+                list.Remove(item);
+            }
+        }
+        private void RemoveRuntimeElements(List<RunTimePrefabItem> list)
+        {
+            var newList = new List<RunTimePrefabItem>();
+            var needRemove = new List<RunTimePrefabItem>();
+            foreach (var item in list)
+            {
+                if (newList.Find(x => x.ID == item.ID) == null)
+                {
+                    newList.Add(item);
+                }
+                else
+                {
+                    needRemove.Add(item);
+                }
+            }
+            foreach (var item in needRemove)
+            {
+                list.Remove(item);
+            }
+        }
         private void MarchList()
         {
             if (string.IsNullOrEmpty(query) && selected == 0) return;
@@ -349,8 +392,6 @@ namespace WorldActionSystem
                 }
             }
         }
-        protected abstract void RemoveDouble();
-
         /// <summary>
         /// 绘制作快速导入的区域
         /// </summary>

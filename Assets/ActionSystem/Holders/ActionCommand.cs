@@ -18,10 +18,10 @@ namespace WorldActionSystem
         private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
-        public bool Startd { get { return started; } }
+        public bool Started { get { return started; } }
         public bool Completed { get { return completed; } }
         private UserError userErr { get; set; }
-        private StepComplete stepComplete { get; set; }//步骤自动结束方法
+        private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
         public IActionObj[] ActionObjs { get { return actionObjs; } }
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
         public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } }
@@ -77,7 +77,7 @@ namespace WorldActionSystem
         {
             this.userErr = userErr;
         }
-        public void RegistComplete(StepComplete stepComplete)
+        public void RegistComplete(UnityAction<ActionCommand> stepComplete)
         {
             this.stepComplete = stepComplete;
         }
@@ -115,7 +115,7 @@ namespace WorldActionSystem
                 started = true;
                 completed = true;
                 OnEndExecute();
-                if (stepComplete != null) stepComplete.Invoke(StepName);
+                if (stepComplete != null) stepComplete.Invoke(this);
                 return true;
             }
             else

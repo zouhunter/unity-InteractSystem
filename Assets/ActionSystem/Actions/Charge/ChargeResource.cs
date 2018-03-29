@@ -97,7 +97,10 @@ namespace WorldActionSystem
             GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.chargeResourceLayer);
         }
 
-     
+        public void SetVisible(bool visible)
+        {
+            gameObject.SetActive(visible);
+        }
     }
 
 }

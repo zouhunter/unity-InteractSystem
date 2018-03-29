@@ -13,5 +13,6 @@ namespace WorldActionSystem
         void StepActive();//使用到该元素的步骤开始
         void StepComplete();//使用到该元素的步骤结束
         void StepUnDo();////使用到该元素的步骤回退
+        void SetVisible(bool visible);///隐藏显示状态
     }
 }

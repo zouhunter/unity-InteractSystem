@@ -32,6 +32,7 @@ namespace WorldActionSystem
         private ElementPool rutimeCreatedList = new ElementPool();
         //元素锁
         private Dictionary<ISupportElement, List<object>> lockDic = new Dictionary<ISupportElement, List<object>>();
+
         private ElementController() { }
        
         /// <summary>
@@ -49,7 +50,7 @@ namespace WorldActionSystem
             }
             else
             {
-                Debug.LogError("不要重复注册：" + item);
+               Debug.LogError("不要重复注册：" + item);
             }
         }
 
@@ -60,9 +61,12 @@ namespace WorldActionSystem
         /// <param name="item"></param>
         public void RemoveElement(ISupportElement item)
         {
+            Debug.Log("RemoveElement:" + item);
+
             if (elementList.Contains(item))
             {
                 elementList.ScureRemove(item);
+
                 if (onRemoveElememt != null)
                 {
                     onRemoveElememt.Invoke(item);
@@ -138,7 +142,8 @@ namespace WorldActionSystem
         {
             if (!IsLocked(item))
             {
-                GameObject.Destroy(item.Body);
+                RemoveElement(item);
+                UnityEngine.Object.Destroy(item.Body);
                 return true;
             }
             return false;
@@ -149,13 +154,13 @@ namespace WorldActionSystem
         /// <typeparam name="T"></typeparam>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public T TryCreateElement<T>(string elementName) where T : ISupportElement
+        public T TryCreateElement<T>(string elementName,Transform parent) where T : ISupportElement
         {
             T element = default(T);
             var prefab = runTimeElementPrefabs.Find(x => x.Name == elementName);
             if (prefab != null)
             {
-                var e = CreateElement(prefab);
+                var e = CreateElement(prefab,parent);
                 if (e is T)
                 {
                     element = (T)e;
@@ -174,9 +179,10 @@ namespace WorldActionSystem
             return element;
         }
 
-        private ISupportElement CreateElement(ISupportElement prefab)
+        private ISupportElement CreateElement(ISupportElement prefab,Transform parent)
         {
             var instence = UnityEngine.Object.Instantiate(prefab.Body);
+            instence.transform.SetParent(parent);
             var element = instence.GetComponent<ISupportElement>();
             element.IsRuntimeCreated = true;
             return element;

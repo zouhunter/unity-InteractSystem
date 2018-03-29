@@ -33,6 +33,7 @@ namespace WorldActionSystem.Binding
         }
         private void RegistItems()
         {
+            if (m_Objs.Count == 0) m_Objs.Add(gameObject);
             foreach (var item in m_Objs)
             {
                 var high = item.GetComponent<Highlighter>();

@@ -140,5 +140,10 @@ namespace WorldActionSystem
             LoadData(transform.position, startData, null);
             Active = false;
         }
+
+        public void SetVisible(bool visible)
+        {
+            gameObject.SetActive(visible);
+        }
     }
 }

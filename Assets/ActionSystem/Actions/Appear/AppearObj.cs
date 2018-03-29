@@ -27,7 +27,7 @@ namespace WorldActionSystem
 
         //可能需要用到的元素
         private ElementPool<ISupportElement> supportPool = new ElementPool<ISupportElement>();
-
+        private ISupportElement[] finalGroup;
         public override ControllerType CtrlType
         {
             get
@@ -39,14 +39,18 @@ namespace WorldActionSystem
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
+
             UpdateElementPool();
-            var completed = TryComplete();
-            if (!completed && (auto|| forceAuto) )
+
+            if (auto|| forceAuto)
             {
                 StartCoroutine(AutoAppear());
             }
+            else
+            {
+                TryComplete();
+            }
         }
-
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
@@ -55,23 +59,27 @@ namespace WorldActionSystem
             {
                 elementCtrl.UnLockElement(ele, this);
             });
-           
+            finalGroup = null;
             elementCtrl.ClearExtraCreated();
         }
+
+
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
             var keys = new List<ISupportElement>();
-            foreach (var item in hoders)
+            for (int i = 0; i < finalGroup.Length; i++)
             {
-               var ele = supportPool.Find(x => x.Name == item.elementName && !keys.Contains(x));
-                if(ele != null)
+                var ele = finalGroup[i];
+                if (ele != null)
                 {
                     elementCtrl.LockElement(ele, this);
+                    keys.Add(ele);
                 }
             }
             elementCtrl.ClearExtraCreated();
         }
+   
         /// <summary>
         /// 元素动态注册
         /// </summary>
@@ -135,16 +143,36 @@ namespace WorldActionSystem
         {
             var keys = new List<ISupportElement>();
             bool allComplete = true;
-            foreach (var item in hoders)
+
+            if(finalGroup == null)
             {
-                var ele = supportPool.Find(x => x.Name == item.elementName && !keys.Contains(x));
-                if(ele != null)
+                finalGroup = new ISupportElement[hoders.Count];
+            }
+            else
+            {
+                foreach (var item in finalGroup)
                 {
-                    keys.Add(ele);
+                    if(item != null)
+                    {
+                        keys.Add(item);
+                    }
                 }
-                else
+            }
+
+            for (int i = 0; i < finalGroup.Length; i++)
+            {
+                if(finalGroup[i] == null)
                 {
-                    allComplete = false;
+                    finalGroup[i] = supportPool.Find(x => x.Name == hoders[i].elementName && !keys.Contains(x));
+                    if(finalGroup[i] != null)
+                    {
+                        keys.Add(finalGroup[i]);
+                    }
+                    else
+                    {
+                        allComplete = false;
+                        break;
+                    }
                 }
             }
 
@@ -164,27 +192,23 @@ namespace WorldActionSystem
         {
             Debug.Log("AutoApper:" + this);
             var mark = new List<ISupportElement>();
-
+            finalGroup = new ISupportElement[hoders.Count];
             for (int i = 0; i < hoders.Count; i++)
             {
                 var hoder = hoders[i];
-                var element = supportPool.Find(x => x.Name == hoder.elementName && !mark.Contains(x));
-                if (element == null){
-                    element = elementCtrl.TryCreateElement<ISupportElement>(hoders[i].elementName);
-                }
+                var element = elementCtrl.TryCreateElement<ISupportElement>(hoders[i].elementName, system.transform);
+                    if (element != null && hoder.autoPos)
+                    {
+                        element.Body.transform.position = hoder.autoPos.transform.position;
+                        element.Body.transform.rotation = hoder.autoPos.transform.rotation;
+                    }
+                finalGroup[i] = element;
                 mark.Add(element);
-
-                if(element != null && hoder.autoPos)
-                {
-                    element.Body.transform.position = hoder.autoPos.transform.position;
-                    element.Body.transform.rotation = hoder.autoPos.transform.rotation;
-                }
                 
                 if(element == null)
                 {
                     Debug.LogError("can not create:" + hoders[i].elementName);
                 }
-
                 yield return new WaitForSeconds(spanTime);
             }
 

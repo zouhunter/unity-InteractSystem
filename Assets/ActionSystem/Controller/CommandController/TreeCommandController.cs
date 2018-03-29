@@ -81,7 +81,7 @@ namespace WorldActionSystem
 
                 foreach (var cmd in activeCommands)
                 {
-                    if (!cmd.Startd)
+                    if (!cmd.Started)
                     {
                         cmd.StartExecute(forceAuto);
                     }

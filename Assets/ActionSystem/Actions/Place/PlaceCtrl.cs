@@ -61,6 +61,8 @@ namespace WorldActionSystem
 
         public void UpdatePlaceState()
         {
+            if (pickedUpObj == null) return;
+
             if (!pickedUpObj.Active)
             {
                 resonwhy = "当前步骤无需该零件!";

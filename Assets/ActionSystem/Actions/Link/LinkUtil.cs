@@ -34,7 +34,7 @@ namespace WorldActionSystem
         internal static void ResetTargetTranform(LinkItem target, LinkItem otherParent, Vector3 rPos, Vector3 rdDir)
         {
             target.Trans.position = otherParent.Trans.TransformPoint(rPos);
-            target.Trans.forward = otherParent.Trans.TransformDirection(rdDir);
+            target.Trans.eulerAngles = otherParent.Trans.TransformVector(rdDir);
         }
 
         public static void AttachNodes(LinkPort moveAblePort, LinkPort staticPort)
@@ -148,10 +148,12 @@ namespace WorldActionSystem
                         continue;
                     }
                     //主被动动连接点，非自身点，相同名，没有建立连接
-                    if (tempNode.connectAble.Find((x) => x.itemName == item.Body.Name && x.nodeId == item.NodeID) != null)
+                    var linkInfo = item.connectAble.Find((x) => x.itemName == tempNode.Body.Name && x.nodeId == tempNode.NodeID);
+                    if (linkInfo != null)
                     {
                         //同属于一个源
                         node = tempNode;
+                        LinkUtil.ResetTargetTranform(item.Body, node.Body, linkInfo.relativePos, linkInfo.relativeDir);
                         return true;
                     }
                 }
