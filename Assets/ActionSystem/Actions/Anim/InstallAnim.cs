@@ -4,42 +4,53 @@ using System.Collections;
 
 namespace WorldActionSystem
 {
-    public class InstallAnim : MonoBehaviour, AnimPlayer
+    public class InstallAnim : AnimPlayer
     {
         [SerializeField]
-        private Transform targetTrans;
-        private Vector3 targetPos;
+        protected Transform bodyTrans;
         [SerializeField]
-        private float time = 2f;
-        private Vector3 initPos;
-        private Coroutine coroutine;
-        private void Awake()
+        protected Transform targetTrans;
+        [SerializeField, Range(-10, 10)]
+        protected float rotateSpeed;
+        [SerializeField]
+        protected float time = 2f;
+
+        protected Vector3 startPosition;
+        protected Quaternion startRotation;
+        protected Coroutine coroutine;
+        protected Vector3 targetPosition;
+        protected Quaternion targetRotation;
+        protected override void Awake()
         {
-            initPos = transform.position;
-            if(targetTrans != null){
-                targetPos = targetTrans.transform.position;
+            base.Awake();
+            startPosition = bodyTrans.localPosition;
+
+            if (targetTrans != null)
+            {
+                targetPosition = targetTrans.transform.localPosition;
+                targetRotation = targetTrans.transform.localRotation;
             }
         }
 
-   
-
-        public void Play(float speed, UnityAction onAutoPlayEnd)
+        public override void StepActive()
         {
-            time = 1f / speed;
-            transform.position = initPos;
+            time = 1f / duration;
+            bodyTrans.localPosition = startPosition;
             coroutine = StartCoroutine(MoveAnim(onAutoPlayEnd));
         }
 
-        public void EndPlay()
+        public override void StepComplete()
         {
-            if (coroutine != null) {
+            if (coroutine != null)
+            {
                 StopCoroutine(coroutine);
                 coroutine = null;
             }
-            transform.position = targetPos;
+            bodyTrans.localPosition = targetPosition;
+            bodyTrans.localRotation = targetRotation;
         }
 
-        public void UnDoPlay()
+        public override void StepUnDo()
         {
             Debug.Log("UnDoPlay");
             if (coroutine != null)
@@ -47,22 +58,38 @@ namespace WorldActionSystem
                 StopCoroutine(coroutine);
                 coroutine = null;
             }
-            transform.position = initPos;
+            bodyTrans.localPosition = startPosition;
+            bodyTrans.localRotation = startRotation;
         }
-        private IEnumerator MoveAnim(UnityAction onComplete)
+
+        public override void SetPosition(Vector3 pos)
         {
-            var startPos = transform.position;
+            transform.position = pos;
+        }
+
+        protected IEnumerator MoveAnim(UnityAction onComplete)
+        {
+            var startPos = bodyTrans.localPosition;
+            var startRot = bodyTrans.localRotation;
+            var dir = targetPosition - startPos;
+            var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {
-                transform.position = Vector3.Lerp(startPos, targetPos, i / time);
+                bodyTrans.localPosition = Vector3.Lerp(startPos, targetPosition, i / time);
+                bodyTrans.localRotation = rot * bodyTrans.localRotation;
                 yield return null;
             }
+          
+            bodyTrans.localPosition = targetPosition;
+            bodyTrans.localRotation = targetRotation;
+
             if (onComplete != null)
             {
                 onComplete.Invoke();
                 onComplete = null;
             }
-            transform.position = targetPos;
         }
+
+
     }
 }

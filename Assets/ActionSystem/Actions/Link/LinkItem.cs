@@ -7,26 +7,8 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem
 {
-    public class LinkItem : PickUpAbleItem, ISupportElement
+    public class LinkItem : PickUpAbleElement
     {
-        public override string Name
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_name))
-                {
-                    _name = name;
-                }
-                return _name;
-            }
-        }
-        public GameObject Body
-        {
-            get
-            {
-                return gameObject;
-            }
-        }
         private List<LinkPort> _childNodes = new List<LinkPort>();
         public Transform Trans
         {
@@ -35,8 +17,6 @@ namespace WorldActionSystem
                 return transform;
             }
         }
-        public bool IsRuntimeCreated { get; set; }
-        public bool Active { get { return active; } }
         public ElementController elementCtrl { get { return ElementController.Instence; } }
         public List<LinkPort> GroupNodes
         {
@@ -62,14 +42,11 @@ namespace WorldActionSystem
         public Action onConnected { get; internal set; }
 
         [SerializeField]
-        private string _name;
-        [SerializeField]
         private Renderer m_render;//可选择提示
         [SerializeField]
         private Color highLightColor = Color.green;
 
 
-        private bool active;//激活状态
         private IHighLightItems highLighter;
         private Vector3 startPos;
         private Quaternion startRot;
@@ -170,25 +147,6 @@ namespace WorldActionSystem
             LinkUtil.UpdateBrotherPos(this, linkLock);
         }
 
-        public void StepActive()
-        {
-            active = true;
-            PickUpAble = true;
-        }
-
-        public void StepComplete()
-        {
-            active = false;
-            PickUpAble = false;
-        }
-
-        public void StepUnDo()
-        {
-            active = false;
-            PickUpAble = false;
-            transform.position = startPos;
-            transform.rotation = startRot;
-        }
         /// <summary>
         /// 判断是否已经连接过了
         /// </summary>
@@ -210,6 +168,25 @@ namespace WorldActionSystem
             {
                 onConnected.Invoke();
             }
+        }
+
+        public override void StepActive()
+        {
+            PickUpAble = true;
+            Active = true;
+        }
+
+        public override void StepComplete()
+        {
+            PickUpAble = false;
+            Active = false;
+        }
+        public override void StepUnDo()
+        {
+            PickUpAble = false;
+            Active = false;
+            transform.position = startPos;
+            transform.rotation = startRot;
         }
         /// <summary>
         /// 激活匹配点
@@ -245,4 +222,4 @@ namespace WorldActionSystem
         //}
     }
 
-}
+    }

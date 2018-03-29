@@ -4,7 +4,8 @@ namespace WorldActionSystem
 {
     public abstract class PickUpAbleItem : MonoBehaviour
     {
-        public virtual string Name { get { return name; } }
+        public string _name;
+        public string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
         private bool _pickUpAble = false;
         public virtual bool PickUpAble { get { return _pickUpAble; }set { _pickUpAble = value; } }
         public virtual void OnPickUp() { }

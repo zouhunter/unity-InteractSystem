@@ -50,13 +50,15 @@ namespace WorldActionSystem
             elementCtrl = ElementController.Instence;
             elementCtrl.RegistElement(this);
         }
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             startPos = transform.localPosition;
             LoadData(transform.position, startData, null);
         }
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             if (elementCtrl != null)
                 elementCtrl.RemoveElement(this);
         }

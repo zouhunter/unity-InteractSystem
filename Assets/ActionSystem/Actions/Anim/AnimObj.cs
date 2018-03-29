@@ -8,13 +8,16 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.AnimObj)]
-    public class AnimObj : ActionObj, IOutSideRegister
+    public class AnimObj : ActionObj
     {
         public float delyTime = 0f;
         public AnimPlayer animPlayer;
         [Range(0.1f, 10f)]
         public float speed = 1;
+        [SerializeField]
+        private bool playAtPostion;
         private Coroutine delyPlay;
+
         public override ControllerType CtrlType
         {
             get
@@ -23,34 +26,13 @@ namespace WorldActionSystem
             }
         }
 
-        protected override void Start()
-        {
-            base.Start();
-            animPlayer = GetComponentInChildren<AnimPlayer>(true);
-            if (animPlayer != null){
-                gameObject.SetActive(startActive);
-            }
-            else
-            {
-                gameObject.SetActive(true);
-            }
-
-        }
-        
-        public void RegisterOutSideAnim(AnimPlayer animPlayer)
-        {
-            if (animPlayer != null)
-            {
-                this.animPlayer = animPlayer;
-                gameObject.SetActive(startActive);
-            }
-        }
         /// <summary>
         /// 播放动画
         /// </summary>
         public override void OnStartExecute(bool forceauto)
         {
             base.OnStartExecute(forceauto);
+            FindAnimCore();
             Debug.Assert(animPlayer != null);
             delyPlay = StartCoroutine(DelyPlay());
         }
@@ -58,25 +40,53 @@ namespace WorldActionSystem
         private IEnumerator DelyPlay()
         {
             yield return new WaitForSeconds(delyTime);
-            if (animPlayer != null) animPlayer.Play(speed, OnAnimPlayCallBack);
+            if (animPlayer != null)
+            {
+                animPlayer.duration = speed;
+                animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
+                animPlayer.StepActive();
+            }
         }
         private void OnAnimPlayCallBack()
         {
             OnEndExecute(false);
         }
 
-        public override void OnEndExecute(bool force)
+        protected override void OnBeforeEnd(bool force)
         {
-            base.OnEndExecute(force);
+            base.OnBeforeEnd(force);
             if (delyPlay != null) StopCoroutine(delyPlay);
-            if (animPlayer != null) animPlayer.EndPlay();
+            if (animPlayer != null) animPlayer.StepComplete();
         }
-
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
             if (delyPlay != null) StopCoroutine(delyPlay);
-            if (animPlayer != null) animPlayer.UnDoPlay();
+            if (animPlayer != null) animPlayer.StepUnDo();
         }
+
+        private void FindAnimCore()
+        {
+            animPlayer = GetComponentInChildren<AnimPlayer>(true);
+            if(animPlayer == null)
+            {
+                var elements = elementCtrl.GetElements<AnimPlayer>(Name);
+                if(elements != null && elements.Count > 0)
+                {
+                    animPlayer = elements[0];
+                }
+            }
+
+            if(animPlayer)
+            {
+                animPlayer.transform.SetParent(transform, true);
+                if(playAtPostion)
+                {
+                    animPlayer.transform.transform.localPosition = Vector3.zero;
+                    animPlayer.transform.transform.localRotation = Quaternion.identity;
+                }
+            }
+        }
+
     }
 }

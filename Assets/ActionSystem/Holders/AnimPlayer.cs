@@ -6,11 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-    public interface AnimPlayer
+
+    public abstract class AnimPlayer: PickUpAbleElement
     {
-        void Play(float duration, UnityAction onAutoPlayEnd);
-        void EndPlay();
-        void UnDoPlay();
+        public float duration { get; set; }
+        public UnityAction onAutoPlayEnd { get; set; }
     }
 
 }

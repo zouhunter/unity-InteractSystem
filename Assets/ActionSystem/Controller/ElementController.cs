@@ -33,7 +33,6 @@ namespace WorldActionSystem
         //元素锁
         private Dictionary<ISupportElement, List<object>> lockDic = new Dictionary<ISupportElement, List<object>>();
         private ElementController() { }
-      
        
         /// <summary>
         /// 外部添加Element

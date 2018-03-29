@@ -247,9 +247,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  forceAuto: 0
   spanTime: 1
   hoders:
-  - objName: appear_item2
+  - elementName: 
     autoPos: {fileID: 0}
 --- !u!114 &114982149599487508
 MonoBehaviour:
@@ -284,7 +285,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  forceAuto: 0
   spanTime: 1
   hoders:
-  - objName: appear_item1
+  - elementName: 
     autoPos: {fileID: 0}

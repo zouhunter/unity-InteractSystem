@@ -7,29 +7,8 @@ using System;
 
 namespace WorldActionSystem
 {
-    public class RopeItem : PickUpAbleItem, ISupportElement
+    public class RopeItem : PickUpAbleElement
     {
-        [SerializeField]
-        private string _name;
-        public override string Name
-        {
-            get
-            {
-                if(string.IsNullOrEmpty(_name))
-                {
-                    _name = name;
-                }
-                return _name;
-            }
-        }
-
-        public GameObject Body
-        {
-            get
-            {
-                return gameObject;
-            }
-        }
         public bool completeHide;
         [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();
@@ -38,10 +17,8 @@ namespace WorldActionSystem
         [SerializeField]
         private UltimateRope rope;
         public bool Used { get; set; }
-        public bool IsRuntimeCreated { get; set; }
         private List<float> lengthList = new List<float>();
         public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
-        public bool Active { get; set; }
         public RopeObj BindingTarget { get; internal set; }
 
 
@@ -57,8 +34,9 @@ namespace WorldActionSystem
         {
             ElementController.Instence.RemoveElement(this);
         }
-        protected virtual void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             rope.Regenerate(true);
         }
 
@@ -84,7 +62,7 @@ namespace WorldActionSystem
             transform.position = pos;
         }
 
-        public void StepActive()
+        public override void StepActive()
         {
             PickUpAble = true;
             Active = true;
@@ -128,7 +106,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void StepComplete()
+        public override void StepComplete()
         {
             if (completeHide)
             {
@@ -145,7 +123,7 @@ namespace WorldActionSystem
             OnPlace(false);
         }
 
-        public void StepUnDo()
+        public override void StepUnDo()
         {
             if (completeHide)
             {

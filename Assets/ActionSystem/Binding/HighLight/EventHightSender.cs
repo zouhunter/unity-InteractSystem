@@ -12,7 +12,14 @@ namespace WorldActionSystem.Binding
         private bool noticeAuto { get { return Config.highLightNotice; } }
         private string highLight { get { return "HighLightObjects"; } }
         private string unhighLight { get { return "UnHighLightObjects"; } }
-
+        protected override void Awake()
+        {
+            base.Awake();
+            if (string.IsNullOrEmpty(key)){
+                key = actionObj.Name;
+            }
+        }
+      
         protected void Update()
         {
             if (!noticeAuto) return;

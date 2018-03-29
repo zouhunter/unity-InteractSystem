@@ -67,7 +67,6 @@ namespace WorldActionSystem
             }
         }
 
-        public string _name;
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
@@ -75,8 +74,7 @@ namespace WorldActionSystem
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
         public bool Used { get; set; }
-        public override string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
-
+       
         public GameObject Body
         {
             get
@@ -120,8 +118,9 @@ namespace WorldActionSystem
             base.Awake();
             move = new Tweener(this);
         }
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
             InitRender();
             InitLayer();
             startPos = transform.position;
@@ -129,8 +128,10 @@ namespace WorldActionSystem
             gameObject.SetActive(startActive);
             elementCtrl.RegistElement(this);
         }
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
+
             if (!Config.highLightNotice) return;
             if (m_render == null) return;
             if (actived)
@@ -143,8 +144,9 @@ namespace WorldActionSystem
             }
         }
 
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             move.Kill();
             elementCtrl.RemoveElement(this);
         }

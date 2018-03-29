@@ -12,7 +12,7 @@ namespace WorldActionSystem {
         protected GameObject viewObj { get { return Config.angleObj; } }
         protected Color highLightColor { get { return Config.highLightColor; } }
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
-        private Dictionary<string, Queue<GameObject>> objectDicQueue = new Dictionary<string, Queue<GameObject>>();
+        //private Dictionary<string, Queue<GameObject>> objectDicQueue = new Dictionary<string, Queue<GameObject>>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
         private ActionSystem actionSystem;
