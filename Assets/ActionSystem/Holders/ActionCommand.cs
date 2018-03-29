@@ -28,8 +28,8 @@ namespace WorldActionSystem
 
         protected IActionObj[] actionObjs;
         private ActionObjCtroller objectCtrl;
-        [EnumMask]
-        public ControllerType commandType;
+        //[EnumMask]
+        //public ControllerType commandType;
 
 #if ActionSystem_G
         [HideInInspector]

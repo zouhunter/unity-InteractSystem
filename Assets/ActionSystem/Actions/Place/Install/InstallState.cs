@@ -9,7 +9,7 @@ namespace WorldActionSystem
 
     public class InstallState : IPlaceState
     {
-        public ControllerType CtrlType { get { return ControllerType.Install; } }
+        public ControllerType CtrlType { get { return ControllerType.Place; } }
 
         public bool Active { get; private set; }
 

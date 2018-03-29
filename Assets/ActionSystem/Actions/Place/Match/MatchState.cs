@@ -9,7 +9,7 @@ namespace WorldActionSystem
 
     public class MatchState : IPlaceState
     {
-        public ControllerType CtrlType { get { return ControllerType.Match; } }
+        public ControllerType CtrlType { get { return ControllerType.Place; } }
 
         private PlaceCtrl placeCtrl;
         public MatchState(PlaceCtrl placeCtrl)

@@ -19,7 +19,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return ControllerType.Install;
+                return ControllerType.Place;
             }
         }
         protected override void OnBeforeEnd(bool force)

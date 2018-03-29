@@ -12,22 +12,19 @@ namespace WorldActionSystem
     [CustomEditor(typeof(ActionCommand)), CanEditMultipleObjects]
     public class ActionCommandDrawer : Editor
     {
-        SerializedProperty commandTypeProp;
-
         private void OnEnable()
         {
-            commandTypeProp = serializedObject.FindProperty("commandType");
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            if (Selection.gameObjects.Length == 1)
-            {
-                serializedObject.Update();
-                ModifyType();
-                serializedObject.ApplyModifiedProperties();
-            }
+            //if (Selection.gameObjects.Length == 1)
+            //{
+            //    serializedObject.Update();
+            //    ModifyType();
+            //    serializedObject.ApplyModifiedProperties();
+            //}
         }
     
 
@@ -38,7 +35,6 @@ namespace WorldActionSystem
             if (actionObjs != null)
             {
                 foreach (var item in actionObjs) {
-                    commandTypeProp.intValue |= (int)item.CtrlType;
                 }
             }
         }

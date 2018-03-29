@@ -12,7 +12,7 @@ namespace WorldActionSystem
         public ActionObjCtroller activeObjCtrl { get; private set; }
         private List<IOperateController> controllerList = new List<IOperateController>();
         protected Coroutine coroutine;
-        //private ControllerType activeTypes;
+        private Dictionary<ControllerType, int> activeTypes = new Dictionary<ControllerType, int>();
         public static bool log = false;
         public UnityAction<IActionObj> onActionStart;
 
@@ -42,10 +42,10 @@ namespace WorldActionSystem
                 yield return wait;//要保证在PickUpCtrl之前执行才不会有问题，否则拿起来就被放下了！！！
                 foreach (var ctrl in controllerList)
                 {
-                    //if ((ctrl.CtrlType & activeTypes) != 0)
-                    //{
+                    if(activeTypes.ContainsKey(ctrl.CtrlType) && activeTypes[ctrl.CtrlType] > 0)
+                    {
                         ctrl.Update();
-                    //}
+                    }
                 }
             }
 
@@ -91,20 +91,28 @@ namespace WorldActionSystem
         public virtual void OnStartExecute(ActionObjCtroller activeObjCtrl, bool forceAuto)
         {
             this.activeObjCtrl = activeObjCtrl;
-            //this.activeObjCtrl.onCtrlStart = OnActionStart;
-            //this.activeObjCtrl.onCtrlStop = OnActionStop;
+            this.activeObjCtrl.onCtrlStart = OnActionStart;
+            this.activeObjCtrl.onCtrlStop = OnActionStop;
             this.activeObjCtrl.OnStartExecute(forceAuto);
         }
 
-        //private void OnActionStart(ControllerType ctrlType)
-        //{
-        //    activeTypes |= ctrlType;
-        //}
+        private void OnActionStart(ControllerType ctrlType)
+        {
+            if (!activeTypes.ContainsKey(ctrlType))
+            {
+                activeTypes.Add(ctrlType, 0);
+            }
+            activeTypes[ctrlType]++;
+        }
 
-        //private void OnActionStop(ControllerType ctrlType)
-        //{
-        //    activeTypes ^= ctrlType;
-        //}
+        private void OnActionStop(ControllerType ctrlType)
+        {
+            activeTypes[ctrlType]++;
+            if(activeTypes[ctrlType] < 0)
+            {
+                activeTypes[ctrlType] = 0;
+            }
+        }
 
         public virtual void OnEndExecute(ActionObjCtroller activeObjCtrl)
         {

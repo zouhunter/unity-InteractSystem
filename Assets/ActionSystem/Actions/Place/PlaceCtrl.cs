@@ -25,7 +25,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return ControllerType.Install | ControllerType.Match;
+                return ControllerType.Place;
             }
         }
 
@@ -111,11 +111,11 @@ namespace WorldActionSystem
 
         public void SwitchState(ControllerType ctrlType)
         {
-            if(ctrlType == ControllerType.Install)
+            if(ctrlType == ControllerType.Place)
             {
                 current = installCtrl; 
             }
-            else if(ctrlType == ControllerType.Match)
+            else if(ctrlType == ControllerType.Place)
             {
                 current = matchCtrl;
             }

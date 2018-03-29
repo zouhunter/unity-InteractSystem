@@ -16,7 +16,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return ControllerType.Match;
+                return ControllerType.Place;
             }
         }
 
