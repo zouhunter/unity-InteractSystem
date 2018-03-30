@@ -53,7 +53,7 @@ namespace WorldActionSystem
         private void RegisterControllers()
         {
             pickupCtrl.onPickup += (OnPickUpObj);
-            Debug.Log("RegisterControllers");
+            //Debug.Log("RegisterControllers");
             var types = this.GetType().Assembly.GetTypes();
             foreach (var t in types)
             {
@@ -107,21 +107,27 @@ namespace WorldActionSystem
 
         private void OnActionStop(ControllerType ctrlType)
         {
-            activeTypes[ctrlType]++;
-            if(activeTypes[ctrlType] < 0)
+            if(activeTypes.ContainsKey(ctrlType))
             {
-                activeTypes[ctrlType] = 0;
+                activeTypes[ctrlType]++;
+                if (activeTypes[ctrlType] < 0)
+                {
+                    activeTypes[ctrlType] = 0;
+                }
             }
+           
         }
 
         public virtual void OnEndExecute(ActionObjCtroller activeObjCtrl)
         {
-            if (activeObjCtrl != null) activeObjCtrl.OnEndExecute();
+            if (activeObjCtrl != null)
+                activeObjCtrl.OnEndExecute();
         }
 
         public virtual void OnUnDoExecute(ActionObjCtroller activeObjCtrl)
         {
-            if (activeObjCtrl != null) activeObjCtrl.OnUnDoExecute();
+            if (activeObjCtrl != null)
+                activeObjCtrl.OnUnDoExecute();
         }
     }
 }

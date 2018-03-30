@@ -108,16 +108,6 @@ namespace WorldActionSystem
             }
         }
 
-        //void ActiveAngle()
-        //{
-        //    var notLinked = linkPool.Where(x => x != null && !HaveConnected(x)).FirstOrDefault();
-        //    if (notLinked != null)
-        //    {
-        //        angleCtrl.UnNotice(anglePos);
-        //        anglePos = notLinked.transform;
-        //    }
-        //}
-
         void OnConnected(LinkPort[] nodes)
         {
             foreach (var item in nodes)
@@ -132,5 +122,37 @@ namespace WorldActionSystem
 
             Debug.Log("Connected");
         }
+        /// <summary>
+        /// 激活匹配点
+        /// </summary>
+        /// <param name="pickedUp"></param>
+        //public void TryActiveLinkPort(LinkItem pickedUp)
+        //{
+        //    for (int i = 0; i < pickedUp.ChildNodes.Count; i++)
+        //    {
+        //        var node = pickedUp.ChildNodes[i];
+        //        if (node.ConnectedNode == null && node.connectAble.Count > 0)
+        //        {
+        //            for (int j = 0; j < node.connectAble.Count; j++)
+        //            {
+        //                var info = node.connectAble[j];
+
+        //                var otheritem = (from x in linkPool
+        //                                 where (x != null && x != pickedUp && x.Name == info.itemName)
+        //                                 select x).FirstOrDefault();
+
+        //                if (otheritem != null)
+        //                {
+        //                    var otherNode = otheritem.ChildNodes[info.nodeId];
+        //                    if (otherNode != null && otherNode.ConnectedNode == null)
+        //                    {
+        //                        angleCtrl.UnNotice(anglePos);
+        //                        anglePos = otherNode.transform;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

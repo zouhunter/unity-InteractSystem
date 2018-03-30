@@ -59,11 +59,9 @@ namespace WorldActionSystem
                         if (Started)
                         {
                             linkItem.StepActive();
-                            TryComplete();
                         }
                     }
                 }
-
             }
         }
 
@@ -113,6 +111,11 @@ namespace WorldActionSystem
             }
 
             CompleteElements(this, false);
+            
+            if(finalGroup == null)
+            {
+                QuickLinkItems();
+            }
         }
 
         public override void OnUnDoExecute()
@@ -132,6 +135,7 @@ namespace WorldActionSystem
                     //解除本脚本对linkItem的锁定
                     elementCtrl.UnLockElement(linkItem, this);
                 });
+                finalGroup = null;
             }
 
             CompleteElements(this, true);
@@ -140,13 +144,14 @@ namespace WorldActionSystem
         private void CompleteElements(LinkObj element, bool undo)
         {
             lockQueue.Remove(element);
-                
+
             foreach (var linkItem in linkItems)
             {
                 var active = lockQueue.Find(x => x.linkItems.Contains(linkItem));
-                if(active  == null)
+
+                if (active == null)
                 {
-                    var objs = linkPool.FindAll(x=>x.Name == linkItem);
+                    var objs = linkPool.FindAll(x => x.Name == linkItem);
                     if (objs == null) return;
                     for (int i = 0; i < objs.Count; i++)
                     {
@@ -168,7 +173,7 @@ namespace WorldActionSystem
                     }
                 }
             }
-            
+
         }
 
         /// <summary>
@@ -211,13 +216,15 @@ namespace WorldActionSystem
         /// </summary>
         private void TryComplete()
         {
-            //Debug.Log("TryComplete");
+            Debug.Log("TryComplete",gameObject);
             //所有可能的元素组合
             var combinations = CreateCombinations();
+            var count = linkItems.Count - 1;//连接数
             //对每一个组合进行判断
             foreach (var combination in combinations)
             {
-                bool combinationOK = true;
+                //bool combinationOK = true;
+                var counter = 0;
                 //记录每个点可能的LinkItem
                 foreach (var group in defultLink)
                 {
@@ -226,14 +233,19 @@ namespace WorldActionSystem
                     var portA = itemA.ChildNodes.Find(x => x.NodeID == group.portA);
                     var portB = itemB.ChildNodes.Find(x => x.NodeID == group.portB);
 
-                    combinationOK &= 
-                        portA != null && 
-                        portB != null && 
-                        portA.ConnectedNode == portB 
+                    var connected =
+                        portA != null &&
+                        portB != null &&
+                        portA.ConnectedNode == portB
                         && portB.ConnectedNode == portA;
-                }
 
-                if (combinationOK)
+                    if (connected)
+                    {
+                        counter++;
+                    }
+                }
+                ///连接数足够就当作已经连接
+                if (counter >= count)
                 {
                     OnCombinationOK(combination);
                     OnEndExecute(false);
@@ -242,6 +254,10 @@ namespace WorldActionSystem
             }
         }
 
+        /// <summary>
+        /// 完成装配
+        /// </summary>
+        /// <param name="combination"></param>
         private void OnCombinationOK(List<LinkItem> combination)
         {
             //Debug.Log("OnCombinationOK");
@@ -249,6 +265,7 @@ namespace WorldActionSystem
             foreach (var item in combination)
             {
                 elementCtrl.LockElement(item, this);
+                item.SetVisible(endActive);
             }
         }
         /// <summary>
@@ -310,8 +327,40 @@ namespace WorldActionSystem
             return result;
         }
 
+        /// <summary>
+        /// 快速连接元素
+        /// </summary>
+        private void QuickLinkItems()
+        {
+            Debug.Log("QuickLinkItems",gameObject);
+            var links = SurchLinkItems();
+            for (int i = 0; i < defultLink.Count; i++)
+            {
+                var linkGroup = defultLink[i];
 
+                var itemA = links[linkGroup.ItemA];
+                var itemB = links[linkGroup.ItemB];
 
+                var portA = itemA.ChildNodes[linkGroup.portA];
+                var portB = itemB.ChildNodes[linkGroup.portB];
+
+                if (portA.ConnectedNode != null || portB.ConnectedNode != null)
+                {
+                    continue;
+                }
+
+                angleCtrl.UnNotice(anglePos);
+                anglePos = portA.transform;
+                LinkUtil.AttachNodes(portB, portA);
+                portB.ResetTransform();
+            }
+            angleCtrl.UnNotice(anglePos);
+        }
+
+        /// <summary>
+        /// 自动连接
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator AutoLinkItems()
         {
             var links = SurchLinkItems();
@@ -324,6 +373,10 @@ namespace WorldActionSystem
 
                 var portA = itemA.ChildNodes[linkGroup.portA];
                 var portB = itemB.ChildNodes[linkGroup.portB];
+
+                if(portA.ConnectedNode != null || portB.ConnectedNode != null){
+                    continue;
+                }
 
                 angleCtrl.UnNotice(anglePos);
                 anglePos = portA.transform;
@@ -351,17 +404,19 @@ namespace WorldActionSystem
             //var linkInfoA = portA.connectAble.Find(x => x.itemName == portB.Body.Name);
             var linkInfoB = portB.connectAble.Find(x => x.itemName == portA.Body.Name);
 
-            var pos = portA.Body.Trans.TransformPoint(linkInfoB.relativePos);
-            var forward = portA.Body.Trans.TransformVector(linkInfoB.relativeDir);
-            //var forward = portA.Body.Trans.TransformDirection(linkInfoB.relativeDir);
-            var startPos = portB.Body.transform.localPosition;
+            Vector3 pos;
+            Vector3 eular;
+
+            LinkUtil.GetWorldPosFromTarget(portA.Body, linkInfoB.relativePos, linkInfoB.relativeDir, out pos, out eular);
+
+            var startPos = portB.Body.transform.position;
             var startforward = portB.Body.transform.forward;
 
-            if(quickLink || autoLinkTime < 0.1f)
+            if (quickLink || autoLinkTime < 0.1f)
             {
                 yield return new WaitForSeconds(autoLinkTime);
-                portB.Body.transform.eulerAngles = forward;
-                portB.Body.transform.position =pos;
+                portB.Body.transform.eulerAngles = eular;
+                portB.Body.transform.position = pos;
                 LinkUtil.UpdateBrotherPos(portB.Body, new List<LinkItem>());
             }
             else
@@ -369,13 +424,14 @@ namespace WorldActionSystem
                 var context = new List<LinkItem>();
                 for (float j = 0; j < autoLinkTime; j += Time.deltaTime)
                 {
-                    portB.Body.transform.position = Vector3.Lerp(startPos, pos, j / autoLinkTime);
-                    portB.Body.transform.eulerAngles = Vector3.Lerp(startforward, forward, j/ autoLinkTime);
-                    LinkUtil.UpdateBrotherPos(portB.Body, context);
                     yield return null;
+                    portB.Body.transform.position = Vector3.Lerp(startPos, pos, j / autoLinkTime);
+                    portB.Body.transform.eulerAngles = Vector3.Lerp(startforward, eular, j / autoLinkTime);
+                    context.Clear();
+                    LinkUtil.UpdateBrotherPos(portB.Body, context);
                 }
             }
-          
+
         }
     }
 }

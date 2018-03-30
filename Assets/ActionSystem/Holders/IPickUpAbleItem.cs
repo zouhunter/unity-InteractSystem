@@ -12,6 +12,7 @@ namespace WorldActionSystem
         public virtual void OnPickStay() { }
         public virtual void OnPickDown() { }
         public abstract void SetPosition(Vector3 pos);
+        public virtual void SetViewRotation(Quaternion rotation) { }
         private Collider _collider;
         public Collider Collider { get { return _collider; } }
 

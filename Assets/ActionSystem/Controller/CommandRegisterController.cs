@@ -72,7 +72,7 @@ namespace WorldActionSystem
                 foreach (var item in actionDic)
                 {
                     var stepName = item.Key;
-                    if (item.Value.Count > 1)//多命令
+                    if (item.Value.Count > 1 || item.Value[0].CopyCount > 0)//多命令
                     {
                         var cmd = new GroupCommand(stepName, item.Value);
                         cmd.RegistComplete(OnOneCommandComplete);

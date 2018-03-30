@@ -16,7 +16,7 @@ namespace WorldActionSystem
         protected bool isForceAuto;
         private Queue<IActionObj> actionQueue = new Queue<IActionObj>();
         private List<IActionObj> startedActions = new List<IActionObj>();
-        public static bool log = false;
+        public static bool log = true;
         public UnityAction<ControllerType> onCtrlStart { get; set; }
         public UnityAction<ControllerType> onCtrlStop { get; set; }
         private ActionGroup _system;
@@ -56,6 +56,7 @@ namespace WorldActionSystem
         {
             actionQueue.Clear();
             queueID.Clear();
+            Array.Sort(actionObjs);
             foreach (var item in actionObjs)
             {
                 if (!queueID.Contains(item.QueueID))
@@ -201,7 +202,7 @@ namespace WorldActionSystem
         }
         private void TryStartAction(IActionObj obj)
         {
-            if (log) Debug.Log("Start A Step:" + obj);
+            if (log) Debug.Log("Start A Step:" + obj,obj as ActionObj);
             if (!obj.Started)
             {
                 if (cameraCtrl != null)

@@ -16,6 +16,7 @@ namespace WorldActionSystem
         private float hitDistence { get { return Config.hitDistence; } }
         private Ray disRay;
         private RaycastHit disHit;
+        private Quaternion viewRotation;
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
         private int pickUpElementLayerMask { get { return LayerMask.GetMask(Layers.pickUpElementLayer); } }
@@ -37,7 +38,7 @@ namespace WorldActionSystem
         //private MonoBehaviour holder;
         public PickUpController(MonoBehaviour holder)
         {
-            Debug.Log("New PickUpController");
+            //Debug.Log("New PickUpController");
             //this.holder = holder;
            /* coroutine = */holder.StartCoroutine(Update());
         }
@@ -96,12 +97,14 @@ namespace WorldActionSystem
         {
             if (pickedUpObj != null)
             {
-                pickedUpObj.OnPickStay();
+                var obj = pickedUpObj;
+                pickedUpObj = null;
+
+                obj.OnPickStay();
 
                 if (onPickStay != null)
-                    onPickStay(pickedUpObj);
+                    onPickStay(obj);
 
-                pickedUpObj = null;
             }
         }
 
@@ -111,12 +114,13 @@ namespace WorldActionSystem
 
             if (pickedUpObj != null)
             {
-                if (onPickdown != null)
-                    onPickdown(pickedUpObj);
-
-                pickedUpObj.OnPickDown();
-
+                var obj = pickedUpObj;
                 pickedUpObj = null;
+
+                obj.OnPickDown();
+
+                if (onPickdown != null)
+                    onPickdown(obj);
             }
         }
         public static bool HaveExecuteTwicePerSecond(ref float timer)
@@ -153,8 +157,11 @@ namespace WorldActionSystem
             }
             else
             {
-                pickedUpObj.SetPosition( viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, elementDistence)));
+                pickedUpObj.SetPosition(viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, elementDistence)));
             }
+
+            viewRotation = Quaternion.FromToRotation(Vector3.forward, Vector3.ProjectOnPlane(disRay.direction, Vector3.up));
+            pickedUpObj.SetViewRotation(viewRotation);
         }
         /// <summary>
         /// 利用射线获取对象移动坐标

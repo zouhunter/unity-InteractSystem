@@ -156,18 +156,19 @@ namespace WorldActionSystem
 
             if (!_complete)
             {
-                OnBeforeEnd(force);
-
                 notice = false;
                 _started = true;
                 _complete = true;
-                if (hooks.Length > 0)
-                {
+                gameObject.SetActive(endActive);
+
+                if (hooks.Length > 0){
                     hookCtrl.OnEndExecute();
                 }
-                gameObject.SetActive(endActive);
-                if (onEndExecute != null)
-                {
+
+                OnBeforeEnd(force);
+                Debug.Log("OnEndExecute" + Name,this);
+
+                if (onEndExecute != null){
                     onEndExecute.Invoke();
                 }
             }

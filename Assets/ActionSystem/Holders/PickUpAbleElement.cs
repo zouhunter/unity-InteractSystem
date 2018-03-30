@@ -18,13 +18,11 @@ namespace WorldActionSystem
         public virtual bool Active { get; set; }
         protected override void Start()
         {
-            Debug.Log("Start" + this);
             ElementController.Instence.RegistElement(this);
             base.Start();
         }
         protected override void OnDestroy()
         {
-            Debug.Log("OnDestroy" + this);
             ElementController.Instence.RemoveElement(this);
             base.OnDestroy();
         }

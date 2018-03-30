@@ -33,7 +33,7 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(forceauto);
             FindAnimCore();
-            Debug.Assert(animPlayer != null);
+            Debug.Assert(animPlayer != null,gameObject);
             delyPlay = StartCoroutine(DelyPlay());
         }
 

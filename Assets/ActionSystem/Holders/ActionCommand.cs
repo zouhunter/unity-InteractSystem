@@ -13,10 +13,13 @@ namespace WorldActionSystem
         private string _stepName;
         [SerializeField, Range(0, 10)]
         private int _queueID;
-        public int QueueID { get { return _queueID; } }
+        [SerializeField,Range(0,10)]
+        private int _copyCount;
         [SerializeField]
         private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
+        public int QueueID { get { return _queueID; } }
+        public int CopyCount { get { return _copyCount; } }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
         public bool Started { get { return started; } }
         public bool Completed { get { return completed; } }

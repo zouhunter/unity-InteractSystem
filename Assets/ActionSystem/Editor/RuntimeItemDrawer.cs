@@ -38,14 +38,7 @@ namespace WorldActionSystem
             if (GUI.Button(rect, str, EditorStyles.toolbarDropDown))
             {
                 property.isExpanded = !property.isExpanded;
-                if (property.isExpanded)
-                {
-                    ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp);
-                }
-                else
-                {
-                    ActionEditorUtility.SavePrefab(instanceIDProp);
-                }
+                ToggleLoadPrefab();
             }
             GUI.contentColor = Color.white;
 
@@ -95,12 +88,35 @@ namespace WorldActionSystem
             rect = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
         }
 
+        private void ToggleLoadPrefab()
+        {
+            if(instanceIDProp.intValue == 0 || EditorUtility.InstanceIDToObject(instanceIDProp.intValue) == null)
+            {
+                ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp);
+            }
+            else
+            {
+                ActionEditorUtility.SavePrefab(instanceIDProp);
+            }
+        }
+
 
         protected void InformationShow(Rect rect)
         {
             if (prefabProp.objectReferenceValue == null)
             {
                 EditorGUI.HelpBox(rect, "丢失", MessageType.Error);
+            }
+
+            if(instanceIDProp.intValue != 0 )
+            {
+                var instence = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
+                if(instence)
+                {
+                    var r1 = new Rect(rect.x + rect.width * 0.5f, rect.y, rect.width * 0.5f, EditorGUIUtility.singleLineHeight);
+                    EditorGUI.LabelField(r1, instence.name);
+                }
+               
             }
         }
     }

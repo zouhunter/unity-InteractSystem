@@ -66,7 +66,7 @@ namespace WorldActionSystem
 
         public override void StepUnDo()
         {
-            Debug.Log("UnDoPlay");
+            //Debug.Log("UnDoPlay");
             if (coroutine != null)
             {
                 StopCoroutine(coroutine);
@@ -92,6 +92,7 @@ namespace WorldActionSystem
             var targetRot = from ? startRotation : targetRotation;
 
             var dir = from ? startPos - targetPosition : targetPosition - startPos;
+            Debug.Log(dir);
             var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {

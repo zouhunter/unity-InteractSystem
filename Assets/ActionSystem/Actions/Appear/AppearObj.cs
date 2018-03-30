@@ -35,14 +35,14 @@ namespace WorldActionSystem
                 return ControllerType.Create;
             }
         }
-      
+
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-
+            if (log) Debug.Log("OnStartExecute:" + this);
             UpdateElementPool();
 
-            if (auto|| forceAuto)
+            if (auto || forceAuto)
             {
                 StartCoroutine(AutoAppear());
             }
@@ -59,27 +59,16 @@ namespace WorldActionSystem
             {
                 elementCtrl.UnLockElement(ele, this);
             });
-            finalGroup = null;
             elementCtrl.ClearExtraCreated();
         }
-
 
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
-            var keys = new List<ISupportElement>();
-            for (int i = 0; i < finalGroup.Length; i++)
-            {
-                var ele = finalGroup[i];
-                if (ele != null)
-                {
-                    elementCtrl.LockElement(ele, this);
-                    keys.Add(ele);
-                }
-            }
+            LockElements();
             elementCtrl.ClearExtraCreated();
         }
-   
+
         /// <summary>
         /// 元素动态注册
         /// </summary>
@@ -91,8 +80,9 @@ namespace WorldActionSystem
                 if (hoders.Find(x => x.elementName == arg0.Name) != null)
                 {
                     supportPool.ScureAdd(arg0);
-                    if(Started)
+                    if (Started && !Complete)
                     {
+                        arg0.StepActive();
                         TryComplete();
                     }
                 }
@@ -110,6 +100,27 @@ namespace WorldActionSystem
                 }
             }
         }
+
+        /// <summary>
+        /// 锁定元素
+        /// </summary>
+        private void LockElements()
+        {
+            for (int i = 0; i < finalGroup.Length; i++)
+            {
+                var ele = finalGroup[i];
+                if (ele == null || elementCtrl.IsLocked(ele))
+                {
+                    ele = finalGroup[i] = CreateElement(hoders[i].elementName, hoders[i].autoPos);
+                    #region 由于注册需要在Start之后，怕来不及
+                    var eles = ele.Body.GetComponentsInChildren<ISupportElement>();
+                    Debug.Log("Create:" + ele,gameObject);
+                    elementCtrl.RegistElement(eles);
+                    #endregion
+                }
+                elementCtrl.LockElement(ele, this);
+            }
+        }
         /// <summary>
         /// 更新元素池
         /// </summary>
@@ -118,11 +129,11 @@ namespace WorldActionSystem
             var keys = new List<string>();
             foreach (var item in hoders)
             {
-                if(!keys.Contains(item.elementName))
+                if (!keys.Contains(item.elementName))
                 {
                     keys.Add(item.elementName);
                     var elements = elementCtrl.GetElements<ISupportElement>(item.elementName);
-                    if(elements!= null)
+                    if (elements != null)
                     {
                         foreach (var ele in elements)
                         {
@@ -141,10 +152,25 @@ namespace WorldActionSystem
         /// <returns></returns>
         private bool TryComplete()
         {
+            //Debug.Log("TryComplete");
+            if (ExistEnoughObj())
+            {
+                OnEndExecute(false);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 是否已经有足够的对象
+        /// </summary>
+        /// <returns></returns>
+        private bool ExistEnoughObj()
+        {
             var keys = new List<ISupportElement>();
             bool allComplete = true;
 
-            if(finalGroup == null)
+            if (finalGroup == null)
             {
                 finalGroup = new ISupportElement[hoders.Count];
             }
@@ -152,7 +178,7 @@ namespace WorldActionSystem
             {
                 foreach (var item in finalGroup)
                 {
-                    if(item != null)
+                    if (item != null)
                     {
                         keys.Add(item);
                     }
@@ -161,10 +187,10 @@ namespace WorldActionSystem
 
             for (int i = 0; i < finalGroup.Length; i++)
             {
-                if(finalGroup[i] == null)
+                if (finalGroup[i] == null)
                 {
-                    finalGroup[i] = supportPool.Find(x => x.Name == hoders[i].elementName && !keys.Contains(x));
-                    if(finalGroup[i] != null)
+                    finalGroup[i] = supportPool.Find(x => x.Name == hoders[i].elementName && !keys.Contains(x) && !elementCtrl.IsLocked(x));
+                    if (finalGroup[i] != null)
                     {
                         keys.Add(finalGroup[i]);
                     }
@@ -175,13 +201,7 @@ namespace WorldActionSystem
                     }
                 }
             }
-
-            if (allComplete)
-            {
-                OnEndExecute(false);
-                return true;
-            }
-            return false;
+            return allComplete;
         }
 
         /// <summary>
@@ -190,29 +210,28 @@ namespace WorldActionSystem
         /// <returns></returns>
         IEnumerator AutoAppear()
         {
-            Debug.Log("AutoApper:" + this);
             var mark = new List<ISupportElement>();
             finalGroup = new ISupportElement[hoders.Count];
             for (int i = 0; i < hoders.Count; i++)
             {
-                var hoder = hoders[i];
-                var element = elementCtrl.TryCreateElement<ISupportElement>(hoders[i].elementName, system.transform);
-                    if (element != null && hoder.autoPos)
-                    {
-                        element.Body.transform.position = hoder.autoPos.transform.position;
-                        element.Body.transform.rotation = hoder.autoPos.transform.rotation;
-                    }
+                yield return new WaitForSeconds(spanTime);
+                var element = CreateElement(hoders[i].elementName, hoders[i].autoPos);
                 finalGroup[i] = element;
                 mark.Add(element);
-                
-                if(element == null)
-                {
-                    Debug.LogError("can not create:" + hoders[i].elementName);
-                }
-                yield return new WaitForSeconds(spanTime);
+            }
+        }
+
+        private ISupportElement CreateElement(string elementName, Transform autoPos)
+        {
+            var element = elementCtrl.TryCreateElement<ISupportElement>(elementName, system.transform);
+            if (element != null && autoPos)
+            {
+                element.Body.transform.position = autoPos.transform.position;
+                element.Body.transform.rotation = autoPos.transform.rotation;
             }
 
-            TryComplete();
+            Debug.Assert(element != null,elementName, this);
+            return element;
         }
     }
 

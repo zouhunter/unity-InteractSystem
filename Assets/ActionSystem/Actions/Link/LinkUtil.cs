@@ -17,24 +17,61 @@ namespace WorldActionSystem
 
             foreach (var item in target.ChildNodes)
             {
-                if (item.ConnectedNode != null)
+                if (item.ConnectedNode != null && !context.Contains(item.ConnectedNode.Body))
                 {
                     var targetNode = item.ConnectedNode.Body;
                     var linkInfo = item.ConnectedNode.connectAble.Find(x => x.itemName == target.Name && x.nodeId == item.NodeID);
-                    LinkUtil.ResetTargetTranform(targetNode, target, linkInfo.relativePos, linkInfo.relativeDir);
 
-                    if (!context.Contains(targetNode))
-                    {
-                        UpdateBrotherPos(targetNode, context);
-                    }
+                    LinkUtil.ResetTargetTranform(targetNode, target, linkInfo.relativePos, linkInfo.relativeDir);
+                    UpdateBrotherPos(targetNode, context);
                 }
             }
         }
 
-        internal static void ResetTargetTranform(LinkItem target, LinkItem otherParent, Vector3 rPos, Vector3 rdDir)
+        public static void RecordTransform(LinkInfo nodeArecored, LinkInfo nodeBrecored, Transform ourItem, Transform otherItem)
         {
-            target.Trans.position = otherParent.Trans.TransformPoint(rPos);
-            target.Trans.eulerAngles = otherParent.Trans.TransformVector(rdDir);
+            var parent = ourItem.parent;
+            ourItem.SetParent(otherItem);
+            //当ourItem作为otherItem子物体时的坐标
+            nodeArecored.relativePos = ourItem.localPosition;
+            nodeArecored.relativeDir = ourItem.localEulerAngles;
+            ourItem.SetParent(parent);
+            parent = otherItem.parent;
+            otherItem.SetParent(ourItem);
+            //当otherItem作为ourItem子物体时的坐标
+            nodeBrecored.relativePos = otherItem.localPosition;
+            nodeBrecored.relativeDir = otherItem.localEulerAngles;
+            otherItem.SetParent(parent);
+        }
+
+        public static void GetWorldPosFromTarget(LinkItem target, Vector3 rPos, Vector3 rdDir,out Vector3 position, out Vector3 dir)
+        {
+            var temp = new GameObject("temp");
+            temp.transform.SetParent(target.transform);
+            temp.transform.localPosition = rPos;
+            temp.transform.localEulerAngles = rdDir;
+
+            position = temp.transform.position;
+            dir = temp.transform.eulerAngles;
+            UnityEngine.Object.Destroy(temp);
+        }
+        public static void ResetTargetTranform(LinkItem target, LinkItem otherParent, Vector3 rPos, Vector3 rdDir)
+        {
+            var parent = target.Trans.parent;
+            target.Trans.SetParent(otherParent.Trans);
+            //当target作为otherParent子物体并移开的坐标
+            target.Trans.localPosition = rPos;
+            target.Trans.localEulerAngles = rdDir;
+            target.Trans.SetParent(parent);
+        }
+
+        private static Vector3 InverseTransformDirection(Vector3 parent,Vector3 current)
+        {
+            return parent - current;
+        }
+        private static Vector3 TransformDirection(Vector3 parent,Vector3 current)
+        {
+            return parent + current;
         }
 
         public static void AttachNodes(LinkPort moveAblePort, LinkPort staticPort)

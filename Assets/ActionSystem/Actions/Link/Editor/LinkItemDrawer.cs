@@ -104,26 +104,17 @@ namespace WorldActionSystem
                     node_B.connectAble.Add(nodeBrecored);
                 }
 
-                nodeArecored.itemName = item_B.name;
-                nodeBrecored.itemName = item_A.name;
+                nodeArecored.itemName = item_B.Name;
+                nodeBrecored.itemName = item_A.Name;
                 nodeArecored.nodeId = node_B.NodeID;
                 nodeBrecored.nodeId = node_A.NodeID;
-
-
-                RecordTransform(nodeArecored, nodeBrecored, item_A.transform, item_B.transform);
+                LinkUtil.RecordTransform(nodeArecored, nodeBrecored, item_A.transform, item_B.transform);
                 EditorUtility.SetDirty(node_A);
                 EditorUtility.SetDirty(node_B);
             }
 
         }
 
-        void RecordTransform(LinkInfo nodeArecored, LinkInfo nodeBrecored, Transform ourItem, Transform otherItem)
-        {
-            nodeArecored.relativeDir = otherItem.InverseTransformDirection(ourItem.eulerAngles); //Quaternion.Inverse(ourItem.rotation) * otherItem.rotation;
-            nodeArecored.relativePos = otherItem.InverseTransformPoint(ourItem.position);
-
-            nodeBrecored.relativeDir = ourItem.InverseTransformDirection(otherItem.eulerAngles);// Quaternion.Inverse(otherItem.rotation) * ourItem.rotation;
-            nodeBrecored.relativePos = ourItem.InverseTransformPoint(otherItem.position);
-        }
+       
     }
 }

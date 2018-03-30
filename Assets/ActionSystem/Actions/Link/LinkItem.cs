@@ -152,13 +152,21 @@ namespace WorldActionSystem
         public override void SetPosition(Vector3 pos)
         {
             transform.position = pos;
-            OnTranformChanged();
+            linkLock.Clear();
+            OnTranformChanged(linkLock);
         }
 
-        public void OnTranformChanged()
+        public override void SetViewRotation(Quaternion rotation)
         {
+            base.SetViewRotation(rotation);
+            transform.rotation = rotation * startRot;
             linkLock.Clear();
-            LinkUtil.UpdateBrotherPos(this, linkLock);
+            OnTranformChanged(linkLock);
+        }
+
+        public void OnTranformChanged(List<LinkItem> context)
+        {
+            LinkUtil.UpdateBrotherPos(this, context);
         }
 
         /// <summary>
@@ -206,38 +214,7 @@ namespace WorldActionSystem
         {
             gameObject.SetActive(visible);
         }
-        /// <summary>
-        /// 激活匹配点
-        /// </summary>
-        /// <param name="pickedUp"></param>
-        //public void TryActiveLinkPort(LinkItem pickedUp)
-        //{
-        //    for (int i = 0; i < pickedUp.ChildNodes.Count; i++)
-        //    {
-        //        var node = pickedUp.ChildNodes[i];
-        //        if (node.ConnectedNode == null && node.connectAble.Count > 0)
-        //        {
-        //            for (int j = 0; j < node.connectAble.Count; j++)
-        //            {
-        //                var info = node.connectAble[j];
-
-        //                var otheritem = (from x in linkPool
-        //                                 where (x != null && x != pickedUp && x.Name == info.itemName)
-        //                                 select x).FirstOrDefault();
-
-        //                if (otheritem != null)
-        //                {
-        //                    var otherNode = otheritem.ChildNodes[info.nodeId];
-        //                    if (otherNode != null && otherNode.ConnectedNode == null)
-        //                    {
-        //                        angleCtrl.UnNotice(anglePos);
-        //                        anglePos = otherNode.transform;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+      
     }
 
     }

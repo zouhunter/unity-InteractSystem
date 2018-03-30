@@ -38,22 +38,20 @@ namespace WorldActionSystem
         /// <summary>
         /// 外部添加Element
         /// </summary>
-        public void RegistElement(ISupportElement item)
+        public void RegistElement(params ISupportElement[] items)
         {
-            if (!elementList.Contains(item))
+            foreach (var item in items)
             {
-                elementList.ScureAdd(item);
-                if (onRegistElememt != null)
+                if (!elementList.Contains(item))
                 {
-                    onRegistElememt.Invoke(item);
+                    elementList.ScureAdd(item);
+                    if (onRegistElememt != null)
+                    {
+                        onRegistElememt.Invoke(item);
+                    }
                 }
             }
-            else
-            {
-               Debug.LogError("不要重复注册：" + item);
-            }
         }
-
 
         /// <summary>
         /// 移除Eelement
@@ -61,8 +59,6 @@ namespace WorldActionSystem
         /// <param name="item"></param>
         public void RemoveElement(ISupportElement item)
         {
-            Debug.Log("RemoveElement:" + item);
-
             if (elementList.Contains(item))
             {
                 elementList.ScureRemove(item);
