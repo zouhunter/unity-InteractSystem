@@ -30,11 +30,11 @@ namespace WorldActionSystem
             }
         }
 
-        public float Range { get { return _range; } }
+        public float Range { get { return _range; } set { _range = value; } }
         #endregion
         [SerializeField]
         private int _nodeId;
-        [SerializeField,Range(0.1f,100)]
+        [SerializeField,Range(0.1f,2)]
         private float _range = 0.5f;
         public List<LinkInfo> _connectAble = new List<LinkInfo>();
 

@@ -45,6 +45,11 @@ namespace WorldActionSystem
                 return CalcuteConnected() < ChildNodes.Count;
             }
         }
+        public bool isMatching { get; internal set; }
+        public bool Visiable
+        {
+            get { return m_render.gameObject.activeSelf && m_render.gameObject.activeInHierarchy && m_render.enabled; }
+        }
         public event UnityAction onConnected;
 
         [SerializeField]
@@ -53,12 +58,15 @@ namespace WorldActionSystem
         private Color highLightColor = Color.green;
 
 
+
         private IHighLightItems highLighter;
         private Vector3 startPos;
         private Quaternion startRot;
+        private Vector3 lastForward = Vector3.forward;
         private List<LinkPort> _groupNodes = new List<LinkPort>();
         private List<LinkItem> linkLock = new List<LinkItem>();
-
+        private float posHoldTime = 3f;
+        private float posHoldTimer;
         protected override void Awake()
         {
             base.Awake();
@@ -71,12 +79,15 @@ namespace WorldActionSystem
         {
             base.Start();
             startPos = transform.position;
-            startRot = transform.rotation;
+            startRot = transform.localRotation;
         }
 
         protected override void Update()
         {
             base.Update();
+
+            UpdateMatchTime();
+
             if (m_render == null) return;
 
             if (Active)
@@ -108,7 +119,7 @@ namespace WorldActionSystem
             var connenctedPos = new List<LinkPort>();
             foreach (var item in ChildNodes)
             {
-                if(item.ConnectedNode != null)
+                if (item.ConnectedNode != null)
                 {
                     connenctedPos.Add(item);
                 }
@@ -129,7 +140,12 @@ namespace WorldActionSystem
                 }
             }
         }
-
+        public override void OnPickStay()
+        {
+            base.OnPickStay();
+            lastForward = Vector3.zero;
+        } 
+      
         private void InitLayer()
         {
             Collider.gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
@@ -140,7 +156,7 @@ namespace WorldActionSystem
             int count = 0;
             foreach (var child in ChildNodes)
             {
-                if(child.ConnectedNode != null)
+                if (child.ConnectedNode != null)
                 {
                     count++;
                 }
@@ -151,17 +167,47 @@ namespace WorldActionSystem
 
         public override void SetPosition(Vector3 pos)
         {
-            transform.position = pos;
-            linkLock.Clear();
-            OnTranformChanged(linkLock);
+            if (!isMatching)
+            {
+                transform.position = pos;
+                linkLock.Clear();
+                OnTranformChanged(linkLock);
+            }
         }
 
-        public override void SetViewRotation(Quaternion rotation)
+        private void UpdateMatchTime()
         {
-            base.SetViewRotation(rotation);
-            transform.rotation = rotation * startRot;
-            linkLock.Clear();
-            OnTranformChanged(linkLock);
+            if (isMatching)
+            {
+                if (posHoldTimer < posHoldTime)
+                {
+                    posHoldTimer += Time.deltaTime;
+                }
+                else
+                {
+                    isMatching = false;
+                    posHoldTimer = 0;
+                }
+            }
+        }
+
+        public override void SetViewForward(Vector3 forward)
+        {
+            base.SetViewForward(forward);
+
+            if(!isMatching)
+            {
+                if(lastForward == Vector3.zero){
+                    lastForward = forward;
+                }
+                else if(lastForward != forward)
+                {
+                    transform.localRotation = Quaternion.FromToRotation(lastForward, forward) * transform.localRotation;
+                    linkLock.Clear();
+                    OnTranformChanged(linkLock);
+                    lastForward = forward;
+                }
+            }
         }
 
         public void OnTranformChanged(List<LinkItem> context)
@@ -186,7 +232,7 @@ namespace WorldActionSystem
 
         public void OnConnected()
         {
-            if(this.onConnected != null)
+            if (this.onConnected != null)
             {
                 onConnected.Invoke();
             }
@@ -196,25 +242,28 @@ namespace WorldActionSystem
         {
             PickUpAble = true;
             Active = true;
+            Collider.enabled = true;
         }
 
         public override void StepComplete()
         {
             PickUpAble = false;
             Active = false;
+            Collider.enabled = false;
         }
+
         public override void StepUnDo()
         {
             PickUpAble = false;
             Active = false;
+            Collider.enabled = true;
             transform.position = startPos;
             transform.rotation = startRot;
         }
+
         public override void SetVisible(bool visible)
         {
             gameObject.SetActive(visible);
         }
-      
     }
-
-    }
+}

@@ -293,14 +293,7 @@ namespace WorldActionSystem
                 var list = m_observerMap[key];
                 foreach (var item in list)
                 {
-                    if (item is EventItem)
-                    {
-                        (item as EventItem).action.Invoke();
-                    }
-                    else
-                    {
-                        NoMessageHandle(key);
-                    }
+                    (item as EventItem).action.Invoke();
                 }
 
             }

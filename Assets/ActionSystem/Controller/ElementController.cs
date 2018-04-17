@@ -139,7 +139,9 @@ namespace WorldActionSystem
             if (!IsLocked(item))
             {
                 RemoveElement(item);
-                UnityEngine.Object.Destroy(item.Body);
+                if(item.Body != null){
+                    UnityEngine.Object.DestroyImmediate(item.Body);
+                }
                 return true;
             }
             return false;
@@ -150,18 +152,21 @@ namespace WorldActionSystem
         /// <typeparam name="T"></typeparam>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public T TryCreateElement<T>(string elementName,Transform parent) where T : ISupportElement
+        public T TryCreateElement<T>(string elementName,Transform parent,bool regist = true) where T : ISupportElement
         {
             T element = default(T);
             var prefab = runTimeElementPrefabs.Find(x => x.Name == elementName);
             if (prefab != null)
             {
                 var e = CreateElement(prefab,parent);
+                
                 if (e is T)
                 {
                     element = (T)e;
                     element.IsRuntimeCreated = true;
-                    rutimeCreatedList.ScureAdd(element);
+                    if(regist){
+                        rutimeCreatedList.ScureAdd(element);
+                    }
                 }
                 else
                 {
@@ -174,11 +179,20 @@ namespace WorldActionSystem
             }
             return element;
         }
+        /// <summary>
+        /// 手动注册
+        /// </summary>
+        /// <param name="element"></param>
+        public void RegistRuntimeCreated(ISupportElement element)
+        {
+            rutimeCreatedList.ScureAdd(element);
+        }
 
         private ISupportElement CreateElement(ISupportElement prefab,Transform parent)
         {
             var instence = UnityEngine.Object.Instantiate(prefab.Body);
             instence.transform.SetParent(parent);
+            instence.gameObject.SetActive(true);
             var element = instence.GetComponent<ISupportElement>();
             element.IsRuntimeCreated = true;
             return element;

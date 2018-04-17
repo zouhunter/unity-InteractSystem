@@ -16,6 +16,7 @@ namespace WorldActionSystem
         }
         public virtual bool IsRuntimeCreated { get; set; }
         public virtual bool Active { get; set; }
+        
         protected override void Start()
         {
             ElementController.Instence.RegistElement(this);

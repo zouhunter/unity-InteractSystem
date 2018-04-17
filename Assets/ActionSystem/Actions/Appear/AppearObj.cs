@@ -35,6 +35,7 @@ namespace WorldActionSystem
                 return ControllerType.Create;
             }
         }
+        private Coroutine coroutine;
 
         public override void OnStartExecute(bool auto = false)
         {
@@ -42,29 +43,43 @@ namespace WorldActionSystem
             if (log) Debug.Log("OnStartExecute:" + this);
             UpdateElementPool();
 
-            if (auto || forceAuto)
+            if(!TryComplete())
             {
-                StartCoroutine(AutoAppear());
-            }
-            else
-            {
-                TryComplete();
+                if (auto || forceAuto)
+                {
+                    Debug.Log("开启协程创建元素：" + this ,this);
+                    coroutine = StartCoroutine(AutoAppear());
+                }
             }
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
 
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
+
             supportPool.ForEach(ele =>
             {
                 elementCtrl.UnLockElement(ele, this);
             });
+
+            finalGroup = null;
+
             elementCtrl.ClearExtraCreated();
         }
 
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
+            if(coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
             LockElements();
             elementCtrl.ClearExtraCreated();
         }
@@ -115,10 +130,14 @@ namespace WorldActionSystem
                     #region 由于注册需要在Start之后，怕来不及
                     var eles = ele.Body.GetComponentsInChildren<ISupportElement>();
                     Debug.Log("Create:" + ele,gameObject);
+                    elementCtrl.LockElement(ele, this);
                     elementCtrl.RegistElement(eles);
                     #endregion
                 }
-                elementCtrl.LockElement(ele, this);
+                else
+                {
+                    elementCtrl.LockElement(ele, this);
+                }
             }
         }
         /// <summary>
@@ -211,13 +230,15 @@ namespace WorldActionSystem
         IEnumerator AutoAppear()
         {
             var mark = new List<ISupportElement>();
-            finalGroup = new ISupportElement[hoders.Count];
+            if(finalGroup == null) finalGroup = new ISupportElement[hoders.Count];
             for (int i = 0; i < hoders.Count; i++)
             {
                 yield return new WaitForSeconds(spanTime);
-                var element = CreateElement(hoders[i].elementName, hoders[i].autoPos);
-                finalGroup[i] = element;
-                mark.Add(element);
+                if(finalGroup[i] == null)
+                {
+                    finalGroup[i] = CreateElement(hoders[i].elementName, hoders[i].autoPos);
+                    mark.Add(finalGroup[i]);
+                }
             }
         }
 

@@ -48,6 +48,28 @@ namespace WorldActionSystem
             }
         }
 
+        internal static void LoadPrefab(GameObject prefab, ref int instanceID)
+        {
+            if (instanceID != 0)
+            {
+                var gitem = EditorUtility.InstanceIDToObject(instanceID);
+
+                if (gitem != null)
+                {
+                    return;
+                }
+            }
+            if (prefab != null)
+            {
+                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                var parent = actionSystem == null ? null : actionSystem.transform;
+                GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+                instanceID = go.GetInstanceID();
+                go.transform.SetParent(parent, false);
+            }
+        }
+
+
         internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp)
         {
             if (prefabProp.objectReferenceValue == null)
@@ -110,6 +132,16 @@ namespace WorldActionSystem
                     LoadmatrixInfo(matrixProp, go.transform);
                 }
             }
+        }
+        internal static void SavePrefab(ref int instanceID)
+        {
+            var gitem = EditorUtility.InstanceIDToObject(instanceID);
+            if (gitem != null)
+            {
+                ActionEditorUtility.ApplyPrefab(gitem as GameObject);
+                GameObject.DestroyImmediate(gitem);
+            }
+            instanceID = 0;
         }
         internal static void SavePrefab(SerializedProperty instanceIDProp)
         {

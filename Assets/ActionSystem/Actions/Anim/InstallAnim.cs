@@ -87,12 +87,10 @@ namespace WorldActionSystem
         protected IEnumerator MoveAnim(UnityAction onComplete)
         {
             var startPos = from ? targetPosition : startPosition;
-            //var startRot = from ? targetRotation : startRotation;
             var targetPos = from ? startPosition : targetPosition;
             var targetRot = from ? startRotation : targetRotation;
 
-            var dir = from ? startPos - targetPosition : targetPosition - startPos;
-            Debug.Log(dir);
+            var dir = from ? startPosition - targetPosition : targetPosition - startPosition;
             var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {

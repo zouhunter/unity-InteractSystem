@@ -16,11 +16,10 @@ namespace WorldActionSystem
         private float hitDistence { get { return Config.hitDistence; } }
         private Ray disRay;
         private RaycastHit disHit;
-        private Quaternion viewRotation;
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
         private int pickUpElementLayerMask { get { return LayerMask.GetMask(Layers.pickUpElementLayer); } }
-        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer); } }
+        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer,Layers.pickUpElementLayer); } }
         protected Camera viewCamera
         {
             get
@@ -32,7 +31,8 @@ namespace WorldActionSystem
         public event UnityAction<PickUpAbleItem> onPickup;
         public event UnityAction<PickUpAbleItem> onPickdown;
         public event UnityAction<PickUpAbleItem> onPickStay;
-        public event UnityAction<PickUpAbleItem> onPickTwince;
+        public event UnityAction<PickUpAbleItem> onPickTwinceLeft;
+        public event UnityAction<PickUpAbleItem> onPickTwinceRight;
         private float timer = 0f;
         //private Coroutine coroutine;
         //private MonoBehaviour holder;
@@ -52,10 +52,10 @@ namespace WorldActionSystem
                 {
                     if (HaveExecuteTwicePerSecond(ref timer))
                     {
-                        Debug.Log("HaveExecuteTwicePerSecond");
-                        if(PickedUp && onPickTwince != null)
+                        Debug.Log("HaveExecuteTwicePerSecond:0");
+                        if(PickedUp && onPickTwinceLeft != null)
                         {
-                            onPickTwince.Invoke(pickedUpObj);
+                            onPickTwinceLeft.Invoke(pickedUpObj);
                         }
                     }
                     else if (!PickedUp)
@@ -68,6 +68,17 @@ namespace WorldActionSystem
                     }
                 }
 
+                if (RightTriggered())
+                {
+                    if (HaveExecuteTwicePerSecond(ref timer))
+                    {
+                        Debug.Log("HaveExecuteTwicePerSecond:1");
+                        if (PickedUp && onPickTwinceRight != null)
+                        {
+                            onPickTwinceRight.Invoke(pickedUpObj);
+                        }
+                    }
+                }
                 if (PickedUp)
                 {
                     elementDistence += Input.GetAxis("Mouse ScrollWheel");
@@ -139,7 +150,10 @@ namespace WorldActionSystem
         {
             return Input.GetMouseButtonDown(0);
         }
-
+        private bool RightTriggered()
+        {
+            return Input.GetMouseButtonDown(1);
+        }
         private bool CenterTriggered()
         {
             return Input.GetMouseButtonDown(2);
@@ -151,7 +165,7 @@ namespace WorldActionSystem
         private void MoveWithMouse()
         {
             disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(disRay, out disHit, elementDistence, obstacleLayerMask))
+            if (Physics.Raycast(disRay, out disHit, elementDistence, obstacleLayerMask) && disHit.collider.gameObject != pickedUpObj.gameObject)
             {
                 pickedUpObj.SetPosition(GetPositionFromHit());
             }
@@ -160,8 +174,7 @@ namespace WorldActionSystem
                 pickedUpObj.SetPosition(viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, elementDistence)));
             }
 
-            viewRotation = Quaternion.FromToRotation(Vector3.forward, Vector3.ProjectOnPlane(disRay.direction, Vector3.up));
-            pickedUpObj.SetViewRotation(viewRotation);
+            pickedUpObj.SetViewForward(Vector3.ProjectOnPlane(disRay.direction, Vector3.up));
         }
         /// <summary>
         /// 利用射线获取对象移动坐标

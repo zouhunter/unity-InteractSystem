@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WorldActionSystem
 {
@@ -19,7 +20,7 @@ namespace WorldActionSystem
             }
         }
         private PickUpController pickCtrl { get { return ActionSystem.Instence.pickupCtrl; } }
-        private AngleCtroller angleCtrl { get { return ActionSystem.Instence.angleCtrl; } }
+        private LinkItem linkItem;
 
         public LinkCtrl()
         {
@@ -32,7 +33,8 @@ namespace WorldActionSystem
             pickCtrl.onPickup += (OnPickUp);
             pickCtrl.onPickdown += (OnPickDown);
             pickCtrl.onPickStay += (OnPickStay);
-            pickCtrl.onPickTwince += (OnPickTwince);
+            pickCtrl.onPickTwinceLeft += (OnPickTwinceLeft);
+            pickCtrl.onPickTwinceRight += OnPickTwinceRight;
         }
 
         public override void Update()
@@ -41,25 +43,32 @@ namespace WorldActionSystem
                 linkConnectCtrl.Update();
         }
 
-        void OnMatch(LinkPort item)
+        void OnMatch(LinkPort itemA,LinkPort itemB)
         {
-            highter.HighLightTarget(item.gameObject, Color.green);
+            highter.HighLightTarget(itemA.gameObject, Color.green);
+            var linkInfo = itemA.connectAble.Find(x => x.itemName == itemB.Body.Name && x.nodeId == itemB.NodeID);
+            LinkUtil.ResetTargetTranform(itemA.Body, itemB.Body, linkInfo.relativePos, linkInfo.relativeDir);
+            LinkUtil.UpdateBrotherPos(itemA.Body, new List<LinkItem>());
+            if (linkItem)
+                linkItem.isMatching = true;
         }
-        void OnDisMath(LinkPort item)
+        void OnDisMath(LinkPort itemA,LinkPort itemB)
         {
-            highter.UnHighLightTarget(item.gameObject);
+            highter.UnHighLightTarget(itemA.gameObject);
+            highter.UnHighLightTarget(itemB.gameObject);
+            if(linkItem) linkItem.isMatching = false;
         }
 
         void OnPickUp(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
-                var linkItem = obj as LinkItem;
+                linkItem = obj as LinkItem;
                 if (linkItem)
                 {
                     linkConnectCtrl.SetActiveItem(linkItem, false);
                     //显示可以所有可以安装的点
-                    //TryActiveLinkPort(linkItem);
+                    LinkUtil.TryActiveLinkPorts(linkItem);
                 }
             }
         }
@@ -68,15 +77,23 @@ namespace WorldActionSystem
         /// 解除连接
         /// </summary>
         /// <param name="obj"></param>
-        void OnPickTwince(PickUpAbleItem obj)
+        void OnPickTwinceLeft(PickUpAbleItem obj)
         {
             if (obj is LinkItem)
             {
-                var linkItem = obj as LinkItem;
+                linkItem = obj as LinkItem;
                 if (linkItem && !linkItem.Used)
                 {
                     linkConnectCtrl.SetActiveItem(linkItem, true);
                 }
+            }
+        }
+
+        private void OnPickTwinceRight(PickUpAbleItem obj)
+        {
+            if (obj is LinkItem)
+            {
+                ElementController.Instence.ClearExtraCreated();
             }
         }
 
@@ -88,12 +105,10 @@ namespace WorldActionSystem
         {
             if (obj is LinkItem)
             {
+                LinkUtil.ClearActivedLinkPort(obj as LinkItem);
                 var linkItem = obj as LinkItem;
-                if (linkItem)
-                {
+                if (linkItem){
                     linkConnectCtrl.SetDisableItem();
-                    //显示可以操作的元素
-                    //ActiveOneLinkItem();
                 }
             }
         }
@@ -102,9 +117,9 @@ namespace WorldActionSystem
         {
             if (go is LinkItem)
             {
+                LinkUtil. ClearActivedLinkPort(go as LinkItem);
                 linkConnectCtrl.TryConnect();
-                pickCtrl.PickDown();
-                Debug.Log("OnPickStatu");
+                pickCtrl.PickStay();
             }
         }
 
@@ -122,37 +137,6 @@ namespace WorldActionSystem
 
             Debug.Log("Connected");
         }
-        /// <summary>
-        /// 激活匹配点
-        /// </summary>
-        /// <param name="pickedUp"></param>
-        //public void TryActiveLinkPort(LinkItem pickedUp)
-        //{
-        //    for (int i = 0; i < pickedUp.ChildNodes.Count; i++)
-        //    {
-        //        var node = pickedUp.ChildNodes[i];
-        //        if (node.ConnectedNode == null && node.connectAble.Count > 0)
-        //        {
-        //            for (int j = 0; j < node.connectAble.Count; j++)
-        //            {
-        //                var info = node.connectAble[j];
-
-        //                var otheritem = (from x in linkPool
-        //                                 where (x != null && x != pickedUp && x.Name == info.itemName)
-        //                                 select x).FirstOrDefault();
-
-        //                if (otheritem != null)
-        //                {
-        //                    var otherNode = otheritem.ChildNodes[info.nodeId];
-        //                    if (otherNode != null && otherNode.ConnectedNode == null)
-        //                    {
-        //                        angleCtrl.UnNotice(anglePos);
-        //                        anglePos = otherNode.transform;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        
     }
 }

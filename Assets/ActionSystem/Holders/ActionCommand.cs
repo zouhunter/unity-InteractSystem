@@ -37,7 +37,10 @@ namespace WorldActionSystem
 #if ActionSystem_G
         [HideInInspector]
 #endif
-        public InputField.OnChangeEvent onBeforeActive, onBeforePlayEnd, onBeforeUnDo;
+        public InputField.OnChangeEvent 
+            onBeforeActive = new InputField.OnChangeEvent() , 
+            onBeforePlayEnd = new InputField.OnChangeEvent(),
+            onBeforeUnDo = new InputField.OnChangeEvent();
 
         private bool started;
         private bool completed;
@@ -175,6 +178,7 @@ namespace WorldActionSystem
         {
             started = false;
             completed = false;
+            onBeforeUnDo.Invoke(StepName);
             ActionCtrl.OnUnDoExecute(objectCtrl);
         }
 

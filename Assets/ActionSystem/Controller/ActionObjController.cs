@@ -16,7 +16,7 @@ namespace WorldActionSystem
         protected bool isForceAuto;
         private Queue<IActionObj> actionQueue = new Queue<IActionObj>();
         private List<IActionObj> startedActions = new List<IActionObj>();
-        public static bool log = true;
+        public static bool log = false;
         public UnityAction<ControllerType> onCtrlStart { get; set; }
         public UnityAction<ControllerType> onCtrlStop { get; set; }
         private ActionGroup _system;

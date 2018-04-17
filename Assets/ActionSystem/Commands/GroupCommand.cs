@@ -27,7 +27,7 @@ namespace WorldActionSystem
                 return completed;
             }
         }
-
+        public List<ActionCommand> CommandList { get { return commandList; } }
         public ActionObjCtroller ActionObjCtrl
         {
             get
@@ -51,6 +51,7 @@ namespace WorldActionSystem
         private bool started;
         private bool completed;
         private bool log = false;
+
         private UnityAction<IActionCommand> onEndExecute { get; set; }
         private UnityAction<string, int, int> onActionObjStartExecute { get; set; }
         private UserError onUserError { get; set; }
@@ -59,7 +60,6 @@ namespace WorldActionSystem
         {
             StepName = stepName;
             this.commandList = CreateCommandList(commandList);
-            commandList.Sort();
             InitCommands();
         }
 
@@ -129,8 +129,11 @@ namespace WorldActionSystem
             if (!completed)
             {
                 completed = true;
-                foreach (var item in commandList)
+                commandList.Sort();
+                for (int i = 0; i < commandList.Count; i++)
                 {
+                    var item = commandList[i];
+                    Debug.Log("Group:" + item);
                     if (!item.Started)
                     {
                         item.StartExecute(forceAuto);
@@ -140,6 +143,7 @@ namespace WorldActionSystem
                         item.EndExecute();
                     }
                 }
+               
                 OnEndExecute();
                 return true;
             }

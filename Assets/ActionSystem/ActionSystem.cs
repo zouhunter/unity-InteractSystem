@@ -63,6 +63,22 @@ namespace WorldActionSystem
             } }
         #endregion
 
+        #region PreviewCtrl
+        private PreviewController _previewCtrl;
+        public PreviewController previewCtrl
+        {
+            get
+            {
+
+                if (_previewCtrl == null)
+                {
+                    _previewCtrl = new PreviewController(this);
+                }
+                return _previewCtrl;
+            }
+        }
+        #endregion
+
         #region PickUpCtrl
         private PickUpController _pickupCtrl;
         public PickUpController pickupCtrl
@@ -124,6 +140,7 @@ namespace WorldActionSystem
                 }
             }
         }
+
         public static void Clean()
         {
             if (_instence != null)
@@ -136,6 +153,10 @@ namespace WorldActionSystem
             if (groupList.Contains(actionGroup))
             {
                 groupList.Remove(actionGroup);
+            }
+            if(groupList.Count == 0)
+            {
+                Clean();
             }
         }
     }

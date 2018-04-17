@@ -27,8 +27,7 @@ namespace WorldActionSystem
         {
             if (m_Objs.Count == 0) m_Objs.Add(gameObject);
             startStates = new bool[m_Objs.Count];
-            for (int i = 0; i < startStates.Length; i++)
-            {
+            for (int i = 0; i < startStates.Length; i++){
                 startStates[i] = m_Objs[i].activeSelf;
             }
         }

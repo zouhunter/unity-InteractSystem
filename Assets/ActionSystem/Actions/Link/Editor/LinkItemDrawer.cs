@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 
 namespace WorldActionSystem
 {
@@ -26,95 +27,108 @@ namespace WorldActionSystem
     public class LinkItemDrawer : Editor
     {
         private LinkItem targetItem;
-
+        private LinkPort[] linkPorts;
+        private ReorderableList[] portLists;
+        private const float buttonWidth = 60;
         private void OnEnable()
         {
             targetItem = target as LinkItem;
+            linkPorts = targetItem.ChildNodes.ToArray();
+            InitReorderLists();
         }
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            DrawToolsButtons();
+
+            serializedObject.Update();
+            if (GUILayout.Button("Clamp")){
+                LinkUtil.Clamp(targetItem.transform);
+            }
+            DrawLinkPortInfos();
+            serializedObject.ApplyModifiedProperties();
         }
-        private void DrawToolsButtons()
+
+        private void InitReorderLists()
         {
-            using (var hor = new EditorGUILayout.HorizontalScope())
+            portLists = new ReorderableList[linkPorts.Length];
+            for (int i = 0; i < portLists.Length; i++)
             {
-                var style = EditorStyles.toolbarButton;
-                if (GUILayout.Button("AutoRecord", style))
-                {
-                    foreach (var item in targetItem.ChildNodes)
+                var port = linkPorts[i];
+                port.connectAble.Sort();
+                
+                portLists[i] = new ReorderableList(port.connectAble,typeof(LinkInfo));
+                portLists[i].drawHeaderCallback = (rect) => {
+                    var nameRect = new Rect(rect.x + 15, rect.y, rect.width * 0.4f, EditorGUIUtility.singleLineHeight);
+                    var idRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
+                    var rangeRect = new Rect(rect.x + rect.width * 0.55f, rect.y, 60, EditorGUIUtility.singleLineHeight);
+                    
+                    EditorGUI.LabelField(nameRect,string.Format( "目标（{0}:{1}）" , port.name , port.NodeID));
+                    EditorGUI.LabelField(idRect, "端口");
+                    EditorGUI.BeginChangeCheck();
+                    port.Range = GUI.HorizontalSlider(rangeRect, port.Range,0.1f,2);
+                    if(EditorGUI.EndChangeCheck())
+                    {
+                        port.Range = (float)System.Math.Round(port.Range, 2);
+                    }
+                    var btnRect = new Rect(rect.x + rect.width - buttonWidth * 2f, rect.y, buttonWidth, EditorGUIUtility.singleLineHeight);
+
+                    if (GUI.Button(btnRect,"Record"))
                     {
                         List<LinkPort> otherPorts;
-                        if (LinkUtil.FindTriggerNodes(item, out otherPorts))
+                        if (LinkUtil.FindTriggerNodes(port, out otherPorts))
                         {
-                            for (int i = 0; i < otherPorts.Count; i++)
+                            if(otherPorts != null && otherPorts.Count > 0)
                             {
-                                var otherPort = otherPorts[i];
-                                TryRecordConnect(item, otherPort);
+                                var window = EditorWindow.GetWindow<LinkWindow>();
+                                window.InitPortGroup(port, otherPorts.ToArray());
+                            }
+                            
+                        }
+                    }
+                    btnRect.x += buttonWidth;
+                    if (GUI.Button(btnRect,"Link"))
+                    {
+                        if (Selection.activeGameObject != null)
+                        {
+                            var linkport = Selection.activeGameObject.GetComponentInParent<LinkPort>();
+                            if(linkport != null)
+                            {
+                                var linkItem = linkport.GetComponentInParent<LinkItem>();
+                                var linkInfo = port.connectAble.Find(x => x.itemName == linkItem.Name && x.nodeId == linkport.NodeID);
+                                if(linkInfo != null)
+                                {
+                                    LinkUtil.ResetTargetTranform(targetItem, linkItem, linkInfo.relativePos, linkInfo.relativeDir);
+                                }
+                            }
+                            else
+                            {
+                                EditorUtility.DisplayDialog("温馨提示", "请选择目标端口后重试", "确认");
                             }
                         }
                     }
-                }
-                if (GUILayout.Button("LoadRecord", style))
+                };
+                portLists[i].drawElementCallback = (rect, index, isactive, isfoces) =>
                 {
-                    if (Selection.instanceIDs != null && Selection.instanceIDs.Length == 2)
-                    {
-                        Debug.Log("还未实现接口");
-                    }
-                }
-                if (GUILayout.Button("ClampRot", style))
-                {
-                    if (Selection.activeGameObject != null)
-                    {
-                        var selected = Selection.activeGameObject;
-                        if (selected == null) return;
-                        LinkUtil.ClampRotation(selected.transform);
-                    }
-                }
+                    var linkInfo = port.connectAble[index];
+                    var nameRect = new Rect(rect.x, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
+                    EditorGUI.LabelField(nameRect,linkInfo.itemName);
+                    var idRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
+                    EditorGUI.LabelField(idRect, linkInfo.nodeId.ToString());
+                    var rangeRect = new Rect(rect.x + rect.width * 0.55f, rect.y, 60, EditorGUIUtility.singleLineHeight);
+                    EditorGUI.LabelField(rangeRect, port.Range.ToString());
+                };
             }
-
         }
 
-        private void TryRecordConnect(LinkPort node_A, LinkPort node_B)
+        private void DrawLinkPortInfos()
         {
-            if (!node_A || !node_B) return;
-            LinkItem item_A = node_A.GetComponentInParent<LinkItem>();
-            LinkItem item_B = node_B.GetComponentInParent<LinkItem>();
-
-            if (node_A == null || node_B == null || item_A == null || item_B == null)
+            foreach (var item in portLists)
             {
-                return;
+                item.DoLayoutList();
             }
-
-            var confer = EditorUtility.DisplayDialog("[connected]", item_A.Name + ":" + (node_A.NodeID) + "<->" + item_B.Name + ":" + (node_B.NodeID), "确认");
-            if (confer)
-            {
-                LinkInfo nodeArecored = node_A.connectAble.Find((x) => x.itemName == item_B.name && x.nodeId == node_B.NodeID);
-                LinkInfo nodeBrecored = node_B.connectAble.Find((x) => x.itemName == item_A.name && x.nodeId == node_A.NodeID);
-                //已经记录过
-                if (nodeArecored == null)
-                {
-                    nodeArecored = new LinkInfo();
-                    node_A.connectAble.Add(nodeArecored);
-                }
-                if (nodeBrecored == null)
-                {
-                    nodeBrecored = new LinkInfo();
-                    node_B.connectAble.Add(nodeBrecored);
-                }
-
-                nodeArecored.itemName = item_B.Name;
-                nodeBrecored.itemName = item_A.Name;
-                nodeArecored.nodeId = node_B.NodeID;
-                nodeBrecored.nodeId = node_A.NodeID;
-                LinkUtil.RecordTransform(nodeArecored, nodeBrecored, item_A.transform, item_B.transform);
-                EditorUtility.SetDirty(node_A);
-                EditorUtility.SetDirty(node_B);
-            }
-
         }
 
-       
+
+
     }
 }

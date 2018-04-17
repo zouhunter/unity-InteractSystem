@@ -10,8 +10,8 @@ namespace WorldActionSystem
     public class LinkConnectController
     {
         public UnityAction<LinkPort[]> onConnected { get; set; }
-        public UnityAction<LinkPort> onMatch { get; set; }
-        public UnityAction<LinkPort> onDisMatch { get; set; }
+        public UnityAction<LinkPort, LinkPort> onMatch { get; set; }
+        public UnityAction<LinkPort, LinkPort> onDisMatch { get; set; }
         public UnityAction<LinkPort[]> onDisconnected { get; set; }
         private float timer;
         private const float spanTime = 0.5f;
@@ -30,20 +30,15 @@ namespace WorldActionSystem
                 {
                     if (onMatch != null)
                     {
-                        onMatch(activeNode);
-                        onMatch(targetNode);
+                        onMatch(activeNode, targetNode);
                     }
                 }
                 else
                 {
-                    if (targetNode != null)
-                    {
-                        onDisMatch.Invoke(targetNode);
+                    if (onDisMatch != null && activeNode != null && targetNode != null){
+                        onDisMatch.Invoke(targetNode, activeNode);
                     }
-                    if (activeNode != null)
-                    {
-                        onDisMatch.Invoke(activeNode);
-                    }
+
                     activeNode = null;
                     targetNode = null;
                 }
@@ -68,9 +63,9 @@ namespace WorldActionSystem
 
             return false;
         }
-     
 
-        public void SetActiveItem(LinkItem item,bool detach)
+
+        public void SetActiveItem(LinkItem item, bool detach)
         {
             this.pickedUpItem = item;
 
@@ -95,9 +90,6 @@ namespace WorldActionSystem
                     if (onDisconnected != null)
                         onDisconnected.Invoke(disconnected.ToArray());
                 }
-                   
-
-               
             }
         }
 

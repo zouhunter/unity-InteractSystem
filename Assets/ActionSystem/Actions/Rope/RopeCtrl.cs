@@ -37,7 +37,7 @@ namespace WorldActionSystem
             pickCtrl.onPickup += (OnPickUp);
             pickCtrl.onPickdown += (OnPickDown);
             pickCtrl.onPickStay += (OnPickStay);
-            pickCtrl.onPickTwince += (OnPickTwince);
+            pickCtrl.onPickTwinceLeft += (OnPickTwince);
         }
 
         private void OnPickTwince(PickUpAbleItem arg0)

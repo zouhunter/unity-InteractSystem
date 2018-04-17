@@ -96,11 +96,11 @@ namespace WorldActionSystem
             }
             else
             {
-                //ActiveOneLinkItem();
-                //提示操作
+                ActiveOneLinkItem();
             }
         }
 
+    
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
@@ -174,6 +174,14 @@ namespace WorldActionSystem
                 }
             }
 
+        }
+
+        /// <summary>
+        /// 提示连接元素
+        /// </summary>
+        private void ActiveOneLinkItem()
+        {
+            //安装操作时动态提示
         }
 
         /// <summary>
@@ -252,6 +260,8 @@ namespace WorldActionSystem
                     return;
                 }
             }
+            //高亮提示下一个安装
+            ActiveOneLinkItem();
         }
 
         /// <summary>
@@ -349,12 +359,10 @@ namespace WorldActionSystem
                     continue;
                 }
 
-                angleCtrl.UnNotice(anglePos);
                 anglePos = portA.transform;
                 LinkUtil.AttachNodes(portB, portA);
                 portB.ResetTransform();
             }
-            angleCtrl.UnNotice(anglePos);
         }
 
         /// <summary>
@@ -378,12 +386,10 @@ namespace WorldActionSystem
                     continue;
                 }
 
-                angleCtrl.UnNotice(anglePos);
                 anglePos = portA.transform;
                 yield return MoveBToA(portA, portB);
                 LinkUtil.AttachNodes(portB, portA);
             }
-            angleCtrl.UnNotice(anglePos);
             TryComplete();
         }
 

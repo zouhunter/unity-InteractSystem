@@ -4,11 +4,15 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace WorldActionSystem
 {
     public static class LinkUtil
     {
+        private static PreviewController previewCtrl { get { return ActionSystem.Instence.previewCtrl; } }
+        private static AngleCtroller angleCtrl { get { return ActionSystem.Instence.angleCtrl; } }
+
         public static void UpdateBrotherPos(LinkItem target, List<LinkItem> context)
         {
             if (target.ChildNodes == null || target.ChildNodes.Count == 0) return;
@@ -44,7 +48,7 @@ namespace WorldActionSystem
             otherItem.SetParent(parent);
         }
 
-        public static void GetWorldPosFromTarget(LinkItem target, Vector3 rPos, Vector3 rdDir,out Vector3 position, out Vector3 dir)
+        public static void GetWorldPosFromTarget(LinkItem target, Vector3 rPos, Vector3 rdDir, out Vector3 position, out Vector3 dir)
         {
             var temp = new GameObject("temp");
             temp.transform.SetParent(target.transform);
@@ -63,15 +67,6 @@ namespace WorldActionSystem
             target.Trans.localPosition = rPos;
             target.Trans.localEulerAngles = rdDir;
             target.Trans.SetParent(parent);
-        }
-
-        private static Vector3 InverseTransformDirection(Vector3 parent,Vector3 current)
-        {
-            return parent - current;
-        }
-        private static Vector3 TransformDirection(Vector3 parent,Vector3 current)
-        {
-            return parent + current;
         }
 
         public static void AttachNodes(LinkPort moveAblePort, LinkPort staticPort)
@@ -127,6 +122,26 @@ namespace WorldActionSystem
 
             target.eulerAngles = newRot;
         }
+        public static void Clamp(Transform target, int d = 2)
+        {
+            var pos = target.position;
+            var rot = target.eulerAngles;
+            var size = target.localScale;
+            Func<Vector3, Vector3> Round = (vector) =>
+            {
+                vector.x = (float)Math.Round(vector.x, d);
+                vector.y = (float)Math.Round(vector.y, d);
+                vector.z = (float)Math.Round(vector.z, d);
+                return vector;
+            };
+            pos = Round(pos);
+            rot = Round(rot);
+            size = Round(size);
+            target.position = pos;
+            target.eulerAngles = rot;
+            target.localScale = size;
+        }
+
         /// <summary>
         /// 空间查找触发的点
         /// </summary>
@@ -190,13 +205,61 @@ namespace WorldActionSystem
                     {
                         //同属于一个源
                         node = tempNode;
-                        LinkUtil.ResetTargetTranform(item.Body, node.Body, linkInfo.relativePos, linkInfo.relativeDir);
                         return true;
                     }
                 }
             }
             node = null;
             return false;
+        }
+
+
+        /// <summary>
+        /// 激活匹配点
+        /// </summary>
+        /// <param name="pickedUp"></param>
+        public static void TryActiveLinkPorts(LinkItem pickedUp)
+        {
+            var linkItems = GameObject.FindObjectsOfType<LinkItem>();
+            var linkPorts = new List<PreviewSet>();
+            for (int i = 0; i < pickedUp.ChildNodes.Count; i++)
+            {
+                var node = pickedUp.ChildNodes[i];
+                if (node.ConnectedNode == null && node.connectAble.Count > 0)
+                {
+                    for (int j = 0; j < node.connectAble.Count; j++)
+                    {
+                        var info = node.connectAble[j];
+
+                        var otheritem = (from x in linkItems
+                                         where (x != null && x != pickedUp && x.Name == info.itemName)
+                                         select x).FirstOrDefault();
+
+                        if (otheritem != null)
+                        {
+                            var otherNode = otheritem.ChildNodes[info.nodeId];
+                            if (otherNode != null && otherNode.ConnectedNode == null)
+                            {
+                                Debug.Log("在" + otheritem + "的" + info.nodeId + "端口上显示出 + " + pickedUp);
+                                var set = new PreviewSet();
+                                LinkUtil.GetWorldPosFromTarget(otheritem, info.relativePos, info.relativeDir, out set.position, out set.eulerAngle);
+                                linkPorts.Add(set);
+                            }
+                        }
+                    }
+                }
+            }
+            if (linkPorts.Count > 0)
+                previewCtrl.Notice(pickedUp.Body, linkPorts.ToArray());
+        }
+        /// <summary>
+        /// 清除连接点
+        /// </summary>
+        /// <param name="linkItem"></param>
+        public static void ClearActivedLinkPort(LinkItem linkItem)
+        {
+            Debug.Log("清除所有" + linkItem + "的拷贝");
+            previewCtrl.UnNotice(linkItem.Body);
         }
     }
 }

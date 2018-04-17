@@ -19,7 +19,7 @@ namespace WorldActionSystem.Binding
             cmd = gameObject.GetComponent<ActionCommand>();
             cmd.onBeforeActive.AddListener(OnBeforeActive);
             cmd.onBeforePlayEnd.AddListener(OnBeforePlayEnd);
-            cmd.onBeforeUnDo.AddListener(OnBeforePlayEnd);
+            cmd.onBeforeUnDo.AddListener(OnBeforeUnDo);
         }
         protected virtual void OnDestroy()
         {
