@@ -15,7 +15,7 @@ public class eventBinding : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        Config.Defult = config;
+        Config.Global = config;
         group.LunchActionSystem((worpedSteps) =>
         {
             Debug.Log("InitOK:" + worpedSteps.Length);

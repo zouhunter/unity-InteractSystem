@@ -61,7 +61,7 @@ namespace WorldActionSystem
         /// </summary>
         void Awake()
         {
-            Config.Defult = config;
+            Config.Global = config;
             accept.onClick.AddListener(OnAcceptButtonCilcked);
             start.onClick.AddListener(OnToStartButtonClicked);
             backAstep.onClick.AddListener(OnBackAStapButtonClicked);
@@ -85,7 +85,7 @@ namespace WorldActionSystem
 
         private void CreateAnElement()
         {
-            ElementController.Instence.TryCreateElement<ISupportElement>(nameField.text);
+            ElementController.Instence.TryCreateElement<ISupportElement>(nameField.text, group.transform);
         }
 
         private void OnAutoPlayStateChanged(bool arg0)
@@ -190,7 +190,7 @@ namespace WorldActionSystem
         }
         void OnNoticeStateChanged(bool isOn)
         {
-            Config.Defult._highLightNotice = isOn;
+            Config.Global._highLightNotice = isOn;
         }
         public Text textShow;
     }

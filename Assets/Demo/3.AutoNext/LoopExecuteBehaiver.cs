@@ -16,7 +16,7 @@ public class LoopExecuteBehaiver : MonoBehaviour {
     public Config config;
 	// Use this for initialization
 	void Start () {
-        Config.Defult = config;
+        Config.Global = config;
         group.LunchActionSystem(steps, (worpedSteps) =>
         {
             Debug.Log("InitOK");
