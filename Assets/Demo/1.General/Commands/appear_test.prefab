@@ -73,8 +73,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: appear
   _queueID: 0
+  _copyCount: 0
   _cameraID: 
-  commandType: 512
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
