@@ -176,8 +176,11 @@ namespace WorldActionSystem
         /// <param name="arg0"></param>
         protected override void OnRemoveElement(ISupportElement arg0)
         {
-            ropeItem.BindingTarget = null;
-            ropeItem = null;
+            if(ropeItem)
+            {
+                ropeItem.BindingTarget = null;
+                ropeItem = null;
+            }
         }
 
         public override void OnStartExecute(bool auto = false)

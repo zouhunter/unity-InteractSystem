@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj: {fileID: 1863572629}
-  autoExecute: 1
+  autoExecute: 0
 --- !u!4 &1112235676
 Transform:
   m_ObjectHideFlags: 0

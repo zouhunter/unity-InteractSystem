@@ -38,11 +38,11 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 9
   m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 8
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -77,20 +77,17 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
-    m_PVRFilterTypeDirect: 0
-    m_PVRFilterTypeIndirect: 0
-    m_PVRFilterTypeAO: 0
+    m_PVRFiltering: 0
     m_PVRFilteringMode: 1
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
-    m_PVRFilteringAtrousPositionSigmaIndirect: 2
-    m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
+    m_PVRFilteringAtrousColorSigma: 1
+    m_PVRFilteringAtrousNormalSigma: 1
+    m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_ShadowMaskMode: 2
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -110,8 +107,6 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
-    debug:
-      m_Flags: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &71285000
 GameObject:
@@ -156,8 +151,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: 
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -233,8 +228,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c1700754e4bf74c941870f232c0a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTrans: {fileID: 785599005}
+  _name: 
+  from: 0
   time: 2
+  bodyTrans: {fileID: 111050866}
+  targetTrans: {fileID: 785599005}
+  rotateSpeed: 0
 --- !u!114 &111050869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,10 +265,12 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   delyTime: 0
+  animPlayer: {fileID: 0}
   speed: 1
+  playAtPostion: 0
 --- !u!23 &111050870
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -279,7 +280,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -295,7 +295,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -354,23 +353,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!1 &122791716
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,23 +434,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!23 &122791719
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -461,7 +460,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -477,7 +475,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -547,7 +544,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groupKey: ActonGroup
   totalCommand: 8
-  prefabList: []
+  autoLoadElement: []
+  runTimeElements: []
 --- !u!4 &286602587
 Transform:
   m_ObjectHideFlags: 0
@@ -695,23 +693,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!23 &553494751
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -721,7 +719,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -737,7 +734,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -825,8 +821,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c1700754e4bf74c941870f232c0a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTrans: {fileID: 1117157160}
+  _name: 
+  from: 0
   time: 2
+  bodyTrans: {fileID: 0}
+  targetTrans: {fileID: 1117157160}
+  rotateSpeed: 0
 --- !u!114 &554183052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -858,10 +858,12 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   delyTime: 0
+  animPlayer: {fileID: 0}
   speed: 1
+  playAtPostion: 0
 --- !u!23 &554183053
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -871,7 +873,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -887,7 +888,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -959,23 +959,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!1 &728171656
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,23 +1040,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!23 &728171659
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1066,7 +1066,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1082,7 +1081,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1308,23 +1306,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!23 &1359345563
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1334,7 +1332,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1350,7 +1347,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1434,8 +1430,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: 
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1494,8 +1490,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: 
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1575,23 +1571,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!23 &1586934443
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1601,7 +1597,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1617,7 +1612,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1701,8 +1695,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: command01
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1782,11 +1776,11 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
 --- !u!4 &1673444528
 Transform:
   m_ObjectHideFlags: 0
@@ -1861,8 +1855,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: 
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1998,7 +1992,7 @@ Prefab:
     - target: {fileID: 224162903403102942, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224162903403102942, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2008,7 +2002,7 @@ Prefab:
     - target: {fileID: 224162903403102942, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224467852407210654, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2028,7 +2022,7 @@ Prefab:
     - target: {fileID: 224467852407210654, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224467852407210654, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2038,7 +2032,7 @@ Prefab:
     - target: {fileID: 224467852407210654, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224742181202422800, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2058,7 +2052,7 @@ Prefab:
     - target: {fileID: 224742181202422800, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224742181202422800, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2068,7 +2062,7 @@ Prefab:
     - target: {fileID: 224742181202422800, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224046080613502150, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2088,7 +2082,7 @@ Prefab:
     - target: {fileID: 224046080613502150, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224046080613502150, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2098,7 +2092,7 @@ Prefab:
     - target: {fileID: 224046080613502150, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224139545879427696, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2118,7 +2112,7 @@ Prefab:
     - target: {fileID: 224139545879427696, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224139545879427696, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2128,7 +2122,7 @@ Prefab:
     - target: {fileID: 224139545879427696, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224805466017553714, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2148,7 +2142,7 @@ Prefab:
     - target: {fileID: 224805466017553714, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224805466017553714, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2158,7 +2152,7 @@ Prefab:
     - target: {fileID: 224805466017553714, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224556128546634600, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2178,7 +2172,7 @@ Prefab:
     - target: {fileID: 224556128546634600, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224556128546634600, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2188,7 +2182,7 @@ Prefab:
     - target: {fileID: 224556128546634600, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224972454926425502, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2208,7 +2202,7 @@ Prefab:
     - target: {fileID: 224972454926425502, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224972454926425502, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2218,7 +2212,7 @@ Prefab:
     - target: {fileID: 224972454926425502, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224774156076768340, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2238,7 +2232,7 @@ Prefab:
     - target: {fileID: 224774156076768340, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224774156076768340, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2248,7 +2242,7 @@ Prefab:
     - target: {fileID: 224774156076768340, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224493689068769426, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2268,7 +2262,7 @@ Prefab:
     - target: {fileID: 224493689068769426, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224493689068769426, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2278,7 +2272,7 @@ Prefab:
     - target: {fileID: 224493689068769426, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224107458988448110, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2298,7 +2292,7 @@ Prefab:
     - target: {fileID: 224107458988448110, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -21.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224107458988448110, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
@@ -2308,7 +2302,7 @@ Prefab:
     - target: {fileID: 224107458988448110, guid: 87ad57075bda095488a21c44a14f894e,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 42.9
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 87ad57075bda095488a21c44a14f894e, type: 2}
@@ -2356,8 +2350,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: 
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -2416,8 +2410,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: 
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -2497,23 +2491,23 @@ MonoBehaviour:
   onUnDoExecute:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!23 &2108127516
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2523,7 +2517,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2539,7 +2532,6 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -2623,8 +2615,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: command00
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []

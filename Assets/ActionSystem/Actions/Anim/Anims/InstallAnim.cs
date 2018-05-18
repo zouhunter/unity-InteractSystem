@@ -21,6 +21,9 @@ namespace WorldActionSystem
 
         protected override void InitState()
         {
+            if (bodyTrans == null) bodyTrans = transform;
+            if (targetTrans == null) targetTrans = transform;
+
             startPosition = bodyTrans.localPosition;
             startRotation = bodyTrans.localRotation;
 
