@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WorldActionSystem
 {
@@ -16,6 +17,19 @@ namespace WorldActionSystem
         protected Vector3[] startPositions;
         protected Vector3[] targetPositions;
         protected Quaternion[] startRotations;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            if(viewItems .Length == 0)
+            {
+                viewItems = new Transform[transform.childCount];
+                for (int i = 0; i < viewItems.Length; i++)
+                {
+                    viewItems[i] = transform.GetChild(i);
+                }
+            }
+        }
 
         public override void SetVisible(bool visible)
         {
@@ -45,14 +59,35 @@ namespace WorldActionSystem
             }
         }
 
+      
+
+        protected static Vector3[] GetDirs(Vector3[] start, Vector3[] target)
+        {
+            var dirs = new Vector3[start.Length];
+            for (int i = 0; i < start.Length; i++)
+            {
+                dirs[i] = target[i] - start[i];
+            }
+            return dirs;
+        }
+
+        protected static Quaternion[] GetRots(Vector3[] dirs, float rotateSpeed)
+        {
+            var rots = new Quaternion[dirs.Length];
+            for (int i = 0; i < rots.Length; i++)
+            {
+                rots[i] = Quaternion.AngleAxis(rotateSpeed, dirs[i]);
+            }
+            return rots;
+        }
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
 
-            Vector3[] startPos = from ? targetPositions : startPositions;
-            Vector3[] targetPos = from ? startPositions : targetPositions;
+            Vector3[] startPos = reverse ? targetPositions : startPositions;
+            Vector3[] targetPos = reverse ? startPositions : targetPositions;
             Quaternion[] targetRot = startRotations;
 
-            Vector3[] dir = from ? GetDirs(targetPositions, startPositions) : GetDirs(startPositions, targetPositions);
+            Vector3[] dir = reverse ? GetDirs(targetPositions, startPositions) : GetDirs(startPositions, targetPositions);
             Quaternion[] rot = GetRots(dir, rotateSpeed);
 
             for (float i = 0; i < time; i += Time.deltaTime)
@@ -79,26 +114,6 @@ namespace WorldActionSystem
                 onComplete.Invoke();
                 onComplete = null;
             }
-        }
-
-        private static Vector3[] GetDirs(Vector3[] start, Vector3[] target)
-        {
-            var dirs = new Vector3[start.Length];
-            for (int i = 0; i < start.Length; i++)
-            {
-                dirs[i] = target[i] - start[i];
-            }
-            return dirs;
-        }
-
-        private static Quaternion[] GetRots(Vector3[] dirs, float rotateSpeed)
-        {
-            var rots = new Quaternion[dirs.Length];
-            for (int i = 0; i < rots.Length; i++)
-            {
-                rots[i] = Quaternion.AngleAxis(rotateSpeed, dirs[i]);
-            }
-            return rots;
         }
     }
 }

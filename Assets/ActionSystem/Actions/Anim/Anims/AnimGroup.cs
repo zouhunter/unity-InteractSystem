@@ -13,7 +13,6 @@ namespace WorldActionSystem
         private AnimPlayer[] childAnims;
         private bool actived;
         private int completedCount;
-        private float _duration;
         public override float duration
         {
             get
@@ -31,7 +30,14 @@ namespace WorldActionSystem
         protected override void OnEnable()
         {
             base.OnEnable();
-            childAnims = GetComponentsInChildren<AnimPlayer>(true).Where(x=>x != this).ToArray();
+            childAnims = GetComponentsInChildren<AnimPlayer>(true).Where(x => x != this).ToArray();
+            if (reverse)
+            {
+                foreach (var item in childAnims)
+                {
+                    item.reverse = !item.reverse;
+                }
+            }
         }
 
         public override void SetPosition(Vector3 pos)
@@ -55,7 +61,7 @@ namespace WorldActionSystem
             }
         }
 
-     
+
         public override void StepComplete()
         {
             actived = false;
@@ -87,9 +93,9 @@ namespace WorldActionSystem
             if (!actived) return;
 
             completedCount++;
-            if(completedCount >= childAnims.Length)
+            if (completedCount >= childAnims.Length)
             {
-               if(onAutoPlayEnd != null)
+                if (onAutoPlayEnd != null)
                     onAutoPlayEnd.Invoke();
             }
         }

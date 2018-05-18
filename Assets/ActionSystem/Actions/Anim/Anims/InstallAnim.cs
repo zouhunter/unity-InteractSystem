@@ -21,9 +21,6 @@ namespace WorldActionSystem
 
         protected override void InitState()
         {
-            if (bodyTrans == null) bodyTrans = transform;
-            if (targetTrans == null) targetTrans = transform;
-
             startPosition = bodyTrans.localPosition;
             startRotation = bodyTrans.localRotation;
 
@@ -35,7 +32,7 @@ namespace WorldActionSystem
         {
             base.StepComplete();
 
-            if (from)
+            if (reverse)
             {
                 bodyTrans.localPosition = startPosition;
                 bodyTrans.localRotation = startRotation;
@@ -57,11 +54,11 @@ namespace WorldActionSystem
 
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
-            var startPos = from ? targetPosition : startPosition;
-            var targetPos = from ? startPosition : targetPosition;
-            var targetRot = from ? startRotation : targetRotation;
+            var startPos = reverse ? targetPosition : startPosition;
+            var targetPos = reverse ? startPosition : targetPosition;
+            var targetRot = reverse ? startRotation : targetRotation;
 
-            var dir = from ? startPosition - targetPosition : targetPosition - startPosition;
+            var dir = reverse ? startPosition - targetPosition : targetPosition - startPosition;
             var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {

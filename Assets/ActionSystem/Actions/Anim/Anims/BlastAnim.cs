@@ -22,7 +22,8 @@ namespace WorldActionSystem
             for (int i = 0; i < length; i++)
             {
                 startPositions[i] = viewItems[i].transform.localPosition;
-                targetPositions[i] = viewItems[i].transform.localPosition + (viewItems[i].transform.position - center.transform.position).normalized * targetRange;
+                var centerPos = viewItems[i].transform.parent.InverseTransformPoint(center.transform.position);
+                targetPositions[i] = centerPos + (viewItems[i].transform.localPosition - centerPos) * targetRange;
                 startRotations[i] = viewItems[i].transform.localRotation;
             }
         }

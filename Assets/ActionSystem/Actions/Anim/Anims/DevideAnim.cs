@@ -26,7 +26,9 @@ namespace WorldActionSystem
                 startRotations[i] = viewItems[i].transform.localRotation;
                 if(length > 1)
                 {
-                    targetPositions[i] = viewItems[i].transform.localPosition + viewItems[i].transform.InverseTransformPoint(start.position) + ((target.position - start.position) * (i)) / (length - 1);
+                    var startPos = viewItems[i].transform.parent.InverseTransformPoint(start.position);
+                    var endPos = viewItems[i].transform.parent.InverseTransformPoint(target.position);
+                    targetPositions[i] = viewItems[i].transform.localPosition + startPos + ((endPos - startPos) * (i)) / (length - 1);
                 }
                 else
                 {
@@ -34,5 +36,6 @@ namespace WorldActionSystem
                 }
             }
         }
+       
     }
 }
