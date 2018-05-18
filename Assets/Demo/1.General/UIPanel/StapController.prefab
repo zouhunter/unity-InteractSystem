@@ -2425,6 +2425,7 @@ MonoBehaviour:
     _highLightNotice: 1
     _useOperateCamera: 1
     _angleNotice: 1
+    _previewNotice: 1
     _quickMoveElement: 0
     _ignoreController: 0
     _lineMaterial: {fileID: 0}
@@ -2432,6 +2433,9 @@ MonoBehaviour:
     _highLightColor: {r: 0, g: 1, b: 0, a: 1}
     _angleObj: {fileID: 1796584629303038, guid: 564b8a6eb080d424abe243889aef3b7f,
       type: 2}
+    _angleObjs: []
+    _previewMat: {fileID: 0}
+    _previewAlpha: 0.5
   accept: {fileID: 11487618}
   start: {fileID: 11471190}
   backAstep: {fileID: 11422092}
@@ -2445,9 +2449,6 @@ MonoBehaviour:
   autoPlay: {fileID: 11472070}
   nameField: {fileID: 114544791057771794}
   create: {fileID: 114736305000427442}
-  prefabs:
-  - {fileID: 1329900030471124, guid: 51cdf5dbd99778a459e5ab29cca48b55, type: 2}
-  - {fileID: 1507175102751886, guid: 3183ba0cecdabba4ea90c5e7c7c38a72, type: 2}
   textShow: {fileID: 11422206}
   groupName: ActionGroupA
   panel: {fileID: 185808}
@@ -2469,6 +2470,7 @@ MonoBehaviour:
   - step: link
   - step: charge
   - step: appear
+  - step: groupanim
 --- !u!114 &11494706
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -848,7 +848,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11457850, guid: 2deab7bad05c22041a717ab39c511f0c, type: 2}
       propertyPath: totalCommand
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11457850, guid: 2deab7bad05c22041a717ab39c511f0c, type: 2}
       propertyPath: autoLoadElement.Array.data[12].containsCommand
@@ -912,6 +912,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11457850, guid: 2deab7bad05c22041a717ab39c511f0c, type: 2}
       propertyPath: autoLoadElement.Array.data[5].instanceID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11457850, guid: 2deab7bad05c22041a717ab39c511f0c, type: 2}
+      propertyPath: runTimeElements.Array.data[0].instanceID
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

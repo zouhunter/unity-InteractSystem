@@ -4,31 +4,22 @@ using System.Collections;
 
 namespace WorldActionSystem
 {
-    public class InstallAnim : AnimPlayer
+    public class InstallAnim : CodeAnimItem
     {
         [SerializeField]
         protected Transform bodyTrans;
         [SerializeField]
         protected Transform targetTrans;
-        [SerializeField]
-        protected bool from;
+     
         [SerializeField, Range(-10, 10)]
         protected float rotateSpeed;
-        [SerializeField]
-        protected float time = 2f;
 
         protected Vector3 startPosition;
         protected Quaternion startRotation;
-        protected Coroutine coroutine;
         protected Vector3 targetPosition;
         protected Quaternion targetRotation;
-        protected override void Awake()
-        {
-            base.Awake();
-            InitPostions();
-        }
 
-        private void InitPostions()
+        protected override void InitState()
         {
             startPosition = bodyTrans.localPosition;
             startRotation = bodyTrans.localRotation;
@@ -37,21 +28,11 @@ namespace WorldActionSystem
             targetRotation = targetTrans.transform.localRotation;
         }
 
-        public override void StepActive()
-        {
-            time = 1f / duration;
-            coroutine = StartCoroutine(MoveAnim(onAutoPlayEnd));
-        }
-
         public override void StepComplete()
         {
-            if (coroutine != null)
-            {
-                StopCoroutine(coroutine);
-                coroutine = null;
-            }
+            base.StepComplete();
 
-            if(from)
+            if (from)
             {
                 bodyTrans.localPosition = startPosition;
                 bodyTrans.localRotation = startRotation;
@@ -61,30 +42,17 @@ namespace WorldActionSystem
                 bodyTrans.localPosition = targetPosition;
                 bodyTrans.localRotation = targetRotation;
             }
-           
         }
 
         public override void StepUnDo()
         {
-            //Debug.Log("UnDoPlay");
-            if (coroutine != null)
-            {
-                StopCoroutine(coroutine);
-                coroutine = null;
-            }
+            base.StepUnDo();
 
             bodyTrans.localPosition = startPosition;
             bodyTrans.localRotation = startRotation;
         }
 
-
-
-        public override void SetPosition(Vector3 pos)
-        {
-            transform.position = pos;
-        }
-
-        protected IEnumerator MoveAnim(UnityAction onComplete)
+        protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
             var startPos = from ? targetPosition : startPosition;
             var targetPos = from ? startPosition : targetPosition;

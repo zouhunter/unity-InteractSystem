@@ -170,6 +170,7 @@ MonoBehaviour:
   _name: 
   bodyTrans: {fileID: 4952024908254570}
   targetTrans: {fileID: 4162507587232518}
+  from: 0
   rotateSpeed: 0
   time: 2
 --- !u!114 &11427584
@@ -222,8 +223,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: clickanim
   _queueID: 0
+  _copyCount: 0
   _cameraID: 
-  commandType: 4
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -290,6 +291,7 @@ MonoBehaviour:
   _name: 
   bodyTrans: {fileID: 4324504661216914}
   targetTrans: {fileID: 4097233897782152}
+  from: 0
   rotateSpeed: 0
   time: 2
 --- !u!114 &11468764

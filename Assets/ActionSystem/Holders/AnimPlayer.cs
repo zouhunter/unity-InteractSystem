@@ -10,7 +10,7 @@ namespace WorldActionSystem
     public abstract class AnimPlayer: PickUpAbleElement
     {
         public AnimObj BindingTarget { get; set; }
-        public float duration { get; set; }
+        public virtual float duration { get; set; }
         public UnityAction onAutoPlayEnd { get; set; }
     }
 

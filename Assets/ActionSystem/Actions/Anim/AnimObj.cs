@@ -44,6 +44,7 @@ namespace WorldActionSystem
             {
                 animPlayer.duration = speed;
                 animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
+                animPlayer.SetVisible(true);
                 animPlayer.StepActive();
             }
         }
@@ -61,17 +62,19 @@ namespace WorldActionSystem
                 animPlayer.BindingTarget = this;
                 animPlayer.StepComplete();
                 animPlayer.SetVisible(endActive);
-                animPlayer.gameObject.SetActive(endActive);
             }
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            if (delyPlay != null) StopCoroutine(delyPlay);
+            if (delyPlay != null)
+                StopCoroutine(delyPlay);
+
             if (animPlayer != null)
             {
                 animPlayer.StepUnDo();
                 animPlayer.BindingTarget = null;
+                animPlayer.SetVisible(startActive);
                 animPlayer = null;
             }
         }
