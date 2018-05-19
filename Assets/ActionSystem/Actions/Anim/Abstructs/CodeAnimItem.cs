@@ -7,6 +7,8 @@ namespace WorldActionSystem
     public abstract class CodeAnimItem : AnimPlayer
     {
         [SerializeField]
+        protected bool from;
+        [SerializeField]
         protected float time = 2f;
         protected Coroutine coroutine;
 

@@ -10,7 +10,7 @@ namespace WorldActionSystem
         protected Transform bodyTrans;
         [SerializeField]
         protected Transform targetTrans;
-     
+
         [SerializeField, Range(-10, 10)]
         protected float rotateSpeed;
 
@@ -24,15 +24,15 @@ namespace WorldActionSystem
             startPosition = bodyTrans.localPosition;
             startRotation = bodyTrans.localRotation;
 
-            targetPosition = targetTrans.transform.localPosition;
-            targetRotation = targetTrans.transform.localRotation;
+            targetPosition = bodyTrans.transform.parent.InverseTransformPoint(targetTrans.transform.position);
+            targetRotation = Quaternion.Euler(bodyTrans.transform.parent.InverseTransformVector(targetTrans.transform.eulerAngles));
         }
 
         public override void StepComplete()
         {
             base.StepComplete();
 
-            if (reverse)
+            if (from)
             {
                 bodyTrans.localPosition = startPosition;
                 bodyTrans.localRotation = startRotation;
@@ -54,11 +54,11 @@ namespace WorldActionSystem
 
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
-            var startPos = reverse ? targetPosition : startPosition;
-            var targetPos = reverse ? startPosition : targetPosition;
-            var targetRot = reverse ? startRotation : targetRotation;
+            var startPos = from ? targetPosition : startPosition;
+            var targetPos = from ? startPosition : targetPosition;
+            var targetRot = from ? startRotation : targetRotation;
 
-            var dir = reverse ? startPosition - targetPosition : targetPosition - startPosition;
+            var dir = from ? startPosition - targetPosition : targetPosition - startPosition;
             var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {
@@ -78,7 +78,7 @@ namespace WorldActionSystem
 
         public override void SetVisible(bool visible)
         {
-            if(bodyTrans)
+            if (bodyTrans)
                 bodyTrans.gameObject.SetActive(visible);
         }
     }

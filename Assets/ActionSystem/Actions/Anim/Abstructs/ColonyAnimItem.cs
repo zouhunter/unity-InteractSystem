@@ -83,11 +83,11 @@ namespace WorldActionSystem
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
 
-            Vector3[] startPos = reverse ? targetPositions : startPositions;
-            Vector3[] targetPos = reverse ? startPositions : targetPositions;
+            Vector3[] startPos = from ? targetPositions : startPositions;
+            Vector3[] targetPos = from ? startPositions : targetPositions;
             Quaternion[] targetRot = startRotations;
 
-            Vector3[] dir = reverse ? GetDirs(targetPositions, startPositions) : GetDirs(startPositions, targetPositions);
+            Vector3[] dir = from ? GetDirs(targetPositions, startPositions) : GetDirs(startPositions, targetPositions);
             Quaternion[] rot = GetRots(dir, rotateSpeed);
 
             for (float i = 0; i < time; i += Time.deltaTime)

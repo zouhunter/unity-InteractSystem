@@ -25,7 +25,14 @@ namespace WorldActionSystem
                 return 0;
             }
         }
-
+        protected override void Awake()
+        {
+            base.Awake();
+            if (animPlayer == null){
+                animPlayer = GetComponentInChildren<AnimPlayer>(true);
+                Debug.Log(animPlayer,gameObject);
+            }
+        }
         /// <summary>
         /// 播放动画
         /// </summary>
@@ -33,7 +40,7 @@ namespace WorldActionSystem
         {
             base.OnStartExecute(forceauto);
             FindAnimCore();
-            Debug.Assert(animPlayer != null,gameObject);
+            Debug.Assert(animPlayer != null, gameObject);
             delyPlay = StartCoroutine(DelyPlay());
         }
 
@@ -81,17 +88,17 @@ namespace WorldActionSystem
 
         private void FindAnimCore()
         {
-            animPlayer = GetComponentInChildren<AnimPlayer>(true);
-            if(animPlayer == null)
+           
+            if (animPlayer == null)
             {
                 var elements = elementCtrl.GetElements<AnimPlayer>(Name);
-                if(elements != null && elements.Count > 0)
+                if (elements != null && elements.Count > 0)
                 {
                     animPlayer = elements.Find(x => x.Body != null && x.BindingTarget == null);//[0];
                 }
             }
 
-            if(animPlayer)
+            if (animPlayer)
             {
                 animPlayer.gameObject.SetActive(true);
 
