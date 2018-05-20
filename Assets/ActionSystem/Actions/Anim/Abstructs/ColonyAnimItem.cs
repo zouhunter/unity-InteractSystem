@@ -95,7 +95,7 @@ namespace WorldActionSystem
                 for (int j = 0; j < viewItems.Length; j++)
                 {
                     var item = viewItems[j];
-                    item.localPosition = Vector3.Lerp(startPos[j], targetPos[j], i / time);
+                    item.localPosition = Vector3.Lerp(startPos[j], targetPos[j], GetAnimValue(i / time));
                     item.localRotation = rot[j] * item.localRotation;
                 }
 

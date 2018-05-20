@@ -80,7 +80,8 @@ namespace WorldActionSystem
         public override void StepUnDo()
         {
             SetCurrentAnim(reverse ? 1 : 0);
-            if (coroutine != null) StopCoroutine(coroutine);
+            if (coroutine != null)
+                StopCoroutine(coroutine);
             coroutine = null;
         }
 

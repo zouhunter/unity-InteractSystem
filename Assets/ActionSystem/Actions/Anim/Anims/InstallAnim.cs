@@ -62,7 +62,7 @@ namespace WorldActionSystem
             var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {
-                bodyTrans.localPosition = Vector3.Lerp(startPos, targetPos, i / time);
+                bodyTrans.localPosition = Vector3.Lerp(startPos, targetPos,GetAnimValue( i / time));
                 bodyTrans.localRotation = rot * bodyTrans.localRotation;
                 yield return null;
             }

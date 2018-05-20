@@ -5,7 +5,6 @@ using UnityEngine.Events;
 
 namespace WorldActionSystem
 {
-
     public class RotateAnim : CodeAnimItem
     {
         [SerializeField]
@@ -15,16 +14,9 @@ namespace WorldActionSystem
 
         [SerializeField]
         protected float angle;
-        [SerializeField]
-        protected AnimationCurve animCurve;
-
         protected Vector3 startCenterpostion;
         protected Vector3 startPosition;
         protected Quaternion startRotation;
-        protected Vector3 axis;
-        protected Vector3 targetPostion;
-        protected Quaternion targetRotation;
-
         public override void SetVisible(bool visible)
         {
             bodyTrans.gameObject.SetActive(visible);
@@ -40,11 +32,6 @@ namespace WorldActionSystem
             startPosition = bodyTrans.localPosition;
             startRotation = bodyTrans.localRotation;
             startCenterpostion = bodyTrans.parent.InverseTransformPoint(center.transform.position);
-            axis = center.transform.up;
-
-            var fromDirection = bodyTrans.transform.position - center.position;
-            targetPostion = bodyTrans.parent.InverseTransformPoint(Quaternion.AngleAxis(angle, axis) * fromDirection + bodyTrans.parent.TransformPoint(startCenterpostion));
-            targetRotation = Quaternion.AngleAxis(angle, axis) * startRotation;
         }
 
         protected override IEnumerator PlayAnim(UnityAction onComplete)
@@ -52,11 +39,18 @@ namespace WorldActionSystem
             float lastduration = 0;
             bodyTrans.localPosition = startPosition;
             bodyTrans.localRotation = startRotation;
+            var axis = center.transform.up;
+
+            if (reverse)
+            {
+                bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), axis, angle);
+            }
+
             for (float i = 0; i < time; i += Time.deltaTime)
             {
                 var duration = GetAnimValue(i / time);
-                var currentAngle =( duration - lastduration) * angle;
-                bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), axis, currentAngle);
+                var currentAngle = (duration - lastduration) * angle;
+                bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), reverse ? -axis : axis, currentAngle);
                 lastduration = duration;
                 yield return null;
             }
@@ -74,6 +68,12 @@ namespace WorldActionSystem
 
             bodyTrans.localPosition = startPosition;
             bodyTrans.localRotation = startRotation;
+
+            if (reverse)
+            {
+                var axis = center.transform.up;
+                bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), axis, angle);
+            }
         }
 
         protected override void StopAnim()
@@ -81,19 +81,17 @@ namespace WorldActionSystem
             base.StopAnim();
             bodyTrans.localPosition = startPosition;
             bodyTrans.localRotation = startRotation;
-            bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), axis, angle);
-        }
-
-        private float GetAnimValue(float value)
-        {
-            return animCurve.Evaluate(value);
+            if (!reverse){
+                var axis = center.transform.up;// bodyTrans.parent.TransformPoint(startPosition) - bodyTrans.parent.TransformPoint(startCenterpostion);
+                bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), axis, angle);
+            }
         }
 
         private void OnDrawGizmos()
         {
             if (center != null && bodyTrans != null)
             {
-                axis = center.transform.up;
+                var axis = center.transform.up;
 
                 var fromDirection = bodyTrans.transform.position - center.position;
                 var targetPosition = Quaternion.AngleAxis(angle, axis) * fromDirection + center.transform.position;

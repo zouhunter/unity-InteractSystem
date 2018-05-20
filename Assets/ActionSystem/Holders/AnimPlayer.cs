@@ -20,6 +20,7 @@ namespace WorldActionSystem
         public UnityAction onAutoPlayEnd { get; set; }
         [HideInInspector]
         public UnityEvent onPlayComplete;
+      
 
         public override void StepComplete()
         {
@@ -47,6 +48,7 @@ namespace WorldActionSystem
             }
             return false;
         }
+        
     }
 
 }

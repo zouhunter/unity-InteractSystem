@@ -9,6 +9,9 @@ namespace WorldActionSystem
         [SerializeField]
         protected float time = 2f;
         protected Coroutine coroutine;
+        [SerializeField]
+        protected AnimationCurve animCurve;
+    
         protected override void Start()
         {
             base.Start();
@@ -45,7 +48,10 @@ namespace WorldActionSystem
                 coroutine = null;
             }
         }
-
+        protected float GetAnimValue(float value)
+        {
+            return animCurve.Evaluate(value);
+        }
         protected abstract IEnumerator PlayAnim(UnityAction onComplete);
     }
 }
