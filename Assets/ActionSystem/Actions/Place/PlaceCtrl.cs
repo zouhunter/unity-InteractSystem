@@ -37,6 +37,15 @@ namespace WorldActionSystem
         public PlaceCtrl()
         {
             highLight = new ShaderHighLight();
+            pickCtrl.onPickStay += OnPickStay;
+        }
+
+        private void OnPickStay(PickUpAbleItem arg0)
+        {
+            if (arg0 is PlaceElement)
+            {
+                TryPlaceObject(arg0 as PlaceElement);
+            }
         }
 
         #region 鼠标操作事件
@@ -45,12 +54,6 @@ namespace WorldActionSystem
             if (pickCtrl.PickedUp)
             {
                 UpdatePlaceState();
-
-                if (pickedUpObj && Input.GetMouseButtonDown(0))
-                {
-                    TryPlaceObject(pickedUpObj);
-                    pickCtrl.PickDown();
-                }
             }
         }
 
@@ -128,7 +131,6 @@ namespace WorldActionSystem
 
         public void PlaceObject(PlaceObj pos, PlaceElement pickup)
         {
-            pickCtrl.PickStay();
             pos.PlaceObject(pickup);
         }
 

@@ -673,6 +673,11 @@ MonoBehaviour:
   _name: 
   _reverse: 0
   _duration: 0
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 0}
   animName: 
 --- !u!114 &114165161953159152
@@ -955,6 +960,11 @@ MonoBehaviour:
   _name: 
   _reverse: 0
   _duration: 0
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 0}
   animName: 
 --- !u!114 &114978567253237698
@@ -996,4 +1006,4 @@ MonoBehaviour:
   straightMove: 0
   ignoreMiddle: 0
   hideOnInstall: 0
-  completeMoveBack: 1
+  completeMoveBack: 0

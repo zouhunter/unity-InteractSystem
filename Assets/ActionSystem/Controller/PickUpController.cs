@@ -35,13 +35,9 @@ namespace WorldActionSystem
         public event UnityAction<PickUpAbleItem> onPickTwinceLeft;
         public event UnityAction<PickUpAbleItem> onPickTwinceRight;
         private float timer = 0f;
-        //private Coroutine coroutine;
-        //private MonoBehaviour holder;
+
         public PickUpController(MonoBehaviour holder)
         {
-            //Debug.Log("New PickUpController");
-            //this.holder = holder;
-            /* coroutine = */
             holder.StartCoroutine(Update());
         }
         private IEnumerator Update()
