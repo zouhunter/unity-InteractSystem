@@ -7,7 +7,7 @@ using System;
 
 namespace WorldActionSystem
 {
-    public sealed class PlaceCtrl : OperateController, IPlaceState
+    public sealed class PlaceCtrl : OperateController
     {
         public IHighLightItems highLight;
         private PickUpController pickCtrl { get { return ActionSystem.Instence.pickupCtrl; } }
@@ -34,8 +34,6 @@ namespace WorldActionSystem
         public RaycastHit hit;
         public RaycastHit[] hits;
       
-        private IPlaceState current;
-
         public PlaceCtrl()
         {
             highLight = new ShaderHighLight();
@@ -50,7 +48,7 @@ namespace WorldActionSystem
 
                 if (pickedUpObj && Input.GetMouseButtonDown(0))
                 {
-                    TryPlaceObject();
+                    TryPlaceObject(pickedUpObj);
                     pickCtrl.PickDown();
                 }
             }
@@ -77,7 +75,6 @@ namespace WorldActionSystem
                         installPos = hits[i].collider.GetComponentInParent<PlaceObj>();
                         if (installPos)
                         {
-                            current = installPos.PlaceState;
                             hitedObj = true;
                             installAble = CanPlace(installPos, pickCtrl.pickedUpObj, out resonwhy);
                             if (installAble)
@@ -108,16 +105,16 @@ namespace WorldActionSystem
         /// <summary>
         /// 尝试安装元素
         /// </summary>
-        void TryPlaceObject()
+        void TryPlaceObject(PlaceElement pickedObj)
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (installAble)
             {
-                PlaceObject(installPos, pickedUpObj);
+                PlaceObject(installPos, pickedObj);
             }
             else
             {
-                PlaceWrong(pickedUpObj);
+                PlaceWrong(pickedObj);
                 SetUserErr(resonwhy);
             }
 
@@ -125,23 +122,36 @@ namespace WorldActionSystem
 
             if (activeNotice)
             {
-                highLight.UnHighLightTarget(pickedUpObj.Render);
+                highLight.UnHighLightTarget(pickedObj.Render);
             }
         }
 
         public void PlaceObject(PlaceObj pos, PlaceElement pickup)
         {
-            current.PlaceObject(pos, pickup);
+            pickCtrl.PickStay();
+            pos.PlaceObject(pickup);
         }
 
-        public bool CanPlace(PlaceObj placeItem, PickUpAbleItem element, out string why)
+        public bool CanPlace(PlaceObj pos, PickUpAbleItem element, out string why)
         {
-            return current.CanPlace(placeItem, element, out why);
+            if (pos == null)
+            {
+                Debug.LogError("");
+                why = "【配制错误】:零件未挂PlaceObj脚本";
+                return false;
+            }
+            else
+            {
+                return pos.CanPlace(element, out why);
+            }
         }
 
         public void PlaceWrong(PlaceElement pickup)
         {
-            current.PlaceWrong(pickup);
+            if (pickup)
+            {
+                pickup.OnPickDown();
+            }
         }
         #endregion
     }

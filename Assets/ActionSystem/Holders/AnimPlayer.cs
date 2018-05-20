@@ -17,6 +17,13 @@ namespace WorldActionSystem
         public virtual float duration { get { return _duration; }set { _duration = value; } }
         public virtual bool reverse { get { return _reverse; } set { _reverse = value; } }
         public UnityAction onAutoPlayEnd { get; set; }
+        [HideInInspector]
+        public UnityEvent onPlayComplete;
+
+        public override void StepComplete()
+        {
+            onPlayComplete.Invoke();
+        }
     }
 
 }

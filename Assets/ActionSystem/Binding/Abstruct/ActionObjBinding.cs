@@ -17,7 +17,7 @@ namespace WorldActionSystem.Binding
             actionObj.onBeforeComplete.AddListener(OnBeforeComplete);
             actionObj.onUnDoExecute.AddListener(OnBeforeUnDo);
         }
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (actionObj)
             {

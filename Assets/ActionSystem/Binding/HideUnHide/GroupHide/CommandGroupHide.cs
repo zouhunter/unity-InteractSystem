@@ -15,13 +15,11 @@ namespace WorldActionSystem.Binding
         [SerializeField]
         private bool completeActive;
         private bool startState;
-        private List<string> HideKeys { get { return GroupHide.HideKeys; } }
-
 
         protected override void OnBeforeActive(string step)
         {
             base.OnBeforeActive(step);
-            startState = !HideKeys.Contains(key);
+            startState = !GroupHide.Contains(key);
             if (!startActive)
             {
                 Record();
@@ -59,9 +57,9 @@ namespace WorldActionSystem.Binding
         private void Record()
         {
             if (string.IsNullOrEmpty(key)) return;
-            if (!HideKeys.Contains(key))
+            if (!GroupHide.Contains(key))
             {
-                HideKeys.Add(key);
+                GroupHide.Record(key);
             }
         }
 
@@ -69,9 +67,9 @@ namespace WorldActionSystem.Binding
         {
             if (string.IsNullOrEmpty(key)) return;
 
-            if (HideKeys.Contains(key))
+            if (GroupHide.Contains(key))
             {
-                HideKeys.Remove(key);
+                GroupHide.Remove(key);
             }
         }
 

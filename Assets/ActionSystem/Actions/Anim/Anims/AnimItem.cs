@@ -69,6 +69,8 @@ namespace WorldActionSystem
 
         public override void StepComplete()
         {
+            base.StepComplete();
+
             SetCurrentAnim(1);
             if (coroutine != null)
                 StopCoroutine(coroutine);

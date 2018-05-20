@@ -11,7 +11,6 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.MatchObj)]
     public class MatchObj : PlaceObj
     {
-        private static MatchState placestate = new MatchState();
         public bool completeMoveBack = true;//结束时退回
         public override ControllerType CtrlType
         {
@@ -21,14 +20,6 @@ namespace WorldActionSystem
             }
         }
         public bool Matched { get { return obj != null; } }
-        public override IPlaceState PlaceState
-        {
-            get
-            {
-                return placestate;
-            }
-        }
-
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
@@ -94,5 +85,44 @@ namespace WorldActionSystem
                 OnEndExecute(false);
             }
         }
+
+        public override void PlaceObject(PlaceElement pickup)
+        {
+            Attach(pickup);
+            pickup.QuickInstall(this, false);
+        }
+
+        public override bool CanPlace(PickUpAbleItem element, out string why)
+        {
+            var matchAble = true;
+            if (this == null)
+            {
+                why = "【配制错误】:零件未挂MatchObj脚本";
+                Debug.LogError("【配制错误】:零件未挂MatchObj脚本");
+                matchAble = false;
+            }
+            else if (!this.Started)
+            {
+                matchAble = false;
+                why = "操作顺序错误";
+            }
+            else if (this.AlreadyPlaced)
+            {
+                matchAble = false;
+                why = "已经触发结束";
+            }
+            else if (this.Name != element.Name)
+            {
+                matchAble = false;
+                why = "零件不匹配";
+            }
+            else
+            {
+                why = null;
+                matchAble = true;
+            }
+            return matchAble;
+        }
+
     }
 }

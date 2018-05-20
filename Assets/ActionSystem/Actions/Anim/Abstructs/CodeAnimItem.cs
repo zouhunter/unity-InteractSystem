@@ -27,6 +27,8 @@ namespace WorldActionSystem
         }
         public override void StepComplete()
         {
+            base.StepComplete();
+
             StopAnim();
         }
 

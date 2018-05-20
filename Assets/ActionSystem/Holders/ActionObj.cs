@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-   
+
 
     public abstract class ActionObj : MonoBehaviour, IActionObj
     {
@@ -17,7 +17,7 @@ namespace WorldActionSystem
         public bool startActive = true;
         public bool endActive = true;
         protected bool _complete;
-        public string Name { get { if (string.IsNullOrEmpty(m_name)) m_name = name; return m_name; } }
+        public string Name { get { if (string.IsNullOrEmpty(m_name)) return name; return m_name; } }
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
@@ -161,14 +161,16 @@ namespace WorldActionSystem
                 _complete = true;
                 gameObject.SetActive(endActive);
 
-                if (hooks.Length > 0){
+                if (hooks.Length > 0)
+                {
                     hookCtrl.OnEndExecute();
                 }
 
                 OnBeforeEnd(force);
-                if(log) Debug.Log("OnEndExecute:" + Name,this);
+                if (log) Debug.Log("OnEndExecute:" + Name, this);
 
-                if (onEndExecute != null){
+                if (onEndExecute != null)
+                {
                     onEndExecute.Invoke();
                 }
             }
@@ -178,7 +180,7 @@ namespace WorldActionSystem
             }
         }
 
-     
+
         public virtual void OnUnDoExecute()
         {
             angleCtrl.UnNotice(anglePos);

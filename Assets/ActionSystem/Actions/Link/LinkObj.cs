@@ -56,7 +56,7 @@ namespace WorldActionSystem
                     if (!linkPool.Contains(linkItem))
                     {
                         linkPool.ScureAdd(linkItem);
-                        if (Started)
+                        if (Started && !Complete)
                         {
                             linkItem.StepActive();
                         }

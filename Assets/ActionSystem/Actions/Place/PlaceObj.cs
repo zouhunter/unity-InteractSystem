@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public abstract class PlaceObj : ActionObj
+    public abstract class PlaceObj : RuntimeObj
     {
         public bool autoInstall;//自动安装
         public bool ignorePass;//反忽略
@@ -18,7 +18,9 @@ namespace WorldActionSystem
         public virtual bool AlreadyPlaced { get { return obj != null; } }
         public virtual PlaceElement obj { get; protected set; }
         private static List<ActionObj> lockQueue = new List<ActionObj>();
-        public abstract IPlaceState PlaceState { get; }
+
+        private ElementPool<PlaceElement> elementPool = new ElementPool<PlaceElement>();
+        public Collider Collider { get; private set; }
         protected override void Awake()
         {
             base.Awake();
@@ -35,12 +37,15 @@ namespace WorldActionSystem
 
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.placePosLayer);
+            Collider = GetComponentInChildren<Collider>();
+            Collider.gameObject.layer = LayerMask.NameToLayer(Layers.placePosLayer);
+            Collider.enabled = false;
         }
     
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
+            Collider.enabled = true;
             ActiveElements(this);
             if (auto || autoInstall){
                 OnAutoInstall();
@@ -54,6 +59,7 @@ namespace WorldActionSystem
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
+            Collider.enabled = false;
             CompleteElements(this, false);
         }
         protected abstract void OnAutoInstall();
@@ -73,6 +79,49 @@ namespace WorldActionSystem
         protected virtual void OnInstallComplete() { }
 
         protected virtual void OnUnInstallComplete() { }
+        public abstract void PlaceObject(PlaceElement pickup);
+        public abstract bool CanPlace(PickUpAbleItem element, out string why);
+        /// <summary>
+        /// 注册
+        /// </summary>
+        /// <param name="arg0"></param>
+        protected override void OnRegistElement(ISupportElement arg0)
+        {
+            if (arg0 is PlaceElement)
+            {
+                if (arg0.Name == Name)
+                {
+                    var placeItem = arg0 as PlaceElement;
+                    if (!elementPool.Contains(placeItem))
+                    {
+                        elementPool.ScureAdd(placeItem);
+                        if (Started && !Complete)
+                        {
+                            placeItem.StepActive();
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 注销
+        /// </summary>
+        /// <param name="arg0"></param>
+        protected override void OnRemoveElement(ISupportElement arg0)
+        {
+            if (arg0.IsRuntimeCreated && arg0 is PlaceElement)
+            {
+                if(arg0.Name == Name)
+                {
+                    var placeItem = arg0 as PlaceElement;
+                    if (elementPool.Contains(placeItem))
+                    {
+                        elementPool.ScureRemove(placeItem);
+                    }
+                }
+            }
+        }
 
         public virtual PlaceElement Detach()
         {
@@ -88,15 +137,14 @@ namespace WorldActionSystem
             var actived = lockQueue.Find(x => x.Name == element.Name);
             if (actived == null)
             {
-                var objs = ElementController.Instence.GetElements<PlaceElement>(element.Name);
-                if (objs == null) return;
-                for (int i = 0; i < objs.Count; i++)
+                for (int i = 0; i < elementPool.Count; i++)
                 {
-                    if (log) Debug.Log("ActiveElements:" + element.Name + (!objs[i].Active && !objs[i].HaveBinding));
+                    if (log)
+                        Debug.Log("ActiveElements:" + element.Name + (!elementPool[i].Active && !elementPool[i].HaveBinding));
 
-                    if (!objs[i].Active && !objs[i].HaveBinding)
+                    if (!elementPool[i].Active && !elementPool[i].HaveBinding)
                     {
-                        objs[i].StepActive();
+                        elementPool[i].StepActive();
                     }
                 }
             }
@@ -109,21 +157,19 @@ namespace WorldActionSystem
             var active = lockQueue.Find(x => x.Name == element.Name);
             if (active == null)
             {
-                var objs = ElementController.Instence.GetElements<PlaceElement>(element.Name);
-                if (objs == null) return;
-                for (int i = 0; i < objs.Count; i++)
+                for (int i = 0; i < elementPool.Count; i++)
                 {
-                    if (log) Debug.Log("CompleteElements:" + element.Name + objs[i].Active);
+                    if (log) Debug.Log("CompleteElements:" + element.Name + elementPool[i].Active);
 
-                    if (objs[i].Active)
+                    if (elementPool[i].Active)
                     {
                         if (undo)
                         {
-                            objs[i].StepUnDo();
+                            elementPool[i].StepUnDo();
                         }
                         else
                         {
-                            objs[i].StepComplete();
+                            elementPool[i].StepComplete();
                         }
                     }
                 }

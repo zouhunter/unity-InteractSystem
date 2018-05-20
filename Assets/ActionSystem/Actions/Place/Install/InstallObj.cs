@@ -15,15 +15,6 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.InstallObj)]
     public class InstallObj : PlaceObj
     {
-        private static InstallState state = new WorldActionSystem.InstallState();
-        public override IPlaceState PlaceState
-        {
-            get
-            {
-                return state;
-            }
-        }
-       
         public override ControllerType CtrlType
         {
             get
@@ -39,7 +30,7 @@ namespace WorldActionSystem
             {
                 PlaceElement obj = GetUnInstalledObj(Name);
                 Attach(obj);
-                obj.QuickInstall(this,true);
+                obj.QuickInstall(this, true);
                 obj.StepComplete();
             }
         }
@@ -105,15 +96,47 @@ namespace WorldActionSystem
             obj.StepActive();
             if (Config.quickMoveElement && !ignorePass)
             {
-                obj.QuickInstall(this,true);
+                obj.QuickInstall(this, true);
             }
             else
             {
-                obj.NormalInstall(this,true);
+                obj.NormalInstall(this, true);
             }
         }
-      
+
+        public override void PlaceObject(PlaceElement pickup)
+        {
+            Attach(pickup);
+            pickup.QuickInstall(this, true);
+            pickup.PickUpAble = false;
+        }
+
+        public override bool CanPlace(PickUpAbleItem element, out string why)
+        {
+            why = null;
+            var canplace = true;
+            if (!this.Started)
+            {
+                canplace = false;
+                why = "操作顺序错误";
+            }
+            else if (this.AlreadyPlaced)
+            {
+                canplace = false;
+                why = "已经安装";
+            }
+
+            else if (element.Name != this.Name)
+            {
+                canplace = false;
+                why = "零件不匹配";
+            }
+            else
+            {
+                canplace = true;
+            }
+            return canplace;
+        }
 
     }
-
 }
