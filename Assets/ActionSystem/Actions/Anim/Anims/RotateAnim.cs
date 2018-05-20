@@ -22,6 +22,8 @@ namespace WorldActionSystem
         protected Vector3 startPosition;
         protected Quaternion startRotation;
         protected Vector3 axis;
+        protected Vector3 targetPostion;
+        protected Quaternion targetRotation;
 
         public override void SetVisible(bool visible)
         {
@@ -39,15 +41,21 @@ namespace WorldActionSystem
             startRotation = bodyTrans.localRotation;
             startCenterpostion = bodyTrans.parent.InverseTransformPoint(center.transform.position);
             axis = center.transform.up;
+
+            var fromDirection = bodyTrans.transform.position - center.position;
+            targetPostion = bodyTrans.parent.InverseTransformPoint(Quaternion.AngleAxis(angle, axis) * fromDirection + bodyTrans.parent.TransformPoint(startCenterpostion));
+            targetRotation = Quaternion.AngleAxis(angle, axis) * startRotation;
         }
 
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
+            var fromDirection = bodyTrans.transform.position - center.position;
+
             for (float i = 0; i < time; i += Time.deltaTime)
             {
                 var duration = GetAnimValue(i / time);
                 var currentAngle = duration * angle;
-                SetTargetPostionAndRotation(currentAngle);
+                SetTargetPostionAndRotation(fromDirection, currentAngle);
                 yield return null;
             }
 
@@ -61,22 +69,25 @@ namespace WorldActionSystem
         public override void StepUnDo()
         {
             base.StepUnDo();
-            SetTargetPostionAndRotation(0);
+
+            bodyTrans.localPosition = startPosition;
+            bodyTrans.localRotation = startRotation;
         }
 
         protected override void StopAnim()
         {
             base.StopAnim();
-            SetTargetPostionAndRotation(angle);
+            bodyTrans.localPosition = targetPostion;
+            bodyTrans.rotation = targetRotation * bodyTrans.parent.rotation;
         }
 
-        private void SetTargetPostionAndRotation(float angle)
+        private void SetTargetPostionAndRotation(Vector3 direction, float angle)
         {
-            var fromDirection = startPosition - startCenterpostion;
-            bodyTrans.localPosition = Quaternion.AngleAxis(angle, axis) * fromDirection + startCenterpostion;
-            bodyTrans.localRotation = Quaternion.AngleAxis(angle, axis) * startRotation;
+            var worldPos = Quaternion.AngleAxis(angle, axis) * direction + bodyTrans.parent.TransformPoint(startCenterpostion);
+            bodyTrans.localPosition = bodyTrans.parent.InverseTransformPoint(worldPos);
+            bodyTrans.rotation = Quaternion.AngleAxis(angle, axis) * startRotation * bodyTrans.parent.rotation;
         }
-        
+
         private float GetAnimValue(float value)
         {
             return animCurve.Evaluate(value);
@@ -87,9 +98,9 @@ namespace WorldActionSystem
             if (center != null && bodyTrans != null)
             {
                 axis = center.transform.up;
-                var centerLocalPos = bodyTrans.parent.InverseTransformPoint(center.transform.position);
-                var fromDirection = bodyTrans.transform.localPosition - centerLocalPos;
-                var targetPosition = Quaternion.AngleAxis(angle, axis) * fromDirection + centerLocalPos;
+
+                var fromDirection = bodyTrans.transform.position - center.position;
+                var targetPosition = Quaternion.AngleAxis(angle, axis) * fromDirection + center.transform.position;
                 Gizmos.DrawLine(center.position, targetPosition);
             }
         }

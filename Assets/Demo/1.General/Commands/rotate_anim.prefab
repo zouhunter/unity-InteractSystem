@@ -98,14 +98,15 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1898600393490052}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 4608064910867458}
   - {fileID: 4192574549366354}
   m_Father: {fileID: 4777299469165936}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!4 &4192574549366354
 Transform:
   m_ObjectHideFlags: 1
@@ -113,13 +114,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1201808607380116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -6.48, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4608064910867458}
   - {fileID: 4212826843010426}
   m_Father: {fileID: 4040733606519914}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4212826843010426
 Transform:
@@ -128,11 +128,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1233295151291324}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.61, y: 0, z: -0.19}
+  m_LocalPosition: {x: 6.24, y: 0, z: -0.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4192574549366354}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4608064910867458
 Transform:
@@ -144,7 +144,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 5.89}
   m_LocalScale: {x: 1, y: 1, z: 12.771933}
   m_Children: []
-  m_Father: {fileID: 4192574549366354}
+  m_Father: {fileID: 4040733606519914}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4777299469165936
@@ -269,9 +269,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   time: 2
-  bodyTrans: {fileID: 0}
-  center: {fileID: 0}
-  angle: 0
+  bodyTrans: {fileID: 4608064910867458}
+  center: {fileID: 4212826843010426}
+  angle: 135.8
   animCurve:
     serializedVersion: 2
     m_Curve:
@@ -282,8 +282,14 @@ MonoBehaviour:
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 1
-      value: 1
+      time: 0.8594831
+      value: 0.35958505
+      inSlope: 1.0763109
+      outSlope: 1.0763109
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.99658203
+      value: 0.98125076
       inSlope: 2
       outSlope: 2
       tangentMode: 0
