@@ -8,7 +8,7 @@ namespace WorldActionSystem
 {
     public interface IActionObj: IComparable<IActionObj>
     {
-        string Name { get; }
+        string Name { get; set; }
         int QueueID { get; }
         bool Complete { get; }
         bool Started { get; }

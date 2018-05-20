@@ -159,7 +159,7 @@ namespace WorldActionSystem
             if (prefab != null)
             {
                 var e = CreateElement(prefab,parent);
-                
+                e.Name = prefab.Name;
                 if (e is T)
                 {
                     element = (T)e;

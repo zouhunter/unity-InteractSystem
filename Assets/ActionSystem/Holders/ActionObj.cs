@@ -17,7 +17,21 @@ namespace WorldActionSystem
         public bool startActive = true;
         public bool endActive = true;
         protected bool _complete;
-        public string Name { get { if (string.IsNullOrEmpty(_name)) return name; return _name; }set { _name = name = value; } }
+        public string Name
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_name))
+                {
+                    return name;
+                }
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }

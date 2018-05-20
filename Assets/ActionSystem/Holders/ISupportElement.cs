@@ -6,7 +6,7 @@ namespace WorldActionSystem
 {
     public interface ISupportElement
     {
-        string Name { get; }//唯一的名称
+        string Name { get; set; }//唯一的名称
         GameObject Body { get; }//必须绑定到一个GameObject对象
         bool IsRuntimeCreated { get; set; }//判断是静态的元素还是动态创建
         bool Active { get; }//即使步骤过去也可以是激活状态

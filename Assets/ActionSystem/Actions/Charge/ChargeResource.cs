@@ -11,14 +11,29 @@ namespace WorldActionSystem
         [SerializeField]
         private ChargeData startData;
         [SerializeField]
-        private float _capacity =1;
+        private float _capacity = 1;
+        [SerializeField]
+        private string _name;
         public string type { get { return startData.type; } }
         public float current { get; private set; }
         public ChargeEvent onChange { get; set; }
         public float capacity { get { return _capacity; } }
         public bool Used { get; set; }
         #region ISupportElement
-        public string Name { get { return name; } }
+        public string Name
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_name)){
+                    return name;
+                }
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
         public bool Active { get; private set; }
 
         public bool IsRuntimeCreated { get; set; }
@@ -44,13 +59,14 @@ namespace WorldActionSystem
         public void StepUnDo()
         {
             var extro = current - startData.value;
-            if (onChange != null){//把多的去掉
+            if (onChange != null)
+            {//把多的去掉
                 onChange.Invoke(transform.position, new ChargeData(type, -extro), null);
             }
             current = startData.value;
             Active = false;
         }
-  
+
         #endregion
 
         private ElementController elementCtrl;
@@ -75,7 +91,8 @@ namespace WorldActionSystem
         public void Subtruct(float value, UnityAction onComplete)
         {
             current -= value;
-            if (onChange != null){
+            if (onChange != null)
+            {
                 onChange.Invoke(transform.position, new ChargeData(type, -value), onComplete);
             }
             else
@@ -87,7 +104,8 @@ namespace WorldActionSystem
         private void InitCurrent()
         {
             current = startData.value;
-            if (onChange != null) {
+            if (onChange != null)
+            {
                 onChange.Invoke(transform.position, new ChargeData(type, current), null);
             }
         }

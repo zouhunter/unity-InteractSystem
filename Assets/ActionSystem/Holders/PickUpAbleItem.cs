@@ -6,7 +6,21 @@ namespace WorldActionSystem
     {
         [SerializeField]
         private string _name;
-        public string Name { get { if (string.IsNullOrEmpty(_name)) return name; return _name; } set { _name = value; } }
+        public string Name
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_name))
+                {
+                    return name;
+                }
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
 
         private bool _pickUpAble = false;
         public virtual bool PickUpAble { get { return _pickUpAble; } set {_pickUpAble = value; } }
