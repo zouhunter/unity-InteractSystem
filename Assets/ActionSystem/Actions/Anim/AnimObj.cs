@@ -67,7 +67,7 @@ namespace WorldActionSystem
             if (delyPlay != null) StopCoroutine(delyPlay);
             if (animPlayer != null)
             {
-                animPlayer.BindingTarget = this;
+                animPlayer.RecordPlayer(this);
                 animPlayer.StepComplete();
                 animPlayer.SetVisible(endActive);
             }
@@ -81,7 +81,7 @@ namespace WorldActionSystem
             if (animPlayer != null)
             {
                 animPlayer.StepUnDo();
-                animPlayer.BindingTarget = null;
+                animPlayer.RemovePlayer(this);
                 animPlayer.SetVisible(startActive);
                 animPlayer = defaultAnimPlayer;
             }
@@ -94,7 +94,7 @@ namespace WorldActionSystem
                 var elements = elementCtrl.GetElements<AnimPlayer>(Name);
                 if (elements != null && elements.Count > 0)
                 {
-                    animPlayer = elements.Find(x => x.Body != null && x.BindingTarget == null);//[0];
+                    animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];
                 }
             }
 

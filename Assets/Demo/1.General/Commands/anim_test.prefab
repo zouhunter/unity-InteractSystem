@@ -135,7 +135,7 @@ Transform:
   m_Children:
   - {fileID: 461446}
   m_Father: {fileID: 4760709486445468}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &499922
 Transform:
@@ -329,6 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: CubeAnim
   _reverse: 0
+  playableCount: 2
   onPlayComplete:
     m_PersistentCalls:
       m_Calls: []
@@ -430,6 +431,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1315577720827810
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4664018342735332}
+  - component: {fileID: 114687511613676240}
+  m_Layer: 0
+  m_Name: animHook
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1361794257352120
 GameObject:
   m_ObjectHideFlags: 1
@@ -443,6 +460,23 @@ GameObject:
   - component: {fileID: 23023008951367104}
   m_Layer: 0
   m_Name: Sphere (7)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1418491603001522
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4660026666931958}
+  - component: {fileID: 114440569286937604}
+  - component: {fileID: 114301518071241348}
+  m_Layer: 0
+  m_Name: CubeAnim_obj_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -512,7 +546,7 @@ GameObject:
   - component: {fileID: 114161954575745602}
   - component: {fileID: 114600988086377512}
   m_Layer: 0
-  m_Name: CubeAnim_obj
+  m_Name: CubeAnim_obj_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -662,7 +696,7 @@ GameObject:
   - component: {fileID: 114109059549314262}
   - component: {fileID: 114030389840986438}
   m_Layer: 0
-  m_Name: CubeAnim_obj
+  m_Name: CubeAnim_obj_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -960,6 +994,33 @@ Transform:
   m_Father: {fileID: 4920446641635604}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4660026666931958
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1418491603001522}
+  m_LocalRotation: {x: -0.2172497, y: -0.3452348, z: 0.28902912, w: 0.8660703}
+  m_LocalPosition: {x: 2.34, y: 2.43, z: 2.06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4664018342735332}
+  m_Father: {fileID: 4760709486445468}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4664018342735332
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1315577720827810}
+  m_LocalRotation: {x: 0.2172497, y: 0.3452348, z: -0.28902912, w: 0.8660703}
+  m_LocalPosition: {x: 18.63588, y: -22.488504, z: 27.854923}
+  m_LocalScale: {x: 0.10000002, y: 0.10000002, z: 0.10000001}
+  m_Children: []
+  m_Father: {fileID: 4660026666931958}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4689940916355396
 Transform:
   m_ObjectHideFlags: 1
@@ -1012,6 +1073,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4172975055497904}
+  - {fileID: 4660026666931958}
   - {fileID: 4801580190992192}
   - {fileID: 4832433237330008}
   - {fileID: 490972}
@@ -1039,11 +1101,11 @@ Transform:
   m_GameObject: {fileID: 1551543462275774}
   m_LocalRotation: {x: -0.2172497, y: -0.3452348, z: 0.28902912, w: 0.8660703}
   m_LocalPosition: {x: 2.34, y: 2.43, z: 2.06}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.9999999, z: 1}
   m_Children:
   - {fileID: 4034475746513618}
   m_Father: {fileID: 4760709486445468}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4832433237330008
 Transform:
@@ -1057,7 +1119,7 @@ Transform:
   m_Children:
   - {fileID: 4373549711259122}
   m_Father: {fileID: 4760709486445468}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4844889078461916
 Transform:
@@ -1579,7 +1641,7 @@ MonoBehaviour:
   _name: CubeAnim
   startActive: 1
   endActive: 0
-  queueID: 2
+  queueID: 3
   _queueInAuto: 1
   _cameraID: 
   anglePos: {fileID: 0}
@@ -1600,7 +1662,7 @@ MonoBehaviour:
       PublicKeyToken=null
   delyTime: 2
   animPlayer: {fileID: 0}
-  speed: 2
+  speed: 0.68
   playAtPostion: 0
 --- !u!114 &114233384541416022
 MonoBehaviour:
@@ -1639,6 +1701,55 @@ MonoBehaviour:
   animPlayer: {fileID: 0}
   speed: 1
   playAtPostion: 0
+--- !u!114 &114301518071241348
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1418491603001522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 602518aa7783e0545b625bf4d637d11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
+--- !u!114 &114440569286937604
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1418491603001522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _name: CubeAnim
+  startActive: 1
+  endActive: 0
+  queueID: 2
+  _queueInAuto: 1
+  _cameraID: 
+  anglePos: {fileID: 0}
+  onStartExecute:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onBeforeComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onUnDoExecute:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  delyTime: 2
+  animPlayer: {fileID: 0}
+  speed: 2
+  playAtPostion: 0
 --- !u!114 &114507102890129958
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1667,6 +1778,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: CubeAnim
   _reverse: 1
+  playableCount: 1
   onPlayComplete:
     m_PersistentCalls:
       m_Calls: []
@@ -1731,6 +1843,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: InstallAnim
   _reverse: 0
+  playableCount: 1
   onPlayComplete:
     m_PersistentCalls:
       m_Calls: []
@@ -1752,6 +1865,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 
+--- !u!114 &114687511613676240
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1315577720827810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7031eeb9d78a4cf4c81df927fc451b6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueID: 0
+  onBeforeEndExecuted:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114853136318340308
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1765,6 +1895,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: blastanim
   _reverse: 0
+  playableCount: 1
   onPlayComplete:
     m_PersistentCalls:
       m_Calls: []

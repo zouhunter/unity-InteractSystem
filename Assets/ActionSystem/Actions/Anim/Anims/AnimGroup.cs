@@ -92,6 +92,5 @@ namespace WorldActionSystem
                     onAutoPlayEnd.Invoke();
             }
         }
-
     }
 }
