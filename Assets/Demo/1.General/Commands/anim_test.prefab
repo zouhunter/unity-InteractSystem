@@ -290,7 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: blastanim
+  _name: blastanim
   startActive: 1
   endActive: 0
   queueID: 2
@@ -329,7 +329,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: CubeAnim
   _reverse: 0
-  _duration: 0
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 0}
   animName: cube
 --- !u!1001 &100100000
@@ -1535,7 +1539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: CubeAnim
+  _name: CubeAnim
   startActive: 1
   endActive: 0
   queueID: 1
@@ -1559,7 +1563,7 @@ MonoBehaviour:
       PublicKeyToken=null
   delyTime: 2
   animPlayer: {fileID: 0}
-  speed: 2
+  speed: 1.01
   playAtPostion: 0
 --- !u!114 &114161954575745602
 MonoBehaviour:
@@ -1572,7 +1576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: CubeAnim
+  _name: CubeAnim
   startActive: 1
   endActive: 0
   queueID: 2
@@ -1609,7 +1613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: InstallAnim
+  _name: InstallAnim
   startActive: 0
   endActive: 0
   queueID: 0
@@ -1662,8 +1666,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: CubeAnim
-  _reverse: 0
-  _duration: 0
+  _reverse: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 0}
   animName: cube
 --- !u!114 &114522370371499198
@@ -1723,7 +1731,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: InstallAnim
   _reverse: 0
-  _duration: 0
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
   bodyTrans: {fileID: 4361173155579378}
   targetTrans: {fileID: 4037402895026118}
@@ -1753,7 +1765,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: blastanim
   _reverse: 0
-  _duration: 0
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
   viewItems:
   - {fileID: 4254896354684956}

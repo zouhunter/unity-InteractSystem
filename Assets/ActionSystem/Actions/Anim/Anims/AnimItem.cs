@@ -43,7 +43,7 @@ namespace WorldActionSystem
 
         IEnumerator DelyStop()
         {
-            float waitTime = animTime / state.speed;
+            float waitTime = animTime / Mathf.Abs(state.speed);
             yield return new WaitForSeconds(waitTime);
             onAutoPlayEnd.Invoke();
         }
@@ -60,8 +60,8 @@ namespace WorldActionSystem
         public override void StepActive()
         {
             Init();
-            state.normalizedTime = 0f;
-            state.speed = duration;
+            state.normalizedTime = reverse ? 1 : 0f;
+            state.speed = reverse ? -duration : duration;
             anim.Play();
             if (coroutine == null)
                 coroutine = StartCoroutine(DelyStop());
@@ -70,8 +70,8 @@ namespace WorldActionSystem
         public override void StepComplete()
         {
             base.StepComplete();
+            SetCurrentAnim(reverse ? 0 : 1);
 
-            SetCurrentAnim(1);
             if (coroutine != null)
                 StopCoroutine(coroutine);
             coroutine = null;
@@ -79,7 +79,7 @@ namespace WorldActionSystem
 
         public override void StepUnDo()
         {
-            SetCurrentAnim(0);
+            SetCurrentAnim(reverse ? 1 : 0);
             if (coroutine != null) StopCoroutine(coroutine);
             coroutine = null;
         }

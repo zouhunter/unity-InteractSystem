@@ -7,8 +7,6 @@ namespace WorldActionSystem
     public abstract class CodeAnimItem : AnimPlayer
     {
         [SerializeField]
-        protected bool from;
-        [SerializeField]
         protected float time = 2f;
         protected Coroutine coroutine;
 
@@ -31,7 +29,6 @@ namespace WorldActionSystem
 
             StopAnim();
         }
-
         public override void StepUnDo()
         {
             StopAnim();
