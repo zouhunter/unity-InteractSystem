@@ -13,5 +13,6 @@ namespace WorldActionSystem
         Link,//关联
         Charge,//填充
         Create,//创建
+        Detach,//拔除
     }
 }
