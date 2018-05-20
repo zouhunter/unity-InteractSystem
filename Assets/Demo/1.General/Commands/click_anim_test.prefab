@@ -168,11 +168,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  from: 0
+  time: 2
   bodyTrans: {fileID: 4952024908254570}
   targetTrans: {fileID: 4162507587232518}
-  from: 0
   rotateSpeed: 0
-  time: 2
 --- !u!114 &11427584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -289,11 +296,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  from: 0
+  time: 2
   bodyTrans: {fileID: 4324504661216914}
   targetTrans: {fileID: 4097233897782152}
-  from: 0
   rotateSpeed: 0
-  time: 2
 --- !u!114 &11468764
 MonoBehaviour:
   m_ObjectHideFlags: 1

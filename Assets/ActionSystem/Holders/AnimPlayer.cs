@@ -11,8 +11,7 @@ namespace WorldActionSystem
     {
         [SerializeField]
         protected bool _reverse;
-        [SerializeField]
-        protected float _duration;
+        protected float _duration = 1;
         public AnimObj BindingTarget { get; set; }
         public virtual float duration { get { return _duration; }set { _duration = value; } }
         public virtual bool reverse { get { return _reverse; } set { _reverse = value; } }

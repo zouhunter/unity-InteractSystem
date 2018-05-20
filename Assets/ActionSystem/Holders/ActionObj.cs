@@ -12,12 +12,12 @@ namespace WorldActionSystem
 
     public abstract class ActionObj : MonoBehaviour, IActionObj
     {
-        [SerializeField]
-        protected string m_name;
+        [SerializeField,UnityEngine.Serialization.FormerlySerializedAs("m_name")]
+        protected string _name;
         public bool startActive = true;
         public bool endActive = true;
         protected bool _complete;
-        public string Name { get { if (string.IsNullOrEmpty(m_name)) return name; return m_name; } }
+        public string Name { get { if (string.IsNullOrEmpty(_name)) return name; return _name; }set { _name = name = value; } }
         public bool Complete { get { return _complete; } }
         protected bool _started;
         public bool Started { get { return _started; } }
