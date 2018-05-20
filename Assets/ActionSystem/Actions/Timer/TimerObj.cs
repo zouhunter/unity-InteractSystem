@@ -12,8 +12,9 @@ using System.Collections;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.AutoObj)]
-    public sealed class AutoObj : ActionObj
+    public sealed class TimerObj : ActionObj
     {
+        public float waitTime = 0;
         public Coroutine autocoroutine;
         public override ControllerType CtrlType
         {
@@ -31,7 +32,7 @@ namespace WorldActionSystem
 
         IEnumerator AutoExecute()
         {
-            yield return null;
+            yield return new WaitForSeconds(waitTime);
             OnEndExecute(false);
         }
 
