@@ -17,6 +17,7 @@ namespace WorldActionSystem
         [SerializeField]
         private bool playAtPostion;
         private Coroutine delyPlay;
+        private AnimPlayer defaultAnimPlayer;
 
         public override ControllerType CtrlType
         {
@@ -30,8 +31,8 @@ namespace WorldActionSystem
             base.Awake();
             if (animPlayer == null){
                 animPlayer = GetComponentInChildren<AnimPlayer>(true);
-                Debug.Log(animPlayer,gameObject);
             }
+            defaultAnimPlayer = animPlayer;
         }
         /// <summary>
         /// 播放动画
@@ -82,13 +83,12 @@ namespace WorldActionSystem
                 animPlayer.StepUnDo();
                 animPlayer.BindingTarget = null;
                 animPlayer.SetVisible(startActive);
-                animPlayer = null;
+                animPlayer = defaultAnimPlayer;
             }
         }
 
         private void FindAnimCore()
         {
-           
             if (animPlayer == null)
             {
                 var elements = elementCtrl.GetElements<AnimPlayer>(Name);

@@ -166,7 +166,7 @@ namespace WorldActionSystem
                 }
 
                 OnBeforeEnd(force);
-                Debug.Log("OnEndExecute" + Name,this);
+                if(log) Debug.Log("OnEndExecute:" + Name,this);
 
                 if (onEndExecute != null){
                     onEndExecute.Invoke();
@@ -174,7 +174,7 @@ namespace WorldActionSystem
             }
             else
             {
-                Debug.LogError("already completed", gameObject);
+                if (log) Debug.LogError("already completed", gameObject);
             }
         }
 

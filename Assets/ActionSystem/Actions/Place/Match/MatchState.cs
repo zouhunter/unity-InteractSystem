@@ -10,12 +10,6 @@ namespace WorldActionSystem
     public class MatchState : IPlaceState
     {
         public ControllerType CtrlType { get { return ControllerType.Place; } }
-
-        private PlaceCtrl placeCtrl;
-        public MatchState(PlaceCtrl placeCtrl)
-        {
-            this.placeCtrl = placeCtrl;
-        }
         public bool CanPlace(PlaceObj matchPos, PickUpAbleItem element, out string why)
         {
             var matchAble = true;
@@ -50,8 +44,8 @@ namespace WorldActionSystem
 
         public void PlaceObject(PlaceObj pos, PlaceElement pickup)
         {
-            pos.Attach(placeCtrl.pickedUpObj);
-            placeCtrl.pickedUpObj.QuickInstall(pos, false, false);
+            pos.Attach(pickup);
+            pickup.QuickInstall(pos, false);
         }
 
         public void PlaceWrong(PlaceElement pickup)

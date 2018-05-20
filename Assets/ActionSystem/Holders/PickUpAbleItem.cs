@@ -7,7 +7,7 @@ namespace WorldActionSystem
         public string _name;
         public string Name { get { if (string.IsNullOrEmpty(_name)) _name = name; return _name; } }
         private bool _pickUpAble = false;
-        public virtual bool PickUpAble { get { return _pickUpAble; } set { _pickUpAble = value; } }
+        public virtual bool PickUpAble { get { return _pickUpAble; } set {_pickUpAble = value; } }
         public virtual void OnPickUp() { }
         public virtual void OnPickStay() { }
         public virtual void OnPickDown() { }
@@ -15,7 +15,7 @@ namespace WorldActionSystem
         public virtual void SetViewForward(Vector3 forward) { }
         private Collider _collider;
         public Collider Collider { get { return _collider; } }
-
+        public static bool log = false;
         protected virtual void Awake()
         {
             _collider = GetComponentInChildren<Collider>();

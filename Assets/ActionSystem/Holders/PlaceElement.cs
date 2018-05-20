@@ -73,7 +73,6 @@ namespace WorldActionSystem
         public int animTime { get { return Config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
-        public bool Used { get; set; }
        
         public GameObject Body
         {
@@ -109,7 +108,6 @@ namespace WorldActionSystem
         protected bool StraightMove { get { return target ? target.straightMove : false; } }
         protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
         protected Transform Passby { get { return target ? target.passBy : null; } }
-        public override bool PickUpAble { get; set; }
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
         protected Vector3 lastPos;
@@ -229,7 +227,7 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(PlaceObj target, bool complete = true, bool binding = true)
+        public virtual void NormalInstall(PlaceObj target,  bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -238,7 +236,7 @@ namespace WorldActionSystem
 
                 tweenCompleteAction = () =>
                 {
-                    OnInstallComplete(complete);
+                    OnInstallComplete();
                 };
 
                 DoPath(target.transform.position, target.transform.eulerAngles);
@@ -254,7 +252,7 @@ namespace WorldActionSystem
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(PlaceObj target, bool complete = true, bool binding = true)
+        public virtual void QuickInstall(PlaceObj target, bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -266,7 +264,7 @@ namespace WorldActionSystem
                 if (!binding)
                     UnBinding();
 
-                OnInstallComplete(complete);
+                OnInstallComplete();
             }
             else
             {
@@ -363,6 +361,7 @@ namespace WorldActionSystem
         /// </summary>
         public virtual void StepComplete()
         {
+            if(log) Debug.Log("StepComplete:"+ Name,gameObject);
             actived = false;
             onStepComplete.Invoke();
             if (tweening){
@@ -387,7 +386,7 @@ namespace WorldActionSystem
             move.Kill();
         }
 
-        protected virtual void OnInstallComplete(bool complete)
+        protected virtual void OnInstallComplete()
         {
             if (hideOnInstall){
                 gameObject.SetActive(false);
@@ -395,8 +394,6 @@ namespace WorldActionSystem
 
             if (onInstallOkEvent != null)
                 onInstallOkEvent();
-
-            if (complete) StepComplete();
         }
         protected virtual void OnUnInstallComplete()
         {

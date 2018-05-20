@@ -201,8 +201,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: rotateanim
   _queueID: 0
+  _copyCount: 0
   _cameraID: 
-  commandType: 8
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []
@@ -229,8 +229,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c1700754e4bf74c941870f232c0a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTrans: {fileID: 0}
+  _name: 
+  _reverse: 0
+  _duration: 0
+  from: 0
   time: 2
+  bodyTrans: {fileID: 0}
+  targetTrans: {fileID: 0}
+  rotateSpeed: 0
 --- !u!114 &11448416
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -265,7 +271,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   delyTime: 0
+  animPlayer: {fileID: 0}
   speed: 1
+  playAtPostion: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

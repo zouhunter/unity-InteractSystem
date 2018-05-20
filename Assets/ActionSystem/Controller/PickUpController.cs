@@ -16,10 +16,11 @@ namespace WorldActionSystem
         private float hitDistence { get { return Config.hitDistence; } }
         private Ray disRay;
         private RaycastHit disHit;
+        public static bool log = false;
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
         private int pickUpElementLayerMask { get { return LayerMask.GetMask(Layers.pickUpElementLayer); } }
-        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer,Layers.pickUpElementLayer); } }
+        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer, Layers.pickUpElementLayer); } }
         protected Camera viewCamera
         {
             get
@@ -40,7 +41,8 @@ namespace WorldActionSystem
         {
             //Debug.Log("New PickUpController");
             //this.holder = holder;
-           /* coroutine = */holder.StartCoroutine(Update());
+            /* coroutine = */
+            holder.StartCoroutine(Update());
         }
         private IEnumerator Update()
         {
@@ -52,8 +54,9 @@ namespace WorldActionSystem
                 {
                     if (HaveExecuteTwicePerSecond(ref timer))
                     {
-                        Debug.Log("HaveExecuteTwicePerSecond:0");
-                        if(PickedUp && onPickTwinceLeft != null)
+                        if (log) Debug.Log("HaveExecuteTwicePerSecond:0");
+
+                        if (PickedUp && onPickTwinceLeft != null)
                         {
                             onPickTwinceLeft.Invoke(pickedUpObj);
                         }
@@ -121,7 +124,7 @@ namespace WorldActionSystem
 
         public void PickDown()
         {
-            Debug.Log("PickDown");
+            if (log) Debug.Log("PickDown");
 
             if (pickedUpObj != null)
             {
@@ -197,7 +200,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 在未屏幕锁的情况下选中一个没有元素
         /// </summary>
-       
+
         private void SelectAnElement()
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);

@@ -71,7 +71,7 @@ namespace WorldActionSystem
         /// 传入command名称关联字典
         /// </summary>
         /// <param name="rule"></param>
-        public void LunchActionSystem(Dictionary<string,string[]> rule, UnityAction onLunchOK)
+        public void LunchActionSystem(Dictionary<string, string[]> rule, UnityAction onLunchOK)
         {
             onCommandRegisted = (activeCommands) =>
             {
@@ -109,7 +109,7 @@ namespace WorldActionSystem
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
-        public void LunchActionSystem(string[] steps, UnityAction<string[]> onLunchOK) 
+        public void LunchActionSystem(string[] steps, UnityAction<string[]> onLunchOK)
         {
             Debug.Assert(steps != null);
             onCommandRegisted = (activeCommands) =>
@@ -134,7 +134,7 @@ namespace WorldActionSystem
             onCommandRegisted = (activeCommands) =>
             {
                 var stepsWorp = ConfigSteps<T>(activeCommands, steps);//重新计算步骤
-                activeCommands = GetIActionCommandList(activeCommands,Array.ConvertAll<IActionStap,string>( stepsWorp,x=>x.StapName));
+                activeCommands = GetIActionCommandList(activeCommands, Array.ConvertAll<IActionStap, string>(stepsWorp, x => x.StapName));
                 remoteController = new LineCommandController(activeCommands);
                 onLunchOK.Invoke(Array.ConvertAll<IActionStap, T>(stepsWorp, x => (T)x));
             };
@@ -219,7 +219,7 @@ namespace WorldActionSystem
                     ignored.Add(steps[i].StapName);
                 }
             }
-            Debug.Log("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
+            if (ignored.Count > 0) Debug.LogWarning("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
             return activeStaps.ToArray();
         }
 

@@ -33,15 +33,12 @@ namespace WorldActionSystem
         public Ray ray;
         public RaycastHit hit;
         public RaycastHit[] hits;
-        private InstallState installCtrl;
-        private MatchState matchCtrl;
+      
         private IPlaceState current;
 
         public PlaceCtrl()
         {
             highLight = new ShaderHighLight();
-            current = installCtrl = new WorldActionSystem.InstallState(/*this*/);
-            matchCtrl = new WorldActionSystem.MatchState(this);
         }
 
         #region 鼠标操作事件
@@ -80,7 +77,7 @@ namespace WorldActionSystem
                         installPos = hits[i].collider.GetComponentInParent<PlaceObj>();
                         if (installPos)
                         {
-                            SwitchState(installPos.CtrlType);
+                            current = installPos.PlaceState;
                             hitedObj = true;
                             installAble = CanPlace(installPos, pickCtrl.pickedUpObj, out resonwhy);
                             if (installAble)
@@ -108,19 +105,6 @@ namespace WorldActionSystem
                 if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.red);
             }
         }
-
-        public void SwitchState(ControllerType ctrlType)
-        {
-            if(ctrlType == ControllerType.Place)
-            {
-                current = installCtrl; 
-            }
-            else if(ctrlType == ControllerType.Place)
-            {
-                current = matchCtrl;
-            }
-        }
-
         /// <summary>
         /// 尝试安装元素
         /// </summary>

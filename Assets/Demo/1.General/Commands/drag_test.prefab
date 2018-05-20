@@ -195,8 +195,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: drag
   _queueID: 0
+  _copyCount: 0
   _cameraID: defult
-  commandType: 64
   onBeforeActive:
     m_PersistentCalls:
       m_Calls: []

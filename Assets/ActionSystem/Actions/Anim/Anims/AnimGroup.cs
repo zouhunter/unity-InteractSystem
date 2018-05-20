@@ -13,7 +13,6 @@ namespace WorldActionSystem
         private AnimPlayer[] childAnims;
         private bool actived;
         private int completedCount;
-        private float _duration;
         public override float duration
         {
             get

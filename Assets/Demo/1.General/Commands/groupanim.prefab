@@ -4781,6 +4781,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   bodyTrans: {fileID: 4285809573836312}
@@ -4835,6 +4837,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _inneranim
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 4
   bodyTrans: {fileID: 4848216894801728}
@@ -4882,6 +4886,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _innerAnim
+  _reverse: 0
+  _duration: 0
   anim: {fileID: 111907496054905590}
   animName: cube
 --- !u!114 &114289175054075764
@@ -4896,7 +4902,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _inneranim
-  from: 1
+  _reverse: 0
+  _duration: 0
+  from: 0
   time: 4
   bodyTrans: {fileID: 4283493559909884}
   targetTrans: {fileID: 4232600957402376}
@@ -4913,6 +4921,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: blastanim
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   viewItems:
@@ -4939,6 +4949,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
 --- !u!114 &114370934335040494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4951,6 +4963,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
 --- !u!114 &114415368301183570
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4963,6 +4977,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   bodyTrans: {fileID: 4901654650046954}
@@ -4980,6 +4996,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: blastanim
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   viewItems:
@@ -5006,6 +5024,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   bodyTrans: {fileID: 4847820757963520}
@@ -5023,7 +5043,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _inneranim
-  from: 1
+  _reverse: 0
+  _duration: 0
+  from: 0
   time: 4
   bodyTrans: {fileID: 4102755721377294}
   targetTrans: {fileID: 4477940568605842}
@@ -5040,6 +5062,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _inneranim
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 4
   bodyTrans: {fileID: 4757436747851392}
@@ -5057,6 +5081,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: blastanim
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   viewItems:
@@ -5083,6 +5109,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _innerAnim
+  _reverse: 0
+  _duration: 0
   anim: {fileID: 111517658018768024}
   animName: cube
 --- !u!114 &114727342171761176
@@ -5097,6 +5125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: blastanim
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   viewItems:
@@ -5123,6 +5153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 4
   viewItems:
@@ -5145,6 +5177,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _innerAnim
+  _reverse: 0
+  _duration: 0
   anim: {fileID: 111585287669149102}
   animName: cube
 --- !u!114 &114878663667442030
@@ -5196,6 +5230,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: _innerAnim
+  _reverse: 0
+  _duration: 0
   anim: {fileID: 111699497879021562}
   animName: cube
 --- !u!114 &114949684940167944
@@ -5210,6 +5246,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
+  _reverse: 0
+  _duration: 0
   from: 0
   time: 2
   bodyTrans: {fileID: 4794630769307160}

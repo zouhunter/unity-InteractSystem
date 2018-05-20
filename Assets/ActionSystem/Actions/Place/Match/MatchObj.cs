@@ -11,6 +11,7 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.MatchObj)]
     public class MatchObj : PlaceObj
     {
+        private static MatchState placestate = new MatchState();
         public bool completeMoveBack = true;//结束时退回
         public override ControllerType CtrlType
         {
@@ -19,8 +20,15 @@ namespace WorldActionSystem
                 return ControllerType.Place;
             }
         }
-
         public bool Matched { get { return obj != null; } }
+        public override IPlaceState PlaceState
+        {
+            get
+            {
+                return placestate;
+            }
+        }
+
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
@@ -46,7 +54,7 @@ namespace WorldActionSystem
             {
                 if (!completeMoveBack)
                 {
-                    obj.QuickInstall(this,false,false);
+                    obj.QuickInstall(this,false);
                 }
                 else
                 {
@@ -55,7 +63,7 @@ namespace WorldActionSystem
             }
             else
             {
-                obj.NormalInstall(this, false,false);
+                obj.NormalInstall(this, false);
             }
         }
         /// <summary>

@@ -15,6 +15,15 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.InstallObj)]
     public class InstallObj : PlaceObj
     {
+        private static InstallState state = new WorldActionSystem.InstallState();
+        public override IPlaceState PlaceState
+        {
+            get
+            {
+                return state;
+            }
+        }
+       
         public override ControllerType CtrlType
         {
             get
@@ -30,7 +39,7 @@ namespace WorldActionSystem
             {
                 PlaceElement obj = GetUnInstalledObj(Name);
                 Attach(obj);
-                obj.QuickInstall(this);
+                obj.QuickInstall(this,true);
                 obj.StepComplete();
             }
         }
@@ -96,11 +105,11 @@ namespace WorldActionSystem
             obj.StepActive();
             if (Config.quickMoveElement && !ignorePass)
             {
-                obj.QuickInstall(this);
+                obj.QuickInstall(this,true);
             }
             else
             {
-                obj.NormalInstall(this);
+                obj.NormalInstall(this,true);
             }
         }
       

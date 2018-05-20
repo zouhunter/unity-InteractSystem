@@ -47,7 +47,7 @@ namespace WorldActionSystem
         public void PlaceObject(PlaceObj pos, PlaceElement pickup)
         {
             pos.Attach(pickup);
-            pickup.QuickInstall(pos);
+            pickup.QuickInstall(pos,true);
             pickup.PickUpAble = false;
         }
 
