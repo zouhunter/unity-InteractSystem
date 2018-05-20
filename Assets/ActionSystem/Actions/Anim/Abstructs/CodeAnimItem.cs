@@ -9,7 +9,6 @@ namespace WorldActionSystem
         [SerializeField]
         protected float time = 2f;
         protected Coroutine coroutine;
-
         protected override void Start()
         {
             base.Start();
