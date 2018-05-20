@@ -49,13 +49,13 @@ namespace WorldActionSystem
 
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
-            var fromDirection = bodyTrans.transform.position - center.position;
-
+            float lastduration = 0;
             for (float i = 0; i < time; i += Time.deltaTime)
             {
                 var duration = GetAnimValue(i / time);
-                var currentAngle = duration * angle;
-                SetTargetPostionAndRotation(fromDirection, currentAngle);
+                var currentAngle =( duration - lastduration) * angle;
+                bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), axis, currentAngle);
+                lastduration = duration;
                 yield return null;
             }
 
@@ -77,15 +77,9 @@ namespace WorldActionSystem
         protected override void StopAnim()
         {
             base.StopAnim();
-            bodyTrans.localPosition = targetPostion;
-            bodyTrans.rotation = targetRotation * bodyTrans.parent.rotation;
-        }
-
-        private void SetTargetPostionAndRotation(Vector3 direction, float angle)
-        {
-            var worldPos = Quaternion.AngleAxis(angle, axis) * direction + bodyTrans.parent.TransformPoint(startCenterpostion);
-            bodyTrans.localPosition = bodyTrans.parent.InverseTransformPoint(worldPos);
-            bodyTrans.rotation = Quaternion.AngleAxis(angle, axis) * startRotation * bodyTrans.parent.rotation;
+            bodyTrans.localPosition = startPosition;
+            bodyTrans.localRotation = startRotation;
+            bodyTrans.RotateAround(bodyTrans.parent.TransformPoint(startCenterpostion), axis, angle);
         }
 
         private float GetAnimValue(float value)
