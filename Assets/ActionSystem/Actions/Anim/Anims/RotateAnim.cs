@@ -50,6 +50,8 @@ namespace WorldActionSystem
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
             float lastduration = 0;
+            bodyTrans.localPosition = startPosition;
+            bodyTrans.localRotation = startRotation;
             for (float i = 0; i < time; i += Time.deltaTime)
             {
                 var duration = GetAnimValue(i / time);
