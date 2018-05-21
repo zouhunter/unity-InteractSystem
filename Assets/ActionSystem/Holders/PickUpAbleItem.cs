@@ -4,7 +4,7 @@ namespace WorldActionSystem
 {
     public abstract class PickUpAbleItem : MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField,Attributes.DefultName]
         private string _name;
         public string Name
         {

@@ -8,11 +8,10 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem
 {
-
-
+    
     public abstract class ActionObj : MonoBehaviour, IActionObj
     {
-        [SerializeField,UnityEngine.Serialization.FormerlySerializedAs("m_name")]
+        [SerializeField,UnityEngine.Serialization.FormerlySerializedAs("m_name"),Attributes.DefultName]
         protected string _name;
         public bool startActive = true;
         public bool endActive = true;

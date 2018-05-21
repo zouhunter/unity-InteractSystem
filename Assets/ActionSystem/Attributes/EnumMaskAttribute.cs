@@ -1,9 +1,6 @@
-// based on http://wiki.unity3d.com/index.php/EnumFlagPropertyDrawer
-// simplified by Nolan Baker
-
 using UnityEngine;
 using System;
-namespace WorldActionSystem
+namespace WorldActionSystem.Attributes
 {
     public class EnumMaskAttribute : PropertyAttribute
     {
