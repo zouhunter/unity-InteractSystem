@@ -69,7 +69,6 @@ namespace WorldActionSystem.Actions
             {
                 animPlayer.RecordPlayer(this);
                 animPlayer.StepComplete();
-                animPlayer.SetVisible(endActive);
             }
         }
         public override void OnUnDoExecute()
@@ -82,7 +81,6 @@ namespace WorldActionSystem.Actions
             {
                 animPlayer.StepUnDo();
                 animPlayer.RemovePlayer(this);
-                animPlayer.SetVisible(startActive);
                 animPlayer = defaultAnimPlayer;
             }
         }

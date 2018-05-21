@@ -95,7 +95,7 @@ namespace WorldActionSystem.Actions
                 if (hoders.Find(x => x.elementName == arg0.Name) != null)
                 {
                     supportPool.ScureAdd(arg0);
-                    if (Started && !Complete)
+                    if (Started && !Completed)
                     {
                         arg0.StepActive();
                         TryComplete();

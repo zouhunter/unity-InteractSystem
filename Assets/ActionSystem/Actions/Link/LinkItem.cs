@@ -50,14 +50,13 @@ namespace WorldActionSystem.Actions
         {
             get { return m_render.gameObject.activeSelf && m_render.gameObject.activeInHierarchy && m_render.enabled; }
         }
-        public event UnityAction onConnected;
+
+        private event UnityAction onConnected;
 
         [SerializeField]
         private Renderer m_render;//可选择提示
         [SerializeField]
         private Color highLightColor = Color.green;
-
-
 
         private IHighLightItems highLighter;
         private Vector3 startPos;
@@ -67,6 +66,7 @@ namespace WorldActionSystem.Actions
         private List<LinkItem> linkLock = new List<LinkItem>();
         private float posHoldTime = 3f;
         private float posHoldTimer;
+
         protected override void Awake()
         {
             base.Awake();
@@ -99,6 +99,16 @@ namespace WorldActionSystem.Actions
                 highLighter.UnHighLightTarget(m_render);
             }
         }
+
+        public void RegistOnConnected(UnityAction onConnected)
+        {
+            this.onConnected += onConnected;
+        }
+        public void RemoveOnConnected(UnityAction onConnected)
+        {
+            this.onConnected -= onConnected;
+        }
+
         private void InitHighLighter()
         {
             if (m_render == null) m_render = GetComponentInChildren<Renderer>();

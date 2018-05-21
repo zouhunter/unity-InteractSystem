@@ -80,7 +80,7 @@ namespace WorldActionSystem.Actions
 
         protected override void OnInstallComplete()
         {
-            if (!Complete)
+            if (!Completed)
             {
                 OnEndExecute(false);
             }

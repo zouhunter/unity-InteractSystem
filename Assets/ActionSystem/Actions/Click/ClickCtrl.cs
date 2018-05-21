@@ -19,29 +19,25 @@ namespace WorldActionSystem.Actions
         }
         private RaycastHit hit;
         private Ray ray;
-        private ClickObj hitObj;
+        private ClickItem hitObj;
         private Vector3 screenPoint;
         private float distence { get { return Config.hitDistence; } }
       
         private GameObject lastSelected;
 
-        void OnBtnClicked(ClickObj obj)
+        void OnBtnClicked(ClickItem obj)
         {
-            if (!obj.Started)
+            if (!obj.Active)
             {
                 SetUserErr("不可点击" + obj.Name);
             }
-            else if (obj.Complete)
+            else
             {
-                SetUserErr("已经结束点击" + obj.Name);
-            }
-            if (obj.Started && !obj.Complete)
-            {
-                obj.OnEndExecute(false);
+                obj.OnClick();
             }
         }
 
-        void OnHoverBtn(ClickObj obj)
+        void OnHoverClickItem(ClickItem obj)
         {
             if (obj == null) return;
             OnHoverNothing();
@@ -49,8 +45,7 @@ namespace WorldActionSystem.Actions
 
         void OnHoverNothing()
         {
-            if (lastSelected != null)
-            {
+            if (lastSelected != null) {
                 lastSelected = null;
             }
         }
@@ -60,11 +55,11 @@ namespace WorldActionSystem.Actions
             SetUserErr("点击位置不正确");
         }
 
-        private bool TryHitBtnObj(out ClickObj obj)
+        private bool TryHitClickObj(out ClickItem obj)
         {
             if (Physics.Raycast(ray, out hit, distence,LayerMask.GetMask(Layers.clickItemLayer)))
             {
-                obj = hit.collider.GetComponentInParent<ClickObj>();
+                obj = hit.collider.GetComponentInParent<ClickItem>();
                 return true;
             }
             obj = null;
@@ -78,19 +73,21 @@ namespace WorldActionSystem.Actions
             screenPoint.x = Input.mousePosition.x;
             screenPoint.y = Input.mousePosition.y;
             screenPoint.z = 10;
+
             ray = viewCamera.ScreenPointToRay(screenPoint);
 
-            if (TryHitBtnObj(out hitObj))
+            if (TryHitClickObj(out hitObj))
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     OnBtnClicked(hitObj);
                 }
-                OnHoverBtn(hitObj);
+                OnHoverClickItem(hitObj);
             }
             else
             {
                 OnHoverNothing();
+
                 if (Input.GetMouseButtonDown(0) && EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject())
                 {
                     OnClickEmpty();

@@ -10,7 +10,7 @@ namespace WorldActionSystem
     {
         string Name { get; set; }
         int QueueID { get; }
-        bool Complete { get; }
+        bool Completed { get; }
         bool Started { get; }
         bool QueueInAuto { get; }
         ControllerType CtrlType { get; }

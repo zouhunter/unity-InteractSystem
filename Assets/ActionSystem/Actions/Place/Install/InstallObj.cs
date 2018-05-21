@@ -22,6 +22,7 @@ namespace WorldActionSystem.Actions
                 return ControllerType.Place;
             }
         }
+
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
@@ -70,7 +71,7 @@ namespace WorldActionSystem.Actions
 
         protected override void OnInstallComplete()
         {
-            if (!Complete)
+            if (!Completed)
             {
                 OnEndExecute(false);
             }

@@ -23,9 +23,9 @@ namespace WorldActionSystem.Binding
         protected void Update()
         {
             if (!noticeAuto) return;
-            if (actionObj.Complete) return;
+            if (actionObj.Completed) return;
 
-            if (actionObj.Started & !actionObj.Complete)
+            if (actionObj.Started & !actionObj.Completed)
             {
                 SetElementState(true);
             }

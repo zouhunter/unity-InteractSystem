@@ -3,8 +3,8 @@ using UnityEditor;
 
 namespace WorldActionSystem.Attributes
 {
-    [CustomPropertyDrawer(typeof(DefultStringAttribute))]
-    public class DefultStringAttributeDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(DefultCameraAttribute))]
+    public class DefultCameraAttributeDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -12,7 +12,7 @@ namespace WorldActionSystem.Attributes
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            DefultStringAttribute att = (DefultStringAttribute)attribute;
+            DefultCameraAttribute att = (DefultCameraAttribute)attribute;
 
             if (property.propertyType == SerializedPropertyType.String)
             {
@@ -20,8 +20,17 @@ namespace WorldActionSystem.Attributes
 
                 if (string.IsNullOrEmpty(property.stringValue))
                 {
+                    string cameraName = "defult";
+                    var target = (property.serializedObject.targetObject as MonoBehaviour).gameObject;
+                    if(target)
+                    {
+                        var camreaNode = target.GetComponentInChildren<CameraNode>();
+                        if (camreaNode){
+                            cameraName = camreaNode.name;
+                        }
+                    }
                     GUI.contentColor = Color.gray;
-                    EditorGUI.LabelField(position, new GUIContent("    "), new GUIContent(att.text));
+                    EditorGUI.LabelField(position, new GUIContent("    "), new GUIContent(cameraName));
                     GUI.contentColor = Color.white;
                 }
             }

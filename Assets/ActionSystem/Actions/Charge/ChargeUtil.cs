@@ -42,7 +42,7 @@ namespace WorldActionSystem.Actions
                 {
                     ChargeObj temp = collider.GetComponentInParent<ChargeObj>();
 
-                    if (temp != null&& temp.Started &&!temp.Complete && temp.completeDatas.FindAll(x=>x.type == item.data.type).Count > 0)
+                    if (temp != null&& temp.Started &&!temp.Completed && temp.completeDatas.FindAll(x=>x.type == item.data.type).Count > 0)
                     {
                         chargeObj = temp;
                         return true;

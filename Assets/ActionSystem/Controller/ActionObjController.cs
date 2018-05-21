@@ -77,7 +77,7 @@ namespace WorldActionSystem
                 {
                     item.OnStartExecute(isForceAuto);
                 }
-                if (!item.Complete)
+                if (!item.Completed)
                 {
                     item.OnEndExecute(true);
                 }
@@ -105,7 +105,7 @@ namespace WorldActionSystem
         private void OnCommandObjComplete(IActionObj obj)
         {
             OnStopAction(obj);
-            var notComplete = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == obj.QueueID && !x.Complete);
+            var notComplete = Array.FindAll<IActionObj>(actionObjs, x => x.QueueID == obj.QueueID && !x.Completed);
             if (notComplete.Length == 0)
             {
                 if (!ExecuteAStep())
@@ -138,7 +138,7 @@ namespace WorldActionSystem
             while (actionQueue.Count > 0)
             {
                 var action = actionQueue.Dequeue();
-                if (!action.Complete)
+                if (!action.Completed)
                 {
                     action.OnEndExecute(true);
                 }

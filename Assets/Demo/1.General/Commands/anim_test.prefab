@@ -233,7 +233,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stepName: autoanim
   _queueID: 0
-  _copyCount: 0
+  _copyCount: 2
   _cameraID: 
   onBeforeActive:
     m_PersistentCalls:
@@ -1699,7 +1699,7 @@ MonoBehaviour:
       PublicKeyToken=null
   delyTime: 0
   animPlayer: {fileID: 0}
-  speed: 1
+  speed: 8.22
   playAtPostion: 0
 --- !u!114 &114301518071241348
 MonoBehaviour:

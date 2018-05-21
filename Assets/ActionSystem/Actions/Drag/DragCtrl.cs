@@ -22,7 +22,6 @@ namespace WorldActionSystem.Actions
         private Ray ray;
         private RaycastHit hit;
         private Vector3 previousMousePosition;
-        //private Vector3 originalTargetPosition;
         private Vector3 direction;
         private float distence { get { return Config.hitDistence; } }
         private float elementDistence;
@@ -44,7 +43,7 @@ namespace WorldActionSystem.Actions
             if (Physics.Raycast(ray, out hit, distence, LayerMask.GetMask( Layers.dragItemLayer)))
             {
                 var obj = hit.collider.GetComponentInParent<DragObj>();
-                if (obj.Started && !obj.Complete)
+                if (obj.Started && !obj.Completed)
                 {
                     selectedObj = obj;
                 }
@@ -63,7 +62,6 @@ namespace WorldActionSystem.Actions
         {
             if (Input.GetMouseButtonDown(0))
             {
-                //originalTargetPosition = selectedObj.transform.position;
                 direction = (selectedObj.targetPos - selectedObj.startPos).normalized;
                 previousMousePosition = Vector3.zero;
             }

@@ -28,10 +28,9 @@ namespace WorldActionSystem.Actions
         private float autoLinkTime = 1f;
         [SerializeField]
         private LinkData linkData;
-        private ElementPool<LinkItem> linkPool = new ElementPool<LinkItem>();
         private Coroutine coroutine;
+        private ElementPool<LinkItem> linkPool = new ElementPool<LinkItem>();
         private LinkItem[] finalGroup;
-
         private static List<LinkObj> lockQueue = new List<LinkObj>();
 
         protected override void OnDestroy()
@@ -56,7 +55,7 @@ namespace WorldActionSystem.Actions
                     if (!linkPool.Contains(linkItem))
                     {
                         linkPool.ScureAdd(linkItem);
-                        if (Started && !Complete)
+                        if (Started && !Completed)
                         {
                             linkItem.StepActive();
                         }
@@ -100,7 +99,7 @@ namespace WorldActionSystem.Actions
             }
         }
 
-    
+
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
@@ -111,8 +110,8 @@ namespace WorldActionSystem.Actions
             }
 
             CompleteElements(this, false);
-            
-            if(finalGroup == null)
+
+            if (finalGroup == null)
             {
                 QuickLinkItems();
             }
@@ -159,7 +158,7 @@ namespace WorldActionSystem.Actions
 
                         if (objs[i].Active)
                         {
-                            objs[i].onConnected -= TryComplete;
+                            objs[i].RemoveOnConnected(TryComplete);
 
                             if (undo)
                             {
@@ -214,7 +213,7 @@ namespace WorldActionSystem.Actions
             linkPool.ForEach(linkItem =>
             {
                 linkItem.StepActive();
-                linkItem.onConnected += TryComplete;
+                linkItem.RegistOnConnected(TryComplete);
             });
         }
 
@@ -224,7 +223,7 @@ namespace WorldActionSystem.Actions
         /// </summary>
         private void TryComplete()
         {
-            Debug.Log("TryComplete",gameObject);
+            Debug.Log("TryComplete", gameObject);
             //所有可能的元素组合
             var combinations = CreateCombinations();
             var count = linkItems.Count - 1;//连接数
@@ -275,7 +274,6 @@ namespace WorldActionSystem.Actions
             foreach (var item in combination)
             {
                 elementCtrl.LockElement(item, this);
-                item.SetVisible(endActive);
             }
         }
         /// <summary>
@@ -342,7 +340,7 @@ namespace WorldActionSystem.Actions
         /// </summary>
         private void QuickLinkItems()
         {
-            Debug.Log("QuickLinkItems",gameObject);
+            Debug.Log("QuickLinkItems", gameObject);
             var links = SurchLinkItems();
             for (int i = 0; i < defultLink.Count; i++)
             {
@@ -382,7 +380,8 @@ namespace WorldActionSystem.Actions
                 var portA = itemA.ChildNodes[linkGroup.portA];
                 var portB = itemB.ChildNodes[linkGroup.portB];
 
-                if(portA.ConnectedNode != null || portB.ConnectedNode != null){
+                if (portA.ConnectedNode != null || portB.ConnectedNode != null)
+                {
                     continue;
                 }
 

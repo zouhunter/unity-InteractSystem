@@ -15,7 +15,7 @@ namespace WorldActionSystem
         private int _queueID;
         [SerializeField, Attributes.Range(0,10)]
         private int _copyCount;
-        [SerializeField,Attributes.DefultString("defult")]
+        [SerializeField,Attributes.DefultCameraAttribute()]
         private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
         public int QueueID { get { return _queueID; } }

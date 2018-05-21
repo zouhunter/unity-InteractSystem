@@ -13,9 +13,7 @@ namespace WorldActionSystem
     {
         [SerializeField,UnityEngine.Serialization.FormerlySerializedAs("m_name"),Attributes.DefultName]
         protected string _name;
-        public bool startActive = true;
-        public bool endActive = true;
-        protected bool _complete;
+        protected bool _completed;
         public string Name
         {
             get
@@ -31,9 +29,9 @@ namespace WorldActionSystem
                 _name = value;
             }
         }
-        public bool Complete { get { return _complete; } }
+        public virtual bool Completed { get { return _completed; } protected set { _completed = value; } }
         protected bool _started;
-        public bool Started { get { return _started; } }
+        public virtual bool Started { get { return _started; } protected set { _started = value; } }
         protected bool auto;
         [SerializeField, Attributes.Range(0, 10)]
         private int queueID;
@@ -47,7 +45,7 @@ namespace WorldActionSystem
         [SerializeField]
         private bool _queueInAuto = true;
         public bool QueueInAuto { get { return _queueInAuto; } }
-        [SerializeField,Attributes.DefultString("defult")]
+        [SerializeField,Attributes.DefultCameraAttribute()]
         private string _cameraID;
         public string CameraID { get { return _cameraID; } }
         public Transform anglePos;
@@ -68,7 +66,7 @@ namespace WorldActionSystem
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
-
+        protected static List<ActionObj> startedList = new List<ActionObj>();
         public abstract ControllerType CtrlType { get; }
         public static bool log = false;
         protected bool notice;
@@ -87,13 +85,12 @@ namespace WorldActionSystem
             }
 
             WorpCameraID();
-
-            gameObject.SetActive(startActive);
+            //gameObject.SetActive(startActive);
         }
         protected virtual void OnDestroy() { }
         protected virtual void Update()
         {
-            if (Complete || !Started) return;
+            if (Completed || !Started) return;
 
             if (!Config.angleNotice || this is Actions.AnimObj) return;
 
@@ -115,9 +112,10 @@ namespace WorldActionSystem
             if (!_started)
             {
                 _started = true;
-                _complete = false;
+                _completed = false;
                 notice = true;
                 gameObject.SetActive(true);
+                startedList.Add(this);
                 OnStartExecuteInternal(auto);
             }
             else
@@ -131,7 +129,7 @@ namespace WorldActionSystem
 
             if (force)
             {
-                if (!Complete) CoreEndExecute(true);
+                if (!Completed) CoreEndExecute(true);
             }
             else
             {
@@ -139,7 +137,7 @@ namespace WorldActionSystem
                 {
                     if (hookCtrl.Complete)
                     {
-                        if (!Complete) CoreEndExecute(false);
+                        if (!Completed) CoreEndExecute(false);
                     }
                     else if (!hookCtrl.Started)
                     {
@@ -152,7 +150,7 @@ namespace WorldActionSystem
                 }
                 else
                 {
-                    if (!Complete) CoreEndExecute(false);
+                    if (!Completed) CoreEndExecute(false);
                 }
             }
         }
@@ -167,12 +165,13 @@ namespace WorldActionSystem
 
             if (log) Debug.Log("OnEndExecute:" + this + ":" + force, this);
 
-            if (!_complete)
+            if (!_completed)
             {
                 notice = false;
                 _started = true;
-                _complete = true;
-                gameObject.SetActive(endActive);
+                _completed = true;
+                startedList.Remove(this);
+                //gameObject.SetActive(endActive);
 
                 if (hooks.Length > 0)
                 {
@@ -203,11 +202,11 @@ namespace WorldActionSystem
             if (_started)
             {
                 _started = false;
-                _complete = false;
+                _completed = false;
                 notice = false;
                 OnUnDoExecuteInternal();
-                gameObject.SetActive(startActive);
-
+                startedList.Remove(this);
+                //gameObject.SetActive(startActive);
                 if (hooks.Length > 0)
                 {
                     hookCtrl.OnUnDoExecute();

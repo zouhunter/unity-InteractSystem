@@ -94,7 +94,7 @@ namespace WorldActionSystem.Actions
                     if (!elementPool.Contains(placeItem))
                     {
                         elementPool.ScureAdd(placeItem);
-                        if (Started && !Complete)
+                        if (Started && !Completed)
                         {
                             placeItem.StepActive();
                         }
