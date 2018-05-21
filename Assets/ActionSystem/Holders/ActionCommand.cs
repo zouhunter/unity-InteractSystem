@@ -9,13 +9,13 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.ActionCommand)]
     public class ActionCommand : MonoBehaviour, IActionCommand, IComparable<ActionCommand>
     {
-        [SerializeField]
+        [SerializeField, Attributes.DefultName]
         private string _stepName;
-        [SerializeField, Range(0, 10)]
+        [SerializeField,Attributes. Range(0, 10)]
         private int _queueID;
-        [SerializeField,Range(0,10)]
+        [SerializeField, Attributes.Range(0,10)]
         private int _copyCount;
-        [SerializeField]
+        [SerializeField,Attributes.DefultString("defult")]
         private string _cameraID = CameraController.defultID;
         public string CameraID { get { return _cameraID; } }
         public int QueueID { get { return _queueID; } }

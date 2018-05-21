@@ -35,7 +35,7 @@ namespace WorldActionSystem
         protected bool _started;
         public bool Started { get { return _started; } }
         protected bool auto;
-        [SerializeField, Range(0, 10)]
+        [SerializeField, Attributes.Range(0, 10)]
         private int queueID;
         public int QueueID
         {
@@ -47,7 +47,7 @@ namespace WorldActionSystem
         [SerializeField]
         private bool _queueInAuto = true;
         public bool QueueInAuto { get { return _queueInAuto; } }
-        [SerializeField]
+        [SerializeField,Attributes.DefultString("defult")]
         private string _cameraID;
         public string CameraID { get { return _cameraID; } }
         public Transform anglePos;

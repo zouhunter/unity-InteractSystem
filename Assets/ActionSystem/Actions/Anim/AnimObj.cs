@@ -12,7 +12,7 @@ namespace WorldActionSystem.Actions
     {
         public float delyTime = 0f;
         public AnimPlayer animPlayer;
-        [Range(0.1f, 10f)]
+        [Attributes.Range(0.1f, 10f)]
         public float speed = 1;
         [SerializeField]
         private bool playAtPostion;
@@ -37,9 +37,9 @@ namespace WorldActionSystem.Actions
         /// <summary>
         /// 播放动画
         /// </summary>
-        public override void OnStartExecute(bool forceauto)
+        public override void OnStartExecute(bool auto)
         {
-            base.OnStartExecute(forceauto);
+            base.OnStartExecute(auto);
             FindAnimCore();
             Debug.Assert(animPlayer != null, gameObject);
             delyPlay = StartCoroutine(DelyPlay());

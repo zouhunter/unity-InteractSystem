@@ -1911,7 +1911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f4f6ce3b8dc2b14399a8c4d0d7b3b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: blastanim
+  _name: 
   _reverse: 0
   playableCount: 1
   onPlayComplete:
