@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public static class LinkUtil
     {
@@ -164,7 +164,7 @@ namespace WorldActionSystem
                     else
                     {
                         if (nodes == null)
-                            nodes = new List<WorldActionSystem.LinkPort>();
+                            nodes = new List<Actions.LinkPort>();
                         nodes.Add(tempNode);
                     }
 

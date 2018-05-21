@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     [AddComponentMenu(MenuName.MatchObj)]
     public class MatchObj : PlaceObj

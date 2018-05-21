@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Internal;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     /// <summary>
     /// 模拟安装坐标功能

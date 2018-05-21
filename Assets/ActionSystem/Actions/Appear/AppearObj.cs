@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     /// <summary>
     /// 创建出指定的元素

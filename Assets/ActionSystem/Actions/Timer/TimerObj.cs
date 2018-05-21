@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Assertions.Must;
 using UnityEngine.Assertions.Comparers;
 using System.Collections;
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     [AddComponentMenu(MenuName.AutoObj)]
     public sealed class TimerObj : ActionObj

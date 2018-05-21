@@ -14,7 +14,7 @@ namespace WorldActionSystem
         [SerializeField]
         protected int playableCount = 1;
         protected float _duration = 1;
-        protected List<AnimObj> targets = new List<AnimObj>();
+        protected List<Actions.AnimObj> targets = new List<Actions.AnimObj>();
         public virtual float duration { get { return _duration; }set { _duration = value; } }
         public virtual bool reverse { get { return _reverse; } set { _reverse = value; } }
         public UnityAction onAutoPlayEnd { get; set; }
@@ -26,14 +26,14 @@ namespace WorldActionSystem
         {
             onPlayComplete.Invoke();
         }
-        public virtual void RecordPlayer(AnimObj target)
+        public virtual void RecordPlayer(Actions.AnimObj target)
         {
             if(!targets.Contains(target))
             {
                 this.targets.Add(target);
             }
         }
-        public virtual void RemovePlayer(AnimObj target)
+        public virtual void RemovePlayer(Actions.AnimObj target)
         {
             if (targets.Contains(target))
             {

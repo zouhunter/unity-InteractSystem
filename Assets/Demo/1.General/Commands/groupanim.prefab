@@ -4782,9 +4782,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4285809573836312}
   targetTrans: {fileID: 4461880048681928}
   rotateSpeed: 0
@@ -4799,7 +4821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: 
+  _name: 
   startActive: 1
   endActive: 1
   queueID: 0
@@ -4838,9 +4860,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _inneranim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 4
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4848216894801728}
   targetTrans: {fileID: 4535332466461302}
   rotateSpeed: 0
@@ -4887,7 +4931,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _innerAnim
   _reverse: 0
-  _duration: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 111907496054905590}
   animName: cube
 --- !u!114 &114289175054075764
@@ -4903,9 +4952,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _inneranim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 4
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4283493559909884}
   targetTrans: {fileID: 4232600957402376}
   rotateSpeed: 0
@@ -4922,9 +4993,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: blastanim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.012500763
+      value: 0.51875305
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.1125
+      value: 0.9875028
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.19971131
+      value: -0.13275582
+      inSlope: -0.4351139
+      outSlope: -0.4351139
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.37020063
+      value: 0.99355114
+      inSlope: 1.2369454
+      outSlope: 1.2369454
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.5196864
+      value: -0.11687225
+      inSlope: -1.2683868
+      outSlope: -1.2683868
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6712944
+      value: 1.0057542
+      inSlope: 2.2359939
+      outSlope: 2.2359939
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.83622277
+      value: -0.10037422
+      inSlope: -2.9107928
+      outSlope: -2.9107928
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9874878
+      value: 0.51874924
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   viewItems:
   - {fileID: 4456138082907930}
   - {fileID: 4680898872873888}
@@ -4950,7 +5079,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  _duration: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114370934335040494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4964,7 +5098,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  _duration: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114415368301183570
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4978,9 +5117,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4901654650046954}
   targetTrans: {fileID: 4056946544805070}
   rotateSpeed: 0
@@ -4997,9 +5158,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: blastanim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.012500763
+      value: 0.51875305
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.1125
+      value: 0.9875028
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.19971131
+      value: -0.13275582
+      inSlope: -0.4351139
+      outSlope: -0.4351139
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.37020063
+      value: 0.99355114
+      inSlope: 1.2369454
+      outSlope: 1.2369454
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.5196864
+      value: -0.11687225
+      inSlope: -1.2683868
+      outSlope: -1.2683868
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6712944
+      value: 1.0057542
+      inSlope: 2.2359939
+      outSlope: 2.2359939
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.83622277
+      value: -0.10037422
+      inSlope: -2.9107928
+      outSlope: -2.9107928
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9874878
+      value: 0.51874924
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   viewItems:
   - {fileID: 4240204462521754}
   - {fileID: 4959391197576326}
@@ -5025,9 +5244,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4847820757963520}
   targetTrans: {fileID: 4311673672551460}
   rotateSpeed: 0
@@ -5044,9 +5285,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _inneranim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 4
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4102755721377294}
   targetTrans: {fileID: 4477940568605842}
   rotateSpeed: 0
@@ -5063,9 +5326,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _inneranim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 4
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4757436747851392}
   targetTrans: {fileID: 4077033879757052}
   rotateSpeed: 0
@@ -5082,9 +5367,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: blastanim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.012500763
+      value: 0.51875305
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.1125
+      value: 0.9875028
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.19971131
+      value: -0.13275582
+      inSlope: -0.4351139
+      outSlope: -0.4351139
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.37020063
+      value: 0.99355114
+      inSlope: 1.2369454
+      outSlope: 1.2369454
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.5196864
+      value: -0.11687225
+      inSlope: -1.2683868
+      outSlope: -1.2683868
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6712944
+      value: 1.0057542
+      inSlope: 2.2359939
+      outSlope: 2.2359939
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.83622277
+      value: -0.10037422
+      inSlope: -2.9107928
+      outSlope: -2.9107928
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9874878
+      value: 0.51874924
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   viewItems:
   - {fileID: 4305749847964370}
   - {fileID: 4902787465915210}
@@ -5110,7 +5453,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _innerAnim
   _reverse: 0
-  _duration: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 111517658018768024}
   animName: cube
 --- !u!114 &114727342171761176
@@ -5126,9 +5474,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: blastanim
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.012500763
+      value: 0.51875305
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.1125
+      value: 0.9875028
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.19971131
+      value: -0.13275582
+      inSlope: -0.4351139
+      outSlope: -0.4351139
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.37020063
+      value: 0.99355114
+      inSlope: 1.2369454
+      outSlope: 1.2369454
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.5196864
+      value: -0.11687225
+      inSlope: -1.2683868
+      outSlope: -1.2683868
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6712944
+      value: 1.0057542
+      inSlope: 2.2359939
+      outSlope: 2.2359939
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.83622277
+      value: -0.10037422
+      inSlope: -2.9107928
+      outSlope: -2.9107928
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9874878
+      value: 0.51874924
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   viewItems:
   - {fileID: 4507936744260920}
   - {fileID: 4748307482564386}
@@ -5154,9 +5560,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 4
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   viewItems:
   - {fileID: 4065468662051140}
   - {fileID: 4692953997407754}
@@ -5178,7 +5606,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _innerAnim
   _reverse: 0
-  _duration: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 111585287669149102}
   animName: cube
 --- !u!114 &114878663667442030
@@ -5192,7 +5625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: 
+  _name: 
   startActive: 1
   endActive: 1
   queueID: 0
@@ -5231,7 +5664,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: _innerAnim
   _reverse: 0
-  _duration: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   anim: {fileID: 111699497879021562}
   animName: cube
 --- !u!114 &114949684940167944
@@ -5247,9 +5685,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  _duration: 0
-  from: 0
+  playableCount: 1
+  onPlayComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   time: 2
+  animCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   bodyTrans: {fileID: 4794630769307160}
   targetTrans: {fileID: 4791469999651222}
   rotateSpeed: 0

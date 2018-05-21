@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     [RequireComponent(typeof(ChargeObj))]
     public abstract class ChargeObjBinding : ChargeBinding

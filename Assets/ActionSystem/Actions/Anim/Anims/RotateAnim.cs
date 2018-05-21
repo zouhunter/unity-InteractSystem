@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public class RotateAnim : CodeAnimItem
     {

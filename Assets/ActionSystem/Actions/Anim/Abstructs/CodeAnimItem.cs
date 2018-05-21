@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 using System.Collections;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public abstract class CodeAnimItem : AnimPlayer
     {
@@ -25,6 +25,7 @@ namespace WorldActionSystem
             time = 1f / duration;
             coroutine = StartCoroutine(PlayAnim(onAutoPlayEnd));
         }
+
         public override void StepComplete()
         {
             base.StepComplete();

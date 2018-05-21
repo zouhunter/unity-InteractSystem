@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public static class LayoutOption
     {

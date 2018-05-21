@@ -261,16 +261,16 @@ namespace WorldActionSystem
         private string GetCameraID(IActionObj obj)
         {
             //忽略匹配相机
-            if (Config.quickMoveElement && obj is MatchObj && !(obj as MatchObj).ignorePass)
+            if (Config.quickMoveElement && obj is Actions.MatchObj && !(obj as Actions.MatchObj).ignorePass)
             {
                 return null;
             }
-            else if (Config.quickMoveElement && obj is InstallObj && !(obj as InstallObj).ignorePass)
+            else if (Config.quickMoveElement && obj is Actions.InstallObj && !(obj as Actions.InstallObj).ignorePass)
             {
                 return null;
             }
             //除要求使用特殊相机或是动画步骤,都用主摄像机
-            else if (Config.useOperateCamera || obj is AnimObj)
+            else if (Config.useOperateCamera || obj is Actions.AnimObj)
             {
                 if (string.IsNullOrEmpty(obj.CameraID))
                 {

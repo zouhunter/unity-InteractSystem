@@ -73,7 +73,7 @@ namespace WorldActionSystem
         public int animTime { get { return Config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
-       
+
         public GameObject Body
         {
             get
@@ -102,8 +102,8 @@ namespace WorldActionSystem
         protected int smooth = 50;
         protected IHighLightItems highLighter;
         protected bool actived;
-        protected PlaceObj target;
-        public PlaceObj BindingObj { get { return target; } }
+        protected Actions.PlaceObj target;
+        public Actions.PlaceObj BindingObj { get { return target; } }
         protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
         protected bool StraightMove { get { return target ? target.straightMove : false; } }
         protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
@@ -227,7 +227,7 @@ namespace WorldActionSystem
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(PlaceObj target,  bool binding)
+        public virtual void NormalInstall(Actions.PlaceObj target, bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -252,7 +252,7 @@ namespace WorldActionSystem
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(PlaceObj target, bool binding)
+        public virtual void QuickInstall(Actions.PlaceObj target, bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -361,10 +361,11 @@ namespace WorldActionSystem
         /// </summary>
         public virtual void StepComplete()
         {
-            if(log) Debug.Log("StepComplete:"+ Name,gameObject);
+            if (log) Debug.Log("StepComplete:" + Name, gameObject);
             actived = false;
             onStepComplete.Invoke();
-            if (tweening){
+            if (tweening)
+            {
                 StopTween();
                 OnTweenComplete();
             }
@@ -380,7 +381,7 @@ namespace WorldActionSystem
             gameObject.SetActive(startActive);
         }
 
-      
+
         protected virtual void StopTween()
         {
             move.Kill();
@@ -388,7 +389,8 @@ namespace WorldActionSystem
 
         protected virtual void OnInstallComplete()
         {
-            if (hideOnInstall){
+            if (hideOnInstall)
+            {
                 gameObject.SetActive(false);
             }
 
@@ -403,11 +405,11 @@ namespace WorldActionSystem
             if (IsRuntimeCreated)
                 Destroy(gameObject);
         }
-        protected virtual void Binding(PlaceObj target)
+        protected virtual void Binding(Actions.PlaceObj target)
         {
             this.target = target;
         }
-        protected virtual PlaceObj UnBinding()
+        protected virtual Actions.PlaceObj UnBinding()
         {
             var old = target;
             target = null;

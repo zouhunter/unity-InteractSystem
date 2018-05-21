@@ -5,7 +5,8 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Assertions.Comparers;
-namespace WorldActionSystem
+
+namespace WorldActionSystem.Actions
 {
     [AddComponentMenu(MenuName.RotObj)]
     public class RotObj : ActionObj

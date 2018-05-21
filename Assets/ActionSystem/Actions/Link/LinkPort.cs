@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     [ExecuteInEditMode]
     public class LinkPort : MonoBehaviour

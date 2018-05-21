@@ -42,7 +42,7 @@ namespace WorldActionSystem.Binding
 
         void InitDirection()
         {
-            direction = (actionObj as RotObj).Direction;
+            direction = (actionObj as Actions. RotObj).Direction;
         }
 
         void AddCircle(Vector3 origin, Vector3 axisDirection, float size, List<Vector3> resultsBuffer)

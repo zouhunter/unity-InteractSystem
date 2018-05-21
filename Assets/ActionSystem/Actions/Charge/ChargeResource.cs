@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public class ChargeResource : MonoBehaviour, ISupportElement
     {

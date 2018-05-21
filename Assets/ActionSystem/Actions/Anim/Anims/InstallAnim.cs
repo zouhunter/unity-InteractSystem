@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 using System.Collections;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public class InstallAnim : CodeAnimItem
     {

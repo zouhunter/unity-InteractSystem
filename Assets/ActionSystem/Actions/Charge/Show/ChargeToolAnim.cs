@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem;
 using System;
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public class ChargeToolAnim : ChargeToolBingding
     {

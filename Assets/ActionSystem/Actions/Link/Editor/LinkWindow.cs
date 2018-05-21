@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using System;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
 
     public class LinkWindow : EditorWindow

@@ -22,14 +22,14 @@ namespace WorldActionSystem
             }
         }
 
-        private bool _pickUpAble = false;
+        protected bool _pickUpAble = false;
         public virtual bool PickUpAble { get { return _pickUpAble; } set {_pickUpAble = value; } }
         public virtual void OnPickUp() { }
         public virtual void OnPickStay() { }
         public virtual void OnPickDown() { }
         public abstract void SetPosition(Vector3 pos);
         public virtual void SetViewForward(Vector3 forward) { }
-        private Collider _collider;
+        protected Collider _collider;
         public Collider Collider { get { return _collider; } }
         public static bool log = false;
         protected virtual void Awake()

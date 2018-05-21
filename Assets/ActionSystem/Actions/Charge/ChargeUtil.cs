@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public class ChargeUtil : MonoBehaviour
     {

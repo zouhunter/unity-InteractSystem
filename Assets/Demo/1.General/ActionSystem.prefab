@@ -372,7 +372,7 @@ MonoBehaviour:
       e33: 0
     prefab: {fileID: 112782, guid: 74b106ce18945514ba8405ee1e3c5351, type: 2}
     ignore: 1
-  - instanceID: -48890
+  - instanceID: 0
     containsCommand: 1
     containsPickup: 0
     rematrix: 0
@@ -394,7 +394,53 @@ MonoBehaviour:
       e32: 0
       e33: 0
     prefab: {fileID: 1155943292639844, guid: c682dc04cbadb474d910fd73fadd058d, type: 2}
-    ignore: 0
+    ignore: 1
+  - instanceID: 0
+    containsCommand: 1
+    containsPickup: 1
+    rematrix: 0
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    prefab: {fileID: 113262, guid: 984fc7a4fb4526043861900ea2fb42c3, type: 2}
+    ignore: 1
+  - instanceID: -11914
+    containsCommand: 1
+    containsPickup: 0
+    rematrix: 0
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    prefab: {fileID: 1950246518793402, guid: 4f7b181776e68a249aab70d879ed70a9, type: 2}
+    ignore: 1
   runTimeElements:
   - instanceID: 0
     prefab: {fileID: 1329900030471124, guid: 51cdf5dbd99778a459e5ab29cca48b55, type: 2}

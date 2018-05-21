@@ -6,17 +6,17 @@ using System.Collections.Generic;
 using WorldActionSystem;
 namespace WorldActionSystem.Binding
 {
-    [RequireComponent(typeof(ClickObj))]
+    [RequireComponent(typeof(Actions.ClickObj))]
     public class ClickHighter : ActionHighLighter
     {
         [SerializeField]
         private Color wrongColor = Color.red;
-        private ClickObj clickObj;
+        private Actions.ClickObj clickObj;
         private Color temp;
         protected override void Awake()
         {
             base.Awake();
-            clickObj = actionObj as ClickObj;
+            clickObj = actionObj as Actions.ClickObj;
             clickObj.onMouseEnter.AddListener(OnEnterClickObj);
             clickObj.onMouseExit.AddListener(OnExitClickObj);
             temp = color;

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     /// <summary>
     /// 指定个数的元素

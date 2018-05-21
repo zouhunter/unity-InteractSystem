@@ -96,7 +96,7 @@ namespace WorldActionSystem
         {
             if (Complete || !Started) return;
 
-            if (!Config.angleNotice || this is AnimObj) return;
+            if (!Config.angleNotice || this is Actions.AnimObj) return;
 
             if (notice)
             {

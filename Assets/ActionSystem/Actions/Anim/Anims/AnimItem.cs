@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     public class AnimItem : AnimPlayer
     {

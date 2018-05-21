@@ -3,9 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
-
     public abstract class PlaceObj : RuntimeObj
     {
         public bool autoInstall;//自动安装

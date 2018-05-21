@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Actions
 {
     [AddComponentMenu(MenuName.DragObj)]
     public class DragObj : ActionObj
