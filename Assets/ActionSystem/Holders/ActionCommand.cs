@@ -23,7 +23,7 @@ namespace WorldActionSystem
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
         public bool Started { get { return started; } }
         public bool Completed { get { return completed; } }
-        private UserError userErr { get; set; }
+        private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
         public IActionObj[] ActionObjs { get { return actionObjs; } }
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
@@ -79,7 +79,7 @@ namespace WorldActionSystem
             actionObjs = GetComponentsInChildren<IActionObj>(false);
         }
 
-        public void RegistAsOperate(UserError userErr)
+        public void RegistAsOperate(Events.OperateErrorAction userErr)
         {
             this.userErr = userErr;
         }

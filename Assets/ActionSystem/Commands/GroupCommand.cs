@@ -54,7 +54,7 @@ namespace WorldActionSystem
 
         private UnityAction<IActionCommand> onEndExecute { get; set; }
         private UnityAction<string, int, int> onActionObjStartExecute { get; set; }
-        private UserError onUserError { get; set; }
+        private Events.OperateErrorAction onUserError { get; set; }
 
         public GroupCommand(string stepName, List<ActionCommand> commandList)
         {
@@ -178,7 +178,7 @@ namespace WorldActionSystem
             this.onActionObjStartExecute = onActionObjStartExecute;
         }
 
-        internal void RegistAsOperate(UserError onUserError)
+        internal void RegistAsOperate(Events. OperateErrorAction onUserError)
         {
             this.onUserError = onUserError;
         }

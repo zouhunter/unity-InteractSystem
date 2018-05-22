@@ -16,12 +16,12 @@ namespace WorldActionSystem
         private Dictionary<string, List<ActionCommand>> actionDic = new Dictionary<string, List<ActionCommand>>();//触发器
         private int totalCommand;
         private int currentCommand;
-        private StepComplete onStepComplete;
-        private CommandExecute commandExecute;
-        private RegistCommandList onAllCommandRegisted;
-        private UserError onUserError;
+        private Events.StepCompleteAction onStepComplete;
+        private Events.CommandExecuteAction commandExecute;
+        private Events.RegistCommandListAction onAllCommandRegisted;
+        private Events.OperateErrorAction onUserError;
 
-        internal void InitCommand(int totalCommand, CommandExecute onCommandRegistComplete, StepComplete onStepComplete,UserError onUserError, RegistCommandList onAllCommandRegisted)
+        internal void InitCommand(int totalCommand, Events.CommandExecuteAction onCommandRegistComplete, Events. StepCompleteAction onStepComplete, Events.OperateErrorAction onUserError, Events.RegistCommandListAction onAllCommandRegisted)
         {
             this.totalCommand = totalCommand;
             this.onStepComplete = onStepComplete;
@@ -30,6 +30,7 @@ namespace WorldActionSystem
             this.onAllCommandRegisted = onAllCommandRegisted;
             TryComplelteRegist();
         }
+
         public void RegistCommand(ActionCommand command)
         {
             currentCommand++;
@@ -76,7 +77,7 @@ namespace WorldActionSystem
                     {
                         var cmd = new GroupCommand(stepName, item.Value);
                         cmd.RegistComplete(OnOneCommandComplete);
-                        cmd.RegistAsOperate(OnUserError);
+                        cmd.RegistAsOperate( OnUserError);
                         cmd.RegistCommandChanged(OnCommandStartExecute);
                         _commandList.Add(cmd);
                     }

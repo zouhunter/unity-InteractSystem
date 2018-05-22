@@ -16,8 +16,8 @@ namespace WorldActionSystem
         public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
 
         #region Events
-        public event UserError onUserError;//步骤操作错误
-        public event CommandExecute onCommandExecute;
+        public event Events.OperateErrorAction onUserError;//步骤操作错误
+        public event Events.CommandExecuteAction onCommandExecute;
         #endregion
 
         #region Propertys
@@ -43,7 +43,7 @@ namespace WorldActionSystem
         //private IActionStap[] steps;
         private ICommandController remoteController;
         private CommandController commandCtrl = new CommandController();
-        private RegistCommandList onCommandRegisted { get; set; }
+        private Events.RegistCommandListAction onCommandRegisted { get; set; }
         #endregion
 
         #region UnityFunctions
