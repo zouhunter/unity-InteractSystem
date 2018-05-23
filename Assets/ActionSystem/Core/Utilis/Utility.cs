@@ -24,31 +24,11 @@ namespace WorldActionSystem
                 system = trans.GetComponentInParent<ActionGroup>();
             }
         }
-        public static void RetriveCommand(Transform trans, UnityAction<ActionCommand> onRetive)
-        {
-            var coms = trans.GetComponents<ActionCommand>();
-            if (coms != null && coms.Length > 0)
-            {
-                foreach (var com in coms)
-                {
-                    onRetive(com);
-                }
-                return;
-            }
-            else
-            {
-                foreach (Transform child in trans)
-                {
-                    RetriveCommand(child, onRetive);
-                }
-            }
 
-        }
-
-        public static void RetivePickElement(Transform trans, UnityAction<PlaceElement> onRetive)
+        public static void RetiveBehaiver<T>(Transform trans, UnityAction<T> onRetive) where T:MonoBehaviour
         {
             if (!trans.gameObject.activeSelf) return;
-            var com = trans.GetComponent<PlaceElement>();
+            var com = trans.GetComponent<T>();
             if (com)
             {
                 onRetive(com);
@@ -58,7 +38,7 @@ namespace WorldActionSystem
             {
                 foreach (Transform child in trans)
                 {
-                    RetivePickElement(child, onRetive);
+                    RetiveBehaiver(child, onRetive);
                 }
             }
 

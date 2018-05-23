@@ -536,7 +536,7 @@ namespace WorldActionSystem
             if (target is ActionGroup)
             {
                 var transform = (target as ActionGroup).transform;
-                Utility.RetriveCommand(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
+                Utility.RetiveBehaiver<ActionCommand>(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
             }
 
 
@@ -554,7 +554,7 @@ namespace WorldActionSystem
                 if (pfb.objectReferenceValue != null)
                 {
                     var go = pfb.objectReferenceValue as GameObject;
-                    Utility.RetriveCommand(go.transform, (x) =>
+                    Utility.RetiveBehaiver<ActionCommand>(go.transform, (x) =>
                     {
                         if (x != null)
                         {
@@ -562,13 +562,13 @@ namespace WorldActionSystem
                             if (!commandList.Contains(x) && !ignore.boolValue) commandList.Add(x);
                         }
                     });
-                    Utility.RetivePickElement(go.transform, (x) =>
-                    {
-                        if (x != null)
-                        {
-                            contaionPickUp.boolValue = true;
-                        }
-                    });
+                    //Utility.RetiveBehaiver<>(go.transform, (x) =>
+                    //{
+                    //    if (x != null)
+                    //    {
+                    //        contaionPickUp.boolValue = true;
+                    //    }
+                    //});
                 }
             }
             totalCommandProp.intValue = commandList.Count;
