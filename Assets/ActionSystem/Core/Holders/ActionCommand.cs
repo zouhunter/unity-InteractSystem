@@ -9,6 +9,10 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.ActionCommand)]
     public class ActionCommand : ScriptableObject, IActionCommand, IComparable<ActionCommand>
     {
+        /// <summary>
+        /// 图形化的动作执行方式
+        /// </summary>
+        public NodeGraph.DataModel.NodeGraphObj graphObj;
         [SerializeField, Attributes.DefultName]
         private string _stepName;
         [SerializeField,Attributes. Range(0, 10)]
@@ -17,6 +21,15 @@ namespace WorldActionSystem
         private int _copyCount;
         [SerializeField,Attributes.DefultCameraAttribute()]
         private string _cameraID = CameraController.defultID;
+        
+
+        protected ActionObj[] actionObjs = new ActionObj[0];
+        private ActionObjCtroller objectCtrl;
+        protected bool _started;
+        protected bool _completed;
+        protected ActionGroup _system;
+        protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
+
         public string CameraID { get { return _cameraID; } }
         public int QueueID { get { return _queueID; } }
         public int CopyCount { get { return _copyCount; } }
@@ -27,17 +40,9 @@ namespace WorldActionSystem
         private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
         public ActionObj[] ActionObjs { get { return actionObjs; } }
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
-        public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } } public ActionGroup system { get { return _system; } set { _system = value; } }
+        public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } }
+        public ActionGroup system { get { return _system; } set { _system = value; } }
         protected CommandController commandCtrl { get { return system == null ? null : system.CommandCtrl; } }
-
-
-        protected ActionObj[] actionObjs = new ActionObj[0];
-        private ActionObjCtroller objectCtrl;
-        protected bool _started;
-        protected bool _completed;
-        protected ActionGroup _system;
-        protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
-
 
         protected virtual void OnEnable()
         {

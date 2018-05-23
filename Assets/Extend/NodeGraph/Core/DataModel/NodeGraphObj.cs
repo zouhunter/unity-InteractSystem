@@ -31,9 +31,6 @@ namespace NodeGraph.DataModel
         private string m_graphDescription;
         [SerializeField]
         private string m_controllerType;
-        [SerializeField]
-        private string m_panelNamePath;
-
         public static bool log = false;
         void OnEnable()
         {
@@ -95,17 +92,6 @@ namespace NodeGraph.DataModel
             get
             {
                 return m_allNodes;
-            }
-        }
-        public string PanelNamePath
-        {
-            get
-            {
-                return m_panelNamePath;
-            }
-            set
-            {
-                m_panelNamePath = value;
             }
         }
         public List<ConnectionData> Connections

@@ -239,7 +239,7 @@ namespace NodeGraph
             autoOpen = true;
             GetWindow<NodeGraphWindow>();
         }
-        
+
         [MenuItem(CreateAssetMenu, false, 650)]
         public static void CreateAsset()
         {
@@ -328,7 +328,7 @@ namespace NodeGraph
                     }
                 }
             }
-           
+
 
             controllerTypes = UserDefineUtility.CustomControllerTypes.ConvertAll<string>(x => x.FullName).ToArray();
         }
@@ -517,8 +517,26 @@ namespace NodeGraph
             var all = new List<ScriptableObject>();
             all.AddRange(Array.ConvertAll<Model.NodeData, Model.Node>(n.ToArray(), x => x.Object));
             all.AddRange(Array.ConvertAll<Model.ConnectionData, Model.Connection>(c.ToArray(), x => x.Object));
-            ScriptableObjUtility.SetSubAssets(all.ToArray(), obj, resetAll);
-            UnityEditor.EditorUtility.SetDirty(controller.TargetGraph);
+            ScriptableObject mainAsset;
+            if (!IsMainAsset(obj, out mainAsset))
+            {
+                Undo.RecordObject(obj, "none");
+                all.Add(obj);
+                ScriptableObjUtility.SetSubAssets(all.ToArray(), mainAsset, resetAll);
+                UnityEditor.EditorUtility.SetDirty(mainAsset);
+            }
+            else
+            {
+                ScriptableObjUtility.SetSubAssets(all.ToArray(), obj, resetAll);
+                UnityEditor.EditorUtility.SetDirty(obj);
+            }
+        }
+
+        private bool IsMainAsset(ScriptableObject obj, out ScriptableObject mainAsset)
+        {
+            var path = AssetDatabase.GetAssetPath(obj);
+            mainAsset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
+            return mainAsset == obj;
         }
 
         private void Setup(bool forceVisitAll = false)
@@ -1099,7 +1117,7 @@ namespace NodeGraph
 
         public void OnEnable()
         {
-           Init();
+            Init();
         }
 
         public void OnDisable()

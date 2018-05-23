@@ -13,7 +13,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_allNodes: []
   m_allConnections: []
-  m_lastModified: 131715401360322636
+  m_lastModified: 131715429989840150
   m_graphDescription: 
-  m_controllerType: NodeGraph.EmptyController
-  m_panelNamePath: 
+  m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl

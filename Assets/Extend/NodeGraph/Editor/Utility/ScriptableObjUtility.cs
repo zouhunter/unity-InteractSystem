@@ -51,7 +51,7 @@ namespace NodeGraph
         /// <summary>
         /// Adds the specified hidden subAsset to the mainAsset
         /// </summary>
-        private static void AddSubAsset(ScriptableObject subAsset, ScriptableObject mainAsset)
+        public static void AddSubAsset(ScriptableObject subAsset, ScriptableObject mainAsset)
         {
             if (subAsset != null && mainAsset != null)
             {
