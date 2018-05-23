@@ -41,7 +41,7 @@ namespace NodeGraph
         private NodeGraphController m_controller;
 
         [SerializeField]
-        private string m_nodeSyle;
+        private GUIStyle m_nodeSyle;
 
         [SerializeField]
         private NodeGUIInspectorHelper m_nodeInsp;
@@ -160,7 +160,7 @@ namespace NodeGraph
             m_data = data;
             m_data.Object.Initialize(m_data);
             m_baseRect = new Rect(m_data.X, m_data.Y, NGEditorSettings.GUI.NODE_BASE_WIDTH, NGEditorSettings.GUI.NODE_BASE_HEIGHT + nodeDataDrawer.CustomNodeHeight);
-            m_nodeSyle = nodeDataDrawer == null ? "node 0" : nodeDataDrawer.InactiveStyle;
+            m_nodeSyle = nodeDataDrawer == null ? EditorStyles.miniButton : nodeDataDrawer.InactiveStyle;
         }
 
         public NodeGUI Duplicate(NodeGraphController controller, float newX, float newY)
@@ -395,8 +395,8 @@ namespace NodeGraph
 
         public void DrawNode()
         {
-            GUIStyle s = NodeGUIUtility.nodeSkin.FindStyle(m_nodeSyle);
-            GUI.Window(m_nodeWindowId, m_baseRect, DrawThisNode, string.Empty, s);
+            //GUIStyle s = NodeGUIUtility.nodeSkin.FindStyle(m_nodeSyle);
+            GUI.Window(m_nodeWindowId, m_baseRect, DrawThisNode,string.Empty, m_nodeSyle);
         }
 
         private void DrawThisNode(int id)

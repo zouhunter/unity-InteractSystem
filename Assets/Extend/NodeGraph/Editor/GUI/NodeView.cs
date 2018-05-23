@@ -14,9 +14,8 @@ namespace NodeGraph
         public virtual Node target { get { return _target; } set{ _target = value; } }
 
         protected Editor targetDrawer;
-        public string ActiveStyle { get { return string.Format("node {0} on", Style); } }
-        public string InactiveStyle { get { return string.Format("node {0}", Style); } }
-        public virtual int Style { get { return 0; } }
+        public virtual GUIStyle ActiveStyle { get { return EditorStyles.miniButton; } }
+        public virtual GUIStyle InactiveStyle { get { return EditorStyles.miniButton; } }
         public virtual string Category { get { return "empty"; } }
         public virtual void OnContextMenuGUI(GenericMenu menu, NodeGUI gui) { }
         public virtual float CustomNodeHeight { get { return 0; } }

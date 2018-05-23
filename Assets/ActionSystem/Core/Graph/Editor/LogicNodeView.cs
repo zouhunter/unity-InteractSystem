@@ -23,7 +23,30 @@ namespace WorldActionSystem.Graph
                 base.target = value;
             }
         }
-
+        private GUIStyle _activeStyle;
+        private GUIStyle _inactiveStyle;
+        public override GUIStyle ActiveStyle
+        {
+            get
+            {
+                if (target is LogicNode)
+                {
+                    _activeStyle = (target as LogicNode).activestyle;
+                }
+                return _activeStyle;
+            }
+        }
+        public override GUIStyle InactiveStyle
+        {
+            get
+            {
+                if (target is LogicNode)
+                {
+                    _inactiveStyle = (target as LogicNode).style;
+                }
+                return _inactiveStyle;
+            }
+        }
     }
 
 }
