@@ -7,12 +7,13 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.ActionCommand)]
-    public class ActionCommand : ScriptableObject, IActionCommand, IComparable<ActionCommand>
+    public class ActionCommand : ScriptableObject, IComparable<ActionCommand>
     {
         /// <summary>
         /// 图形化的动作执行方式
         /// </summary>
         public NodeGraph.DataModel.NodeGraphObj graphObj;
+
         [SerializeField, Attributes.DefultName]
         private string _stepName;
         [SerializeField,Attributes. Range(0, 10)]
@@ -21,9 +22,11 @@ namespace WorldActionSystem
         private int _copyCount;
         [SerializeField,Attributes.DefultCameraAttribute()]
         private string _cameraID = CameraController.defultID;
-        
+        [SerializeField]
+        protected Graph.ActionNode[] actionObjs = new Graph.ActionNode[0];
+        [SerializeField]
+        protected CommandBinding[] commandBindings = new CommandBinding[0];
 
-        protected ActionObj[] actionObjs = new ActionObj[0];
         private ActionObjCtroller objectCtrl;
         protected bool _started;
         protected bool _completed;
@@ -38,17 +41,20 @@ namespace WorldActionSystem
         public bool Completed { get { return _completed; } }
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
-        public ActionObj[] ActionObjs { get { return actionObjs; } }
+        public Graph. ActionNode[] ActionObjs { get { return actionObjs; } }
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
         public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } }
-        public ActionGroup system { get { return _system; } set { _system = value; } }
-        protected CommandController commandCtrl { get { return system == null ? null : system.CommandCtrl; } }
+        public ActionGroup actionGroup { get; private set; }
 
         protected virtual void OnEnable()
         {
             objectCtrl = new ActionObjCtroller(this);
         }
-
+        public void SetContext(ActionGroup group)
+        {
+            this.actionGroup = group;
+            
+        }
         public void RegistAsOperate(Events.OperateErrorAction userErr)
         {
             this.userErr = userErr;
@@ -116,7 +122,8 @@ namespace WorldActionSystem
                 return false;
             }
         }
-        internal void RegistCommandChanged(Action<string, int, int> onCommandStartExecute)
+
+        internal void RegistCommandChanged(UnityAction<string, int, int> onActionObjStartExecute)
         {
             this.onActionObjStartExecute = onActionObjStartExecute;
         }

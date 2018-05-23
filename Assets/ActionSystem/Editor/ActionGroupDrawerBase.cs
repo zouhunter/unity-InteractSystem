@@ -535,7 +535,7 @@ namespace WorldActionSystem
 
             if (target is ActionGroup)
             {
-                var transform = (target as ActionGroup).transform;
+                //var transform = (target as ActionGroup).transform;
                 //Utility.RetiveBehaiver<ActionCommand>(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
             }
 

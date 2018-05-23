@@ -21,14 +21,14 @@ namespace WorldActionSystem.Attributes
                 if (string.IsNullOrEmpty(property.stringValue))
                 {
                     string cameraName = "defult";
-                    var target = (property.serializedObject.targetObject as MonoBehaviour).gameObject;
-                    if(target)
-                    {
-                        var camreaNode = target.GetComponentInChildren<CameraNode>();
-                        if (camreaNode){
-                            cameraName = camreaNode.name;
-                        }
-                    }
+                    //var target = (property.serializedObject.targetObject as MonoBehaviour).gameObject;
+                    //if(target)
+                    //{
+                    //    var camreaNode = target.GetComponentInChildren<CameraNode>();
+                    //    if (camreaNode){
+                    //        cameraName = camreaNode.name;
+                    //    }
+                    //}
                     GUI.contentColor = Color.gray;
                     EditorGUI.LabelField(position, new GUIContent("    "), new GUIContent(cameraName));
                     GUI.contentColor = Color.white;

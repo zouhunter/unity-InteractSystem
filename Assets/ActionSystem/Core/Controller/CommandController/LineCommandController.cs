@@ -13,15 +13,15 @@ namespace WorldActionSystem
         int index = 0;
         bool started = false;
         public UnityAction<bool> onEndExecute;
-        List<IActionCommand> commandList;
+        List<ActionCommand> commandList;
 
-        public IActionCommand CurrCommand
+        public ActionCommand CurrCommand
         {
             get { return HaveCommand(index) ? commandList[index] : null; }
         }
-        public LineCommandController(IEnumerable<IActionCommand> commandList)
+        public LineCommandController(IEnumerable<ActionCommand> commandList)
         {
-            this.commandList = new List<IActionCommand>(commandList);
+            this.commandList = new List<ActionCommand>(commandList);
         }
 
 
@@ -238,7 +238,7 @@ namespace WorldActionSystem
         public bool ToTargetCommand(string stepName)
         {
             bool haveNext = true;
-            IActionCommand cmd = commandList.Find((x) => stepName == x.StepName);
+            ActionCommand cmd = commandList.Find((x) => stepName == x.StepName);
             if (cmd != null)
             {
                 int indexofCmd = commandList.IndexOf(cmd);

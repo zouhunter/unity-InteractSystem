@@ -10,7 +10,7 @@ namespace WorldActionSystem
     /// <summary>
     /// 并行执行
     /// </summary>
-    public class GroupCommand : IActionCommand
+    public class GroupCommand : ActionCommand
     {
         public string StepName { get; private set; }
         public bool Started
@@ -52,7 +52,7 @@ namespace WorldActionSystem
         private bool completed;
         private bool log = false;
 
-        private UnityAction<IActionCommand> onEndExecute { get; set; }
+        private UnityAction<ActionCommand> onEndExecute { get; set; }
         private UnityAction<string, int, int> onActionObjStartExecute { get; set; }
         private Events.OperateErrorAction onUserError { get; set; }
 
@@ -164,7 +164,7 @@ namespace WorldActionSystem
 
         }
 
-        internal void RegistComplete(UnityAction<IActionCommand> onOneCommandComplete)
+        internal void RegistComplete(UnityAction<ActionCommand> onOneCommandComplete)
         {
             this.onEndExecute = onOneCommandComplete;
         }

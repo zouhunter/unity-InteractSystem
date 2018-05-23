@@ -24,11 +24,9 @@ namespace WorldActionSystem
         void OnStartExecute(bool isForceAuto);
     }
 
-    public abstract class ActionHook : MonoBehaviour, IActionHook
+    public class ActionHook : ActionSystemObject, IActionHook
     {
-        protected bool _complete;
         public bool Complete { get { return _complete; } }
-        protected bool _started;
         public bool Started { get { return _started; } }
         [SerializeField, Range(0, 10)]
         private int queueID;
@@ -40,33 +38,31 @@ namespace WorldActionSystem
             }
         }
         public string CameraID { get { return null; } }
-        protected abstract bool autoComplete { get; }
+        protected virtual bool autoComplete { get { return false; } }
         protected float autoTime = 2;
-        Coroutine coroutine;
         public UnityAction onEndExecute { get; set; }
         public Toggle.ToggleEvent onBeforeEndExecuted;
+
         public static bool log = false;
+        protected bool _complete;
+        protected bool _started;
+
         public virtual void OnStartExecute(bool auto)
         {
-            if(log) Debug.Log("onStart Execute Hook :" + this,gameObject);
+            if(log) Debug.Log("onStart Execute Hook :" + this);
             if (!_started)
             {
                 _started = true;
                 _complete = false;
-                gameObject.SetActive(true);
-                //onBeforeStart.Invoke(auto);
-                if (autoComplete && coroutine == null && gameObject.activeInHierarchy) {
-                    coroutine = StartCoroutine(AutoComplete());
-                }
+                coroutineCtrl.DelyExecute(AutoComplete, autoTime);
             }
             else
             {
-                Debug.LogError("already started" + name, gameObject);
+                Debug.LogError("already started" + name);
             }
         }
-        protected virtual IEnumerator AutoComplete()
+        protected virtual void AutoComplete()
         {
-            yield return new WaitForSeconds(autoTime);
             if(!Complete) OnEndExecute(false);
         }
         public virtual void OnEndExecute(bool force)
@@ -79,7 +75,7 @@ namespace WorldActionSystem
 
         public virtual void CoreEndExecute(bool force)
         {
-            if (log) Debug.Log("onEnd Execute Hook :" + this + ":" + force, gameObject);
+            if (log) Debug.Log("onEnd Execute Hook :" + this + ":" + force);
             if (!_complete)
             {
                 _started = true;
@@ -90,15 +86,14 @@ namespace WorldActionSystem
                 {
                     onEndExecute.Invoke();
                 }
-                if (autoComplete && coroutine != null)
+                if (autoComplete)
                 {
-                    StopCoroutine(coroutine);
-                    coroutine = null;
+                    coroutineCtrl.Cansalce(AutoComplete);
                 }
             }
             else
             {
-                Debug.LogError("already completed" + this, gameObject);
+                Debug.LogError("already completed" + this);
             }
 
         }
@@ -107,10 +102,9 @@ namespace WorldActionSystem
         {
             _started = false;
             _complete = false;
-            if (autoComplete && coroutine != null)
+            if (autoComplete)
             {
-                StopCoroutine(coroutine);
-                coroutine = null;
+                coroutineCtrl.Cansalce(AutoComplete);
             }
         }
     }

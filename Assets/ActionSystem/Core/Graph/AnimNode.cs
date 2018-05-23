@@ -8,8 +8,14 @@ using NodeGraph;
 namespace WorldActionSystem.Graph
 {
     [CustomNode("Action/Anim", 0, "ActionSystem")]
-    public class AnimNode : NodeGraph.DataModel.Node
+    public class AnimNode : ActionNode
     {
-        public string test = "test";
+        public override ControllerType CtrlType
+        {
+            get
+            {
+                return 0;
+            }
+        }
     }
 }

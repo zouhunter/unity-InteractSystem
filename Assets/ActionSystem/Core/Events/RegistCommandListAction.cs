@@ -6,5 +6,5 @@ using System.Collections.Generic;
 
 namespace WorldActionSystem.Events
 {
-    public delegate void RegistCommandListAction(List<IActionCommand> commandList);
+    public delegate void RegistCommandListAction(List<ActionCommand> commandList);
 }

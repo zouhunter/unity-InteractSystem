@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using WorldActionSystem.Graph;
 
 namespace WorldActionSystem
 {
@@ -11,11 +12,11 @@ namespace WorldActionSystem
     {
         public ActionCommand trigger { get;private set; }
         protected List<int> queueID = new List<int>();
-        protected ActionObj[] actionObjs { get;private set; }
-        public ActionObj[] StartedActions { get { return startedActions.ToArray(); } }
+        protected ActionNode[] actionObjs { get;private set; }
+        public ActionNode[] StartedActions { get { return startedActions.ToArray(); } }
         protected bool isForceAuto;
-        private Queue<ActionObj> actionQueue = new Queue<ActionObj>();
-        private List<ActionObj> startedActions = new List<ActionObj>();
+        private Queue<ActionNode> actionQueue = new Queue<ActionNode>();
+        private List<ActionNode> startedActions = new List<ActionNode>();
         public static bool log = false;
         public UnityAction<ControllerType> onCtrlStart { get; set; }
         public UnityAction<ControllerType> onCtrlStop { get; set; }
@@ -101,10 +102,10 @@ namespace WorldActionSystem
         }
 
 
-        private void OnCommandObjComplete(ActionObj obj)
+        private void OnCommandObjComplete(ActionNode obj)
         {
             OnStopAction(obj);
-            var notComplete = Array.FindAll<ActionObj>(actionObjs, x => x.QueueID == obj.QueueID && !x.Completed);
+            var notComplete = Array.FindAll<ActionNode>(actionObjs, x => x.QueueID == obj.QueueID && !x.Completed);
             if (notComplete.Length == 0)
             {
                 if (!ExecuteAStep())
@@ -160,7 +161,7 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionObj>(actionObjs, x => x.QueueID == id && !x.Started);
+                var neetActive = Array.FindAll<ActionNode>(actionObjs, x => x.QueueID == id && !x.Started);
                 if (isForceAuto)
                 {
                     actionQueue.Clear();
@@ -168,7 +169,7 @@ namespace WorldActionSystem
                     {
                         if (item.QueueInAuto)
                         {
-                            actionQueue.Enqueue(item as ActionObj);
+                            actionQueue.Enqueue(item as ActionNode);
                         }
                         else
                         {
@@ -199,7 +200,7 @@ namespace WorldActionSystem
                 TryStartAction(actionObj);
             }
         }
-        private void TryStartAction(ActionObj obj)
+        private void TryStartAction(ActionNode obj)
         {
             if (log) Debug.Log("Start A Step:" + obj);
             if (!obj.Started)
@@ -224,7 +225,7 @@ namespace WorldActionSystem
 
         }
 
-        private void StartAction(ActionObj obj)
+        private void StartAction(ActionNode obj)
         {
             if (!obj.Started)
             {
@@ -239,7 +240,7 @@ namespace WorldActionSystem
         /// 添加新的触发器
         /// </summary>
         /// <param name="action"></param>
-        private void OnStartAction(ActionObj action)
+        private void OnStartAction(ActionNode action)
         {
             startedActions.Add(action);
             if (onCtrlStart != null) onCtrlStart.Invoke(action.CtrlType);
@@ -249,7 +250,7 @@ namespace WorldActionSystem
         /// 移除触发器
         /// </summary>
         /// <param name="action"></param>
-        private void OnStopAction(ActionObj action)
+        private void OnStopAction(ActionNode action)
         {
             startedActions.Remove(action);
             if (onCtrlStop != null && startedActions.Find(x=>x.CtrlType == action.CtrlType) == null){
@@ -257,7 +258,7 @@ namespace WorldActionSystem
             }
         }
 
-        private string GetCameraID(ActionObj obj)
+        private string GetCameraID(ActionNode obj)
         {
             //忽略匹配相机
             if (Config.quickMoveElement /*&& obj is Actions.MatchObj && !(obj as Actions.MatchObj).ignorePass*/)

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
-  m_Name: ActionCommand
+  m_Name: command01
   m_EditorClassIdentifier: 
   graphObj: {fileID: 114539193140345448}
   _stepName: 
@@ -148,18 +148,6 @@ MonoBehaviour:
   m_lastModified: 131715452413722723
   m_graphDescription: 
   m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
---- !u!114 &114597992865157956
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: WorldActionSystem.Graph.AnimNode
-  m_EditorClassIdentifier: Assembly-CSharp:WorldActionSystem.Graph:AnimNode
-  test: test
 --- !u!114 &114800950705433508
 MonoBehaviour:
   m_ObjectHideFlags: 1

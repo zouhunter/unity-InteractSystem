@@ -14,7 +14,7 @@ namespace WorldActionSystem
         protected Coroutine coroutine;
         private Dictionary<ControllerType, int> activeTypes = new Dictionary<ControllerType, int>();
         public static bool log = false;
-        public UnityAction<ActionObj> onActionStart;
+        public UnityAction<Graph.ActionNode> onActionStart;
 
         private CameraController cameraCtrl
         {
@@ -24,7 +24,6 @@ namespace WorldActionSystem
             }
         }
         private PickUpController pickupCtrl { get; set; }
-        //private MonoBehaviour holder;
 
         public ActionCtroller(MonoBehaviour holder,PickUpController pickupCtrl)
         {

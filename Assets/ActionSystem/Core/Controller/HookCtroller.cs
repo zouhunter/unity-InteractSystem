@@ -14,12 +14,12 @@ namespace WorldActionSystem
         protected bool _started;
         public bool Started { get { return _started; } }
 
-        protected ActionObj actionObj { get; set; }
+        protected Graph.ActionNode actionObj { get; set; }
         protected List<int> queueID = new List<int>();
         protected IActionHook[] hooks { get; set; }
         protected bool isForceAuto;
 
-        public HookCtroller(ActionObj trigger)
+        public HookCtroller(Graph. ActionNode trigger)
         {
             this.actionObj = trigger;
             hooks = trigger.Hooks;

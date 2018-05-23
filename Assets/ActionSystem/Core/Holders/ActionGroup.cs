@@ -5,57 +5,36 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.ActionGroup)]
-    public class ActionGroup : MonoBehaviour
+    public class ActionGroup : ScriptableObject
     {
-        public string groupKey;
-        public int totalCommand;
+        [SerializeField]
+        private List<OptionalCommandItem> actionCommands = new List<OptionalCommandItem>();
+        [SerializeField]
         public List<AutoPrefabItem> autoLoadElement = new List<AutoPrefabItem>();
+        [SerializeField]
         public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
 
-        #region Events
-        public event Events.OperateErrorAction onUserError;//步骤操作错误
-        public event Events.CommandExecuteAction onCommandExecute;
-        #endregion
-
         #region Propertys
-        internal ICommandController RemoteController { get { return remoteController; } }
-        internal CommandController CommandCtrl
-        {
-            get
-            {
-                return commandCtrl;
-            }
-        }
-        private EventController eventCtrl = new EventController();
-        internal EventController EventCtrl
-        {
-            get
-            {
-                return eventCtrl;
-            }
-        }
-        #endregion
-
-        #region Private
-        //private IActionStap[] steps;
-        private ICommandController remoteController;
-        private CommandController commandCtrl = new CommandController();
-        private Events.RegistCommandListAction onCommandRegisted { get; set; }
+        public List<ActionCommand> ActiveCommands { get; private set; }
+        public ICommandController RemoteController { get; private set; }
+        public EventController EventCtrl { get; private set; }
+        public EventTransfer EventTransfer { get; private set; }
         #endregion
 
         #region UnityFunctions
-        private void Start()
+        public ActionGroup()
         {
-            commandCtrl.InitCommand(totalCommand, OnCommandExectute, OnStepComplete, OnUserError,
-               (x) =>
-               {
-                   if (onCommandRegisted != null)
-                       onCommandRegisted.Invoke(x);
-               });
-            Utility.CreateRunTimeObjects(transform, autoLoadElement);
+            EventTransfer = new EventTransfer(this);
+        }
+
+        private void OnEnable()
+        {
+            Utility.CreateRunTimeObjects(ActionSystem.Instence.transform, autoLoadElement);
             ElementController.Instence.RegistRunTimeElements(runTimeElements);
             ActionSystem.Instence.RegistGroup(this);
         }
@@ -67,118 +46,64 @@ namespace WorldActionSystem
         #endregion
 
         #region Public Functions
+
+        /// <summary>
+        /// 默认的按command名称进行排序
+        /// </summary>
+        public ICommandController LunchActionSystem()
+        {
+            InitAcitveCommands();
+            var steps = ActiveCommands.ConvertAll<string>(x => x.StepName);
+            steps.Sort();
+            ActiveCommands = GetIActionCommandList(ActiveCommands, steps.ToArray());
+            RemoteController = new LineCommandController(ActiveCommands);
+            return RemoteController;
+        }
+        /// <summary>
+        /// 设置安装顺序并生成最终步骤
+        /// </summary>
+        public ICommandController LunchActionSystem(string[] steps)
+        {
+            InitAcitveCommands();
+            var stepsWorp = ConfigSteps(ActiveCommands, steps);//重新计算步骤
+            ActiveCommands = GetIActionCommandList(ActiveCommands, stepsWorp);
+            RemoteController = new LineCommandController(ActiveCommands);
+            return RemoteController;
+        }
         /// <summary>
         /// 传入command名称关联字典
         /// </summary>
         /// <param name="rule"></param>
-        public void LunchActionSystem(Dictionary<string, string[]> rule, UnityAction onLunchOK)
+        public ICommandController LunchActionSystem(Dictionary<string, string[]> rule)
         {
-            onCommandRegisted = (activeCommands) =>
-            {
-                var steps = activeCommands.ConvertAll<string>(x => x.StepName);
-                steps.Sort();
-                activeCommands = GetIActionCommandList(activeCommands, steps.ToArray());
-                remoteController = new TreeCommandController(rule, activeCommands);
-                onLunchOK.Invoke();
-            };
-
-            if (commandCtrl.CommandRegisted)
-            {
-                onCommandRegisted.Invoke(commandCtrl.CommandList);
-            }
-        }
-        /// <summary>
-        /// 默认的按command名称进行排序
-        /// </summary>
-        public void LunchActionSystem(UnityAction<string[]> onLunchOK)
-        {
-            onCommandRegisted = (activeCommands) =>
-            {
-                var steps = activeCommands.ConvertAll<string>(x => x.StepName);
-                steps.Sort();
-                activeCommands = GetIActionCommandList(activeCommands, steps.ToArray());
-                remoteController = new LineCommandController(activeCommands);
-                onLunchOK.Invoke(steps.ToArray());
-            };
-
-            if (commandCtrl.CommandRegisted)
-            {
-                onCommandRegisted.Invoke(commandCtrl.CommandList);
-            }
+            InitAcitveCommands();
+            var steps = ActiveCommands.ConvertAll<string>(x => x.StepName);
+            steps.Sort();
+            ActiveCommands = GetIActionCommandList(ActiveCommands, steps.ToArray());
+            RemoteController = new TreeCommandController(rule, ActiveCommands);
+            return RemoteController;
         }
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
-        public void LunchActionSystem(string[] steps, UnityAction<string[]> onLunchOK)
+        public ICommandController LunchActionSystem<T>(T[] steps) where T : IActionStap
         {
-            Debug.Assert(steps != null);
-            onCommandRegisted = (activeCommands) =>
-            {
-                var stepsWorp = ConfigSteps(activeCommands, steps);//重新计算步骤
-                activeCommands = GetIActionCommandList(activeCommands, stepsWorp);
-                remoteController = new LineCommandController(activeCommands);
-                onLunchOK.Invoke(stepsWorp);
-            };
-
-            if (commandCtrl.CommandRegisted)
-            {
-                onCommandRegisted.Invoke(commandCtrl.CommandList);
-            }
-        }
-        /// <summary>
-        /// 设置安装顺序并生成最终步骤
-        /// </summary>
-        public void LunchActionSystem<T>(T[] steps, UnityAction<T[]> onLunchOK) where T : IActionStap
-        {
-            Debug.Assert(steps != null);
-            onCommandRegisted = (activeCommands) =>
-            {
-                var stepsWorp = ConfigSteps<T>(activeCommands, steps);//重新计算步骤
-                activeCommands = GetIActionCommandList(activeCommands, Array.ConvertAll<IActionStap, string>(stepsWorp, x => x.StapName));
-                remoteController = new LineCommandController(activeCommands);
-                onLunchOK.Invoke(Array.ConvertAll<IActionStap, T>(stepsWorp, x => (T)x));
-            };
-
-            if (commandCtrl.CommandRegisted)
-            {
-                onCommandRegisted.Invoke(commandCtrl.CommandList);
-            }
+            InitAcitveCommands();
+            var stepsWorp = ConfigSteps<T>(ActiveCommands, steps);//重新计算步骤
+            ActiveCommands = GetIActionCommandList(ActiveCommands, Array.ConvertAll<IActionStap, string>(stepsWorp, x => x.StapName));
+            RemoteController = new LineCommandController(ActiveCommands);
+            return RemoteController;
         }
         #endregion
 
         #region private Funtions
-        /// <summary>
-        /// 结束命令
-        /// </summary>
-        private void OnStepComplete(string stepName)
+        private void InitAcitveCommands()
         {
-            remoteController.OnEndExecuteCommand(stepName);
-        }
-
-        private void OnCommandExectute(string stepName, int totalCount, int currentID)
-        {
-            if (onCommandExecute != null)
-            {
-                onCommandExecute.Invoke(stepName, totalCount, currentID);
+            if(ActiveCommands == null){
+                ActiveCommands = actionCommands.Where(x => x.active).Select(x => x.prefab).ToList();
             }
         }
-
-        /// <summary>
-        /// 错误触发
-        /// </summary>
-        /// <param name="stepName"></param>
-        /// <param name="error"></param>
-        private void OnUserError(string stepName, string error)
-        {
-            if (onUserError != null) onUserError.Invoke(stepName, error);
-        }
-
-        /// 重置步骤
-        /// </summary>
-        /// <param name="commandDic"></param>
-        /// <param name="steps"></param>
-        /// <returns></returns>
-        private static string[] ConfigSteps(List<IActionCommand> commandList, string[] steps)
+        private static string[] ConfigSteps(List<ActionCommand> commandList, string[] steps)
         {
             List<string> activeStaps = new List<string>();
             List<string> ignored = new List<string>();
@@ -197,13 +122,7 @@ namespace WorldActionSystem
             Debug.Log("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
             return activeStaps.ToArray();
         }
-
-        /// 重置步骤
-        /// </summary>
-        /// <param name="commandDic"></param>
-        /// <param name="steps"></param>
-        /// <returns></returns>
-        private static IActionStap[] ConfigSteps<T>(List<IActionCommand> commandList, T[] steps) where T : IActionStap
+        private static IActionStap[] ConfigSteps<T>(List<ActionCommand> commandList, T[] steps) where T : IActionStap
         {
             List<IActionStap> activeStaps = new List<IActionStap>();
             List<string> ignored = new List<string>();
@@ -222,14 +141,9 @@ namespace WorldActionSystem
             if (ignored.Count > 0) Debug.LogWarning("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
             return activeStaps.ToArray();
         }
-
-        /// <summary>
-        /// 得到排序后的命令列表
-        /// </summary>
-        /// <returns></returns>
-        private static List<IActionCommand> GetIActionCommandList(List<IActionCommand> commandList, string[] steps)
+        private static List<ActionCommand> GetIActionCommandList(List<ActionCommand> commandList, string[] steps)
         {
-            var actionCommandList = new List<IActionCommand>();
+            var actionCommandList = new List<ActionCommand>();
             foreach (var item in steps)
             {
                 var old = commandList.Find(x => x.StepName == item);
@@ -244,7 +158,6 @@ namespace WorldActionSystem
             }
             return actionCommandList;
         }
-
         #endregion
 
     }

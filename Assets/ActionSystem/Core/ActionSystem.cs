@@ -13,7 +13,7 @@ namespace WorldActionSystem
         #region Instence
         private static bool isQuit = false;
         private static ActionSystem _instence;
-        public static ActionSystem Instence
+        internal static ActionSystem Instence
         {
             get
             {
@@ -94,69 +94,49 @@ namespace WorldActionSystem
         }
         #endregion
 
-        private List<ActionGroup> groupList = new List<ActionGroup>();
-        private Dictionary<string, List<UnityAction<ActionGroup>>> waitDic = new Dictionary<string, List<UnityAction<ActionGroup>>>();
-
-        private void Awake()
+        #region TimeCtrl
+        private CoroutineController _corontineCtrl;
+        public CoroutineController CoroutineCtrl
         {
-            if (_instence == null)
+            get
             {
-                _instence = this;
-            }
-        }
-
-        public void RetriveAsync(string groupKey, UnityAction<ActionGroup> onRetrive)
-        {
-            if (onRetrive == null) return;
-            var item = groupList.Find(x => x.groupKey == groupKey);
-            if (item)
-            {
-                onRetrive.Invoke(item);
-            }
-            else
-            {
-                if (!waitDic.ContainsKey(groupKey))
+                if(_corontineCtrl == null)
                 {
-                    waitDic[groupKey] = new List<UnityAction<ActionGroup>>();
+                    _corontineCtrl = new CoroutineController(this);
                 }
-                waitDic[groupKey].Add(onRetrive);
+                return _corontineCtrl;
             }
         }
+        #endregion
 
-        internal void RegistGroup(ActionGroup actionGroup)
+        private List<ActionGroup> actionGroup = new List<ActionGroup>();
+
+        public void RegistGroup(ActionGroup group)
         {
-            if (!groupList.Contains(actionGroup))
+            if(actionGroup.Contains(group))
             {
-                groupList.Add(actionGroup);
-                actionGroup.transform.SetParent(transform);
-            }
-            if (waitDic.ContainsKey(actionGroup.groupKey))
-            {
-                var actions = waitDic[actionGroup.groupKey];
-                waitDic.Remove(actionGroup.groupKey);
-                foreach (var item in actions)
-                {
-                    item.Invoke(actionGroup);
-                }
+                actionGroup.Add(group);
             }
         }
 
-        public static void Clean()
+        public void RemoveGroup(ActionGroup group)
+        {
+            if(!actionGroup.Contains(group))
+            {
+                actionGroup.Clear();
+            }
+
+            if(actionGroup.Count == 0)
+            {
+                Clean();
+            }
+        }
+
+        private void Clean()
         {
             if (_instence != null)
             {
                 Destroy(_instence.gameObject);
-            }
-        }
-        internal void RemoveGroup(ActionGroup actionGroup)
-        {
-            if (groupList.Contains(actionGroup))
-            {
-                groupList.Remove(actionGroup);
-            }
-            if(groupList.Count == 0)
-            {
-                Clean();
             }
         }
     }

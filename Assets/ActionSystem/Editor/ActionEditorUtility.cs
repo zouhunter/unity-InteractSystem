@@ -62,10 +62,10 @@ namespace WorldActionSystem
             if (prefab != null)
             {
                 var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
-                var parent = actionSystem == null ? null : actionSystem.transform;
+                //var parent = actionSystem == null ? null : actionSystem.transform;
                 GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
                 instanceID = go.GetInstanceID();
-                go.transform.SetParent(parent, false);
+                //go.transform.SetParent(parent, false);
             }
         }
 
@@ -91,10 +91,10 @@ namespace WorldActionSystem
             if (gopfb != null)
             {
                 var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
-                var parent = actionSystem == null ? null : actionSystem.transform;
-                GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
-                instanceIDProp.intValue = go.GetInstanceID();
-                go.transform.SetParent(parent, false);
+                //var parent = actionSystem == null ? null : actionSystem.transform;
+                //GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
+                //instanceIDProp.intValue = go.GetInstanceID();
+                //go.transform.SetParent(parent, false);
             }
         }
 
@@ -120,17 +120,17 @@ namespace WorldActionSystem
             if (gopfb != null)
             {
                 var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
-                var parent = actionSystem == null ? null : actionSystem.transform;
-                parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
-                GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
-                instanceIDProp.intValue = go.GetInstanceID();
-                instanceIDProp.serializedObject.ApplyModifiedProperties();
-                go.transform.SetParent(parent, false);
+                ////var parent = actionSystem == null ? null : actionSystem.transform;
+                //parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
+                //GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
+                //instanceIDProp.intValue = go.GetInstanceID();
+                //instanceIDProp.serializedObject.ApplyModifiedProperties();
+                //go.transform.SetParent(parent, false);
 
-                if (rematrixProp.boolValue)
-                {
-                    LoadmatrixInfo(matrixProp, go.transform);
-                }
+                //if (rematrixProp.boolValue)
+                //{
+                //    LoadmatrixInfo(matrixProp, go.transform);
+                //}
             }
         }
         internal static void SavePrefab(ref int instanceID)

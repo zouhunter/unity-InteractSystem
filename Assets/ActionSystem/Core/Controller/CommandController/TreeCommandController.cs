@@ -13,22 +13,22 @@ namespace WorldActionSystem
     public class TreeCommandController : ICommandController
     {
         UnityAction<bool> onEndExecute { get; set; }
-        List<IActionCommand> rootCommands;
-        Dictionary<IActionCommand, List<IActionCommand>> commandDic;
+        List<ActionCommand> rootCommands;
+        Dictionary<ActionCommand, List<ActionCommand>> commandDic;
         //Dictionary<IActionCommand, IActionCommand> parentDic;
-        Stack<IActionCommand> executedCommands = new Stack<IActionCommand>();//正向执行过了记录
-        Stack<IActionCommand> backupCommands = new Stack<IActionCommand>();//回退时记录
-        List<IActionCommand> activeCommands = new List<IActionCommand>();
-        public IActionCommand CurrCommand { get; private set; }
+        Stack<ActionCommand> executedCommands = new Stack<ActionCommand>();//正向执行过了记录
+        Stack<ActionCommand> backupCommands = new Stack<ActionCommand>();//回退时记录
+        List<ActionCommand> activeCommands = new List<ActionCommand>();
+        public ActionCommand CurrCommand { get; private set; }
 
-        public TreeCommandController(Dictionary<string, string[]> rule, List<IActionCommand> commandList)
+        public TreeCommandController(Dictionary<string, string[]> rule, List<ActionCommand> commandList)
         {
-            this.commandDic = new Dictionary<IActionCommand, List<IActionCommand>>();
+            this.commandDic = new Dictionary<ActionCommand, List<ActionCommand>>();
             //this.parentDic = new Dictionary<IActionCommand, IActionCommand>();
             foreach (var item in rule)
             {
                 var key = commandList.Find(x => x.StepName == item.Key);
-                var values = new List<IActionCommand>();
+                var values = new List<ActionCommand>();
                 foreach (var child in item.Value)
                 {
                     var c = commandList.Find(x => x.StepName == child);
@@ -40,13 +40,13 @@ namespace WorldActionSystem
             rootCommands = SurchRootCommands(commandDic);
         }
 
-        public TreeCommandController(Dictionary<IActionCommand, List<IActionCommand>> commandDic)
+        public TreeCommandController(Dictionary<ActionCommand, List<ActionCommand>> commandDic)
         {
-            this.commandDic = new Dictionary<IActionCommand, List<IActionCommand>>();
+            this.commandDic = new Dictionary<ActionCommand, List<ActionCommand>>();
             //this.parentDic = new Dictionary<IActionCommand, IActionCommand>();
             foreach (var item in commandDic)
             {
-                commandDic[item.Key] = new List<IActionCommand>(item.Value);
+                commandDic[item.Key] = new List<ActionCommand>(item.Value);
                 //foreach (var child in item.Value)
                 //{
                 //    parentDic.Add(child, item.Key);
@@ -285,9 +285,9 @@ namespace WorldActionSystem
             return false;
         }
 
-        private static List<IActionCommand> SurchRootCommands(Dictionary<IActionCommand, List<IActionCommand>> commandDic)
+        private static List<ActionCommand> SurchRootCommands(Dictionary<ActionCommand, List<ActionCommand>> commandDic)
         {
-            var parents = new List<IActionCommand>();
+            var parents = new List<ActionCommand>();
             foreach (var item in commandDic)
             {
                 var maybe = item.Key;
