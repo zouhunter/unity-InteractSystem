@@ -28,15 +28,15 @@ namespace WorldActionSystem
         }
     
 
-        private void ModifyType()
-        {
-            var cmd = target as ActionCommand;
-            var actionObjs = cmd.GetComponentsInChildren<ActionObj>(true);
-            if (actionObjs != null)
-            {
-                foreach (var item in actionObjs) {
-                }
-            }
-        }
+        //private void ModifyType()
+        //{
+            //var cmd = target as ActionCommand;
+            //var actionObjs = cmd.GetComponentsInChildren<ActionObj>(true);
+            //if (actionObjs != null)
+            //{
+            //    foreach (var item in actionObjs) {
+            //    }
+            //}
+        //}
     }
 }

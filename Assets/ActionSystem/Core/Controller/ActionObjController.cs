@@ -20,7 +20,6 @@ namespace WorldActionSystem
         public UnityAction<ControllerType> onCtrlStart { get; set; }
         public UnityAction<ControllerType> onCtrlStop { get; set; }
         private ActionGroup _system;
-        private ActionGroup system { get { trigger.transform.SurchSystem(ref _system); return _system; } }
         private CameraController cameraCtrl
         {
             get

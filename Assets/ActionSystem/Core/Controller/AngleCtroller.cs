@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-using HighlightingSystem;
 
 namespace WorldActionSystem {
 
@@ -14,7 +13,6 @@ namespace WorldActionSystem {
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
         //private Dictionary<string, Queue<GameObject>> objectDicQueue = new Dictionary<string, Queue<GameObject>>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
-        private Dictionary<GameObject, Highlighter> highLightDic = new Dictionary<GameObject, Highlighter>();
         private ActionSystem actionSystem;
         public AngleCtroller(ActionSystem system)
         {
@@ -63,13 +61,13 @@ namespace WorldActionSystem {
             {
                 angle = Object.Instantiate(viewObj);
                 angle.transform.SetParent(actionSystem.transform);
-                Highlighter high = null;
-                if (!highLightDic.TryGetValue(angle,out high))
-                {
-                    high = InitHighLighter(angle);
-                    highLightDic.Add(angle, high);
-                }
-                high.On();
+                //Highlighter high = null;
+                //if (!highLightDic.TryGetValue(angle,out high))
+                //{
+                //    high = InitHighLighter(angle);
+                //    highLightDic.Add(angle, high);
+                //}
+                //high.On();
             }
             CopyTranform(angle.transform, target);
             angle.SetActive(true);
@@ -88,16 +86,16 @@ namespace WorldActionSystem {
         }
 
 
-        private static Highlighter InitHighLighter(GameObject angle)
-        {
-            Highlighter high = angle.GetComponent<Highlighter>();
-            if (high == null)
-            {
-                high = angle.AddComponent<Highlighter>();
-            }
-            high.SeeThroughOn();
-            return high;
-        }
+        //private static Highlighter InitHighLighter(GameObject angle)
+        //{
+        //    Highlighter high = angle.GetComponent<Highlighter>();
+        //    if (high == null)
+        //    {
+        //        high = angle.AddComponent<Highlighter>();
+        //    }
+        //    high.SeeThroughOn();
+        //    return high;
+        //}
 
         public static void CopyTranform(Transform obj, Transform target)
         {
@@ -114,12 +112,12 @@ namespace WorldActionSystem {
 
         private void HighLighter(GameObject angle)
         {
-            highLightDic[angle].FlashingOn(Color.white, highLightColor);
-            highLightDic[angle].SeeThroughOn();
+            //highLightDic[angle].FlashingOn(Color.white, highLightColor);
+            //highLightDic[angle].SeeThroughOn();
         }
         private void UnHighLighter(GameObject angle)
         {
-            highLightDic[angle].FlashingOff();
+            //highLightDic[angle].FlashingOff();
         }
     }
 }

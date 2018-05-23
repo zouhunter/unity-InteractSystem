@@ -536,7 +536,7 @@ namespace WorldActionSystem
             if (target is ActionGroup)
             {
                 var transform = (target as ActionGroup).transform;
-                Utility.RetiveBehaiver<ActionCommand>(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
+                //Utility.RetiveBehaiver<ActionCommand>(transform, (x) => { if (!commandList.Contains(x)) commandList.Add(x); });
             }
 
 
@@ -554,14 +554,14 @@ namespace WorldActionSystem
                 if (pfb.objectReferenceValue != null)
                 {
                     var go = pfb.objectReferenceValue as GameObject;
-                    Utility.RetiveBehaiver<ActionCommand>(go.transform, (x) =>
-                    {
-                        if (x != null)
-                        {
-                            contaionCommand.boolValue = true;
-                            if (!commandList.Contains(x) && !ignore.boolValue) commandList.Add(x);
-                        }
-                    });
+                    //Utility.RetiveBehaiver<ActionCommand>(go.transform, (x) =>
+                    //{
+                    //    if (x != null)
+                    //    {
+                    //        contaionCommand.boolValue = true;
+                    //        if (!commandList.Contains(x) && !ignore.boolValue) commandList.Add(x);
+                    //    }
+                    //});
                     //Utility.RetiveBehaiver<>(go.transform, (x) =>
                     //{
                     //    if (x != null)

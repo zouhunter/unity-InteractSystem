@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.ActionCommand)]
-    public class ActionCommand : MonoBehaviour, IActionCommand, IComparable<ActionCommand>
+    public class ActionCommand : ScriptableObject, IActionCommand, IComparable<ActionCommand>
     {
         [SerializeField, Attributes.DefultName]
         private string _stepName;
@@ -21,8 +21,8 @@ namespace WorldActionSystem
         public int QueueID { get { return _queueID; } }
         public int CopyCount { get { return _copyCount; } }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
-        public bool Started { get { return started; } }
-        public bool Completed { get { return completed; } }
+        public bool Started { get { return _started; } }
+        public bool Completed { get { return _completed; } }
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
         public IActionObj[] ActionObjs { get { return actionObjs; } }
@@ -42,41 +42,15 @@ namespace WorldActionSystem
             onBeforePlayEnd = new InputField.OnChangeEvent(),
             onBeforeUnDo = new InputField.OnChangeEvent();
 
-        private bool started;
-        private bool completed;
-        private ActionGroup _system;
-        private ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
+        protected bool _started;
+        protected bool _completed;
+        protected ActionGroup _system;
+        public ActionGroup system { get { return _system; } set { _system = value; } }
         protected CommandController commandCtrl { get { return system == null ? null : system.CommandCtrl; } }
 
-        protected virtual void Awake()
+        protected virtual void OnEnable()
         {
-            RegistActionObjs();
-            WorpCameraID();
             objectCtrl = new ActionObjCtroller(this);
-        }
-        protected virtual void Start()
-        {
-            TryRegistToActionSystem();
-        }
-        private void TryRegistToActionSystem()
-        {
-            if (commandCtrl != null) commandCtrl.RegistCommand(this);
-        }
-
-        private void WorpCameraID()
-        {
-            if (string.IsNullOrEmpty(_cameraID))
-            {
-                var node = GetComponentInChildren<CameraNode>();
-                if (node != null)
-                {
-                    _cameraID = node.name;
-                }
-            }
-        }
-        private void RegistActionObjs()
-        {
-            actionObjs = GetComponentsInChildren<IActionObj>(false);
         }
 
         public void RegistAsOperate(Events.OperateErrorAction userErr)
@@ -116,10 +90,10 @@ namespace WorldActionSystem
         /// </summary>
         internal bool Complete()
         {
-            if (!completed)
+            if (!_completed)
             {
-                started = true;
-                completed = true;
+                _started = true;
+                _completed = true;
                 OnEndExecute();
                 if (stepComplete != null) stepComplete.Invoke(this);
                 return true;
@@ -133,9 +107,9 @@ namespace WorldActionSystem
 
         public virtual bool StartExecute(bool forceAuto)
         {
-            if (!started)
+            if (!_started)
             {
-                started = true;
+                _started = true;
                 onBeforeActive.Invoke(StepName);
                 ActionCtrl.OnStartExecute(objectCtrl, forceAuto);
                 return true;
@@ -153,10 +127,10 @@ namespace WorldActionSystem
         {
             //Debug.Log("EndExecute", gameObject);
 
-            if (!completed)
+            if (!_completed)
             {
-                started = true;
-                completed = true;
+                _started = true;
+                _completed = true;
                 OnEndExecute();
                 return true;
             }
@@ -176,8 +150,8 @@ namespace WorldActionSystem
 
         public virtual void UnDoExecute()
         {
-            started = false;
-            completed = false;
+            _started = false;
+            _completed = false;
             onBeforeUnDo.Invoke(StepName);
             ActionCtrl.OnUnDoExecute(objectCtrl);
         }

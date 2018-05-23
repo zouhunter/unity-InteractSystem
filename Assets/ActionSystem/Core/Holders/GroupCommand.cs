@@ -88,9 +88,9 @@ namespace WorldActionSystem
         {
             var newCmd = UnityEngine.Object.Instantiate<ActionCommand>(cmd);
             newCmd.name = cmd.name;
-            newCmd.transform.SetParent(cmd.transform.parent);
-            newCmd.transform.position = cmd.transform.position;
-            newCmd.transform.rotation = cmd.transform.rotation;
+            //newCmd.transform.SetParent(cmd.transform.parent);
+            //newCmd.transform.position = cmd.transform.position;
+            //newCmd.transform.rotation = cmd.transform.rotation;
             return newCmd;
         }
 
