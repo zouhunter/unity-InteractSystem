@@ -25,28 +25,19 @@ namespace WorldActionSystem
         public bool Completed { get { return _completed; } }
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
-        public IActionObj[] ActionObjs { get { return actionObjs; } }
+        public ActionObj[] ActionObjs { get { return actionObjs; } }
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
-        public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } }
+        public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } } public ActionGroup system { get { return _system; } set { _system = value; } }
+        protected CommandController commandCtrl { get { return system == null ? null : system.CommandCtrl; } }
 
-        protected IActionObj[] actionObjs;
+
+        protected ActionObj[] actionObjs = new ActionObj[0];
         private ActionObjCtroller objectCtrl;
-        //[EnumMask]
-        //public ControllerType commandType;
-
-#if ActionSystem_G
-        [HideInInspector]
-#endif
-        public InputField.OnChangeEvent 
-            onBeforeActive = new InputField.OnChangeEvent() , 
-            onBeforePlayEnd = new InputField.OnChangeEvent(),
-            onBeforeUnDo = new InputField.OnChangeEvent();
-
         protected bool _started;
         protected bool _completed;
         protected ActionGroup _system;
-        public ActionGroup system { get { return _system; } set { _system = value; } }
-        protected CommandController commandCtrl { get { return system == null ? null : system.CommandCtrl; } }
+        protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
+
 
         protected virtual void OnEnable()
         {
@@ -110,7 +101,7 @@ namespace WorldActionSystem
             if (!_started)
             {
                 _started = true;
-                onBeforeActive.Invoke(StepName);
+                OnBeforeActionsStart();
                 ActionCtrl.OnStartExecute(objectCtrl, forceAuto);
                 return true;
             }
@@ -120,6 +111,11 @@ namespace WorldActionSystem
                 return false;
             }
         }
+        internal void RegistCommandChanged(Action<string, int, int> onCommandStartExecute)
+        {
+            this.onActionObjStartExecute = onActionObjStartExecute;
+        }
+
         /// <summary>
         /// 强制结束
         /// </summary>
@@ -144,7 +140,7 @@ namespace WorldActionSystem
 
         public void OnEndExecute()
         {
-            onBeforePlayEnd.Invoke(StepName);
+            OnBeforeActionsPlayEnd();
             ActionCtrl.OnEndExecute(objectCtrl);
         }
 
@@ -152,11 +148,22 @@ namespace WorldActionSystem
         {
             _started = false;
             _completed = false;
-            onBeforeUnDo.Invoke(StepName);
+
+            OnBeforeActionsUnDo();
             ActionCtrl.OnUnDoExecute(objectCtrl);
         }
+        private void OnBeforeActionsStart()
+        {
 
+        }
+        private void OnBeforeActionsUnDo()
+        {
 
+        }
+        private void OnBeforeActionsPlayEnd()
+        {
+
+        }
     }
 }
 

@@ -14,7 +14,7 @@ namespace WorldActionSystem
         protected Coroutine coroutine;
         private Dictionary<ControllerType, int> activeTypes = new Dictionary<ControllerType, int>();
         public static bool log = false;
-        public UnityAction<IActionObj> onActionStart;
+        public UnityAction<ActionObj> onActionStart;
 
         private CameraController cameraCtrl
         {

@@ -86,11 +86,7 @@ namespace WorldActionSystem
                         var cmd = item.Value[0];
                         cmd.RegistComplete(OnOneCommandComplete);
                         cmd.RegistAsOperate(OnUserError);
-
-                        cmd.onBeforeActive.AddListener((x) =>
-                        {
-                            OnCommandStartExecute(stepName, 1, 1);
-                        });
+                        cmd.RegistCommandChanged(OnCommandStartExecute);
                         _commandList.Add(cmd);
                     }
 

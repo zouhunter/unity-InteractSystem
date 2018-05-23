@@ -9,7 +9,7 @@ using WorldActionSystem;
 namespace WorldActionSystem
 {
     
-    public abstract class ActionObj : MonoBehaviour, IActionObj
+    public abstract class ActionObj
     {
         [SerializeField,UnityEngine.Serialization.FormerlySerializedAs("m_name"),Attributes.DefultName]
         protected string _name;
@@ -18,10 +18,6 @@ namespace WorldActionSystem
         {
             get
             {
-                if (string.IsNullOrEmpty(_name))
-                {
-                    return name;
-                }
                 return _name;
             }
             set
@@ -64,29 +60,30 @@ namespace WorldActionSystem
         private HookCtroller hookCtrl;
         protected AngleCtroller angleCtrl { get { return ActionSystem.Instence.angleCtrl; } }
         private ActionGroup _system;
-        public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
+        public ActionGroup system { get { return _system; } set { _system = value; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         protected static List<ActionObj> startedList = new List<ActionObj>();
         public abstract ControllerType CtrlType { get; }
         public static bool log = false;
         protected bool notice;
 
-        protected virtual void Awake() { }
-        protected virtual void Start()
-        {
-            hooks = GetComponentsInChildren<ActionHook>(false);
-            if (hooks.Length > 0)
-            {
-                hookCtrl = new HookCtroller(this);
-            }
-            if (anglePos == null)
-            {
-                anglePos = transform;
-            }
+        //protected virtual void Awake() { }
 
-            WorpCameraID();
-            //gameObject.SetActive(startActive);
-        }
+        //protected virtual void Start()
+        //{
+        //    hooks = GetComponentsInChildren<ActionHook>(false);
+        //    if (hooks.Length > 0)
+        //    {
+        //        hookCtrl = new HookCtroller(this);
+        //    }
+        //    if (anglePos == null)
+        //    {
+        //        anglePos = transform;
+        //    }
+
+        //    WorpCameraID();
+        //    //gameObject.SetActive(startActive);
+        //}
         protected virtual void OnDestroy() { }
         protected virtual void Update()
         {
@@ -114,13 +111,13 @@ namespace WorldActionSystem
                 _started = true;
                 _completed = false;
                 notice = true;
-                gameObject.SetActive(true);
+                //gameObject.SetActive(true);
                 startedList.Add(this);
                 OnStartExecuteInternal(auto);
             }
             else
             {
-                Debug.LogError("already started", gameObject);
+                Debug.LogError("already started");
             }
         }
         public virtual void OnEndExecute(bool force)
@@ -163,7 +160,7 @@ namespace WorldActionSystem
         {
             angleCtrl.UnNotice(anglePos);
 
-            if (log) Debug.Log("OnEndExecute:" + this + ":" + force, this);
+            if (log) Debug.Log("OnEndExecute:" + this + ":" + force);
 
             if (!_completed)
             {
@@ -179,7 +176,7 @@ namespace WorldActionSystem
                 }
 
                 OnBeforeEnd(force);
-                if (log) Debug.Log("OnEndExecute:" + Name, this);
+                if (log) Debug.Log("OnEndExecute:" + Name);
 
                 if (onEndExecute != null)
                 {
@@ -188,7 +185,7 @@ namespace WorldActionSystem
             }
             else
             {
-                if (log) Debug.LogError("already completed", gameObject);
+                if (log) Debug.LogError("already completed");
             }
         }
 
@@ -197,7 +194,7 @@ namespace WorldActionSystem
         {
             angleCtrl.UnNotice(anglePos);
 
-            if (log) Debug.Log("OnUnDoExecute:" + this, this);
+            if (log) Debug.Log("OnUnDoExecute:" + this);
 
             if (_started)
             {
@@ -219,7 +216,7 @@ namespace WorldActionSystem
 
         }
 
-        public int CompareTo(IActionObj other)
+        public int CompareTo(ActionObj other)
         {
             if (QueueID > other.QueueID)
             {
@@ -235,17 +232,17 @@ namespace WorldActionSystem
             }
         }
 
-        private void WorpCameraID()
-        {
-            if (string.IsNullOrEmpty(_cameraID))
-            {
-                var node = GetComponentInChildren<CameraNode>();
-                if (node != null)
-                {
-                    _cameraID = node.name;
-                }
-            }
-        }
+        //private void WorpCameraID()
+        //{
+        //    if (string.IsNullOrEmpty(_cameraID))
+        //    {
+        //        var node = GetComponentInChildren<CameraNode>();
+        //        if (node != null)
+        //        {
+        //            _cameraID = node.name;
+        //        }
+        //    }
+        //}
         private void OnStartExecuteInternal(bool auto)
         {
             this.onStartExecute.Invoke(auto);

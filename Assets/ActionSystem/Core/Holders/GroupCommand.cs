@@ -86,11 +86,8 @@ namespace WorldActionSystem
         }
         private ActionCommand CreateCommandCopy(ActionCommand cmd)
         {
-            var newCmd = UnityEngine.Object.Instantiate<ActionCommand>(cmd);
+            var newCmd = UnityEngine.Object.Instantiate(cmd);
             newCmd.name = cmd.name;
-            //newCmd.transform.SetParent(cmd.transform.parent);
-            //newCmd.transform.position = cmd.transform.position;
-            //newCmd.transform.rotation = cmd.transform.rotation;
             return newCmd;
         }
 
@@ -101,8 +98,7 @@ namespace WorldActionSystem
                 var cmd = item;
                 cmd.RegistAsOperate(onUserError);
                 cmd.RegistComplete(OnCommandObjComplete);
-                cmd.onBeforeActive.AddListener((x) =>
-                {
+                cmd.RegistCommandChanged((x,count,currentID) =>{
                     OnCommandStartExecute(x, commandList.Count, commandList.IndexOf(cmd));
                 });
             }
