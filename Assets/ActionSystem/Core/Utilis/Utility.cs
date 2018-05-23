@@ -47,19 +47,19 @@ namespace WorldActionSystem
         public static void CreateRunTimeObjects(Transform transform, List<AutoPrefabItem> prefabList)
         {
            
-            foreach (var item in prefabList)
-            {
-                if (item.ignore) continue;
+            //foreach (var item in prefabList)
+            //{
+            //    if (item.ignore) continue;
 
-                var parent = GetParent(transform, item.containsCommand, item.containsPickup);
+            //    var parent = GetParent(transform, item.containsCommand, item.containsPickup);
 
-                var created = CreateRunTimeObject(item.prefab, parent);
+            //    var created = CreateRunTimeObject(item.prefab, parent);
 
-                if (item.rematrix)
-                {
-                    TransUtil.LoadmatrixInfo(item.matrix, created.transform);
-                }
-            }
+            //    if (item.rematrix)
+            //    {
+            //        TransUtil.LoadmatrixInfo(item.matrix, created.transform);
+            //    }
+            //}
         }
         public static Transform GetParent(Transform transform, bool containsCommand, bool containsPickup)
         {

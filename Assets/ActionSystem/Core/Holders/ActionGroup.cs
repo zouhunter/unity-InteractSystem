@@ -15,8 +15,6 @@ namespace WorldActionSystem
         [SerializeField]
         private List<OptionalCommandItem> actionCommands = new List<OptionalCommandItem>();
         [SerializeField]
-        public List<AutoPrefabItem> autoLoadElement = new List<AutoPrefabItem>();
-        [SerializeField]
         public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
 
         #region Propertys
@@ -34,7 +32,6 @@ namespace WorldActionSystem
 
         private void OnEnable()
         {
-            Utility.CreateRunTimeObjects(ActionSystem.Instence.transform, autoLoadElement);
             ElementController.Instence.RegistRunTimeElements(runTimeElements);
             ActionSystem.Instence.RegistGroup(this);
         }

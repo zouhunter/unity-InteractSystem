@@ -8,7 +8,6 @@ namespace WorldActionSystem
 #if UNITY_EDITOR
         public int instanceID;
 #endif
-        
         private string _id;
         public string ID
         {
@@ -16,30 +15,22 @@ namespace WorldActionSystem
             {
                 if (string.IsNullOrEmpty(_id))
                 {
-                    _id = CalcuteID(prefab, rematrix, matrix);
+                    _id = CalcuteID(prefab, matrix);
                 }
                 return _id;
             }
         }
-        public bool containsCommand;
-        public bool containsPickup;
-        public bool rematrix;
+        public bool startState;//初始状态
+        public bool commandStartState;//命令开始时的状态
+        public bool commandCompleteState;//命令结束时的状态
         public Matrix4x4 matrix;
         public GameObject prefab;
         public bool ignore;
-
-        public static string CalcuteID(GameObject prefab,bool rematrix, Matrix4x4 matrix)
+        public static string CalcuteID(GameObject prefab, Matrix4x4 matrix)
         {
             string _id = null;
             var name = prefab == null ? "Null" : prefab.name;
-            if (!rematrix)
-            {
-                _id = name;
-            }
-            else
-            {
-                _id = string.Format("[{0}][{1}]", name, matrix);
-            }
+            _id = string.Format("[{0}][{1}]", name, matrix);
             return _id;
         }
         public int CompareTo(AutoPrefabItem other)

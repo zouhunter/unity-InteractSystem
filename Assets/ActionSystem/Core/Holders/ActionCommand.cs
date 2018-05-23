@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.ActionCommand)]
-    public class ActionCommand : ScriptableObject, IComparable<ActionCommand>
+    public class ActionCommand : ScriptableObject
     {
         /// <summary>
         /// 图形化的动作执行方式
@@ -16,8 +16,8 @@ namespace WorldActionSystem
 
         [SerializeField, Attributes.DefultName]
         private string _stepName;
-        [SerializeField,Attributes. Range(0, 10)]
-        private int _queueID;
+        //[SerializeField,Attributes. Range(0, 10)]
+        //private int _queueID;
         [SerializeField, Attributes.Range(0,10)]
         private int _copyCount;
         [SerializeField,Attributes.DefultCameraAttribute()]
@@ -26,6 +26,8 @@ namespace WorldActionSystem
         protected Graph.ActionNode[] actionObjs = new Graph.ActionNode[0];
         [SerializeField]
         protected CommandBinding[] commandBindings = new CommandBinding[0];
+        [SerializeField]
+        private List<AutoPrefabItem> environment = new List<AutoPrefabItem>();
 
         private ActionObjCtroller objectCtrl;
         protected bool _started;
@@ -34,8 +36,8 @@ namespace WorldActionSystem
         protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
 
         public string CameraID { get { return _cameraID; } }
-        public int QueueID { get { return _queueID; } }
-        public int CopyCount { get { return _copyCount; } }
+        //public int QueueID { get { return _queueID; } }
+        //public int CopyCount { get { return _copyCount; } }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
         public bool Started { get { return _started; } }
         public bool Completed { get { return _completed; } }
@@ -63,22 +65,7 @@ namespace WorldActionSystem
         {
             this.stepComplete = stepComplete;
         }
-        public int CompareTo(ActionCommand other)
-        {
-            if (other.QueueID > QueueID)
-            {
-                return -1;
-            }
-            else if (other.QueueID == QueueID)
-            {
-                return 0;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-
+    
         internal void UserError(string err)
         {
             if (userErr != null)

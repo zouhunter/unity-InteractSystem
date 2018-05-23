@@ -60,6 +60,8 @@ namespace WorldActionSystem.Graph
         private ActionHook[] hooks;//外部结束钩子
         [SerializeField]
         private ActionBinding[] binding;
+        [SerializeField]
+        public List<AutoPrefabItem> environment = new List<AutoPrefabItem>();
 
         public virtual void OnStartExecute(bool auto = false)
         {
