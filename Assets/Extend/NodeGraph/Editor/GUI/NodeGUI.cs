@@ -159,7 +159,7 @@ namespace NodeGraph
             m_controller = controller;
             m_data = data;
             m_data.Object.Initialize(m_data);
-            m_baseRect = new Rect(m_data.X, m_data.Y, NGEditorSettings.GUI.NODE_BASE_WIDTH, NGEditorSettings.GUI.NODE_BASE_HEIGHT + nodeDataDrawer.CustomNodeHeight);
+            m_baseRect = new Rect(m_data.X, m_data.Y, NGEditorSettings.GUI.NODE_BASE_WIDTH + nodeDataDrawer.SuperWidth, NGEditorSettings.GUI.NODE_BASE_HEIGHT + nodeDataDrawer.SuperHeight);
             m_nodeSyle = nodeDataDrawer == null ? EditorStyles.miniButton : nodeDataDrawer.InactiveStyle;
         }
 
@@ -176,11 +176,11 @@ namespace NodeGraph
             if (active)
             {
                 Selection.activeObject = Inspector;
-                m_nodeSyle = nodeDataDrawer == null ? "node 0 on" : nodeDataDrawer.ActiveStyle;
+                m_nodeSyle = nodeDataDrawer == null ? EditorStyles.miniButton : nodeDataDrawer.ActiveStyle;
             }
             else
             {
-                m_nodeSyle = nodeDataDrawer == null ? "node 0" : nodeDataDrawer.InactiveStyle;
+                m_nodeSyle = nodeDataDrawer == null ? EditorStyles.miniButton : nodeDataDrawer.InactiveStyle;
             }
         }
 
@@ -421,8 +421,8 @@ namespace NodeGraph
 
             var titleHeight = style.CalcSize(new GUIContent(Name)).y + NGEditorSettings.GUI.NODE_TITLE_HEIGHT_MARGIN;
             var nodeTitleRect = new Rect(0, 0, m_baseRect.width, titleHeight);
-            GUI.color = textColor;
-            GUI.Label(nodeTitleRect, Name, style);
+            //GUI.color = textColor;
+            //GUI.Label(nodeTitleRect, Name, style);
             GUI.color = oldColor;
 
             if (m_running)
@@ -461,12 +461,7 @@ namespace NodeGraph
             m_data.InputPoints.ForEach(drawConnectionPoint);
             m_data.OutputPoints.ForEach(drawConnectionPoint);
 
-            if (nodeDataDrawer.CustomNodeHeight > 0)
-            {
-                var customRect = new Rect(2f, m_baseRect.height - nodeDataDrawer.CustomNodeHeight - 8f, m_baseRect.width - 4, nodeDataDrawer.CustomNodeHeight);//
-                nodeDataDrawer.OnNodeGUI(customRect, Data);
-            }
-
+            nodeDataDrawer.OnNodeGUI(new Rect(0,0,m_baseRect.width,m_baseRect.height), Data);
             GUIStyle catStyle = new GUIStyle("WhiteMiniLabel");
             catStyle.alignment = TextAnchor.LowerRight;
             var categoryRect = new Rect(2f, m_baseRect.height - 14f, m_baseRect.width - 4f, 16f);
@@ -518,7 +513,7 @@ namespace NodeGraph
             var newWidth = Mathf.Max(NGEditorSettings.GUI.NODE_BASE_WIDTH, outputLabelWidth + inputLabelWidth + NGEditorSettings.GUI.NODE_WIDTH_MARGIN);
             newWidth = Mathf.Max(newWidth, labelWidth + NGEditorSettings.GUI.NODE_WIDTH_MARGIN);
 
-            m_baseRect = new Rect(m_baseRect.x, m_baseRect.y, newWidth, m_baseRect.height + nodeDataDrawer.CustomNodeHeight + notdefultLabelHeight);
+            m_baseRect = new Rect(m_baseRect.x, m_baseRect.y, newWidth + nodeDataDrawer.SuperWidth, m_baseRect.height + nodeDataDrawer.SuperHeight + notdefultLabelHeight);
 
             RefreshConnectionPos(titleHeight);
         }
