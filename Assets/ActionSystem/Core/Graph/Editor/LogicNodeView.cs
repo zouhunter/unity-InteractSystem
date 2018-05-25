@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using NodeGraph;
 using NodeGraph.DataModel;
 using UnityEditor;
+using System;
 
 namespace WorldActionSystem.Graph
 {
+
     [CustomNodeView(typeof(LogicNode))]
-    public class LogicNodeView : NodeView
+    public class LogicNodeView : ActionNodeView
     {
         public override Node target
         {
@@ -41,6 +43,7 @@ namespace WorldActionSystem.Graph
                 return -40;
             }
         }
+
         public override GUIStyle ActiveStyle
         {
             get
@@ -49,7 +52,7 @@ namespace WorldActionSystem.Graph
                 {
 
                     _activeStyle = new GUIStyle();
-                    _activeStyle.normal.background = TextureContent.LoadTexture("operate") as Texture2D;
+                    _activeStyle.normal.background = IconContents.LoadTexture("Generic@32x") as Texture2D;
                     _activeStyle.border = new RectOffset(11, 11, 11, 11);
                 }
                 return _activeStyle;
@@ -63,7 +66,7 @@ namespace WorldActionSystem.Graph
                 {
 
                     _inactiveStyle = new GUIStyle();
-                    _inactiveStyle.normal.background = TextureContent.LoadTexture("operate") as Texture2D;
+                    _inactiveStyle.normal.background = IconContents.LoadTexture("Scalar@32x") as Texture2D;
                     _inactiveStyle.border = new RectOffset(11, 11, 11, 11);
                 }
                 return _inactiveStyle;
@@ -79,14 +82,17 @@ namespace WorldActionSystem.Graph
 
         public override void OnNodeGUI(Rect position, NodeData data)
         {
-            if (or_texture== null)
+            base.OnNodeGUI(position, data);
+            if (or_texture == null)
             {
-                or_texture = TextureContent.LoadTexture("or");
-                Debug.Log(or_texture);
+                or_texture = IconContents.LoadTexture("or");
             }
-            var iconRect = new Rect(position.center - Vector2.one * 20, Vector2.one * 40);
+            var iconRect = new Rect(position.x + position.width - 30, position.y, 30, 30);
             GUI.backgroundColor = Color.clear;
-            GUI.Button(iconRect, or_texture, "AnimationKeyframeBackground");
+            if (GUI.Button(iconRect, or_texture))
+            {
+
+            } 
             GUI.backgroundColor = Color.white;
             //EditorGUI.DrawTextureTransparent(iconRect, or_texture, ScaleMode.ScaleToFit);
         }

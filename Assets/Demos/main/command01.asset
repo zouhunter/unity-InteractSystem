@@ -13,10 +13,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graphObj: {fileID: 114539193140345448}
   _stepName: 
-  _queueID: 0
   _copyCount: 0
   _cameraID: defult
---- !u!114 &114102453210493404
+  actionObjs: []
+  commandBindings: []
+  environment: []
+--- !u!114 &114136934365165386
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -24,58 +26,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
+  m_Script: {fileID: 11500000, guid: 6f463f25238fa2d4e9235482cc4350a3, type: 3}
+  m_Name: WorldActionSystem.Graph.LogicNode
   m_EditorClassIdentifier: 
-  test: test
---- !u!114 &114139543357691438
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
-  m_EditorClassIdentifier: 
-  test: test
---- !u!114 &114273428846378786
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
-  m_EditorClassIdentifier: 
-  test: test
---- !u!114 &114381138162955650
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
-  m_EditorClassIdentifier: 
-  test: test
---- !u!114 &114413886571387298
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
-  m_EditorClassIdentifier: 
-  test: test
 --- !u!114 &114539193140345448
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -88,67 +41,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_allNodes:
-  - m_name: Anim
-    m_id: 1dd0de37-91ca-45c8-ac9d-48f58e4b806b
-    m_x: 173
-    m_y: 161
-    m_node: {fileID: 114139543357691438}
+  - m_name: Start
+    m_id: d3d06c82-d632-466e-9c71-72fb089365c1
+    m_x: 48
+    m_y: 108
+    m_node: {fileID: 114958980627670360}
     m_inputPoints: []
     m_outputPoints: []
-  - m_name: Anim
-    m_id: 898de7e8-7eb2-490e-af18-290ef29ebb49
-    m_x: 253
-    m_y: 284
-    m_node: {fileID: 114413886571387298}
+  - m_name: End
+    m_id: 7dee3a2c-6e45-4ed5-a52c-f2fdf5b1a364
+    m_x: 444
+    m_y: 120
+    m_node: {fileID: 114955972481828742}
     m_inputPoints: []
     m_outputPoints: []
-  - m_name: Anim
-    m_id: 3cde6abe-51a0-4345-8628-d7951c527f83
-    m_x: 426
-    m_y: 212
-    m_node: {fileID: 114273428846378786}
-    m_inputPoints: []
-    m_outputPoints: []
-  - m_name: Anim
-    m_id: 9f66ec04-2bb4-49f5-bd41-5360c217ca1f
-    m_x: 426
-    m_y: 146
-    m_node: {fileID: 114102453210493404}
-    m_inputPoints: []
-    m_outputPoints: []
-  - m_name: Anim
-    m_id: 55cab8c6-73e6-4943-bf16-c4b19ab9474a
-    m_x: 367
-    m_y: 94
-    m_node: {fileID: 114833877951125376}
-    m_inputPoints: []
-    m_outputPoints: []
-  - m_name: Anim
-    m_id: 7f4fce7b-85d0-448e-b809-57663a7d8416
-    m_x: 100
-    m_y: 50
-    m_node: {fileID: 114381138162955650}
-    m_inputPoints: []
-    m_outputPoints: []
-  - m_name: Anim
-    m_id: 1e5d0149-344b-40fe-82f6-2771c2abffc2
-    m_x: 50
-    m_y: 250
-    m_node: {fileID: 114862970710934184}
-    m_inputPoints: []
-    m_outputPoints: []
-  - m_name: Anim
-    m_id: 565592f5-32c1-4689-be2a-9d77f779f3f7
-    m_x: 300
-    m_y: 200
-    m_node: {fileID: 114800950705433508}
-    m_inputPoints: []
-    m_outputPoints: []
+  - m_name: Logic
+    m_id: e8c93495-26a3-4ecc-bc62-315cf6b903ae
+    m_x: 252
+    m_y: 169
+    m_node: {fileID: 114136934365165386}
+    m_inputPoints:
+    - id: 17215d5c-8709-422a-84fa-e57fc3c3bbe3
+      label: 
+      parentId: e8c93495-26a3-4ecc-bc62-315cf6b903ae
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 100
+      type: 
+    m_outputPoints:
+    - id: 9ee19797-f7f3-49ad-8816-d8023fda4313
+      label: 
+      parentId: e8c93495-26a3-4ecc-bc62-315cf6b903ae
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 71
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: 
   m_allConnections: []
-  m_lastModified: 131715452413722723
+  m_lastModified: 131717586729386263
   m_graphDescription: 
   m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
---- !u!114 &114800950705433508
+--- !u!114 &114955972481828742
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -156,11 +98,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
+  m_Script: {fileID: 11500000, guid: 88433d72a918d5d4ebd9cfd66227d2c3, type: 3}
+  m_Name: WorldActionSystem.Graph.EndNode
   m_EditorClassIdentifier: 
-  test: test
---- !u!114 &114833877951125376
+--- !u!114 &114958980627670360
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -168,19 +109,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: WorldActionSystem.Graph.StartNode
   m_EditorClassIdentifier: 
-  test: test
---- !u!114 &114862970710934184
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5db5a502d2c3cb4192576a7526118ea, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
-  m_EditorClassIdentifier: 
-  test: test
+  queueID: 0
+  _queueInAuto: 1
+  _cameraID: 
+  _name: 
+  hooks: []
+  binding: []
+  environment: []

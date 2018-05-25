@@ -23,7 +23,7 @@ namespace WorldActionSystem
         [SerializeField,Attributes.DefultCameraAttribute()]
         private string _cameraID = CameraController.defultID;
         [SerializeField]
-        protected Graph.ActionNode[] actionObjs = new Graph.ActionNode[0];
+        protected Graph.OperateNode[] actionObjs = new Graph.OperateNode[0];
         [SerializeField]
         protected CommandBinding[] commandBindings = new CommandBinding[0];
         [SerializeField]
@@ -43,7 +43,7 @@ namespace WorldActionSystem
         public bool Completed { get { return _completed; } }
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
-        public Graph. ActionNode[] ActionObjs { get { return actionObjs; } }
+        public Graph. OperateNode[] ActionObjs { get { return actionObjs; } }
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
         public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } }
         public ActionGroup actionGroup { get; private set; }

@@ -12,11 +12,11 @@ namespace WorldActionSystem
     {
         public ActionCommand trigger { get;private set; }
         protected List<int> queueID = new List<int>();
-        protected ActionNode[] actionObjs { get;private set; }
-        public ActionNode[] StartedActions { get { return startedActions.ToArray(); } }
+        protected OperateNode[] actionObjs { get;private set; }
+        public OperateNode[] StartedActions { get { return startedActions.ToArray(); } }
         protected bool isForceAuto;
-        private Queue<ActionNode> actionQueue = new Queue<ActionNode>();
-        private List<ActionNode> startedActions = new List<ActionNode>();
+        private Queue<OperateNode> actionQueue = new Queue<OperateNode>();
+        private List<OperateNode> startedActions = new List<OperateNode>();
         public static bool log = false;
         public UnityAction<ControllerType> onCtrlStart { get; set; }
         public UnityAction<ControllerType> onCtrlStop { get; set; }
@@ -102,10 +102,10 @@ namespace WorldActionSystem
         }
 
 
-        private void OnCommandObjComplete(ActionNode obj)
+        private void OnCommandObjComplete(OperateNode obj)
         {
             OnStopAction(obj);
-            var notComplete = Array.FindAll<ActionNode>(actionObjs, x => x.QueueID == obj.QueueID && !x.Completed);
+            var notComplete = Array.FindAll<OperateNode>(actionObjs, x => x.QueueID == obj.QueueID && !x.Completed);
             if (notComplete.Length == 0)
             {
                 if (!ExecuteAStep())
@@ -161,7 +161,7 @@ namespace WorldActionSystem
             {
                 var id = queueID[0];
                 queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<ActionNode>(actionObjs, x => x.QueueID == id && !x.Started);
+                var neetActive = Array.FindAll<OperateNode>(actionObjs, x => x.QueueID == id && !x.Started);
                 if (isForceAuto)
                 {
                     actionQueue.Clear();
@@ -169,7 +169,7 @@ namespace WorldActionSystem
                     {
                         if (item.QueueInAuto)
                         {
-                            actionQueue.Enqueue(item as ActionNode);
+                            actionQueue.Enqueue(item as OperateNode);
                         }
                         else
                         {
@@ -200,7 +200,7 @@ namespace WorldActionSystem
                 TryStartAction(actionObj);
             }
         }
-        private void TryStartAction(ActionNode obj)
+        private void TryStartAction(OperateNode obj)
         {
             if (log) Debug.Log("Start A Step:" + obj);
             if (!obj.Started)
@@ -225,7 +225,7 @@ namespace WorldActionSystem
 
         }
 
-        private void StartAction(ActionNode obj)
+        private void StartAction(OperateNode obj)
         {
             if (!obj.Started)
             {
@@ -240,7 +240,7 @@ namespace WorldActionSystem
         /// 添加新的触发器
         /// </summary>
         /// <param name="action"></param>
-        private void OnStartAction(ActionNode action)
+        private void OnStartAction(OperateNode action)
         {
             startedActions.Add(action);
             if (onCtrlStart != null) onCtrlStart.Invoke(action.CtrlType);
@@ -250,7 +250,7 @@ namespace WorldActionSystem
         /// 移除触发器
         /// </summary>
         /// <param name="action"></param>
-        private void OnStopAction(ActionNode action)
+        private void OnStopAction(OperateNode action)
         {
             startedActions.Remove(action);
             if (onCtrlStop != null && startedActions.Find(x=>x.CtrlType == action.CtrlType) == null){
@@ -258,7 +258,7 @@ namespace WorldActionSystem
             }
         }
 
-        private string GetCameraID(ActionNode obj)
+        private string GetCameraID(OperateNode obj)
         {
             //忽略匹配相机
             if (Config.quickMoveElement /*&& obj is Actions.MatchObj && !(obj as Actions.MatchObj).ignorePass*/)

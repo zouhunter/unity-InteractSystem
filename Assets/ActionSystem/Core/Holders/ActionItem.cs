@@ -39,7 +39,7 @@ namespace WorldActionSystem
         public bool IsRuntimeCreated { get; set; }
         protected bool _active;
         public virtual bool Active { get { return _active; } protected set { _active = value; } }
-        protected List<Graph. ActionNode> targets = new List<Graph.ActionNode>();
+        protected List<Graph. OperateNode> targets = new List<Graph.OperateNode>();
 
 #if ActionSystem_G
         [HideInInspector]

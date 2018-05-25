@@ -50,6 +50,7 @@ namespace NodeGraph
             targetDrawer.DrawHeader();
             targetDrawer.OnInspectorGUI();
         }
+
         public virtual void OnClickNodeGUI(NodeGUI nodeGUI, Vector2 mousePosition, ConnectionPointData result) { }
 
         protected void RecordUnDo(string message, NodeGUI node, bool saveOnScopeEnd, UnityAction action)
