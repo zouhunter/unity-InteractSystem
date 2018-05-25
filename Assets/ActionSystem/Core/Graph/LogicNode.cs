@@ -8,7 +8,7 @@ using NodeGraph.DataModel;
 
 namespace WorldActionSystem.Graph
 {
-    [CustomNode("Judgement/Logic", 0, "ActionSystem")]
+    [CustomNode("Logic", 0, "ActionSystem")]
     public class LogicNode : NodeGraph.DataModel.Node
     {
         public GUIStyle style;
