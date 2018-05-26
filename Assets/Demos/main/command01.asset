@@ -11,25 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
   m_Name: command01
   m_EditorClassIdentifier: 
-  graphObj: {fileID: 114539193140345448}
+  graphObj: {fileID: 114173695892701492}
   _stepName: 
   _copyCount: 0
   _cameraID: defult
   actionObjs: []
   commandBindings: []
   environment: []
---- !u!114 &114136934365165386
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f463f25238fa2d4e9235482cc4350a3, type: 3}
-  m_Name: WorldActionSystem.Graph.LogicNode
-  m_EditorClassIdentifier: 
---- !u!114 &114539193140345448
+--- !u!114 &114173695892701492
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -41,29 +30,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_allNodes:
-  - m_name: Start
-    m_id: d3d06c82-d632-466e-9c71-72fb089365c1
-    m_x: 48
-    m_y: 108
-    m_node: {fileID: 114958980627670360}
-    m_inputPoints: []
-    m_outputPoints: []
   - m_name: End
-    m_id: 7dee3a2c-6e45-4ed5-a52c-f2fdf5b1a364
-    m_x: 444
-    m_y: 120
-    m_node: {fileID: 114955972481828742}
-    m_inputPoints: []
+    m_id: 86b150a2-726f-49d6-9af1-fbd9a8a15ac8
+    m_x: 552
+    m_y: 180
+    m_node: {fileID: 114462730155967756}
+    m_inputPoints:
+    - id: 965c8e65-e825-4259-8d5b-8bd79a370c41
+      label: ->
+      parentId: 86b150a2-726f-49d6-9af1-fbd9a8a15ac8
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 100
+      type: actionconnect
     m_outputPoints: []
   - m_name: Logic
-    m_id: e8c93495-26a3-4ecc-bc62-315cf6b903ae
-    m_x: 252
-    m_y: 169
-    m_node: {fileID: 114136934365165386}
+    m_id: 138e34f4-e7c7-4698-957c-88c6bb096a08
+    m_x: 372
+    m_y: 192
+    m_node: {fileID: 114415348144428152}
     m_inputPoints:
-    - id: 17215d5c-8709-422a-84fa-e57fc3c3bbe3
-      label: 
-      parentId: e8c93495-26a3-4ecc-bc62-315cf6b903ae
+    - id: 4efbbd97-fb6f-4909-bfdd-4bdbc12f73fd
+      label: '-'
+      parentId: 138e34f4-e7c7-4698-957c-88c6bb096a08
       isInput: 1
       buttonRect:
         serializedVersion: 2
@@ -74,9 +68,9 @@ MonoBehaviour:
       max: 100
       type: 
     m_outputPoints:
-    - id: 9ee19797-f7f3-49ad-8816-d8023fda4313
-      label: 
-      parentId: e8c93495-26a3-4ecc-bc62-315cf6b903ae
+    - id: 5d7df9a7-c48e-4dc8-96b2-0d7584a601a1
+      label: +
+      parentId: 138e34f4-e7c7-4698-957c-88c6bb096a08
       isInput: 0
       buttonRect:
         serializedVersion: 2
@@ -84,13 +78,13 @@ MonoBehaviour:
         y: 21.5
         width: 10
         height: 23
-      max: 100
+      max: 1
       type: 
   m_allConnections: []
-  m_lastModified: 131717586729386263
+  m_lastModified: 131718039534271926
   m_graphDescription: 
   m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
---- !u!114 &114955972481828742
+--- !u!114 &114415348144428152
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -98,10 +92,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88433d72a918d5d4ebd9cfd66227d2c3, type: 3}
-  m_Name: WorldActionSystem.Graph.EndNode
+  m_Script: {fileID: 11500000, guid: 6f463f25238fa2d4e9235482cc4350a3, type: 3}
+  m_Name: WorldActionSystem.Graph.LogicNode
   m_EditorClassIdentifier: 
---- !u!114 &114958980627670360
+  _inPoints:
+  - label: '-'
+    type: 
+    max: 100
+  _outPoints:
+  - label: +
+    type: 
+    max: 1
+--- !u!114 &114417282524190696
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -112,10 +114,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
   m_Name: WorldActionSystem.Graph.StartNode
   m_EditorClassIdentifier: 
-  queueID: 0
-  _queueInAuto: 1
-  _cameraID: 
-  _name: 
-  hooks: []
-  binding: []
-  environment: []
+--- !u!114 &114462730155967756
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88433d72a918d5d4ebd9cfd66227d2c3, type: 3}
+  m_Name: WorldActionSystem.Graph.EndNode
+  m_EditorClassIdentifier: 
