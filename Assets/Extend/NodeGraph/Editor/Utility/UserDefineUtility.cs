@@ -56,9 +56,23 @@ namespace NodeGraph
         internal static object GetUserDrawer(Type type)
         {
             InitDrawerTypes();
+
+            Type supportDrawer = null;
+
             if (userDrawer.ContainsKey(type))
             {
-                var drawer = Activator.CreateInstance(userDrawer[type]);
+                supportDrawer = userDrawer[type];
+            }
+            else
+            {
+                supportDrawer = userDrawer.Where(x => type.IsSubclassOf(x.Key)).FirstOrDefault().Value;
+            }
+            Debug.Log(type);
+            Debug.Log(supportDrawer);
+
+            if (supportDrawer != null)
+            {
+                var drawer = Activator.CreateInstance(supportDrawer);
                 return drawer;
             }
             return null;
@@ -76,6 +90,7 @@ namespace NodeGraph
                         .Where(t => typeof(NodeView).IsAssignableFrom(t) || typeof(ConnectionView).IsAssignableFrom(t));
                     allDrawer.AddRange(nodes);
                 }
+
                 foreach (var type in allDrawer)
                 {
                     CustomNodeView attr = type.GetCustomAttributes(typeof(CustomNodeView), false).FirstOrDefault() as CustomNodeView;

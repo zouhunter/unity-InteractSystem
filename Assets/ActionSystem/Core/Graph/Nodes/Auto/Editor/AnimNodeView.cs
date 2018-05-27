@@ -9,21 +9,9 @@ using NodeGraph.DataModel;
 namespace WorldActionSystem.Graph
 {
     [CustomNodeView(typeof(AnimNode))]
-    public class AnimNodeView : NodeView
+    public class AnimNodeView : OperateNodeView
     {
-        public override Node target
-        {
-            get
-            {
-                return base.target;
-            }
-
-            set
-            {
-                base.target = value;
-            }
-        }
-
+        
     }
 
 }

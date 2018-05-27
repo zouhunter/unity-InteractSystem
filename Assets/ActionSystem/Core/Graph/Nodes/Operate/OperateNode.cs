@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using NodeGraph;
+using NodeGraph.DataModel;
 
 namespace WorldActionSystem.Graph
 {
@@ -62,6 +63,19 @@ namespace WorldActionSystem.Graph
         private ActionBinding[] binding;
         [SerializeField]
         public List<AutoPrefabItem> environment = new List<AutoPrefabItem>();
+
+        public override void Initialize(NodeData data)
+        {
+            base.Initialize(data);
+            if (data.InputPoints == null || data.InputPoints.Count == 0)
+            {
+                data.AddInputPoint("", "actionconnect");
+            }
+            if (data.OutputPoints == null || data.OutputPoints.Count == 0)
+            {
+                data.AddOutputPoint("0", "actionconnect", 100);
+            }
+        }
 
         public virtual void OnStartExecute(bool auto = false)
         {

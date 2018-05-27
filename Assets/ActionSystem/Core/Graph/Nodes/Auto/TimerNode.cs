@@ -9,8 +9,14 @@ using NodeGraph.DataModel;
 namespace WorldActionSystem.Graph
 {
     [CustomNode("Auto/Timer", 1, "ActionSystem")]
-    public class TimerNode: Node
+    public class TimerNode : OperateNode
     {
-        
+        public override ControllerType CtrlType
+        {
+            get
+            {
+               return 0;
+            }
+        }
     }
 }
