@@ -870,10 +870,12 @@ namespace NodeGraph
                     EndWindows();
                 }
 
+                ClearBadConnection();
+
                 // draw connections.
                 foreach (var con in connections)
                 {
-                    con.DrawConnection(nodes);
+                   con.DrawConnection(nodes);
                 }
 
                 // draw connection input point marks.
@@ -935,6 +937,18 @@ namespace NodeGraph
                 {
                     graphRegion = newRgn;
                     Repaint();
+                }
+            }
+        }
+
+        private void ClearBadConnection()
+        {
+            var connectionsCopy = connections.ToArray();
+            foreach (var connection in connectionsCopy)
+            {
+                if(!connection.IsValid(nodes))
+                {
+                    connections.Remove(connection);
                 }
             }
         }

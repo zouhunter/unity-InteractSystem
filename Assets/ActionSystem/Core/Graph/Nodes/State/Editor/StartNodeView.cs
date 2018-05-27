@@ -42,20 +42,33 @@ namespace WorldActionSystem.Graph
         public override void OnNodeGUI(Rect position, NodeData data)
         {
             base.OnNodeGUI(position, data);
-            var btnRect = new Rect(position.x + btnWidth, position.y + btnWidth, btnWidth, btnWidth);
-            if (GUI.Button(btnRect,"+"))
+
+            var nodePostion = new Rect(position.x + position.width - 40, 25, btnWidth, btnWidth);
+
+            if (GUI.Button(nodePostion, "+"))
             {
                 var count = data.OutputPoints.Count;
                 data.AddOutputPoint(count.ToString(), "actionconnect", 100);
             }
-            btnRect.x += btnWidth;
-            if (GUI.Button(btnRect,"-"))
+
+            for (int i = 0; i < data.OutputPoints.Count; i++)
             {
-                if(data.OutputPoints.Count > 1)
+                if (i == 0) continue;
+                nodePostion.y += 31.8f;
+
+                if (GUI.Button(nodePostion, "-"))
                 {
-                    data.OutputPoints.RemoveAt(data.OutputPoints.Count - 1);
+                    if (data.OutputPoints.Count > 1)
+                    {
+                        data.OutputPoints.RemoveAt(i);
+                        for (int j = i; j < data.OutputPoints.Count; j++)
+                        {
+                            data.OutputPoints[j].Label = j.ToString();
+                        }
+                    }
                 }
             }
+            
         }
     }
 
