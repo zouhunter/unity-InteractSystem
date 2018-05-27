@@ -27,8 +27,6 @@ namespace WorldActionSystem.Graph
             }
         }
         private Texture or_texture;
-        private GUIStyle _activeStyle;
-        private GUIStyle _inactiveStyle;
         public override float SuperHeight
         {
             get
@@ -44,34 +42,22 @@ namespace WorldActionSystem.Graph
             }
         }
 
-        public override GUIStyle ActiveStyle
+        protected override GUIStyle CreateActiveStyle()
         {
-            get
-            {
-                if (_activeStyle == null)
-                {
-
-                    _activeStyle = new GUIStyle();
-                    _activeStyle.normal.background = IconContents.LoadTexture("Generic@32x") as Texture2D;
-                    _activeStyle.border = new RectOffset(11, 11, 11, 11);
-                }
-                return _activeStyle;
-            }
+            var style = new GUIStyle();
+            style.normal.background = GraphUtil.IconContents.LoadTexture("Generic@32x") as Texture2D;
+            style.border = new RectOffset(11, 11, 11, 11);
+            return style;
         }
-        public override GUIStyle InactiveStyle
+
+        protected override GUIStyle CreateInactiveStyle()
         {
-            get
-            {
-                if (_inactiveStyle == null)
-                {
-
-                    _inactiveStyle = new GUIStyle();
-                    _inactiveStyle.normal.background = IconContents.LoadTexture("Scalar@32x") as Texture2D;
-                    _inactiveStyle.border = new RectOffset(11, 11, 11, 11);
-                }
-                return _inactiveStyle;
-            }
+            var style = new GUIStyle();
+            style.normal.background = GraphUtil.IconContents.LoadTexture("Scalar@32x") as Texture2D;
+            style.border = new RectOffset(11, 11, 11, 11);
+            return style;
         }
+
         public override string Category
         {
             get
@@ -85,14 +71,14 @@ namespace WorldActionSystem.Graph
             base.OnNodeGUI(position, data);
             if (or_texture == null)
             {
-                or_texture = IconContents.LoadTexture("or");
+                or_texture = GraphUtil.IconContents.LoadTexture("or");
             }
             var iconRect = new Rect(position.x + position.width - 30, position.y, 30, 30);
             GUI.backgroundColor = Color.clear;
             if (GUI.Button(iconRect, or_texture))
             {
 
-            } 
+            }
             GUI.backgroundColor = Color.white;
             //EditorGUI.DrawTextureTransparent(iconRect, or_texture, ScaleMode.ScaleToFit);
         }

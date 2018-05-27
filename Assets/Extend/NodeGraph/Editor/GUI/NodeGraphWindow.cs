@@ -858,13 +858,7 @@ namespace NodeGraph
                 GUI.BeginClip(viewRect);
                 #region DrawInteranl
                 if (connections == null) Window.Close();
-
-                // draw connections.
-                foreach (var con in connections)
-                {
-                    con.DrawConnection(nodes);
-                }
-
+                
                 // draw node window x N.
                 {
                     BeginWindows();
@@ -874,6 +868,12 @@ namespace NodeGraph
                     HandleDragNodes();
 
                     EndWindows();
+                }
+
+                // draw connections.
+                foreach (var con in connections)
+                {
+                    con.DrawConnection(nodes);
                 }
 
                 // draw connection input point marks.

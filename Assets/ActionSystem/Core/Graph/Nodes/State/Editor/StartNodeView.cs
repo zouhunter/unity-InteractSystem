@@ -14,44 +14,28 @@ namespace WorldActionSystem.Graph
     [CustomNodeView(typeof(StartNode))]
     public class StartNodeView : ActionNodeView
     {
-        private GUIStyle _activeStyle;
-        private GUIStyle _inactiveStyle;
         private const float btnWidth = 15;
-
-        public override GUIStyle ActiveStyle
-        {
-            get
-            {
-                if (_activeStyle == null)
-                {
-
-                    _activeStyle = new GUIStyle();
-                    _activeStyle.normal.background = BackgroundContent.LoadTexture("on_node5") as Texture2D;
-                    _activeStyle.border = new RectOffset(11, 11, 11, 19);
-                }
-                return _activeStyle;
-            }
-        }
-        public override GUIStyle InactiveStyle
-        {
-            get
-            {
-                if (_inactiveStyle == null)
-                {
-
-                    _inactiveStyle = new GUIStyle();
-                    _inactiveStyle.normal.background = BackgroundContent.LoadTexture("node5") as Texture2D;
-                    _inactiveStyle.border = new RectOffset(11, 11, 11, 19);
-                }
-                return _inactiveStyle;
-            }
-        }
         public override string Category
         {
             get
             {
                 return "lunch";
             }
+        }
+        protected override GUIStyle CreateActiveStyle()
+        {
+            var activeStyle = new GUIStyle();
+            activeStyle.normal.background = GraphUtil.BackgroundContent.LoadTexture("on_node5") as Texture2D;
+            activeStyle.border = new RectOffset(11, 11, 11, 19);
+            return activeStyle;
+        }
+
+        protected override GUIStyle CreateInactiveStyle()
+        {
+            var inactiveStyle = new GUIStyle();
+            inactiveStyle.normal.background = GraphUtil.BackgroundContent.LoadTexture("node5") as Texture2D;
+            inactiveStyle.border = new RectOffset(11, 11, 11, 19);
+            return inactiveStyle;
         }
         public StartNode node { get { return target as StartNode; } }
 

@@ -51,8 +51,8 @@ MonoBehaviour:
     m_outputPoints: []
   - m_name: Logic
     m_id: 138e34f4-e7c7-4698-957c-88c6bb096a08
-    m_x: 372
-    m_y: 192
+    m_x: 360
+    m_y: 228
     m_node: {fileID: 114415348144428152}
     m_inputPoints:
     - id: 4efbbd97-fb6f-4909-bfdd-4bdbc12f73fd
@@ -80,8 +80,34 @@ MonoBehaviour:
         height: 23
       max: 1
       type: 
-  m_allConnections: []
-  m_lastModified: 131718039534271926
+  - m_name: Start
+    m_id: 840b7351-7f13-45fb-bad9-9364955f0b8c
+    m_x: 96
+    m_y: 144
+    m_node: {fileID: 114989260983635926}
+    m_inputPoints: []
+    m_outputPoints:
+    - id: 842a1d12-c3ed-49d6-b123-ce326b0a158b
+      label: 0
+      parentId: 840b7351-7f13-45fb-bad9-9364955f0b8c
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  m_allConnections:
+  - m_id: 5119fbb1-16e1-4f51-ae7a-1e3b7abc8c41
+    m_fromNodeId: 840b7351-7f13-45fb-bad9-9364955f0b8c
+    m_fromNodeConnectionPointId: 842a1d12-c3ed-49d6-b123-ce326b0a158b
+    m_toNodeId: 86b150a2-726f-49d6-9af1-fbd9a8a15ac8
+    m_toNodeConnectionPoiontId: 965c8e65-e825-4259-8d5b-8bd79a370c41
+    m_type: actionconnect
+    m_connection: {fileID: 114660693664389924}
+  m_lastModified: 131718110278744127
   m_graphDescription: 
   m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
 --- !u!114 &114415348144428152
@@ -95,25 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f463f25238fa2d4e9235482cc4350a3, type: 3}
   m_Name: WorldActionSystem.Graph.LogicNode
   m_EditorClassIdentifier: 
-  _inPoints:
-  - label: '-'
-    type: 
-    max: 100
-  _outPoints:
-  - label: +
-    type: 
-    max: 1
---- !u!114 &114417282524190696
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
-  m_Name: WorldActionSystem.Graph.StartNode
-  m_EditorClassIdentifier: 
 --- !u!114 &114462730155967756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -124,4 +131,26 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88433d72a918d5d4ebd9cfd66227d2c3, type: 3}
   m_Name: WorldActionSystem.Graph.EndNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114660693664389924
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2397e5c633e6cee47a71ee7b79131967, type: 3}
+  m_Name: NodeGraph.DataModel.Connection
+  m_EditorClassIdentifier: 
+--- !u!114 &114989260983635926
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: WorldActionSystem.Graph.StartNode
   m_EditorClassIdentifier: 

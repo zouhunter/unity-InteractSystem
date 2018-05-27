@@ -1,57 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections.Generic;
 using NodeGraph;
 using NodeGraph.DataModel;
-using UnityEditor;
-using System;
 
 namespace WorldActionSystem.Graph
 {
-    public class ActionNodeView : NodeView
+    public abstract class ActionNodeView : NodeView
     {
-        private static TextureContent _backgroundContents;
-        private static TextureContent _portContents;
-        private static TextureContent _iconContents;
-        public const string backgroundTexturesGUID = "bd4d13d14a284ac40996cc8a3741a565";
-        public const string portTexturesGUID = "9d43325a83bf7404ba11517173f153c4";
-        public const string iconTexturesGUID = "07147659d96bff741b3c2b89f89dfece";
-        protected static TextureContent BackgroundContent
+        private GUIStyle _activeStyle;
+        private GUIStyle _inactiveStyle;
+        public override GUIStyle ActiveStyle
         {
             get
             {
-                if (!_backgroundContents)
+                if (_activeStyle == null)
                 {
-                    var path = AssetDatabase.GUIDToAssetPath(backgroundTexturesGUID);
-                    _backgroundContents = AssetDatabase.LoadAssetAtPath<TextureContent>(path);
+
+                    _activeStyle = CreateActiveStyle();
                 }
-                return _backgroundContents;
+                return _activeStyle;
             }
         }
-        protected static TextureContent PortContent
+        public override GUIStyle InactiveStyle
         {
             get
             {
-                if (!_portContents)
+                if (_inactiveStyle == null)
                 {
-                    var path = AssetDatabase.GUIDToAssetPath(portTexturesGUID);
-                    _portContents = AssetDatabase.LoadAssetAtPath<TextureContent>(path);
+                    _inactiveStyle = CreateInactiveStyle();
+                    return _inactiveStyle;
                 }
-                return _portContents;
+                return _inactiveStyle;
             }
         }
-        protected static TextureContent IconContents
-        {
-            get
-            {
-                if (!_iconContents)
-                {
-                    var path = AssetDatabase.GUIDToAssetPath(iconTexturesGUID);
-                    _iconContents = AssetDatabase.LoadAssetAtPath<TextureContent>(path);
-                }
-                return _iconContents;
-            }
-        }
+
+        protected abstract GUIStyle CreateActiveStyle();
+        protected abstract GUIStyle CreateInactiveStyle();
+        
     }
 }

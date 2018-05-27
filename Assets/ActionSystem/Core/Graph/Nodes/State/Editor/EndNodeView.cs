@@ -14,37 +14,20 @@ namespace WorldActionSystem.Graph
     [CustomNodeView(typeof(EndNode))]
     public class EndNodeView : ActionNodeView
     {
-        private GUIStyle _activeStyle;
-        private GUIStyle _inactiveStyle;
         private const float btnWidth = 15;
-
-        public override GUIStyle ActiveStyle
+        protected override GUIStyle CreateActiveStyle()
         {
-            get
-            {
-                if (_activeStyle == null)
-                {
-
-                    _activeStyle = new GUIStyle();
-                    _activeStyle.normal.background = BackgroundContent.LoadTexture("on_node7") as Texture2D;
-                    _activeStyle.border = new RectOffset(11, 11, 11, 19);
-                }
-                return _activeStyle;
-            }
+            var style = new GUIStyle();
+            style.normal.background = GraphUtil.BackgroundContent.LoadTexture("on_node7") as Texture2D;
+            style.border = new RectOffset(11, 11, 11, 19);
+            return style;
         }
-        public override GUIStyle InactiveStyle
+        protected override GUIStyle CreateInactiveStyle()
         {
-            get
-            {
-                if (_inactiveStyle == null)
-                {
-
-                    _inactiveStyle = new GUIStyle();
-                    _inactiveStyle.normal.background = BackgroundContent.LoadTexture("node7") as Texture2D;
-                    _inactiveStyle.border = new RectOffset(11, 11, 11, 19);
-                }
-                return _inactiveStyle;
-            }
+            var style = new GUIStyle();
+            style.normal.background = GraphUtil.BackgroundContent.LoadTexture("node7") as Texture2D;
+            style.border = new RectOffset(11, 11, 11, 19);
+            return style;
         }
         public override string Category
         {

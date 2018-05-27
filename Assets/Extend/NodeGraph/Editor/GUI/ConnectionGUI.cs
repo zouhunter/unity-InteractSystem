@@ -234,7 +234,6 @@ namespace NodeGraph
             }
 
             ConnectionGUIUtility.HandleMaterial.SetPass(0);
-
             Handles.DrawBezier(startV3, endV3, startTan, endTan, lineColor, null, lineWidth);
         }
 
