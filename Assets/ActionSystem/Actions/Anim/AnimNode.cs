@@ -12,11 +12,14 @@ namespace WorldActionSystem.Graph
     [AddComponentMenu(MenuName.AnimObj)]
     public class AnimNode : OperateNode
     {
-        public float delyTime = 0f;
-        public AnimPlayer animPlayer;
-        [Attributes.Range(0.1f, 10f)]
-        public float speed = 1;
+        [SerializeField]
+        private float delyTime = 0f;
+        [SerializeField,Attributes.Range(0.1f, 10f)]
+        private float speed = 1;
+        [SerializeField]
+        private bool reverse;
 
+        private AnimPlayer animPlayer;
         private CoroutineController coroutineCtrl { get { return ActionSystem.Instence.CoroutineCtrl; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
         public override ControllerType CtrlType
@@ -33,8 +36,8 @@ namespace WorldActionSystem.Graph
         public override void OnStartExecute(bool auto)
         {
             base.OnStartExecute(auto);
-            FindAnimCore();
-            Debug.Assert(animPlayer != null,"no animplay name:" + Name);
+            FindAnimCore(true);
+            Debug.Assert(animPlayer != null,"no enough animplayer named:" + Name);
             coroutineCtrl.DelyExecute(DelyPlay, delyTime);
         }
 
@@ -43,6 +46,7 @@ namespace WorldActionSystem.Graph
             if (animPlayer != null)
             {
                 animPlayer.duration = speed;
+                animPlayer.reverse = reverse;
                 animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
                 animPlayer.SetVisible(true);
                 animPlayer.StepActive();
@@ -58,7 +62,6 @@ namespace WorldActionSystem.Graph
             base.OnBeforeEnd(force);
             if (animPlayer != null)
             {
-                animPlayer.RecordPlayer(this);
                 animPlayer.StepComplete();
             }
         }
@@ -72,7 +75,7 @@ namespace WorldActionSystem.Graph
             }
         }
 
-        private void FindAnimCore()
+        private void FindAnimCore(bool record)
         {
             if (animPlayer == null)
             {
@@ -85,6 +88,8 @@ namespace WorldActionSystem.Graph
 
             if (animPlayer)
             {
+                if(record)
+                    animPlayer.RecordPlayer(this);
                 animPlayer.gameObject.SetActive(true);
             }
         }

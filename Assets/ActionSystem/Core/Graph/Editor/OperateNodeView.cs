@@ -64,5 +64,23 @@ namespace WorldActionSystem.Graph
             }
 
         }
+        public override void OnInspectorGUI(NodeGUI gui)
+        {
+            base.OnInspectorGUI(gui);
+
+            if (target is ActionNode)
+            {
+                var node = target as ActionNode;
+                if (node.Started && !node.Completed)
+                {
+                    gui.ShowProgress();
+                    gui.SetProgress(Time.time % 1f);
+                }
+                else
+                {
+                    gui.HideProgress();
+                }
+            }
+        }
     }
 }

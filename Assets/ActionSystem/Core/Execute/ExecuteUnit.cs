@@ -11,7 +11,6 @@ namespace WorldActionSystem
     public class ExecuteUnit
     {
         public Graph.ActionNode node;
-        public int currentID;
         public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();
         
         /// <summary>
@@ -22,25 +21,7 @@ namespace WorldActionSystem
         public ExecuteUnit(Graph.ActionNode parentNode)
         {
             this.node = parentNode;
-            this.currentID = 0;
         }
-
-        /// <summary>
-        /// 读取一组可以执行单元列表
-        /// </summary>
-        /// <returns></returns>
-        public List<ExecuteUnit> ReadExecuteUnits()
-        {
-            if (childUnits.Count > currentID)
-            {
-                return childUnits[currentID++];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         public void AppendChildNodes(List<ExecuteUnit> childNodes)
         {

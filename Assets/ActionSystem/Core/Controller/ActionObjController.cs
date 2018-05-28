@@ -29,6 +29,7 @@ namespace WorldActionSystem
         private ExecuteUnit startUnit { get { return executeGroup.executeUnit; } }
         private List<ExecuteUnit> activeUnits;
         private List<OperateNode> startedActions = new List<OperateNode>();
+        private Dictionary<ExecuteUnit, Stack<List<ExecuteUnit>>> waitUnits = new Dictionary<ExecuteUnit, Stack<List<ExecuteUnit>>>();
 
         public static bool log = false;
 
@@ -52,12 +53,24 @@ namespace WorldActionSystem
         {
             if (unit.node is StartNode)
             {
+                Debug.Assert(unit.childUnits.Count > 0);
                 //打开下一级的步骤
-                activeUnits = unit.ReadExecuteUnits();
-                foreach (var childUnit in activeUnits)
-                {
-                    Execute(childUnit);
+                for (int i = unit.childUnits.Count - 1; i >= 0; i--){
+                    if(waitUnits.ContainsKey(unit)){
+                        waitUnits[unit].Push(unit.childUnits[i]);
+                    }
                 }
+                ExecuteAnGroup(unit);
+            }
+            else if (unit.node is OperateNode)
+            {
+                var operateNode = unit.node as OperateNode;
+                //operateNode.onEndExecute = ExecuteAnGroup;
+                //打开下一级的步骤
+                for (int i = unit.childUnits.Count - 1; i >= 0; i--){
+                    //waitUnits.Push(unit.childUnits[i]);
+                }
+                operateNode.OnStartExecute(isForceAuto);
             }
             else if (unit.node is EndNode)
             {
@@ -65,17 +78,38 @@ namespace WorldActionSystem
             }
             else if (unit.node is LogicNode)
             {
-
-            }
-            else if (unit.node is OperateNode)
-            {
-                var operateNode = unit.node as OperateNode;
-                operateNode.onEndExecute = () =>
+                Debug.Log("执行到逻辑节点");
+                var logicNode = unit.node as LogicNode;
+                switch (logicNode.logicType)
                 {
-                    Debug.Log("on end execute:" + operateNode);
-                };
-                operateNode.OnStartExecute(isForceAuto);
+                    case LogicType.And:
+                        break;
+                    case LogicType.Or:
+                        break;
+                    case LogicType.ExclusiveOr:
+                        break;
+                    default:
+                        break;
+                }
             }
+            
+        }
+
+        internal void ExecuteAnGroup(ExecuteUnit unit)
+        {
+            if(waitUnits.ContainsKey(unit))
+            {
+                var stack = waitUnits[unit];
+                if (stack.Count > 0)
+                {
+                    activeUnits = stack.Pop();
+                    foreach (var childUnit in activeUnits)
+                    {
+                        Execute(childUnit);
+                    }
+                }
+            }
+            
         }
 
         /// <summary>

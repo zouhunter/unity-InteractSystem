@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   _reverse: 0
-  playableCount: 1
+  playableCount: 2
   onPlayComplete:
     m_PersistentCalls:
       m_Calls: []
