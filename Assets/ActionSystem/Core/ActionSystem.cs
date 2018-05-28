@@ -109,9 +109,9 @@ namespace WorldActionSystem
         }
         #endregion
 
-        private List<ActionGroup> actionGroup = new List<ActionGroup>();
+        private static List<ActionGroup> actionGroup = new List<ActionGroup>();
 
-        public void RegistGroup(ActionGroup group)
+        public static void RegistGroup(ActionGroup group)
         {
             if(actionGroup.Contains(group))
             {
@@ -119,7 +119,7 @@ namespace WorldActionSystem
             }
         }
 
-        public void RemoveGroup(ActionGroup group)
+        public static void RemoveGroup(ActionGroup group)
         {
             if(!actionGroup.Contains(group))
             {
@@ -132,7 +132,7 @@ namespace WorldActionSystem
             }
         }
 
-        private void Clean()
+        private static void Clean()
         {
             if (_instence != null)
             {

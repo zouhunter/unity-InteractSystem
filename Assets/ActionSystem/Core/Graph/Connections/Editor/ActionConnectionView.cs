@@ -45,8 +45,12 @@ namespace WorldActionSystem.Graph
         }
         internal override void OnDrawLabel(Vector2 centerPos, string label)
         {
-            //base.OnDrawLabel(centerPos, label);
-
+            var count = connection.copyCount + 1;
+            if (count > 1)
+            {
+                var rect = new Vector2(centerPos.x, centerPos.y + 15);
+                base.OnDrawLabel(rect,string.Format("*{0}",count));
+            }
         }
     }
 }

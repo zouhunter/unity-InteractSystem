@@ -67,9 +67,6 @@ namespace NodeGraph
             {
                 supportDrawer = userDrawer.Where(x => type.IsSubclassOf(x.Key)).FirstOrDefault().Value;
             }
-            Debug.Log(type);
-            Debug.Log(supportDrawer);
-
             if (supportDrawer != null)
             {
                 var drawer = Activator.CreateInstance(supportDrawer);

@@ -10,6 +10,7 @@ namespace WorldActionSystem.Graph
 {
     public abstract class ActionNode : Node
     {
-       
+        protected virtual void OnEnable() { }
+        protected virtual void OnDestroy() { }
     }
 }

@@ -7,24 +7,7 @@ using System;
 
 namespace WorldActionSystem
 {
-    public enum HookExecuteType
-    {
-        BeforeStart =1,
-        BeforeComplete=0
-    }
-    public interface IActionHook
-    {
-        //HookExecuteType ExecuteType { get; }
-        int QueueID { get; }
-        bool Complete { get; }
-        bool Started { get; }
-        UnityAction onEndExecute { get; set; }
-        void OnUnDoExecute();
-        void OnEndExecute(bool force);
-        void OnStartExecute(bool isForceAuto);
-    }
-
-    public class ActionHook : ActionSystemObject, IActionHook
+    public class ActionHook : ActionSystemObject
     {
         public bool Complete { get { return _complete; } }
         public bool Started { get { return _started; } }
@@ -46,7 +29,12 @@ namespace WorldActionSystem
         public static bool log = false;
         protected bool _complete;
         protected bool _started;
+        protected Graph.OperateNode operater;
 
+        public void SetContext(Graph.OperateNode operater)
+        {
+            this.operater = operater;
+        }
         public virtual void OnStartExecute(bool auto)
         {
             if(log) Debug.Log("onStart Execute Hook :" + this);
@@ -72,7 +60,6 @@ namespace WorldActionSystem
                 CoreEndExecute(force);
             }
         }
-
         public virtual void CoreEndExecute(bool force)
         {
             if (log) Debug.Log("onEnd Execute Hook :" + this + ":" + force);
@@ -97,7 +84,6 @@ namespace WorldActionSystem
             }
 
         }
-
         public virtual void OnUnDoExecute()
         {
             _started = false;

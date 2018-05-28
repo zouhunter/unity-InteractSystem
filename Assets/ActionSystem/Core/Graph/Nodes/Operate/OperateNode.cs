@@ -8,7 +8,7 @@ using NodeGraph.DataModel;
 
 namespace WorldActionSystem.Graph
 {
-    public abstract class OperateNode : NodeGraph.DataModel.Node
+    public abstract class OperateNode : ActionNode
     {
         public string Name
         {
@@ -47,7 +47,7 @@ namespace WorldActionSystem.Graph
         public ActionGroup system { get { return _system; } set { _system = value; } }
         public OperateNode[] StartedList { get { return startedList.ToArray(); } }
         public abstract ControllerType CtrlType { get; }
-        public static bool log = false;
+        public static bool log = true;
 
         [SerializeField, UnityEngine.Serialization.FormerlySerializedAs("m_name"), Attributes.DefultName]
         protected string _name;
@@ -62,8 +62,13 @@ namespace WorldActionSystem.Graph
         [SerializeField]
         private ActionBinding[] binding;
         [SerializeField]
-        public List<AutoPrefabItem> environment = new List<AutoPrefabItem>();
+        public Enviroment[] environment;
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _started = _completed = false;
+        }
         public override void Initialize(NodeData data)
         {
             base.Initialize(data);

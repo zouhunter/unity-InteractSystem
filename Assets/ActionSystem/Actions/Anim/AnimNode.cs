@@ -16,11 +16,9 @@ namespace WorldActionSystem.Graph
         public AnimPlayer animPlayer;
         [Attributes.Range(0.1f, 10f)]
         public float speed = 1;
-        [SerializeField]
-        private bool playAtPostion;
-        private Coroutine delyPlay;
-        private AnimPlayer defaultAnimPlayer;
 
+        private CoroutineController coroutineCtrl { get { return ActionSystem.Instence.CoroutineCtrl; } }
+        private ElementController elementCtrl { get { return ElementController.Instence; } }
         public override ControllerType CtrlType
         {
             get
@@ -28,14 +26,7 @@ namespace WorldActionSystem.Graph
                 return 0;
             }
         }
-        //protected override void Awake()
-        //{
-        //    base.Awake();
-        //    if (animPlayer == null){
-        //        animPlayer = GetComponentInChildren<AnimPlayer>(true);
-        //    }
-        //    defaultAnimPlayer = animPlayer;
-        //}
+        
         /// <summary>
         /// 播放动画
         /// </summary>
@@ -43,13 +34,12 @@ namespace WorldActionSystem.Graph
         {
             base.OnStartExecute(auto);
             FindAnimCore();
-            //Debug.Assert(animPlayer != null, gameObject);
-            //delyPlay = StartCoroutine(DelyPlay());
+            Debug.Assert(animPlayer != null,"no animplay name:" + Name);
+            coroutineCtrl.DelyExecute(DelyPlay, delyTime);
         }
 
-        private IEnumerator DelyPlay()
+        private void DelyPlay()
         {
-            yield return new WaitForSeconds(delyTime);
             if (animPlayer != null)
             {
                 animPlayer.duration = speed;
@@ -66,24 +56,19 @@ namespace WorldActionSystem.Graph
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
-            //if (delyPlay != null) StopCoroutine(delyPlay);
-            //if (animPlayer != null)
-            //{
-            //    animPlayer.RecordPlayer(this);
-            //    animPlayer.StepComplete();
-            //}
+            if (animPlayer != null)
+            {
+                animPlayer.RecordPlayer(this);
+                animPlayer.StepComplete();
+            }
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            //if (delyPlay != null)
-            //    StopCoroutine(delyPlay);
-
             if (animPlayer != null)
             {
                 animPlayer.StepUnDo();
-                //animPlayer.RemovePlayer(this);
-                animPlayer = defaultAnimPlayer;
+                animPlayer.RemovePlayer(this);
             }
         }
 
@@ -91,22 +76,16 @@ namespace WorldActionSystem.Graph
         {
             if (animPlayer == null)
             {
-                //var elements = elementCtrl.GetElements<AnimPlayer>(Name);
-                //if (elements != null && elements.Count > 0)
-                //{
-                //    animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];
-                //}
+                var elements = elementCtrl.GetElements<AnimPlayer>(Name);
+                if (elements != null && elements.Count > 0)
+                {
+                    animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];
+                }
             }
 
             if (animPlayer)
             {
                 animPlayer.gameObject.SetActive(true);
-
-                if (playAtPostion)
-                {
-                    //animPlayer.transform.localPosition = transform.position;
-                    //animPlayer.transform.localRotation = transform.rotation;
-                }
             }
         }
 

@@ -14,33 +14,33 @@ namespace WorldActionSystem
     {
         private ActionCommand command { get { return target as ActionCommand; } }
 
-        [UnityEditor.Callbacks.OnOpenAsset]
-        static bool QuickOpen(int instanceID, int line)
-        {
-            var command = EditorUtility.InstanceIDToObject(instanceID) as ActionCommand;
-            if (command != null)
-            {
-                if(command.graphObj==null){
-                   CreateCommandGraph(command);
-                }
-                var window = EditorWindow.GetWindow<NodeGraph.NodeGraphWindow>();
-                window.OpenGraph(command.graphObj);
-                return true;
-            }
-            return false;
-        }
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+
+            if (GUILayout.Button("Edit"))
+            {
+                if (command != null)
+                {
+                    if (command.GraphObj == null)
+                    {
+                        CreateCommandGraph(command);
+                    }
+                    var window = EditorWindow.GetWindow<NodeGraph.NodeGraphWindow>();
+                    window.OpenGraph(command.GraphObj);
+                }
+            }
         }
 
         public static void CreateCommandGraph(ActionCommand command )
         {
             NodeGraph.ScriptableObjUtility.ClearSubAsset(command);
-            command.graphObj = ScriptableObject.CreateInstance<NodeGraph.DataModel.NodeGraphObj>();
-            command.graphObj.ControllerType = typeof(Graph.AcionGraphCtrl).FullName;
-            Debug.Log("Create New :" + command.graphObj);
-            NodeGraph.ScriptableObjUtility.AddSubAsset(command.graphObj, command);
+            var graphObj = ScriptableObject.CreateInstance<NodeGraph.DataModel.NodeGraphObj>();
+            graphObj.ControllerType = typeof(Graph.AcionGraphCtrl).FullName;
+            Debug.Log("Create New :" + graphObj);
+            command.GetType().InvokeMember("_graphObj", System.Reflection.BindingFlags.SetField | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
+               null, command, new object[] { graphObj });
+            NodeGraph.ScriptableObjUtility.AddSubAsset(graphObj, command);
             EditorUtility.SetDirty(command);
         }
     }

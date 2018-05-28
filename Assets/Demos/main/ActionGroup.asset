@@ -11,6 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ed57a7c2e463b347be6173bcc662a3b, type: 3}
   m_Name: ActionGroup
   m_EditorClassIdentifier: 
-  actionCommands: []
-  autoLoadElement: []
+  actionCommands:
+  - active: 1
+    prefab: {fileID: 11400000, guid: 82cee9972fc76ca4eab87efe6dd7bdfc, type: 2}
   runTimeElements: []

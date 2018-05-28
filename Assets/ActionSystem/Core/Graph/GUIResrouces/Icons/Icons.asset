@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 885744809e5a72744bf0e88ce887a302, type: 3}
-  m_Name: 
+  m_Name: Icons
   m_EditorClassIdentifier: 
   textures:
   - {fileID: 2800000, guid: c822e70292019fd429e2ef1c83f4cff7, type: 3}
@@ -20,3 +20,4 @@ MonoBehaviour:
   - {fileID: 2800000, guid: df6002fd311dbf647b7e22f909759702, type: 3}
   - {fileID: 2800000, guid: 54badad880dc2f047ab5235406f9a447, type: 3}
   - {fileID: 2800000, guid: b42d96c8002a2234cbcdf0a9bf7ef78b, type: 3}
+  - {fileID: 2800000, guid: 6df2753d4d0022b4598b69283fc307be, type: 3}

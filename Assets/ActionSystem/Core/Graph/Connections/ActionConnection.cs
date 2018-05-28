@@ -9,6 +9,7 @@ namespace WorldActionSystem.Graph
     [CustomConnection("actionconnect")]
     public class ActionConnection : Connection
     {
+        [Attributes.Range(0,20)]
         public int copyCount;
     }
 }

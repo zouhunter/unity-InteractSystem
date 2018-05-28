@@ -9,13 +9,13 @@ using NodeGraph.DataModel;
 namespace WorldActionSystem.Graph
 {
     [CustomNode("State/End", 1, "ActionSystem")]
-    public class EndNode: Node
+    public class EndNode: ActionNode
     {
         public override void Initialize(NodeData data)
         {
             base.Initialize(data);
             if (data.InputPoints == null || data.InputPoints.Count == 0){
-                data.AddInputPoint("->", "actionconnect", 100);
+                data.AddInputPoint("->", "actionconnect", 1);
             }
         }
     }

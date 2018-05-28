@@ -10,17 +10,12 @@ namespace WorldActionSystem
 
     public class ActionObjCtroller
     {
-        public ActionCommand trigger { get;private set; }
-        protected List<int> queueID = new List<int>();
-        protected OperateNode[] actionObjs { get;private set; }
-        public OperateNode[] StartedActions { get { return startedActions.ToArray(); } }
-        protected bool isForceAuto;
-        private Queue<OperateNode> actionQueue = new Queue<OperateNode>();
-        private List<OperateNode> startedActions = new List<OperateNode>();
-        public static bool log = false;
+        protected ActionGroup Context { get { return Cmd.Context; } }
+        public ActionCommand Cmd { get; private set; }
+        protected bool isForceAuto { get; private set; }
+
         public UnityAction<ControllerType> onCtrlStart { get; set; }
         public UnityAction<ControllerType> onCtrlStop { get; set; }
-        private ActionGroup _system;
         private CameraController cameraCtrl
         {
             get
@@ -29,211 +24,90 @@ namespace WorldActionSystem
             }
         }
 
-        public ActionObjCtroller(ActionCommand trigger)
+        //树型结构
+        private ExecuteGroup executeGroup;
+        private ExecuteUnit startUnit { get { return executeGroup.executeUnit; } }
+        private List<ExecuteUnit> activeUnits;
+        private List<OperateNode> startedActions = new List<OperateNode>();
+
+        public static bool log = false;
+
+        public ActionObjCtroller(ActionCommand cmd)
         {
-            this.trigger = trigger;
-            actionObjs = trigger.ActionObjs;
-            ChargeQueueIDs();
+            this.Cmd = cmd;
+            executeGroup = new ExecuteGroup(cmd.GraphObj);
         }
 
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            ExecuteAStep();
+            Execute(startUnit);
         }
 
-        internal void OnPickUpObj(PickUpAbleItem obj)
+        /// <summary>
+        /// 执行一个单元
+        /// </summary>
+        /// <param name="unit"></param>
+        private void Execute(ExecuteUnit unit)
         {
-            var prio = startedActions.Find(x => x.Name == obj.Name);
-            if (prio != null)
+            if (unit.node is StartNode)
             {
-                startedActions.Remove(prio);
-                startedActions.Insert(0, prio);
-            }
-        }
-
-        private void ChargeQueueIDs()
-        {
-            actionQueue.Clear();
-            queueID.Clear();
-            Array.Sort(actionObjs);
-            foreach (var item in actionObjs)
-            {
-                if (!queueID.Contains(item.QueueID))
+                //打开下一级的步骤
+                activeUnits = unit.ReadExecuteUnits();
+                foreach (var childUnit in activeUnits)
                 {
-                    queueID.Add(item.QueueID);
+                    Execute(childUnit);
                 }
             }
-            queueID.Sort();
+            else if (unit.node is EndNode)
+            {
+                //判断是否结束
+            }
+            else if (unit.node is LogicNode)
+            {
+
+            }
+            else if (unit.node is OperateNode)
+            {
+                var operateNode = unit.node as OperateNode;
+                operateNode.onEndExecute = () =>
+                {
+                    Debug.Log("on end execute:" + operateNode);
+                };
+                operateNode.OnStartExecute(isForceAuto);
+            }
         }
+
+        /// <summary>
+        /// 设置优先执行
+        /// </summary>
+        /// <param name="obj"></param>
+        internal void OnPickUpObj(PickUpAbleItem obj)
+        {
+            var actionItems = obj.GetComponentsInChildren<ActionItem>();
+            if (actionItems != null && actionItems.Length > 0)
+            {
+                //foreach (var item in actionItems)
+                //{
+                //    var prio = startedActions.Find(x => x.Name == item.Name);
+                //    if (prio != null)
+                //    {
+                //        startedActions.Remove(prio);
+                //        startedActions.Insert(0, prio);
+                //    }
+                //}
+            }
+        }
+
+
         public virtual void OnEndExecute()
         {
             StopUpdateAction(false);
-            CompleteQueues();
-            Array.Sort(actionObjs);
-            foreach (var item in actionObjs)
-            {
-                if (!item.Started)
-                {
-                    item.OnStartExecute(isForceAuto);
-                }
-                if (!item.Completed)
-                {
-                    item.OnEndExecute(true);
-                }
-            }
-
         }
 
         public virtual void OnUnDoExecute()
         {
             StopUpdateAction(true);
-            UnDoQueues();
-            ChargeQueueIDs();
-            Array.Sort(actionObjs);
-            Array.Reverse(actionObjs);
-            foreach (var item in actionObjs)
-            {
-                if (item.Started)
-                {
-                    item.OnUnDoExecute();
-                }
-            }
-        }
-
-
-        private void OnCommandObjComplete(OperateNode obj)
-        {
-            OnStopAction(obj);
-            var notComplete = Array.FindAll<OperateNode>(actionObjs, x => x.QueueID == obj.QueueID && !x.Completed);
-            if (notComplete.Length == 0)
-            {
-                if (!ExecuteAStep())
-                {
-                    if (!trigger.Completed)
-                        trigger.Complete();
-                }
-            }
-            else if (actionQueue.Count > 0)//正在循环执行
-            {
-                QueueExectueActions();
-            }
-        }
-
-        public void CompleteOneStarted()
-        {
-            if (startedActions.Count > 0)
-            {
-                var action = startedActions[0];
-                OnStopAction(action);
-                action.OnEndExecute(true);
-            }
-            else
-            {
-                if (log) Debug.Log("startedActions.Count == 0");
-            }
-        }
-        private void CompleteQueues()
-        {
-            while (actionQueue.Count > 0)
-            {
-                var action = actionQueue.Dequeue();
-                if (!action.Completed)
-                {
-                    action.OnEndExecute(true);
-                }
-            }
-        }
-        private void UnDoQueues()
-        {
-            while (actionQueue.Count > 0)
-            {
-                var action = actionQueue.Dequeue();
-                if (action.Started)
-                {
-                    action.OnUnDoExecute();
-                }
-            }
-        }
-        protected bool ExecuteAStep()
-        {
-            if (queueID.Count > 0)
-            {
-                var id = queueID[0];
-                queueID.RemoveAt(0);
-                var neetActive = Array.FindAll<OperateNode>(actionObjs, x => x.QueueID == id && !x.Started);
-                if (isForceAuto)
-                {
-                    actionQueue.Clear();
-                    foreach (var item in neetActive)
-                    {
-                        if (item.QueueInAuto)
-                        {
-                            actionQueue.Enqueue(item as OperateNode);
-                        }
-                        else
-                        {
-                            TryStartAction(item);
-                        }
-                    }
-                    QueueExectueActions();
-                }
-                else
-                {
-                    foreach (var item in neetActive)
-                    {
-                        var obj = item;
-                        TryStartAction(obj);
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        protected void QueueExectueActions()
-        {
-            if (actionQueue.Count > 0)
-            {
-                var actionObj = actionQueue.Dequeue();
-                if (log) Debug.Log("QueueExectueActions" + actionObj);
-                TryStartAction(actionObj);
-            }
-        }
-        private void TryStartAction(OperateNode obj)
-        {
-            if (log) Debug.Log("Start A Step:" + obj);
-            if (!obj.Started)
-            {
-                if (cameraCtrl != null)
-                {
-                    cameraCtrl.SetViewCamera(() =>
-                    {
-                        StartAction(obj);
-                    }, GetCameraID(obj));
-                }
-                else
-                {
-                    Debug.Log(cameraCtrl == null);
-                    StartAction(obj);
-                }
-            }
-            else
-            {
-                Debug.LogError(obj + " allready started");
-            }
-
-        }
-
-        private void StartAction(OperateNode obj)
-        {
-            if (!obj.Started)
-            {
-                obj.onEndExecute = () => OnCommandObjComplete(obj);
-                obj.OnStartExecute(isForceAuto);
-                OnStartAction(obj);
-            }
-
         }
 
         /// <summary>
@@ -243,7 +117,8 @@ namespace WorldActionSystem
         private void OnStartAction(OperateNode action)
         {
             startedActions.Add(action);
-            if (onCtrlStart != null) onCtrlStart.Invoke(action.CtrlType);
+            if (onCtrlStart != null)
+                onCtrlStart.Invoke(action.CtrlType);
         }
 
         /// <summary>
@@ -253,7 +128,8 @@ namespace WorldActionSystem
         private void OnStopAction(OperateNode action)
         {
             startedActions.Remove(action);
-            if (onCtrlStop != null && startedActions.Find(x=>x.CtrlType == action.CtrlType) == null){
+            if (onCtrlStop != null && startedActions.Find(x => x.CtrlType == action.CtrlType) == null)
+            {
                 onCtrlStop.Invoke(action.CtrlType);
             }
         }
@@ -261,20 +137,16 @@ namespace WorldActionSystem
         private string GetCameraID(OperateNode obj)
         {
             //忽略匹配相机
-            if (Config.quickMoveElement /*&& obj is Actions.MatchObj && !(obj as Actions.MatchObj).ignorePass*/)
-            {
-                return null;
-            }
-            else if (Config.quickMoveElement /*&& obj is Actions.InstallObj && !(obj as Actions.InstallObj).ignorePass*/)
+            if (Config.quickMoveElement)
             {
                 return null;
             }
             //除要求使用特殊相机或是动画步骤,都用主摄像机
-            else if (Config.useOperateCamera/* || obj is Actions.AnimObj*/)
+            else if (Config.useOperateCamera)
             {
                 if (string.IsNullOrEmpty(obj.CameraID))
                 {
-                    return trigger.CameraID;
+                    return Cmd.CameraID;
                 }
                 else
                 {

@@ -9,59 +9,56 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.ActionCommand)]
     public class ActionCommand : ScriptableObject
     {
-        /// <summary>
-        /// 图形化的动作执行方式
-        /// </summary>
-        public NodeGraph.DataModel.NodeGraphObj graphObj;
-
+        //图形化
+        [SerializeField]
+        protected NodeGraph.DataModel.NodeGraphObj _graphObj;
+        //步骤名
         [SerializeField, Attributes.DefultName]
         private string _stepName;
-        //[SerializeField,Attributes. Range(0, 10)]
-        //private int _queueID;
-        [SerializeField, Attributes.Range(0,10)]
-        private int _copyCount;
-        [SerializeField,Attributes.DefultCameraAttribute()]
+        //相机ID
+        [SerializeField,Attributes.DefultCamera]
         private string _cameraID = CameraController.defultID;
+        //功能绑定
         [SerializeField]
-        protected Graph.OperateNode[] actionObjs = new Graph.OperateNode[0];
+        protected CommandBinding[] commandBindings;
+        //环境对象
         [SerializeField]
-        protected CommandBinding[] commandBindings = new CommandBinding[0];
-        [SerializeField]
-        private List<AutoPrefabItem> environment = new List<AutoPrefabItem>();
+        private Enviroment[] environments;
 
-        private ActionObjCtroller objectCtrl;
-        protected bool _started;
-        protected bool _completed;
-        protected ActionGroup _system;
         protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
-
         public string CameraID { get { return _cameraID; } }
-        //public int QueueID { get { return _queueID; } }
-        //public int CopyCount { get { return _copyCount; } }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
         public bool Started { get { return _started; } }
         public bool Completed { get { return _completed; } }
         private Events.OperateErrorAction userErr { get; set; }
-        private UnityAction<ActionCommand> stepComplete { get; set; }//步骤自动结束方法
-        public Graph. OperateNode[] ActionObjs { get { return actionObjs; } }
+        private UnityAction<string> stepComplete { get; set; }//步骤自动结束方法
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
-        public ActionObjCtroller ActionObjCtrl { get { return objectCtrl; } }
-        public ActionGroup actionGroup { get; private set; }
+        public ActionGroup Context { get; private set; }//上下文
+        public NodeGraph.DataModel.NodeGraphObj GraphObj { get { return _graphObj; } }
+
+        //开始标记
+        protected bool _started = false;
+        //结束标记
+        protected bool _completed = false;
+        //步骤控制器
+        protected ActionObjCtroller objectCtrl;
 
         protected virtual void OnEnable()
         {
+            _started = _completed = false;
             objectCtrl = new ActionObjCtroller(this);
         }
+
         public void SetContext(ActionGroup group)
         {
-            this.actionGroup = group;
-            
+            this.Context = group;
         }
+
         public void RegistAsOperate(Events.OperateErrorAction userErr)
         {
             this.userErr = userErr;
         }
-        public void RegistComplete(UnityAction<ActionCommand> stepComplete)
+        public void RegistComplete(UnityAction<string> stepComplete)
         {
             this.stepComplete = stepComplete;
         }
@@ -84,7 +81,8 @@ namespace WorldActionSystem
                 _started = true;
                 _completed = true;
                 OnEndExecute();
-                if (stepComplete != null) stepComplete.Invoke(this);
+                if (stepComplete != null)
+                    stepComplete.Invoke(StepName);
                 return true;
             }
             else

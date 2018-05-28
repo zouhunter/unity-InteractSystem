@@ -48,7 +48,7 @@ namespace WorldActionSystem
             }
             else
             {
-                delyActions[action] = new List<float>();
+                delyActions[action] = new List<float>() { time};
             }
 
             if (delyCoroutine == null)
@@ -121,7 +121,7 @@ namespace WorldActionSystem
                             {
                                 if ((timers[i] -= Time.deltaTime) < 0)
                                 {
-                                    timers.Remove(i);
+                                    timers.RemoveAt(i);
                                     action.Invoke();
                                     break;
                                 }

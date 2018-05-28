@@ -13,12 +13,30 @@ namespace WorldActionSystem
     public class ActionGroup : ScriptableObject
     {
         [SerializeField]
-        private List<OptionalCommandItem> actionCommands = new List<OptionalCommandItem>();
+        protected List<OptionalCommandItem> actionCommands = new List<OptionalCommandItem>();
         [SerializeField]
         public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
 
+        private List<ActionCommand> _activeCommands;
         #region Propertys
-        public List<ActionCommand> ActiveCommands { get; private set; }
+        public List<ActionCommand> activeCommands
+        {
+            get
+            {
+                if (_activeCommands == null)
+                {
+                    _activeCommands = actionCommands.Where(x => x.active).Select(x => Instantiate(x.prefab)).ToList();
+                    foreach (var command in _activeCommands)
+                    {
+                        command.SetContext(this);
+                        command.RegistAsOperate(EventTransfer.OnUserError);
+                        command.RegistComplete(EventTransfer.OnStepComplete);
+                        command.RegistCommandChanged(EventTransfer.OnCommandExectute);
+                    }
+                }
+                return _activeCommands;
+            }
+        }
         public ICommandController RemoteController { get; private set; }
         public EventController EventCtrl { get; private set; }
         public EventTransfer EventTransfer { get; private set; }
@@ -33,12 +51,12 @@ namespace WorldActionSystem
         private void OnEnable()
         {
             ElementController.Instence.RegistRunTimeElements(runTimeElements);
-            ActionSystem.Instence.RegistGroup(this);
+            ActionSystem.RegistGroup(this);
         }
         private void OnDestroy()
         {
             ElementController.Instence.RemoveRunTimeElements(runTimeElements);
-            ActionSystem.Instence.RemoveGroup(this);
+            ActionSystem.RemoveGroup(this);
         }
         #endregion
 
@@ -49,22 +67,20 @@ namespace WorldActionSystem
         /// </summary>
         public ICommandController LunchActionSystem()
         {
-            InitAcitveCommands();
-            var steps = ActiveCommands.ConvertAll<string>(x => x.StepName);
+            var steps = activeCommands.ConvertAll<string>(x => x.StepName);
             steps.Sort();
-            ActiveCommands = GetIActionCommandList(ActiveCommands, steps.ToArray());
-            RemoteController = new LineCommandController(ActiveCommands);
+            RemoteController = new LineCommandController(activeCommands);
             return RemoteController;
         }
         /// <summary>
         /// 设置安装顺序并生成最终步骤
         /// </summary>
-        public ICommandController LunchActionSystem(string[] steps)
+        public ICommandController LunchActionSystem(string[] steps, out string[] stepsWorp)
         {
-            InitAcitveCommands();
-            var stepsWorp = ConfigSteps(ActiveCommands, steps);//重新计算步骤
-            ActiveCommands = GetIActionCommandList(ActiveCommands, stepsWorp);
-            RemoteController = new LineCommandController(ActiveCommands);
+            //重新计算步骤
+            var commands = WorpCommandList(activeCommands, steps);
+            RemoteController = new LineCommandController(commands);
+            stepsWorp = commands.ConvertAll<string>(x => x.StepName).ToArray();
             return RemoteController;
         }
         /// <summary>
@@ -73,43 +89,23 @@ namespace WorldActionSystem
         /// <param name="rule"></param>
         public ICommandController LunchActionSystem(Dictionary<string, string[]> rule)
         {
-            InitAcitveCommands();
-            var steps = ActiveCommands.ConvertAll<string>(x => x.StepName);
-            steps.Sort();
-            ActiveCommands = GetIActionCommandList(ActiveCommands, steps.ToArray());
-            RemoteController = new TreeCommandController(rule, ActiveCommands);
-            return RemoteController;
-        }
-        /// <summary>
-        /// 设置安装顺序并生成最终步骤
-        /// </summary>
-        public ICommandController LunchActionSystem<T>(T[] steps) where T : IActionStap
-        {
-            InitAcitveCommands();
-            var stepsWorp = ConfigSteps<T>(ActiveCommands, steps);//重新计算步骤
-            ActiveCommands = GetIActionCommandList(ActiveCommands, Array.ConvertAll<IActionStap, string>(stepsWorp, x => x.StapName));
-            RemoteController = new LineCommandController(ActiveCommands);
+            RemoteController = new TreeCommandController(rule, activeCommands);
             return RemoteController;
         }
         #endregion
 
         #region private Funtions
-        private void InitAcitveCommands()
+
+        private static List<ActionCommand> WorpCommandList(List<ActionCommand> commandList, string[] steps)
         {
-            if(ActiveCommands == null){
-                ActiveCommands = actionCommands.Where(x => x.active).Select(x => x.prefab).ToList();
-            }
-        }
-        private static string[] ConfigSteps(List<ActionCommand> commandList, string[] steps)
-        {
-            List<string> activeStaps = new List<string>();
+            List<ActionCommand> worpedCommands = new List<ActionCommand>();
             List<string> ignored = new List<string>();
             for (int i = 0; i < steps.Length; i++)
             {
-                var old = commandList.Find(x => x.StepName == steps[i]);
-                if (old != null)
+                var command = commandList.Find(x => x.StepName == steps[i]);
+                if (command != null)
                 {
-                    activeStaps.Add(steps[i]);
+                    worpedCommands.Add(command);
                 }
                 else
                 {
@@ -117,43 +113,7 @@ namespace WorldActionSystem
                 }
             }
             Debug.Log("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
-            return activeStaps.ToArray();
-        }
-        private static IActionStap[] ConfigSteps<T>(List<ActionCommand> commandList, T[] steps) where T : IActionStap
-        {
-            List<IActionStap> activeStaps = new List<IActionStap>();
-            List<string> ignored = new List<string>();
-            for (int i = 0; i < steps.Length; i++)
-            {
-                var old = commandList.Find(x => x.StepName == steps[i].StapName);
-                if (old != null)
-                {
-                    activeStaps.Add(steps[i]);
-                }
-                else
-                {
-                    ignored.Add(steps[i].StapName);
-                }
-            }
-            if (ignored.Count > 0) Debug.LogWarning("[Ignored steps:]" + String.Join("|", ignored.ToArray()));
-            return activeStaps.ToArray();
-        }
-        private static List<ActionCommand> GetIActionCommandList(List<ActionCommand> commandList, string[] steps)
-        {
-            var actionCommandList = new List<ActionCommand>();
-            foreach (var item in steps)
-            {
-                var old = commandList.Find(x => x.StepName == item);
-                if (old != null)
-                {
-                    actionCommandList.Add(old);
-                }
-                else
-                {
-                    Debug.LogWarning(item + "已经存在");
-                }
-            }
-            return actionCommandList;
+            return worpedCommands;
         }
         #endregion
 

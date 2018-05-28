@@ -15,7 +15,6 @@ namespace WorldActionSystem
         private Dictionary<ControllerType, int> activeTypes = new Dictionary<ControllerType, int>();
         public static bool log = false;
         public UnityAction<Graph.OperateNode> onActionStart;
-
         private CameraController cameraCtrl
         {
             get
@@ -77,14 +76,15 @@ namespace WorldActionSystem
         public void OnUserError(string error)
         {
             if (activeObjCtrl != null)
-                activeObjCtrl.trigger.UserError(error);
+                activeObjCtrl.Cmd.UserError(error);
         }
         /// 激活首要对象
         /// </summary>
         /// <param name="obj"></param>
         internal void OnPickUpObj(PickUpAbleItem obj)
         {
-            if (activeObjCtrl != null) activeObjCtrl.OnPickUpObj(obj);
+            if (activeObjCtrl != null)
+                activeObjCtrl.OnPickUpObj(obj);
         }
 
         public virtual void OnStartExecute(ActionObjCtroller activeObjCtrl, bool forceAuto)
