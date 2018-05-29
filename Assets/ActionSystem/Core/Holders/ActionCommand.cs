@@ -41,17 +41,19 @@ namespace WorldActionSystem
         //结束标记
         protected bool _completed = false;
         //步骤控制器
-        protected ActionObjCtroller objectCtrl;
+        protected Structure.ActionObjCtroller objectCtrl;
 
         protected virtual void OnEnable()
         {
             _started = _completed = false;
-            objectCtrl = new ActionObjCtroller(this);
+            objectCtrl = new Structure.ActionObjCtroller(this);
         }
+
 
         public void SetContext(ActionGroup group)
         {
             this.Context = group;
+            //重置当前command的信息
         }
 
         public void RegistAsOperate(Events.OperateErrorAction userErr)

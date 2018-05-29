@@ -5,10 +5,10 @@ using System.Collections;
 using System.Collections.Generic;
 using WorldActionSystem.Graph;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Structure
 {
 
-    public class ActionObjCtroller
+    public class ActionObjCtroller: ActionStateMechine
     {
         protected ActionGroup Context { get { return Cmd.Context; } }
         public ActionCommand Cmd { get; private set; }
@@ -24,94 +24,24 @@ namespace WorldActionSystem
             }
         }
 
-        //树型结构
-        private ExecuteGroup executeGroup;
-        private ExecuteUnit startUnit { get { return executeGroup.executeUnit; } }
-        private List<ExecuteUnit> activeUnits;
-        private List<OperateNode> startedActions = new List<OperateNode>();
-        private Dictionary<ExecuteUnit, Stack<List<ExecuteUnit>>> waitUnits = new Dictionary<ExecuteUnit, Stack<List<ExecuteUnit>>>();
-
         public static bool log = false;
+        //树型结构
+        private ExecuteUnit root;
+        private List<OperateNode> startedActions = new List<OperateNode>();
+        public List<Structure.ExecuteUnit> activeUnits = new List<ExecuteUnit>();
+        public Dictionary<ExecuteUnit, UnitStatus> statuDic = new Dictionary<ExecuteUnit, UnitStatus>();
 
         public ActionObjCtroller(ActionCommand cmd)
         {
             this.Cmd = cmd;
-            executeGroup = new ExecuteGroup(cmd.GraphObj);
+            root = ExecuteUtil.AnalysisGraph(cmd.GraphObj);
         }
 
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.isForceAuto = forceAuto;
-            Execute(startUnit);
+            Execute(root);
         }
-
-        /// <summary>
-        /// 执行一个单元
-        /// </summary>
-        /// <param name="unit"></param>
-        private void Execute(ExecuteUnit unit)
-        {
-            if (unit.node is StartNode)
-            {
-                Debug.Assert(unit.childUnits.Count > 0);
-                //打开下一级的步骤
-                for (int i = unit.childUnits.Count - 1; i >= 0; i--){
-                    if(waitUnits.ContainsKey(unit)){
-                        waitUnits[unit].Push(unit.childUnits[i]);
-                    }
-                }
-                ExecuteAnGroup(unit);
-            }
-            else if (unit.node is OperateNode)
-            {
-                var operateNode = unit.node as OperateNode;
-                //operateNode.onEndExecute = ExecuteAnGroup;
-                //打开下一级的步骤
-                for (int i = unit.childUnits.Count - 1; i >= 0; i--){
-                    //waitUnits.Push(unit.childUnits[i]);
-                }
-                operateNode.OnStartExecute(isForceAuto);
-            }
-            else if (unit.node is EndNode)
-            {
-                //判断是否结束
-            }
-            else if (unit.node is LogicNode)
-            {
-                Debug.Log("执行到逻辑节点");
-                var logicNode = unit.node as LogicNode;
-                switch (logicNode.logicType)
-                {
-                    case LogicType.And:
-                        break;
-                    case LogicType.Or:
-                        break;
-                    case LogicType.ExclusiveOr:
-                        break;
-                    default:
-                        break;
-                }
-            }
-            
-        }
-
-        internal void ExecuteAnGroup(ExecuteUnit unit)
-        {
-            if(waitUnits.ContainsKey(unit))
-            {
-                var stack = waitUnits[unit];
-                if (stack.Count > 0)
-                {
-                    activeUnits = stack.Pop();
-                    foreach (var childUnit in activeUnits)
-                    {
-                        Execute(childUnit);
-                    }
-                }
-            }
-            
-        }
-
         /// <summary>
         /// 设置优先执行
         /// </summary>

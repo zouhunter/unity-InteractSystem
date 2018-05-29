@@ -9,7 +9,7 @@ namespace WorldActionSystem
 {
     public class ActionCtroller
     {
-        public ActionObjCtroller activeObjCtrl { get; private set; }
+        public Structure.ActionObjCtroller activeObjCtrl { get; private set; }
         private List<IOperateController> controllerList = new List<IOperateController>();
         protected Coroutine coroutine;
         private Dictionary<ControllerType, int> activeTypes = new Dictionary<ControllerType, int>();
@@ -87,7 +87,7 @@ namespace WorldActionSystem
                 activeObjCtrl.OnPickUpObj(obj);
         }
 
-        public virtual void OnStartExecute(ActionObjCtroller activeObjCtrl, bool forceAuto)
+        public virtual void OnStartExecute(Structure.ActionObjCtroller activeObjCtrl, bool forceAuto)
         {
             this.activeObjCtrl = activeObjCtrl;
             this.activeObjCtrl.onCtrlStart = OnActionStart;
@@ -117,13 +117,13 @@ namespace WorldActionSystem
            
         }
 
-        public virtual void OnEndExecute(ActionObjCtroller activeObjCtrl)
+        public virtual void OnEndExecute(Structure.ActionObjCtroller activeObjCtrl)
         {
             if (activeObjCtrl != null)
                 activeObjCtrl.OnEndExecute();
         }
 
-        public virtual void OnUnDoExecute(ActionObjCtroller activeObjCtrl)
+        public virtual void OnUnDoExecute(Structure.ActionObjCtroller activeObjCtrl)
         {
             if (activeObjCtrl != null)
                 activeObjCtrl.OnUnDoExecute();

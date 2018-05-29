@@ -16,27 +16,9 @@ namespace WorldActionSystem
         protected List<OptionalCommandItem> actionCommands = new List<OptionalCommandItem>();
         [SerializeField]
         public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
-
-        private List<ActionCommand> _activeCommands;
+        
         #region Propertys
-        public List<ActionCommand> activeCommands
-        {
-            get
-            {
-                if (_activeCommands == null)
-                {
-                    _activeCommands = actionCommands.Where(x => x.active).Select(x => Instantiate(x.prefab)).ToList();
-                    foreach (var command in _activeCommands)
-                    {
-                        command.SetContext(this);
-                        command.RegistAsOperate(EventTransfer.OnUserError);
-                        command.RegistComplete(EventTransfer.OnStepComplete);
-                        command.RegistCommandChanged(EventTransfer.OnCommandExectute);
-                    }
-                }
-                return _activeCommands;
-            }
-        }
+        public List<ActionCommand> activeCommands { get; private set; }
         public ICommandController RemoteController { get; private set; }
         public EventController EventCtrl { get; private set; }
         public EventTransfer EventTransfer { get; private set; }
@@ -50,9 +32,23 @@ namespace WorldActionSystem
 
         private void OnEnable()
         {
+            InitActionCommands();
             ElementController.Instence.RegistRunTimeElements(runTimeElements);
             ActionSystem.RegistGroup(this);
         }
+
+        private void InitActionCommands()
+        {
+            activeCommands = actionCommands.Where(x => x.active).Select(x => x.command).ToList();
+            foreach (var command in activeCommands)
+            {
+                command.SetContext(this);
+                command.RegistAsOperate(EventTransfer.OnUserError);
+                command.RegistComplete(EventTransfer.OnStepComplete);
+                command.RegistCommandChanged(EventTransfer.OnCommandExectute);
+            }
+        }
+
         private void OnDestroy()
         {
             ElementController.Instence.RemoveRunTimeElements(runTimeElements);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Structure
 {
     /// <summary>
     /// 执行单元，记录节点之间的关系
