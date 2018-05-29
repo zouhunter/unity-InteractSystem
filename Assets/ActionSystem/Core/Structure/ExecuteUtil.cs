@@ -7,29 +7,21 @@ using NodeGraph;
 using NodeGraph.DataModel;
 using System.Linq;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Structure
 {
-    public class ExecuteGroup
+    public static class ExecuteUtil
     {
-        public ExecuteUnit executeUnit { get; private set; }
-        private NodeGraphObj graphObj { get; set; }
-
-        public ExecuteGroup(NodeGraphObj graphObj)
-        {
-            this.graphObj = graphObj;
-            AnalysisGraph(this.graphObj);
-        }
-
-        private void AnalysisGraph(NodeGraphObj graphObj)
+        public static ExecuteUnit AnalysisGraph(NodeGraphObj graphObj)
         {
             Debug.Log("AnalysisGraph...");
             NodeData startNodeData = graphObj.Nodes.Where(node => node.Object is Graph.StartNode).First();
             Debug.Assert(startNodeData != null, "this is no start node!");
-            executeUnit = new ExecuteUnit(startNodeData.Object as Graph.StartNode);
-            RetiveChildNode(startNodeData, executeUnit);
+            var executeUnit = new ExecuteUnit(startNodeData.Object as Graph.StartNode);
+            RetiveChildNode(graphObj,startNodeData, executeUnit);
+            return executeUnit;
         }
 
-        private void RetiveChildNode(NodeGraph.DataModel.NodeData parentNode, ExecuteUnit unit)
+        private static void RetiveChildNode(NodeGraphObj graphObj, NodeData parentNode, ExecuteUnit unit)
         {
             var connectionGroup = graphObj.Connections.Where(connection => connection.FromNodeId == parentNode.Id).GroupBy(
                 x =>
@@ -42,6 +34,7 @@ namespace WorldActionSystem
 
             foreach (var connections in connectionGroup)
             {
+                Debug.Log("connection:" + connections.Key);
                 var childNodes = new List<ExecuteUnit>();
                 foreach (var connection in connections)
                 {
@@ -51,7 +44,7 @@ namespace WorldActionSystem
                     for (int i = -1; i < copyCount; i++)
                     {
                         var childUnit = CreateUnit(node.Object as Graph.ActionNode);
-                        RetiveChildNode(node, childUnit);
+                        RetiveChildNode(graphObj, node, childUnit);
                         childNodes.Add(childUnit);
                     }
 
@@ -59,9 +52,7 @@ namespace WorldActionSystem
                 unit.AppendChildNodes(childNodes);
             }
         }
-
-
-        private ExecuteUnit CreateUnit(Graph.ActionNode origional)
+        private static ExecuteUnit CreateUnit(Graph.ActionNode origional)
         {
             if (origional == null) return null;
             else

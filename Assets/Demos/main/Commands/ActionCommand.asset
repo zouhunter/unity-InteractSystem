@@ -1,0 +1,319 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
+  m_Name: ActionCommand
+  m_EditorClassIdentifier: 
+  _graphObj: {fileID: 114938351580080838}
+  _stepName: command01
+  _cameraID: defult
+  commandBindings: []
+  environments: []
+--- !u!114 &114061282746318384
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: WorldActionSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0
+--- !u!114 &114127593315069540
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: WorldActionSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0
+--- !u!114 &114438625901750912
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
+  m_Name: WorldActionSystem.Graph.AnimNode
+  m_EditorClassIdentifier: 
+  queueID: 0
+  _queueInAuto: 1
+  _cameraID: 
+  _name: anim0
+  hooks: []
+  binding: []
+  environment: []
+  delyTime: 0
+  speed: 1
+  reverse: 1
+--- !u!114 &114499530051202546
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: WorldActionSystem.Graph.StartNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114609411500127934
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88433d72a918d5d4ebd9cfd66227d2c3, type: 3}
+  m_Name: WorldActionSystem.Graph.EndNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114920097368818194
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
+  m_Name: WorldActionSystem.Graph.AnimNode
+  m_EditorClassIdentifier: 
+  queueID: 0
+  _queueInAuto: 1
+  _cameraID: 
+  _name: anim0
+  hooks: []
+  binding: []
+  environment: []
+  delyTime: 0
+  speed: 1
+  reverse: 0
+--- !u!114 &114921205751964388
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: WorldActionSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0
+--- !u!114 &114938351580080838
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec4882d68a9346b3b5f8ecf1e38a534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_allNodes:
+  - m_name: Start
+    m_id: 6aad4c23-6aea-4080-a63e-1df407fe1ea3
+    m_x: 165
+    m_y: 166
+    m_node: {fileID: 114499530051202546}
+    m_inputPoints: []
+    m_outputPoints:
+    - id: 25e36dea-423e-4514-b58c-14fe97891343
+      label: 0
+      parentId: 6aad4c23-6aea-4080-a63e-1df407fe1ea3
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: End
+    m_id: 1ebf44fa-c8dd-433b-876d-312d4dc86271
+    m_x: 744
+    m_y: 168
+    m_node: {fileID: 114609411500127934}
+    m_inputPoints:
+    - id: 890e7763-cc6e-4b99-a67a-48fe81b534ed
+      label: ->
+      parentId: 1ebf44fa-c8dd-433b-876d-312d4dc86271
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints: []
+  - m_name: Anim
+    m_id: 4e5a27aa-2cde-417a-b8b3-ccc7e2ac3c97
+    m_x: 384
+    m_y: 156
+    m_node: {fileID: 114920097368818194}
+    m_inputPoints:
+    - id: bb3d3234-d353-439a-ad17-e5d7ab673529
+      label: 
+      parentId: 4e5a27aa-2cde-417a-b8b3-ccc7e2ac3c97
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: c02a9f10-4619-40be-b204-fca6f8ecdb16
+      label: 0
+      parentId: 4e5a27aa-2cde-417a-b8b3-ccc7e2ac3c97
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+    - id: 1fb7ab38-92f7-43ec-88b6-000d8d9f76af
+      label: 1
+      parentId: 4e5a27aa-2cde-417a-b8b3-ccc7e2ac3c97
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 53.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: Anim
+    m_id: 14a357d3-fcda-4f7d-87ff-5a14a53c448c
+    m_x: 552
+    m_y: 156
+    m_node: {fileID: 114438625901750912}
+    m_inputPoints:
+    - id: 423a2a11-0ed5-42a8-a64c-ebf74dafa73f
+      label: 
+      parentId: 14a357d3-fcda-4f7d-87ff-5a14a53c448c
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 0d2f7002-af6a-4b95-be05-d18cfb8774be
+      label: 0
+      parentId: 14a357d3-fcda-4f7d-87ff-5a14a53c448c
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: Anim
+    m_id: b8b41431-b00a-4477-97a8-49ce09de8466
+    m_x: 552
+    m_y: 216
+    m_node: {fileID: 114972922028401096}
+    m_inputPoints:
+    - id: 2bc67ce9-4f33-4eb3-8792-576beaa05dab
+      label: 
+      parentId: b8b41431-b00a-4477-97a8-49ce09de8466
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 41c86519-1772-49f9-99a5-48ada4e21b99
+      label: 0
+      parentId: b8b41431-b00a-4477-97a8-49ce09de8466
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  m_allConnections:
+  - m_id: 38ac3197-5b17-4280-8885-0d854ac1ba38
+    m_fromNodeId: 6aad4c23-6aea-4080-a63e-1df407fe1ea3
+    m_fromNodeConnectionPointId: 25e36dea-423e-4514-b58c-14fe97891343
+    m_toNodeId: 4e5a27aa-2cde-417a-b8b3-ccc7e2ac3c97
+    m_toNodeConnectionPoiontId: bb3d3234-d353-439a-ad17-e5d7ab673529
+    m_type: actionconnect
+    m_connection: {fileID: 114921205751964388}
+  - m_id: 1493d572-d95d-4026-be21-0df07e9c268b
+    m_fromNodeId: 4e5a27aa-2cde-417a-b8b3-ccc7e2ac3c97
+    m_fromNodeConnectionPointId: c02a9f10-4619-40be-b204-fca6f8ecdb16
+    m_toNodeId: 14a357d3-fcda-4f7d-87ff-5a14a53c448c
+    m_toNodeConnectionPoiontId: 423a2a11-0ed5-42a8-a64c-ebf74dafa73f
+    m_type: actionconnect
+    m_connection: {fileID: 114127593315069540}
+  - m_id: 0fbcecae-77ff-4a73-bd54-f2a86a9c9e72
+    m_fromNodeId: 4e5a27aa-2cde-417a-b8b3-ccc7e2ac3c97
+    m_fromNodeConnectionPointId: 1fb7ab38-92f7-43ec-88b6-000d8d9f76af
+    m_toNodeId: b8b41431-b00a-4477-97a8-49ce09de8466
+    m_toNodeConnectionPoiontId: 2bc67ce9-4f33-4eb3-8792-576beaa05dab
+    m_type: actionconnect
+    m_connection: {fileID: 114061282746318384}
+  m_lastModified: 131721041428813957
+  m_graphDescription: 
+  m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
+--- !u!114 &114972922028401096
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
+  m_Name: WorldActionSystem.Graph.AnimNode
+  m_EditorClassIdentifier: 
+  queueID: 0
+  _queueInAuto: 1
+  _cameraID: 
+  _name: anim0
+  hooks: []
+  binding: []
+  environment: []
+  delyTime: 0
+  speed: 1
+  reverse: 0

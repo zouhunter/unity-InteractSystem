@@ -42,6 +42,7 @@ namespace WorldActionSystem
 
         public void DelyExecute(UnityAction action, float time)
         {
+            Debug.Log("DelyExecute" + action);
             if (delyActions.ContainsKey(action))
             {
                 delyActions[action].Add(time);
@@ -55,6 +56,10 @@ namespace WorldActionSystem
             {
                 delyCoroutine = holder.StartCoroutine(DelyActionCoroutine());
             }
+            else
+            {
+                Debug.Log("delyCoreoutine:" + "isRuning");
+            }
         }
 
         public void Cansalce(UnityAction action)
@@ -66,6 +71,7 @@ namespace WorldActionSystem
 
             if(delyCoroutine != null && delyActions.Count == 0)
             {
+                Debug.Log("Cansalce:" + delyCoroutine);
                 holder.StopCoroutine(delyCoroutine);
                 delyCoroutine = null;
             }
@@ -113,6 +119,7 @@ namespace WorldActionSystem
                         if (timers == null || timers.Count == 0)
                         {
                             delyActions.Remove(action);
+                            Debug.Log("Remove:" + action);
                             break;
                         }
                         else
@@ -122,6 +129,7 @@ namespace WorldActionSystem
                                 if ((timers[i] -= Time.deltaTime) < 0)
                                 {
                                     timers.RemoveAt(i);
+
                                     action.Invoke();
                                     break;
                                 }
@@ -132,6 +140,7 @@ namespace WorldActionSystem
 
                 keys = delyActions.Keys.Select(x => x).ToArray();
             }
+            delyCoroutine = null;
         }
 
     }

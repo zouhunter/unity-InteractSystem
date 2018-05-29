@@ -4,13 +4,14 @@ using UnityEngine;
 using System.Linq;
 using System;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Structure
 {
     /// <summary>
     /// 执行单元，记录节点之间的关系
     /// </summary>
     public class ExecuteUnit
     {
+        public bool autoExecute { get; set; }
         public Graph.ActionNode node;
         public List<ExecuteUnit> parentUnits = new List<ExecuteUnit>();
         public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();

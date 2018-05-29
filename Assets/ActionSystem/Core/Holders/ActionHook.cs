@@ -69,14 +69,16 @@ namespace WorldActionSystem
                 _complete = true;
                 onBeforeEndExecuted.Invoke(force);
 
-                if (onEndExecute != null)
-                {
-                    onEndExecute.Invoke();
-                }
                 if (autoComplete)
                 {
                     coroutineCtrl.Cansalce(AutoComplete);
                 }
+
+                if (onEndExecute != null)
+                {
+                    onEndExecute.Invoke();
+                }
+                
             }
             else
             {

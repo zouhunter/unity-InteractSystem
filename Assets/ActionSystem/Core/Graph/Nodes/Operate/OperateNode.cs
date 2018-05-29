@@ -82,7 +82,7 @@ namespace WorldActionSystem.Graph
 
         public virtual void OnStartExecute(bool auto = false)
         {
-            if (log) Debug.Log("OnStartExecute:" + this);
+            if (log) Debug.Log("OnStartExecute:" + this.Name);
             this.auto = auto;
             if (!_started)
             {

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionCommands:
   - active: 1
-    prefab: {fileID: 11400000, guid: 82cee9972fc76ca4eab87efe6dd7bdfc, type: 2}
+    command: {fileID: 11400000, guid: 2c5821bbd042d4d4697489794f29c6b0, type: 2}
   runTimeElements: []

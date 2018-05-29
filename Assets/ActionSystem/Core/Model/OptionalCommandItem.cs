@@ -10,6 +10,6 @@ namespace WorldActionSystem
     public class OptionalCommandItem
     {
         public bool active;
-        public ActionCommand prefab;
+        public ActionCommand command;
     }
 }
