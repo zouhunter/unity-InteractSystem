@@ -29,8 +29,9 @@ namespace WorldActionSystem
         private ExecuteUnit startUnit { get { return executeGroup.executeUnit; } }
         private List<ExecuteUnit> activeUnits;
         private List<OperateNode> startedActions = new List<OperateNode>();
-        private Dictionary<ExecuteUnit, Stack<List<ExecuteUnit>>> waitUnits = new Dictionary<ExecuteUnit, Stack<List<ExecuteUnit>>>();
-
+        private Dictionary<object, List<ExecuteUnit>> waitUnits = new Dictionary<object, List<ExecuteUnit>>();
+        private Stack<ExecuteUnit> startedUnitsStake = new Stack<ExecuteUnit>();
+        private Stack<ExecuteUnit> backupUnitsStake = new Stack<ExecuteUnit>();
         public static bool log = false;
 
         public ActionObjCtroller(ActionCommand cmd)
@@ -55,21 +56,34 @@ namespace WorldActionSystem
             {
                 Debug.Assert(unit.childUnits.Count > 0);
                 //打开下一级的步骤
-                for (int i = unit.childUnits.Count - 1; i >= 0; i--){
-                    if(waitUnits.ContainsKey(unit)){
-                        waitUnits[unit].Push(unit.childUnits[i]);
-                    }
+                for (int i = 0; i < unit.childUnits.Count - 1; i++)
+                {
+                    var key = unit.childUnits[i];
+                    var stack = unit.childUnits[i + 1];
+                    waitUnits[key] = stack;
                 }
-                ExecuteAnGroup(unit);
+                ExecuteList(unit.childUnits[0]);
             }
             else if (unit.node is OperateNode)
             {
                 var operateNode = unit.node as OperateNode;
-                //operateNode.onEndExecute = ExecuteAnGroup;
-                //打开下一级的步骤
-                for (int i = unit.childUnits.Count - 1; i >= 0; i--){
-                    //waitUnits.Push(unit.childUnits[i]);
+
+                operateNode.onEndExecute = () =>
+                {
+                    var key = unit.parentUnits[0].GetPositon(unit);
+                    if (waitUnits.ContainsKey(key))
+                    {
+                        ExecuteList(waitUnits[key]);
+                    }
+                };
+
+                for (int i = 0; i < unit.childUnits.Count - 1; i++)
+                {
+                    var key = unit.childUnits[i];
+                    var value = unit.childUnits[i + 1];
+                    waitUnits[key] = value;
                 }
+
                 operateNode.OnStartExecute(isForceAuto);
             }
             else if (unit.node is EndNode)
@@ -92,24 +106,15 @@ namespace WorldActionSystem
                         break;
                 }
             }
-            
+
         }
 
-        internal void ExecuteAnGroup(ExecuteUnit unit)
+        private void ExecuteList(List<ExecuteUnit> list)
         {
-            if(waitUnits.ContainsKey(unit))
+            for (int i = 0; i < list.Count; i++)
             {
-                var stack = waitUnits[unit];
-                if (stack.Count > 0)
-                {
-                    activeUnits = stack.Pop();
-                    foreach (var childUnit in activeUnits)
-                    {
-                        Execute(childUnit);
-                    }
-                }
+                Execute(list[i]);
             }
-            
         }
 
         /// <summary>

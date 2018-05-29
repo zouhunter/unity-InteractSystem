@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace WorldActionSystem
 {
@@ -11,6 +12,7 @@ namespace WorldActionSystem
     public class ExecuteUnit
     {
         public Graph.ActionNode node;
+        public List<ExecuteUnit> parentUnits = new List<ExecuteUnit>();
         public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();
         
         /// <summary>
@@ -23,18 +25,34 @@ namespace WorldActionSystem
             this.node = parentNode;
         }
 
-        public void AppendChildNodes(List<ExecuteUnit> childNodes)
+        public void AddParentUnit(ExecuteUnit parentUnit)
+        {
+            if (!parentUnits.Contains(parentUnit))
+            {
+                parentUnits.Add(parentUnit);
+            }
+        }
+
+        public void AppendChildNodes(List<ExecuteUnit> childUnits)
         {
             var list = new List<ExecuteUnit>();
-            list.AddRange(childNodes);
+            list.AddRange(childUnits);
             this.childUnits.Add(list);
             this.childNodesList.AddRange(list.Select(x=>x.node));
+            foreach (var unit in childUnits){
+                unit.AddParentUnit(this);
+            }
         }
 
         public bool HaveChildNode(Graph.ActionNode node)
         {
             if (childUnits == null) return false;
             return childNodesList.Contains(node);
+        }
+
+        internal object GetPositon(ExecuteUnit unit)
+        {
+           return childUnits.Find(x => x.Contains(unit));
         }
     }
 }
