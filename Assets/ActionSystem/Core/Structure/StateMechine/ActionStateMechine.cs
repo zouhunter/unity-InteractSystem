@@ -131,7 +131,7 @@ namespace WorldActionSystem.Structure
         /// 添加新的触发器
         /// </summary>
         /// <param name="action"></param>
-        private void OnStartAction(OperateNode action)
+        public void OnStartAction(OperateNode action)
         {
             startedActions.Add(action);
             if (onCtrlStart != null)
@@ -142,7 +142,7 @@ namespace WorldActionSystem.Structure
         /// 移除触发器
         /// </summary>
         /// <param name="action"></param>
-        private void OnStopAction(OperateNode action)
+        public void OnStopAction(OperateNode action)
         {
             startedActions.Remove(action);
             if (onCtrlStop != null && startedActions.Find(x => x.CtrlType == action.CtrlType) == null)

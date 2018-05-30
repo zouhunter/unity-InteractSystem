@@ -68,6 +68,7 @@ namespace WorldActionSystem.Graph
         {
             base.OnEnable();
             statu = ExecuteStatu.UnStarted;
+            hookCtrl = new HookCtroller(this);
         }
         public override void Initialize(NodeData data)
         {

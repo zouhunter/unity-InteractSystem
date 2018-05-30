@@ -73,7 +73,6 @@ namespace WorldActionSystem
             Active = false;
             onInActive.Invoke();
         }
-
         public virtual void StepUnDo()
         {
             Active = false;

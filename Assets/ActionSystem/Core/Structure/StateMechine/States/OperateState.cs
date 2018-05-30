@@ -33,6 +33,8 @@ namespace WorldActionSystem.Structure
 
             operateNode.onEndExecute = () =>
             {
+                stateMechine.OnStopAction(unit.node as Graph.OperateNode);
+
                 if (leaf || statusDic[unit].waitUnits.Count == 0)
                 {
                     statusDic[unit].statu = ExecuteStatu.Completed;
@@ -42,6 +44,7 @@ namespace WorldActionSystem.Structure
             };
 
             operateNode.OnStartExecute(stateMechine.IsAuto);
+            stateMechine.OnStartAction(unit.node as Graph.OperateNode);
         }
 
         /// <summary>

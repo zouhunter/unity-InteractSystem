@@ -3,16 +3,10 @@ using System.Collections;
 using WorldActionSystem;
 using System;
 
-public class SimpleHook : ActionHook
-{
-    protected override bool autoComplete
-    {
-        get
-        {
-            return true;
-        }
-    }
+using WorldActionSystem.Hooks;
 
+public class SimpleHook :TimerHook
+{
     public override void OnStartExecute(bool auto = false)
     {
         base.OnStartExecute(auto);

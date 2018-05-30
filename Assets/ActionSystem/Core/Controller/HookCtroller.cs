@@ -58,13 +58,11 @@ namespace WorldActionSystem
                 _started = true;
                 foreach (var item in hooks)
                 {
-                    if(!item.Started)
+                    if(item.Statu == ExecuteStatu.UnStarted)
                     {
                         item.OnStartExecute(isForceAuto);
                     }
-                    //Debug.Log("item:" + item);
-                    //Debug.Log("Complete:" + item.Complete);
-                    if (!item.Complete)
+                    if (item.Statu != ExecuteStatu.Completed)
                     {
                         item.OnEndExecute(true);
                     }
@@ -80,7 +78,7 @@ namespace WorldActionSystem
                 _complete = false;
                 foreach (var item in hooks)
                 {
-                    if (item.Started)
+                    if (item.Statu != ExecuteStatu.UnStarted)
                     {
                         item.OnUnDoExecute();
                     }
@@ -92,7 +90,7 @@ namespace WorldActionSystem
         {
             if(!Complete)
             {
-                var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == obj.QueueID && !x.Complete);
+                var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == obj.QueueID && x.Statu != ExecuteStatu.Completed);
                 if (notComplete.Length == 0)
                 {
                     if (!ExecuteAStep(isForceAuto))
@@ -120,7 +118,7 @@ namespace WorldActionSystem
                     foreach (ActionHook item in neetActive)
                     {
                         var obj = item;
-                        if (!obj.Started)
+                        if (obj.Statu == ExecuteStatu.UnStarted)
                         {
                             obj.onEndExecute = () => OnCommandObjComplete(obj);
                             //Debug.Log("On Execute " + item.name + "of " + id);

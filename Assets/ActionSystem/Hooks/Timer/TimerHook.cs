@@ -9,23 +9,36 @@ using UnityEngine.EventSystems;
 using UnityEngine.Assertions.Must;
 using UnityEngine.Assertions.Comparers;
 using System.Collections;
+using System;
 
 namespace WorldActionSystem.Hooks
 {
     [AddComponentMenu(MenuName.AutoObj)]
-    public sealed class TimerHook : ActionHook
+    public class TimerHook : ActionHook
     {
-        public float waitTime = 0;
-        protected override bool autoComplete
+        [SerializeField]
+        protected float autoTime = 2;
+
+        protected override void CoreStartExecute()
         {
-            get
-            {
-                return true;
-            }
+            base.CoreStartExecute();
+            coroutineCtrl.DelyExecute(AutoComplete, autoTime);
         }
-        private void OnEnable()
+
+        private void AutoComplete()
         {
-            autoTime = waitTime;
+            OnEndExecute(false);
+        }
+
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            coroutineCtrl.Cansalce(AutoComplete);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            coroutineCtrl.Cansalce(AutoComplete);
         }
     }
 }

@@ -9,9 +9,7 @@ namespace WorldActionSystem
 {
     public class ActionHook : ActionSystemObject
     {
-        public bool Complete { get { return _complete; } }
-        public bool Started { get { return _started; } }
-        [SerializeField, Range(0, 10)]
+        [SerializeField, Attributes.Range(0, 10)]
         private int queueID;
         public int QueueID
         {
@@ -21,79 +19,57 @@ namespace WorldActionSystem
             }
         }
         public string CameraID { get { return null; } }
-        protected virtual bool autoComplete { get { return false; } }
-        protected float autoTime = 2;
         public UnityAction onEndExecute { get; set; }
-        public Toggle.ToggleEvent onBeforeEndExecuted;
+        public ExecuteStatu Statu { get { return status; } }
 
+        [HideInInspector]
+        public Toggle.ToggleEvent onBeforeEndExecuted;
         public static bool log = false;
-        protected bool _complete;
-        protected bool _started;
+        protected ExecuteStatu status;
         protected ActionSystemObject operater;
 
         public void SetContext(ActionSystemObject operater)
         {
             this.operater = operater;
         }
+
         public virtual void OnStartExecute(bool auto)
         {
-            if(log) Debug.Log("onStart Execute Hook :" + this);
-            if (!_started)
+            if (log) Debug.Log("onStart Execute Hook :" + this);
+            if (status == ExecuteStatu.UnStarted)
             {
-                _started = true;
-                _complete = false;
-                coroutineCtrl.DelyExecute(AutoComplete, autoTime);
-            }
-            else
-            {
-                Debug.LogError("already started" + name);
+                status = ExecuteStatu.Executing;
+                CoreStartExecute();
             }
         }
-        protected virtual void AutoComplete()
-        {
-            if(!Complete)
-                OnEndExecute(false);
-        }
+
+        protected virtual void CoreStartExecute() { }
         public virtual void OnEndExecute(bool force)
         {
-            if (!Complete){
-                CoreEndExecute(force);
-            }
-        }
-        public virtual void CoreEndExecute(bool force)
-        {
-            if (log) Debug.Log("onEnd Execute Hook :" + this + ":" + force);
-            if (!_complete)
+            if (status != ExecuteStatu.Completed)
             {
-                _started = true;
-                _complete = true;
-                onBeforeEndExecuted.Invoke(force);
-
-                if (autoComplete)
-                {
-                    coroutineCtrl.Cansalce(AutoComplete);
-                }
-
-                if (onEndExecute != null)
-                {
-                    onEndExecute.Invoke();
-                }
-                
+                status = ExecuteStatu.Completed;
+                CoreEndExecute(force);
             }
             else
             {
                 Debug.LogError("already completed" + this);
             }
+        }
+        public virtual void CoreEndExecute(bool force)
+        {
+            if (log)
+                Debug.Log("onEnd Execute Hook :" + this + ":" + force);
+            onBeforeEndExecuted.Invoke(force);
+            if (onEndExecute != null)
+            {
+                onEndExecute.Invoke();
+            }
 
         }
         public virtual void OnUnDoExecute()
         {
-            _started = false;
-            _complete = false;
-            if (autoComplete)
-            {
-                coroutineCtrl.Cansalce(AutoComplete);
-            }
+            status = ExecuteStatu.UnStarted;
         }
     }
 }

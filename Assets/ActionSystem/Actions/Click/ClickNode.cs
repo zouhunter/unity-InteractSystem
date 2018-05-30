@@ -9,7 +9,7 @@ namespace WorldActionSystem.Actions
 {
     [AddComponentMenu(MenuName.ClickObj)]
     [CustomNode("Operate/Click", 10, "ActionSystem")]
-    public class ClickNode : RuntimeObj<ClickItem>
+    public class ClickNode : RuntimeNode<ClickItem>
     {
         public override ControllerType CtrlType
         {
@@ -34,19 +34,19 @@ namespace WorldActionSystem.Actions
         protected override void OnAdd(ClickItem arg0)
         {
             base.OnAdd(arg0);
-            arg0.RegistOnClick(TryComplete);
+            if(Statu == ExecuteStatu.Executing)
+            {
+                arg0.StepActive();
+                arg0.RegistOnClick(TryComplete);
+            }
         }
-
         protected override void OnRemove(ClickItem arg0)
         {
             base.OnRemove(arg0);
-            arg0.RemoveOnClicked(TryComplete);
+            arg0.RegistOnClick(TryComplete);
         }
 
-        private void TryComplete()
-        {
-            if (statu != ExecuteStatu.Executing) return;
-        }
+    
 
         public override void OnStartExecute(bool auto = false)
         {
@@ -63,6 +63,11 @@ namespace WorldActionSystem.Actions
             }
         }
 
+        private void TryComplete()
+        {
+            if (statu != ExecuteStatu.Executing) return;
+            OnEndExecute(false);
+        }
         /// <summary>
         /// 将所能点击的目标设置为激活状态
         /// </summary>
@@ -77,6 +82,7 @@ namespace WorldActionSystem.Actions
                     if (element.ClickAble)
                     {
                         element.StepActive();
+                        element.RegistOnClick(TryComplete);
                     }
                 });
             }
@@ -106,9 +112,6 @@ namespace WorldActionSystem.Actions
         {
             base.OnUnDoExecute();
         }
-
-
-
     }
 
 }

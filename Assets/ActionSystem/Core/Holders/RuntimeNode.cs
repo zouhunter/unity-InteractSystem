@@ -4,43 +4,25 @@ using WorldActionSystem.Graph;
 
 namespace WorldActionSystem.Actions
 {
-    public abstract class RuntimeObj : OperateNode
-    {
-        //protected override void Awake()
-        //{
-        //    base.Awake();
-        //    elementCtrl.onRegistElememt += OnRegistElement;
-        //    elementCtrl.onRemoveElememt += OnRemoveElement;
-        //}
-        //protected override void OnDestroy()
-        //{
-        //    base.OnDestroy();
-        //    elementCtrl.onRegistElememt -= OnRegistElement;
-        //    elementCtrl.onRemoveElememt -= OnRemoveElement;
-        //}
-
-        protected abstract void OnRegistElement(ISupportElement arg0);
-        protected abstract void OnRemoveElement(ISupportElement arg0);
-    }
-    public abstract class RuntimeObj<T> : OperateNode where T : ActionItem, ISupportElement
+    public abstract class RuntimeNode<T> : OperateNode where T : ActionItem, ISupportElement
     {
         protected ElementPool<T> elementPool = new ElementPool<T>();
         public abstract List<string> NeedElements { get; }
+        protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
-        //protected override void Awake()
-        //{
-        //    base.Awake();
-        //    elementPool.onAdd = OnAdd;
-        //    elementPool.onRemove = OnRemove;
-        //    elementCtrl.onRegistElememt += OnRegistElement;
-        //    elementCtrl.onRemoveElememt += OnRemoveElement;
-        //}
-
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            elementPool.onAdd = OnAdd;
+            elementPool.onRemove = OnRemove;
+            
+            elementCtrl.onRegistElememt += OnRegistElement;
+            elementCtrl.onRemoveElememt += OnRemoveElement;
+        }
         protected virtual void OnRemove(T arg0)
         {
 
         }
-
         protected virtual void OnAdd(T arg0)
         {
             if (statu == ExecuteStatu.Executing)
@@ -49,12 +31,6 @@ namespace WorldActionSystem.Actions
             }
         }
 
-        //protected override void OnDestroy()
-        //{
-        //    base.OnDestroy();
-        //    elementCtrl.onRegistElememt -= OnRegistElement;
-        //    elementCtrl.onRemoveElememt -= OnRemoveElement;
-        //}
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
@@ -127,7 +103,7 @@ namespace WorldActionSystem.Actions
         {
             foreach (var element in NeedElements)
             {
-                var active = startedList.Find(x => x is RuntimeObj<T> && (x as RuntimeObj<T>).NeedElements.Contains(element));
+                var active = startedList.Find(x => x is RuntimeNode<T> && (x as RuntimeNode<T>).NeedElements.Contains(element));
 
                 if (active == null)
                 {
