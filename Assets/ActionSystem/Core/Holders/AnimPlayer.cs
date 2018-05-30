@@ -7,23 +7,34 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
 
-    public abstract class AnimPlayer: PickUpAbleElement
+    public abstract class AnimPlayer: ActionItem
     {
         [SerializeField]
         protected bool _reverse;
         [SerializeField]
         protected int playableCount = 1;
         protected float _duration = 1;
-        protected List<Graph.AnimNode> targets = new List<Graph.AnimNode>();
         public virtual float duration { get { return _duration; }set { _duration = value; } }
         public virtual bool reverse { get { return _reverse; } set { _reverse = value; } }
         public UnityAction onAutoPlayEnd { get; set; }
+        public bool IsPlaying { get; protected set; }
         [HideInInspector]
         public UnityEvent onPlayComplete;
-      
 
+        public override void StepActive()
+        {
+            base.StepActive();
+            IsPlaying = true;
+        }
+        public override void StepUnDo()
+        {
+            base.StepUnDo();
+            IsPlaying = false;
+        }
         public override void StepComplete()
         {
+            base.StepComplete();
+            IsPlaying = false;
             onPlayComplete.Invoke();
         }
         public virtual void RecordPlayer(Graph.AnimNode target)
@@ -42,7 +53,7 @@ namespace WorldActionSystem
         }
         public virtual bool CanPlay()
         {
-            if(targets.Count < playableCount)
+            if(targets.Count < playableCount && !IsPlaying)
             {
                 return true;
             }

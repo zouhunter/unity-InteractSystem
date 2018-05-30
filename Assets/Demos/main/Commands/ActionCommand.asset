@@ -28,18 +28,6 @@ MonoBehaviour:
   m_Name: WorldActionSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
   copyCount: 0
---- !u!114 &114098139839334840
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
 --- !u!114 &114127593315069540
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,28 +40,6 @@ MonoBehaviour:
   m_Name: WorldActionSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
   copyCount: 0
---- !u!114 &114132274347409144
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
-  m_Name: WorldActionSystem.Graph.AnimNode
-  m_EditorClassIdentifier: 
-  queueID: 0
-  _queueInAuto: 1
-  _cameraID: 
-  _name: 
-  hooks: []
-  binding: []
-  environment: []
-  delyTime: 0
-  speed: 1
-  reverse: 1
-  animName: anim0
 --- !u!114 &114212656786215452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -95,7 +61,7 @@ MonoBehaviour:
   delyTime: 0
   speed: 1
   reverse: 1
-  animName: anim0
+  animName: anim1
 --- !u!114 &114242525819149964
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -120,30 +86,6 @@ MonoBehaviour:
   m_Name: WorldActionSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
   copyCount: 0
---- !u!114 &114333319824799554
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
---- !u!114 &114363102520763112
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f463f25238fa2d4e9235482cc4350a3, type: 3}
-  m_Name: WorldActionSystem.Graph.LogicNode
-  m_EditorClassIdentifier: 
-  logicType: 0
 --- !u!114 &114368004368364952
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -178,18 +120,6 @@ MonoBehaviour:
   speed: 1
   reverse: 1
   animName: anim0
---- !u!114 &114461866946447862
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
 --- !u!114 &114499530051202546
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -212,19 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f463f25238fa2d4e9235482cc4350a3, type: 3}
   m_Name: WorldActionSystem.Graph.LogicNode
   m_EditorClassIdentifier: 
-  logicType: 0
---- !u!114 &114537733466429758
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
+  logicType: 1
 --- !u!114 &114593442141560722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -248,30 +166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88433d72a918d5d4ebd9cfd66227d2c3, type: 3}
   m_Name: WorldActionSystem.Graph.EndNode
   m_EditorClassIdentifier: 
---- !u!114 &114628667946147604
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
---- !u!114 &114664460052010968
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f463f25238fa2d4e9235482cc4350a3, type: 3}
-  m_Name: WorldActionSystem.Graph.LogicNode
-  m_EditorClassIdentifier: 
-  logicType: 0
 --- !u!114 &114686144788312828
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -293,19 +187,7 @@ MonoBehaviour:
   delyTime: 0
   speed: 1
   reverse: 0
-  animName: anim0
---- !u!114 &114700347644355302
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
+  animName: anim1
 --- !u!114 &114711186529121960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -361,31 +243,7 @@ MonoBehaviour:
   delyTime: 0
   speed: 1
   reverse: 1
-  animName: anim0
---- !u!114 &114774822972521398
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
---- !u!114 &114812520390825036
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
+  animName: anim1
 --- !u!114 &114823803366988044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -416,23 +274,11 @@ MonoBehaviour:
   hooks: []
   binding: []
   environment: []
-  delyTime: 2
+  delyTime: 0
   speed: 1
-  reverse: 0
-  animName: anim0
---- !u!114 &114876798641709070
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
---- !u!114 &114893261386889120
+  reverse: 1
+  animName: anim1
+--- !u!114 &114895510084838794
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -466,18 +312,6 @@ MonoBehaviour:
   speed: 1
   reverse: 0
   animName: anim0
---- !u!114 &114921205751964388
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
 --- !u!114 &114938351580080838
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -523,7 +357,7 @@ MonoBehaviour:
       type: actionconnect
   - m_name: End
     m_id: 1ebf44fa-c8dd-433b-876d-312d4dc86271
-    m_x: 870
+    m_x: 800
     m_y: 160
     m_node: {fileID: 114609411500127934}
     m_inputPoints:
@@ -907,7 +741,14 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 994a9225-5e5f-4d4d-ba92-0c2e451e5df1
     m_type: actionconnect
     m_connection: {fileID: 114368004368364952}
-  m_lastModified: 131721577240151743
+  - m_id: 132be5e4-7372-405e-a282-9542af3fcf9f
+    m_fromNodeId: 14a357d3-fcda-4f7d-87ff-5a14a53c448c
+    m_fromNodeConnectionPointId: 0d2f7002-af6a-4b95-be05-d18cfb8774be
+    m_toNodeId: 1ebf44fa-c8dd-433b-876d-312d4dc86271
+    m_toNodeConnectionPoiontId: 890e7763-cc6e-4b99-a67a-48fe81b534ed
+    m_type: actionconnect
+    m_connection: {fileID: 114895510084838794}
+  m_lastModified: 131721704936995584
   m_graphDescription: 
   m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
 --- !u!114 &114950528598179570
@@ -944,15 +785,3 @@ MonoBehaviour:
   speed: 1
   reverse: 0
   animName: anim0
---- !u!114 &114988051291524502
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: WorldActionSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0

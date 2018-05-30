@@ -85,10 +85,10 @@ namespace WorldActionSystem.Actions
             coroutine = null;
         }
 
-        public override void SetPosition(Vector3 pos)
-        {
-            transform.position = pos;
-        }
+        //public override void SetPosition(Vector3 pos)
+        //{
+        //    transform.position = pos;
+        //}
 
         public override void SetVisible(bool visible)
         {

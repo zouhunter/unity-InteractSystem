@@ -33,10 +33,10 @@ namespace WorldActionSystem.Actions
             childAnims = GetComponentsInChildren<AnimPlayer>(true).Where(x=>x != this).ToArray();
         }
 
-        public override void SetPosition(Vector3 pos)
-        {
-            transform.position = pos;
-        }
+        //public override void SetPosition(Vector3 pos)
+        //{
+        //    transform.position = pos;
+        //}
 
         public override void SetVisible(bool visible)
         {

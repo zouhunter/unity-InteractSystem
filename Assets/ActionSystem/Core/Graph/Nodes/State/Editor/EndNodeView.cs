@@ -14,7 +14,6 @@ namespace WorldActionSystem.Graph
     [CustomNodeView(typeof(EndNode))]
     public class EndNodeView : ActionNodeView
     {
-        private const float btnWidth = 15;
         protected override GUIStyle CreateActiveStyle()
         {
             var style = new GUIStyle();

@@ -11,7 +11,7 @@ namespace WorldActionSystem.Structure
 {
     public static class ExecuteUtil
     {
-        public static bool log = true;
+        public static bool log = false;
         private static Dictionary<Node, List<ExecuteUnit>> unitDic = new Dictionary<Node, List<ExecuteUnit>>();
 
         public static ExecuteUnit AnalysisGraph(NodeGraphObj graphObj)

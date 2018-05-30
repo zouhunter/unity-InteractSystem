@@ -134,7 +134,7 @@ namespace NodeGraph {
 
 			public Texture2D inputPointBG;
 			public Texture2D outputPointBG;
-			public GUISkin nodeSkin;
+			//public GUISkin nodeSkin;
 
 			public Texture2D pointMark;
 			public PlatformButton[] platformButtons;

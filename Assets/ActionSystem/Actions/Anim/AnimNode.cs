@@ -37,13 +37,13 @@ namespace WorldActionSystem.Graph
         public override void OnStartExecute(bool auto)
         {
             base.OnStartExecute(auto);
-            FindAnimCore(true);
-            Debug.Assert(animPlayer != null,"no enough animplayer named:" + Name);
             coroutineCtrl.DelyExecute(DelyPlay, delyTime);
         }
 
         private void DelyPlay()
         {
+            FindAnimCore(true);
+            Debug.Assert(animPlayer != null, "no enough animplayer named:" + Name);
             if (animPlayer != null)
             {
                 animPlayer.duration = speed;
@@ -89,8 +89,9 @@ namespace WorldActionSystem.Graph
 
             if (animPlayer)
             {
-                if(record)
+                if (record){
                     animPlayer.RecordPlayer(this);
+                }
                 animPlayer.gameObject.SetActive(true);
             }
         }

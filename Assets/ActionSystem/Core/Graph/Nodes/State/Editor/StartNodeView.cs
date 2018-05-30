@@ -14,7 +14,6 @@ namespace WorldActionSystem.Graph
     [CustomNodeView(typeof(StartNode))]
     public class StartNodeView : ActionNodeView
     {
-        private const float btnWidth = 15;
         public override string Category
         {
             get

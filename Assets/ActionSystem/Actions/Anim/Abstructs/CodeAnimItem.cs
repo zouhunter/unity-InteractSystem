@@ -22,6 +22,7 @@ namespace WorldActionSystem.Actions
 
         public override void StepActive()
         {
+            base.StepActive();
             time = 1f / duration;
             coroutine = StartCoroutine(PlayAnim(onAutoPlayEnd));
         }
@@ -34,12 +35,8 @@ namespace WorldActionSystem.Actions
         }
         public override void StepUnDo()
         {
+            base.StepUnDo();
             StopAnim();
-        }
-
-        public override void SetPosition(Vector3 pos)
-        {
-            transform.position = pos;
         }
 
         protected virtual void StopAnim() {

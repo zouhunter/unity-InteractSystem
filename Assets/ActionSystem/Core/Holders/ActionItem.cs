@@ -9,9 +9,9 @@ namespace WorldActionSystem
     public class ActionItem : MonoBehaviour, ISupportElement
     {
         [SerializeField]
-        private bool startactive = true;
+        protected bool startactive = true;
         [SerializeField]
-        private bool endactive = true;
+        protected bool endactive = true;
         [SerializeField, UnityEngine.Serialization.FormerlySerializedAs("m_name"), Attributes.DefultName]
         protected string _name;
         public string Name
@@ -63,18 +63,18 @@ namespace WorldActionSystem
             Body.SetActive(visible);
         }
 
-        public void StepActive()
+        public virtual void StepActive()
         {
             Active = true;
             onActive.Invoke();
         }
-        public void StepComplete()
+        public virtual void StepComplete()
         {
             Active = false;
             onInActive.Invoke();
         }
 
-        public void StepUnDo()
+        public virtual void StepUnDo()
         {
             Active = false;
             onInActive.Invoke();

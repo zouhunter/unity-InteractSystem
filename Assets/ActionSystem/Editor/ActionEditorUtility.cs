@@ -61,7 +61,7 @@ namespace WorldActionSystem
             }
             if (prefab != null)
             {
-                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                //var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
                 //var parent = actionSystem == null ? null : actionSystem.transform;
                 GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
                 instanceID = go.GetInstanceID();
@@ -90,7 +90,7 @@ namespace WorldActionSystem
             GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
             if (gopfb != null)
             {
-                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                //var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
                 //var parent = actionSystem == null ? null : actionSystem.transform;
                 //GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
                 //instanceIDProp.intValue = go.GetInstanceID();
@@ -119,7 +119,7 @@ namespace WorldActionSystem
             GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
             if (gopfb != null)
             {
-                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                //var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
                 ////var parent = actionSystem == null ? null : actionSystem.transform;
                 //parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
                 //GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
