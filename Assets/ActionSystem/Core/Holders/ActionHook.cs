@@ -29,9 +29,9 @@ namespace WorldActionSystem
         public static bool log = false;
         protected bool _complete;
         protected bool _started;
-        protected Graph.OperateNode operater;
+        protected ActionSystemObject operater;
 
-        public void SetContext(Graph.OperateNode operater)
+        public void SetContext(ActionSystemObject operater)
         {
             this.operater = operater;
         }
@@ -51,12 +51,12 @@ namespace WorldActionSystem
         }
         protected virtual void AutoComplete()
         {
-            if(!Complete) OnEndExecute(false);
+            if(!Complete)
+                OnEndExecute(false);
         }
         public virtual void OnEndExecute(bool force)
         {
-            if (!Complete)
-            {
+            if (!Complete){
                 CoreEndExecute(force);
             }
         }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-namespace WorldActionSystem.Actions
+namespace WorldActionSystem.Hooks
 {
     public class BlastAnim : ColonyAnimItem
     {

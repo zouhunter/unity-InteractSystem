@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WorldActionSystem.Actions
+namespace WorldActionSystem.Hooks
 {
     public class DevideAnim : ColonyAnimItem
     {

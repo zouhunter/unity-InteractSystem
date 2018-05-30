@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 namespace WorldActionSystem
 {
-
     public abstract class AnimPlayer: ActionItem
     {
         [SerializeField]
@@ -37,14 +36,14 @@ namespace WorldActionSystem
             IsPlaying = false;
             onPlayComplete.Invoke();
         }
-        public virtual void RecordPlayer(Graph.AnimNode target)
+        public virtual void RecordPlayer(Hooks.AnimHook target)
         {
             if(!targets.Contains(target))
             {
                 this.targets.Add(target);
             }
         }
-        public virtual void RemovePlayer(Graph.AnimNode target)
+        public virtual void RemovePlayer(Hooks.AnimHook target)
         {
             if (targets.Contains(target))
             {

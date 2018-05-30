@@ -12,7 +12,7 @@ namespace WorldActionSystem
         protected bool startactive = true;
         [SerializeField]
         protected bool endactive = true;
-        [SerializeField, UnityEngine.Serialization.FormerlySerializedAs("m_name"), Attributes.DefultName]
+        [SerializeField, Attributes.DefultName]
         protected string _name;
         public string Name
         {
@@ -39,7 +39,7 @@ namespace WorldActionSystem
         public bool IsRuntimeCreated { get; set; }
         protected bool _active;
         public virtual bool Active { get { return _active; } protected set { _active = value; } }
-        protected List<Graph. OperateNode> targets = new List<Graph.OperateNode>();
+        protected List<ActionSystemObject> targets = new List<ActionSystemObject>();
 
 #if ActionSystem_G
         [HideInInspector]

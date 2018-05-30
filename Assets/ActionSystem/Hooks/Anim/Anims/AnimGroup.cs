@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace WorldActionSystem.Actions
+namespace WorldActionSystem.Hooks
 {
     public class AnimGroup : AnimPlayer
     {

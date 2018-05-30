@@ -24,6 +24,8 @@ namespace WorldActionSystem
         //环境对象
         [SerializeField]
         private Enviroment[] environments;
+        [SerializeField]
+        private ActionHook[] hooks;
 
         protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
         public string CameraID { get { return _cameraID; } }

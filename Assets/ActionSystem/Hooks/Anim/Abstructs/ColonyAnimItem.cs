@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WorldActionSystem.Actions
+namespace WorldActionSystem.Hooks
 {
     public abstract class ColonyAnimItem : CodeAnimItem
     {

@@ -6,15 +6,15 @@ using System;
 using System.Collections;
 using NodeGraph;
 
-namespace WorldActionSystem.Graph
+namespace WorldActionSystem.Hooks
 {
-    [CustomNode("Auto/Anim", 0, "ActionSystem")]
+    //[CustomNode("Auto/Anim", 0, "ActionSystem")]
     [AddComponentMenu(MenuName.AnimObj)]
-    public class AnimNode : OperateNode
+    public class AnimHook : ActionHook
     {
         [SerializeField]
         private float delyTime = 0f;
-        [SerializeField,Attributes.Range(0.1f, 10f)]
+        [SerializeField, Attributes.Range(0.1f, 10f)]
         private float speed = 1;
         [SerializeField]
         private bool reverse;
@@ -23,14 +23,7 @@ namespace WorldActionSystem.Graph
         private AnimPlayer animPlayer;
         private CoroutineController coroutineCtrl { get { return ActionSystem.Instence.CoroutineCtrl; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return 0;
-            }
-        }
-        
+
         /// <summary>
         /// 播放动画
         /// </summary>
@@ -43,7 +36,7 @@ namespace WorldActionSystem.Graph
         private void DelyPlay()
         {
             FindAnimCore(true);
-            Debug.Assert(animPlayer != null, "no enough animplayer named:" + Name);
+            Debug.Assert(animPlayer != null, "no enough animplayer named:" + this);
             if (animPlayer != null)
             {
                 animPlayer.duration = speed;
@@ -57,10 +50,9 @@ namespace WorldActionSystem.Graph
         {
             OnEndExecute(false);
         }
-
-        protected override void OnBeforeEnd(bool force)
+        public override void OnEndExecute(bool force)
         {
-            base.OnBeforeEnd(force);
+            base.OnEndExecute(force);
             if (animPlayer != null)
             {
                 animPlayer.StepComplete();
@@ -89,7 +81,8 @@ namespace WorldActionSystem.Graph
 
             if (animPlayer)
             {
-                if (record){
+                if (record)
+                {
                     animPlayer.RecordPlayer(this);
                 }
                 animPlayer.gameObject.SetActive(true);
