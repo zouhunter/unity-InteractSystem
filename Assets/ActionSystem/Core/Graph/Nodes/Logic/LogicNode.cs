@@ -18,11 +18,11 @@ namespace WorldActionSystem.Graph
             base.Initialize(data);
             if(data.InputPoints == null || data.InputPoints.Count == 0)
             {
-                data.AddInputPoint("i", "actionconnect", 100);
+                data.AddInputPoint("-", "actionconnect", 100);
             }
             if (data.OutputPoints == null || data.OutputPoints.Count == 0)
             {
-                data.AddOutputPoint("o", "actionconnect", 1);
+                data.AddOutputPoint("0", "actionconnect", 100);
             }
         }
     }

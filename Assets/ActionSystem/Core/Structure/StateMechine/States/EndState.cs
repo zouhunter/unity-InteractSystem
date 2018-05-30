@@ -9,9 +9,17 @@ namespace WorldActionSystem.Structure
 {
     public class EndState : ExecuteState
     {
-        internal override void Execute(ExecuteUnit unit)
+        protected override void ExecuteUnStarted(ExecuteUnit unit)
         {
-            
+            base.ExecuteUnStarted(unit);
+            statusDic[unit].statu = ExecuteStatu.Completed;
+            Debug.LogError("EndNode: 结束执行");
+        }
+
+        protected override void ExecuteCompleted(ExecuteUnit unit)
+        {
+            base.ExecuteCompleted(unit);
+            Debug.LogError("已经结束");
         }
     }
 }

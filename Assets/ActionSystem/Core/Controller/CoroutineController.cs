@@ -42,14 +42,14 @@ namespace WorldActionSystem
 
         public void DelyExecute(UnityAction action, float time)
         {
-            Debug.Log("DelyExecute" + action);
+            Debug.Log("DelyExecute" + action + ":" + time);
             if (delyActions.ContainsKey(action))
             {
                 delyActions[action].Add(time);
             }
             else
             {
-                delyActions[action] = new List<float>() { time};
+                delyActions[action] = new List<float>() { time };
             }
 
             if (delyCoroutine == null)
@@ -64,12 +64,11 @@ namespace WorldActionSystem
 
         public void Cansalce(UnityAction action)
         {
-            if (delyActions.ContainsKey(action))
-            {
+            if (delyActions.ContainsKey(action)) {
                 delyActions.Remove(action);
             }
 
-            if(delyCoroutine != null && delyActions.Count == 0)
+            if (delyCoroutine != null && delyActions.Count == 0)
             {
                 Debug.Log("Cansalce:" + delyCoroutine);
                 holder.StopCoroutine(delyCoroutine);
@@ -104,41 +103,33 @@ namespace WorldActionSystem
 
         private IEnumerator DelyActionCoroutine()
         {
-            var keys = delyActions.Keys.Select(x=>x).ToArray();
             var waitHandle = new WaitForEndOfFrame();
-            while (keys.Length > 0)
+
+            while (delyActions.Count > 0)
             {
-                yield return waitHandle;
+                var keys = delyActions.Keys.Select(x => x).ToArray();
 
                 foreach (var action in keys)
                 {
-                    if (delyActions.ContainsKey(action))
+                    var timers = delyActions[action];
+                    for (int i = 0; i < timers.Count; i++)
                     {
-                        var timers = delyActions[action];
-                      
-                        if (timers == null || timers.Count == 0)
+                        if ((timers[i] -= Time.deltaTime) < 0)
                         {
-                            delyActions.Remove(action);
-                            Debug.Log("Remove:" + action);
+                            timers.RemoveAt(i);
+                            action.Invoke();
                             break;
                         }
-                        else
-                        {
-                            for (int i = 0; i < timers.Count; i++)
-                            {
-                                if ((timers[i] -= Time.deltaTime) < 0)
-                                {
-                                    timers.RemoveAt(i);
+                    }
 
-                                    action.Invoke();
-                                    break;
-                                }
-                            }
-                        }
+
+                    if (timers.Count == 0)
+                    {
+                        delyActions.Remove(action);
+                        Debug.Log("Remove:" + action);
                     }
                 }
-
-                keys = delyActions.Keys.Select(x => x).ToArray();
+                yield return waitHandle;
             }
             delyCoroutine = null;
         }

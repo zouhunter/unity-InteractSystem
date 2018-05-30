@@ -18,7 +18,8 @@ namespace WorldActionSystem.Graph
         private float speed = 1;
         [SerializeField]
         private bool reverse;
-
+        [SerializeField]
+        private string animName;
         private AnimPlayer animPlayer;
         private CoroutineController coroutineCtrl { get { return ActionSystem.Instence.CoroutineCtrl; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
@@ -79,7 +80,7 @@ namespace WorldActionSystem.Graph
         {
             if (animPlayer == null)
             {
-                var elements = elementCtrl.GetElements<AnimPlayer>(Name);
+                var elements = elementCtrl.GetElements<AnimPlayer>(animName);
                 if (elements != null && elements.Count > 0)
                 {
                     animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];

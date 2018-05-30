@@ -9,25 +9,28 @@ namespace WorldActionSystem.Structure
 {
     public class StartState : ExecuteState
     {
-        internal override void Execute(ExecuteUnit unit)
+        //第一次执行
+        protected override void ExecuteUnStarted(ExecuteUnit unit)
         {
-            Debug.Log("StartState");
-            //第一次执行
-            if (!statusDic.ContainsKey(unit))
-            {
-                statusDic[unit] = new UnitStatus();
-                for (int i = 1; i < unit.childUnits.Count; i++){
-                    statusDic[unit].waitUnits.Enqueue(unit.childUnits[i]);
-                }
-                stateMechine.ExecuteGroup(unit.childUnits[0]);
-            }
-            //再次执行
-            else if(statusDic[unit].waitUnits.Count > 0)
-            {
-                var units = statusDic[unit].waitUnits.Dequeue();
-                stateMechine.ExecuteGroup(units);
-            }
+            base.ExecuteUnStarted(unit);
+            statusDic[unit].statu = ExecuteStatu.Executing;
+            StartExecuteChildGroups(unit);
         }
 
+      
+        //再次执行
+        protected override void ExecuteExecuting(ExecuteUnit unit)
+        {
+            if (HaveUnitNotComplete(unit))
+            {
+                return;
+            }
+
+            if (!LunchStackGroup(unit))
+            {
+                Debug.LogError("结束执行");
+            }
+        }
+      
     }
 }

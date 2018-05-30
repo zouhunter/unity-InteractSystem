@@ -98,7 +98,7 @@ namespace WorldActionSystem
                     if (!ExecuteAStep(isForceAuto))
                     {
                         OnEndExecute();
-                        if(!actionObj.Completed)
+                        if(actionObj.Statu != ExecuteStatu.Completed)
                         {
                             actionObj.OnEndExecute(false);
                         }

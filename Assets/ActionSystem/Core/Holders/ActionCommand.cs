@@ -28,24 +28,21 @@ namespace WorldActionSystem
         protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
         public string CameraID { get { return _cameraID; } }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
-        public bool Started { get { return _started; } }
-        public bool Completed { get { return _completed; } }
+        public ExecuteStatu Statu { get { return statu; } }
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<string> stepComplete { get; set; }//步骤自动结束方法
         protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
         public ActionGroup Context { get; private set; }//上下文
         public NodeGraph.DataModel.NodeGraphObj GraphObj { get { return _graphObj; } }
 
-        //开始标记
-        protected bool _started = false;
-        //结束标记
-        protected bool _completed = false;
+        //执行状态
+        protected ExecuteStatu statu = ExecuteStatu.UnStarted;
         //步骤控制器
         protected Structure.ActionStateMechine objectCtrl;
 
         protected virtual void OnEnable()
         {
-            _started = _completed = false;
+            statu = ExecuteStatu.UnStarted;
             objectCtrl = new Structure.ActionStateMechine(this);
         }
 
@@ -78,10 +75,9 @@ namespace WorldActionSystem
         /// </summary>
         internal bool Complete()
         {
-            if (!_completed)
+            if (statu != ExecuteStatu.Completed)
             {
-                _started = true;
-                _completed = true;
+                statu = ExecuteStatu.Completed;
                 OnEndExecute();
                 if (stepComplete != null)
                     stepComplete.Invoke(StepName);
@@ -96,9 +92,9 @@ namespace WorldActionSystem
 
         public virtual bool StartExecute(bool forceAuto)
         {
-            if (!_started)
+            if (statu == ExecuteStatu.UnStarted)
             {
-                _started = true;
+                statu = ExecuteStatu.Executing;
                 OnBeforeActionsStart();
                 ActionCtrl.OnStartExecute(objectCtrl, forceAuto);
                 return true;
@@ -122,10 +118,9 @@ namespace WorldActionSystem
         {
             //Debug.Log("EndExecute", gameObject);
 
-            if (!_completed)
+            if (statu != ExecuteStatu.Completed)
             {
-                _started = true;
-                _completed = true;
+                statu = ExecuteStatu.Completed;
                 OnEndExecute();
                 return true;
             }
@@ -145,9 +140,7 @@ namespace WorldActionSystem
 
         public virtual void UnDoExecute()
         {
-            _started = false;
-            _completed = false;
-
+            statu = ExecuteStatu.UnStarted;
             OnBeforeActionsUnDo();
             ActionCtrl.OnUnDoExecute(objectCtrl);
         }

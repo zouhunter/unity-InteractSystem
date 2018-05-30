@@ -61,7 +61,7 @@ namespace WorldActionSystem
             {
                 started = true;
                 this.onEndExecute = onEndExecute;
-                if (!CurrCommand.Started)
+                if (CurrCommand.Statu == ExecuteStatu.UnStarted)
                     CurrCommand.StartExecute(forceAuto);
                 return true;
             }

@@ -91,6 +91,7 @@ namespace WorldActionSystem.Graph
                    }, null);
             }
             GUI.backgroundColor = Color.white;
+            DrawAddNodes(position, data);
         }
 
         private Texture SwitchTexture()

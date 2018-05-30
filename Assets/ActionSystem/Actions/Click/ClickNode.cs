@@ -45,7 +45,7 @@ namespace WorldActionSystem.Actions
 
         private void TryComplete()
         {
-            if (!Started || Completed) return;
+            if (statu != ExecuteStatu.Executing) return;
         }
 
         public override void OnStartExecute(bool auto = false)

@@ -81,7 +81,7 @@ namespace WorldActionSystem
 
                 foreach (var cmd in activeCommands)
                 {
-                    if (!cmd.Started)
+                    if (cmd.Statu == ExecuteStatu.UnStarted)
                     {
                         cmd.StartExecute(forceAuto);
                     }
@@ -146,7 +146,7 @@ namespace WorldActionSystem
                 }
             }
 
-            
+
         }
 
         /// <summary>
@@ -242,7 +242,8 @@ namespace WorldActionSystem
         /// </summary>
         public void ToAllCommandStart()
         {
-            while (executedCommands.Count > 0){
+            while (executedCommands.Count > 0)
+            {
                 UnDoCommand();
             }
             CurrCommand = null;

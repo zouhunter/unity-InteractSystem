@@ -10,52 +10,69 @@ namespace WorldActionSystem.Structure
 {
     public class OperateState : ExecuteState
     {
-        internal override void Execute(ExecuteUnit unit)
+        /// <summary>
+        /// 首次执行
+        /// </summary>
+        /// <param name="unit"></param>
+        protected override void ExecuteUnStarted(ExecuteUnit unit)
         {
-            Debug.Log("OperateState");
+            base.ExecuteUnStarted(unit);
+            statusDic[unit].statu = ExecuteStatu.Executing;
             var operateNode = unit.node as OperateNode;
-            if (!statusDic.ContainsKey(unit))
-            {
-                statusDic[unit] = new UnitStatus();
 
-                if (unit.childUnits.Count == 0)
+            //判断是不是叶节点
+            var leaf = unit.childUnits.Count == 0;
+
+            if (!leaf)
+            {
+                for (int i = 0; i < unit.childUnits.Count; i++)
                 {
-                    TryActiveNextUnits(unit);
-                }
-                else
-                {
-                    for (int i = 0; i < unit.childUnits.Count; i++)
-                    {
-                        statusDic[unit].waitUnits.Enqueue(unit.childUnits[i]);
-                    }
+                    statusDic[unit].waitUnits.Enqueue(unit.childUnits[i]);
                 }
             }
-            else if (statusDic[unit].waitUnits.Count > 0)
-            {
-                Debug.Log("execute wait units!");
-                var units = statusDic[unit].waitUnits.Dequeue();
-                stateMechine.ExecuteGroup(units);
-            }
 
-            if (!operateNode.Started)
+            operateNode.onEndExecute = () =>
             {
-                operateNode.onEndExecute = () => Execute(unit);
-                operateNode.OnStartExecute(stateMechine.IsAuto);
-            }
-        }
+                if (leaf || statusDic[unit].waitUnits.Count == 0)
+                {
+                    statusDic[unit].statu = ExecuteStatu.Completed;
+                }
 
-        private void OnEndExecuteOperate()
-        {
-            
+                Execute(unit);
+            };
+
+            operateNode.OnStartExecute(stateMechine.IsAuto);
         }
 
         /// <summary>
-        /// 试图开启下一阶段的节点
+        /// 再次执行
         /// </summary>
-        private void TryActiveNextUnits(ExecuteUnit unit)
+        /// <param name="unit"></param>
+        protected override void ExecuteExecuting(ExecuteUnit unit)
         {
-            statusDic[unit].waitUnits.Enqueue(new List<ExecuteUnit>() { unit.parentUnits[0] });
-            //stateMechine.Execute(unit.parentUnits[0]);
+            base.ExecuteExecuting(unit);
+            if(HaveUnitNotComplete(unit)){
+                return;
+            }
+
+            if (!LunchStackGroup(unit))
+            {
+                statusDic[unit].statu = ExecuteStatu.Completed;
+                Execute(unit);
+            }
         }
+
+        /// <summary>
+        /// 结束执行
+        /// </summary>
+        /// <param name="unit"></param>
+        protected override void ExecuteCompleted(ExecuteUnit unit)
+        {
+            base.ExecuteCompleted(unit);
+            stateMechine.Execute(unit.parentUnits[0]);
+        }
+
+
+
     }
 }

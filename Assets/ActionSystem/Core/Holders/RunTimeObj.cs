@@ -43,7 +43,7 @@ namespace WorldActionSystem.Actions
 
         protected virtual void OnAdd(T arg0)
         {
-            if (Started && !Completed)
+            if (statu == ExecuteStatu.Executing)
             {
                 arg0.StepActive();
             }

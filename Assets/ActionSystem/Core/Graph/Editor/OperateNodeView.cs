@@ -9,7 +9,6 @@ namespace WorldActionSystem.Graph
     [CustomNodeView(typeof(OperateNode))]
     public class OperateNodeView : ActionNodeView
     {
-        private const float btnWidth = 15;
         public override string Category
         {
             get
@@ -36,42 +35,16 @@ namespace WorldActionSystem.Graph
         public override void OnNodeGUI(Rect position, NodeData data)
         {
             base.OnNodeGUI(position, data);
-
-            var nodePostion = new Rect(position.x + position.width - 40, 25, btnWidth, btnWidth);
-
-            if (GUI.Button(nodePostion, "+"))
-            {
-                var count = data.OutputPoints.Count;
-                data.AddOutputPoint(count.ToString(), "actionconnect", 100);
-            }
-
-            for (int i = 0; i < data.OutputPoints.Count; i++)
-            {
-                if (i == 0) continue;
-                nodePostion.y += 31.8f;
-
-                if (GUI.Button(nodePostion, "-"))
-                {
-                    if (data.OutputPoints.Count > 1)
-                    {
-                        data.OutputPoints.RemoveAt(i);
-                        for (int j = i; j < data.OutputPoints.Count; j++)
-                        {
-                            data.OutputPoints[j].Label = j.ToString();
-                        }
-                    }
-                }
-            }
-
+            DrawAddNodes(position, data);
         }
         public override void OnInspectorGUI(NodeGUI gui)
         {
             base.OnInspectorGUI(gui);
 
-            if (target is ActionNode)
+            if (target is OperateNode)
             {
-                var node = target as ActionNode;
-                if (node.Started && !node.Completed)
+                var node = target as OperateNode;
+                if (node.Statu == ExecuteStatu.Executing)
                 {
                     gui.ShowProgress();
                     gui.SetProgress(Time.time % 1f);

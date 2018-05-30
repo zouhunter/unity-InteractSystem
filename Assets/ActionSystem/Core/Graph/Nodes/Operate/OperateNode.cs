@@ -25,7 +25,9 @@ namespace WorldActionSystem.Graph
                 _name = value;
             }
         }
-      
+        protected ExecuteStatu statu;
+        public ExecuteStatu Statu { get { return statu; } }
+
         [SerializeField, Attributes.Range(0, 10)]
         private int queueID;
         public int QueueID
@@ -65,7 +67,7 @@ namespace WorldActionSystem.Graph
         protected override void OnEnable()
         {
             base.OnEnable();
-            _started = _completed = false;
+            statu = ExecuteStatu.UnStarted;
         }
         public override void Initialize(NodeData data)
         {
@@ -84,11 +86,9 @@ namespace WorldActionSystem.Graph
         {
             if (log) Debug.Log("OnStartExecute:" + this.Name);
             this.auto = auto;
-            if (!_started)
+            if (statu == ExecuteStatu.UnStarted)
             {
-                _started = true;
-                _completed = false;
-                //gameObject.SetActive(true);
+                statu = ExecuteStatu.Executing;
                 startedList.Add(this);
                 OnStartExecuteInternal(auto);
             }
@@ -101,7 +101,8 @@ namespace WorldActionSystem.Graph
         {
             if (force)
             {
-                if (!Completed) CoreEndExecute(true);
+                if (statu != ExecuteStatu.Completed)
+                    CoreEndExecute(true);
             }
             else
             {
@@ -109,7 +110,8 @@ namespace WorldActionSystem.Graph
                 {
                     if (hookCtrl.Complete)
                     {
-                        if (!Completed) CoreEndExecute(false);
+                        if (statu != ExecuteStatu.Completed)
+                            CoreEndExecute(false);
                     }
                     else if (!hookCtrl.Started)
                     {
@@ -122,7 +124,8 @@ namespace WorldActionSystem.Graph
                 }
                 else
                 {
-                    if (!Completed) CoreEndExecute(false);
+                    if (statu != ExecuteStatu.Completed)
+                        CoreEndExecute(false);
                 }
             }
         }
@@ -132,10 +135,9 @@ namespace WorldActionSystem.Graph
 
             if (log) Debug.Log("OnEndExecute:" + this + ":" + force);
 
-            if (!_completed)
+            if (statu != ExecuteStatu.Completed)
             {
-                _started = true;
-                _completed = true;
+                statu = ExecuteStatu.Completed;
                 startedList.Remove(this);
                 //gameObject.SetActive(endActive);
 
@@ -163,10 +165,9 @@ namespace WorldActionSystem.Graph
 
             if (log) Debug.Log("OnUnDoExecute:" + this);
 
-            if (_started)
+            if (statu != ExecuteStatu.UnStarted)
             {
-                _started = false;
-                _completed = false;
+                statu = ExecuteStatu.UnStarted;
                 OnUnDoExecuteInternal();
                 startedList.Remove(this);
                 //gameObject.SetActive(startActive);

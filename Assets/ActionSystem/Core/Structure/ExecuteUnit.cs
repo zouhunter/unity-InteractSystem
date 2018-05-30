@@ -11,7 +11,6 @@ namespace WorldActionSystem.Structure
     /// </summary>
     public class ExecuteUnit
     {
-        public bool autoExecute { get; set; }
         public Graph.ActionNode node;
         public List<ExecuteUnit> parentUnits = new List<ExecuteUnit>();
         public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();
