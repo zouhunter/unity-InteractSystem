@@ -17,7 +17,7 @@ namespace WorldActionSystem.Actions
         public Collider Collider { get { return _collider; }protected set { _collider = value; } }
         public bool ClickAble { get { return playableCount > targets.Count; } }
 
-        private event UnityAction onClicked;
+        private event UnityAction<ClickItem> onClicked;
 
         protected override void Start()
         {
@@ -34,7 +34,7 @@ namespace WorldActionSystem.Actions
             Collider.gameObject.layer = LayerMask.NameToLayer(Layers.clickItemLayer);
         }
 
-        public void RegistOnClick(UnityAction onClicked)
+        public void RegistOnClick(UnityAction<ClickItem> onClicked)
         {
             this.onClicked += onClicked;
         }
@@ -43,11 +43,11 @@ namespace WorldActionSystem.Actions
         {
             if(onClicked != null)
             {
-                onClicked.Invoke();
+                onClicked.Invoke(this);
             }
         }
 
-        public void RemoveOnClicked(UnityAction onClicked)
+        public void RemoveOnClicked(UnityAction<ClickItem> onClicked)
         {
             this.onClicked -= onClicked;
         }

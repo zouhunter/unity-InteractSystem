@@ -39,15 +39,19 @@ namespace WorldActionSystem
         public bool IsRuntimeCreated { get; set; }
         protected bool _active;
         public virtual bool Active { get { return _active; } protected set { _active = value; } }
-        protected List<ActionSystemObject> targets = new List<ActionSystemObject>();
-
+        protected List<UnityEngine.Object> targets = new List<UnityEngine.Object>();
+        //子类actionItem(用于优先执行)
+        protected ActionItem[] subActions;
 #if ActionSystem_G
         [HideInInspector]
 #endif
         public UnityEvent onActive,onInActive;
 
         protected virtual void Awake() { }
-        protected virtual void OnEnable() { }
+        protected virtual void OnEnable() {
+            targets.Clear();
+            subActions = GetComponentsInChildren<ActionItem>();
+        }
         protected virtual void Start()
         {
             ElementController.Instence.RegistElement(this);
@@ -62,7 +66,20 @@ namespace WorldActionSystem
         {
             Body.SetActive(visible);
         }
-
+        public virtual void RecordPlayer(UnityEngine.Object target)
+        {
+            if (!targets.Contains(target))
+            {
+                this.targets.Add(target);
+            }
+        }
+        public virtual void RemovePlayer(UnityEngine.Object target)
+        {
+            if (targets.Contains(target))
+            {
+                this.targets.Remove(target);
+            }
+        }
         public virtual void StepActive()
         {
             Active = true;
@@ -72,6 +89,7 @@ namespace WorldActionSystem
         {
             Active = false;
             onInActive.Invoke();
+            ElementController.Instence.SetPriority(subActions);
         }
         public virtual void StepUnDo()
         {

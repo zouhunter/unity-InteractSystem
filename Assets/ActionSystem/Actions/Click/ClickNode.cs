@@ -29,12 +29,18 @@ namespace WorldActionSystem.Actions
         private List<string> clickList = new List<string>();
         private ClickItem[] finalGroup;
         private int clickedIndex = 0;
-
-
+        private List<ClickItem> clickedItems = new List<ClickItem>();
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            clickedItems.Clear();
+            finalGroup = null;
+            clickedIndex = 0;
+        }
         protected override void OnAdd(ClickItem arg0)
         {
             base.OnAdd(arg0);
-            if(Statu == ExecuteStatu.Executing)
+            if (Statu == ExecuteStatu.Executing)
             {
                 arg0.StepActive();
                 arg0.RegistOnClick(TryComplete);
@@ -43,16 +49,13 @@ namespace WorldActionSystem.Actions
         protected override void OnRemove(ClickItem arg0)
         {
             base.OnRemove(arg0);
-            arg0.RegistOnClick(TryComplete);
+            arg0.RemoveOnClicked(TryComplete);
         }
-
-    
 
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            startedList.Add(this);
-            OnStepActive();
+            FindClickableItems();
             if (auto)
             {
                 AutoClickItems();
@@ -63,38 +66,49 @@ namespace WorldActionSystem.Actions
             }
         }
 
-        private void TryComplete()
+        private void TryComplete(ClickItem item)
         {
             if (statu != ExecuteStatu.Executing) return;
-            OnEndExecute(false);
+
+            if (NeedElements[clickedIndex] == item.Name)
+            {
+                clickedItems.Add(item);
+                clickedIndex++;
+            }
+
+            if(clickedIndex == clickedItems.Count)
+            {
+                finalGroup = clickedItems.ToArray();
+                foreach (var clickItem in finalGroup){
+                    clickItem.RecordPlayer(this);
+                }
+                OnEndExecute(false);
+            }
+
         }
         /// <summary>
         /// 将所能点击的目标设置为激活状态
         /// </summary>
-        private void OnStepActive()
+        private void FindClickableItems()
         {
             if (clickList.Count > clickedIndex)
             {
                 var key = clickList[clickedIndex];
-                var elements = elementPool.FindAll(x => x.Name == key);
+                var elements = elementPool.FindAll(x => x.Name == key && x.ClickAble);
                 elements.ForEach(element =>
                 {
-                    if (element.ClickAble)
-                    {
-                        element.StepActive();
-                        element.RegistOnClick(TryComplete);
-                    }
+                    element.StepActive();
+                    element.RegistOnClick(TryComplete);
                 });
             }
         }
-
         /// <summary>
         /// 箭头提醒一个其中一个目标
         /// </summary>
         private void AngleOnActive()
         {
-        }
 
+        }
 
         /// <summary>
         /// 自动点击目标元素
@@ -102,15 +116,6 @@ namespace WorldActionSystem.Actions
         private void AutoClickItems()
         {
 
-        }
-
-        public override void OnEndExecute(bool force)
-        {
-            base.OnEndExecute(force);
-        }
-        public override void OnUnDoExecute()
-        {
-            base.OnUnDoExecute();
         }
     }
 

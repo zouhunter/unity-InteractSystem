@@ -14,12 +14,13 @@ namespace WorldActionSystem.Structure
         public Graph.ActionNode node;
         public List<ExecuteUnit> parentUnits = new List<ExecuteUnit>();
         public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();
-        
+
         /// <summary>
         /// 便于检索
         /// </summary>
         private List<Graph.ActionNode> childNodesList = new List<Graph.ActionNode>();
-
+        private List<ExecuteUnit> copyEnviroment = new List<ExecuteUnit>();
+        
         public ExecuteUnit(Graph.ActionNode parentNode)
         {
             this.node = parentNode;
@@ -38,8 +39,8 @@ namespace WorldActionSystem.Structure
             var list = new List<ExecuteUnit>();
             list.AddRange(childUnits);
             this.childUnits.Add(list);
-            this.childNodesList.AddRange(list.Select(x=>x.node));
-            foreach (var unit in childUnits){
+            this.childNodesList.AddRange(list.Select(x => x.node));
+            foreach (var unit in childUnits) {
                 unit.AddParentUnit(this);
             }
         }
@@ -50,9 +51,9 @@ namespace WorldActionSystem.Structure
             return childNodesList.Contains(node);
         }
 
-        internal object GetPositon(ExecuteUnit unit)
+        internal List<ExecuteUnit> GetPositon(ExecuteUnit unit)
         {
-           return childUnits.Find(x => x.Contains(unit));
+            return childUnits.Find(x => x.Contains(unit));
         }
     }
 }

@@ -37,23 +37,5 @@ namespace WorldActionSystem.Graph
             base.OnNodeGUI(position, data);
             DrawAddNodes(position, data);
         }
-        public override void OnInspectorGUI(NodeGUI gui)
-        {
-            base.OnInspectorGUI(gui);
-
-            if (target is OperateNode)
-            {
-                var node = target as OperateNode;
-                if (node.Statu == ExecuteStatu.Executing)
-                {
-                    gui.ShowProgress();
-                    gui.SetProgress(Time.time % 1f);
-                }
-                else
-                {
-                    gui.HideProgress();
-                }
-            }
-        }
     }
 }

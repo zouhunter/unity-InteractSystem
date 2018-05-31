@@ -30,11 +30,13 @@ namespace WorldActionSystem
         private ElementPool runTimeElementPrefabs = new ElementPool();
         //动态创建的元素
         private ElementPool rutimeCreatedList = new ElementPool();
+        //优先查看的列表
+        private ElementPool priorityList = new ElementPool();
         //元素锁
         private Dictionary<ISupportElement, List<object>> lockDic = new Dictionary<ISupportElement, List<object>>();
 
         private ElementController() { }
-       
+
         /// <summary>
         /// 外部添加Element
         /// </summary>
@@ -85,6 +87,12 @@ namespace WorldActionSystem
             }
         }
 
+        internal void SetPriority(ActionItem[] subActions)
+        {
+            priorityList.Clear();
+            priorityList.AddRange(subActions);
+        }
+
         /// <summary>
         /// 判断元素是否被占用
         /// </summary>
@@ -101,11 +109,11 @@ namespace WorldActionSystem
         /// 元素加锁
         /// </summary>
         /// <param name="item"></param>
-        public void LockElement(ISupportElement item,object lk)
+        public void LockElement(ISupportElement item, object lk)
         {
-            if(lockDic.ContainsKey(item))
+            if (lockDic.ContainsKey(item))
             {
-                if(!lockDic[item].Contains(lk))
+                if (!lockDic[item].Contains(lk))
                 {
                     lockDic[item].Add(lk);
                 }
@@ -120,7 +128,7 @@ namespace WorldActionSystem
         /// 元素解锁
         /// </summary>
         /// <param name="item"></param>
-        public bool UnLockElement(ISupportElement item,object lk)
+        public bool UnLockElement(ISupportElement item, object lk)
         {
             if (lockDic.ContainsKey(item) && lockDic[item].Contains(lk))
             {
@@ -139,7 +147,8 @@ namespace WorldActionSystem
             if (!IsLocked(item))
             {
                 RemoveElement(item);
-                if(item.Body != null){
+                if (item.Body != null)
+                {
                     UnityEngine.Object.DestroyImmediate(item.Body);
                 }
                 return true;
@@ -152,19 +161,20 @@ namespace WorldActionSystem
         /// <typeparam name="T"></typeparam>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public T TryCreateElement<T>(string elementName,Transform parent,bool regist = true) where T : ISupportElement
+        public T TryCreateElement<T>(string elementName, Transform parent, bool regist = true) where T : ISupportElement
         {
             T element = default(T);
             var prefab = runTimeElementPrefabs.Find(x => x.Name == elementName);
             if (prefab != null)
             {
-                var e = CreateElement(prefab,parent);
+                var e = CreateElement(prefab, parent);
                 e.Name = prefab.Name;
                 if (e is T)
                 {
                     element = (T)e;
                     element.IsRuntimeCreated = true;
-                    if(regist){
+                    if (regist)
+                    {
                         rutimeCreatedList.ScureAdd(element);
                     }
                 }
@@ -188,7 +198,7 @@ namespace WorldActionSystem
             rutimeCreatedList.ScureAdd(element);
         }
 
-        private ISupportElement CreateElement(ISupportElement prefab,Transform parent)
+        private ISupportElement CreateElement(ISupportElement prefab, Transform parent)
         {
             var instence = UnityEngine.Object.Instantiate(prefab.Body);
             instence.transform.SetParent(parent);
@@ -227,11 +237,29 @@ namespace WorldActionSystem
         /// <summary>
         /// 获取指定元素名的列表
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="elementName"></param>
+        /// <param name="priorityList"></param>
         /// <returns></returns>
-        public List<T> GetElements<T>(string elementName) where T : ISupportElement
+        public List<T> GetElements<T>(string elementName, bool priorit) where T : ISupportElement
         {
-            var list = elementList.FindAll(x => x.Name == elementName && x is T);
+            List<ISupportElement> list = null;
+            if (priorit)
+            {
+                foreach (var item in priorityList)
+                {
+                    Debug.Log(item.Name);
+                    Debug.Log(elementName);
+                }
+                list = priorityList.FindAll(x => x.Name == elementName && x is T);
+                if (list.Count > 0)
+                {
+                    return list.ConvertAll<T>(x => (T)x);
+                }
+            }
+
+
+            list = elementList.FindAll(x => x.Name == elementName && x is T);
             if (list.Count > 0)
             {
                 return list.ConvertAll<T>(x => (T)x);

@@ -81,7 +81,9 @@ namespace NodeGraph
         protected virtual void BuildFromGraph(Model.NodeGraphObj m_targetGraph) { }
         internal virtual void OnDragUpdated() { }
         internal virtual List<KeyValuePair<string, Model.Node>> OnDragAccept(UnityEngine.Object[] objectReferences) { return null; }
-        internal virtual void Validate(NodeGUI node) { }
+        internal virtual void Validate(NodeGUI node) {
+           
+        }
 
         internal virtual string GetConnectType(Model.ConnectionPointData output, Model.ConnectionPointData input)
         {
@@ -89,6 +91,11 @@ namespace NodeGraph
                 return output.Type;
             }
             return null;
+        }
+
+        internal virtual void DrawNodeGUI(NodeGUI nodeGUI)
+        {
+
         }
     }
 }

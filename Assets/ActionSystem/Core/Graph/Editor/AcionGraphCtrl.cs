@@ -34,6 +34,25 @@ namespace WorldActionSystem.Graph
         {
             base.Validate(node);
         }
+        internal override void DrawNodeGUI(NodeGUI nodeGUI)
+        {
+            base.DrawNodeGUI(nodeGUI);
+
+            if (nodeGUI.Data.Object is WorldActionSystem.Graph.OperateNode)
+            {
+                var node = nodeGUI.Data.Object as WorldActionSystem.Graph.OperateNode;
+                if (node.Statu == ExecuteStatu.Executing)
+                {
+                    nodeGUI.ShowProgress();
+                    nodeGUI.SetProgress((Time.time / 10) % 1);
+                }
+                else
+                {
+                    nodeGUI.HideProgress();
+                }
+            }
+
     }
+}
 
 }

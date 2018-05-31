@@ -41,9 +41,9 @@ namespace WorldActionSystem.Actions
             base.OnUnDoExecute();
             CompleteElements(true);
         }
-        public override void OnEndExecute(bool force)
+        protected override void OnBeforeEnd(bool force)
         {
-            base.OnEndExecute(force);
+            base.OnBeforeEnd(force);
             CompleteElements(false);
         }
         /// <summary>
@@ -58,11 +58,11 @@ namespace WorldActionSystem.Actions
                 if (!elementKeys.Contains(elementName))
                 {
                     elementKeys.Add(elementName);
-                    //var elements = elementCtrl.GetElements<T>(elementName);
-                    //if (elements != null)
-                    //{
-                    //    elementPool.ScureAdd(elements.ToArray());
-                    //}
+                    var elements = elementCtrl.GetElements<T>(elementName,false);
+                    if (elements != null)
+                    {
+                        elementPool.ScureAdd(elements.ToArray());
+                    }
                 }
             }
         }
@@ -111,7 +111,8 @@ namespace WorldActionSystem.Actions
                     if (objs == null) return;
                     for (int i = 0; i < objs.Count; i++)
                     {
-                        if (log) Debug.Log("CompleteElements:" + element + objs[i].Active);
+                        if (log)
+                            Debug.Log("CompleteElements:" + element + objs[i].Active);
 
                         if (objs[i].Active)
                         {

@@ -33,6 +33,11 @@ namespace WorldActionSystem
             this.operater = operater;
         }
 
+        protected virtual void OnEnable()
+        {
+            status = ExecuteStatu.UnStarted;
+        }
+
         public virtual void OnStartExecute(bool auto)
         {
             if (log) Debug.Log("onStart Execute Hook :" + this);

@@ -72,7 +72,7 @@ namespace WorldActionSystem.Hooks
         {
             if (animPlayer == null)
             {
-                var elements = elementCtrl.GetElements<AnimPlayer>(animName);
+                var elements = elementCtrl.GetElements<AnimPlayer>(animName,true);
                 if (elements != null && elements.Count > 0)
                 {
                     animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];

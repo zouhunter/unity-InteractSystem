@@ -8,29 +8,41 @@ namespace WorldActionSystem
 
     public class HookCtroller 
     {
-        protected bool _complete;
-        public bool Complete { get { return _complete; } }
-
-        protected bool _started;
-        public bool Started { get { return _started; } }
-
-        protected Graph.OperateNode actionObj { get; set; }
+        protected ExecuteStatu statu;
+        public ExecuteStatu Statu { get { return statu; } }
+        public object Context { get; private set; }
         protected List<int> queueID = new List<int>();
         protected ActionHook[] hooks { get; set; }
         protected bool isForceAuto;
-
-        public HookCtroller(Graph. OperateNode trigger)
+        public UnityEngine.Events.UnityAction onEndExecute { get; set; }
+        
+        public void SetContext(object context)
         {
-            this.actionObj = trigger;
-            hooks = trigger.Hooks;
+            this.Context = context;
+        }
+
+        public void InitHooks(params ActionHook[] actionHooks)
+        {
+            if(actionHooks.Length > 0)
+            {
+                statu = ExecuteStatu.UnStarted;
+                hooks = new ActionHook[actionHooks.Length];
+                for (int i = 0; i < actionHooks.Length; i++)
+                {
+                    hooks[i] = ScriptableObject.Instantiate(actionHooks[i]);
+                }
+            }
+            else
+            {
+                statu = ExecuteStatu.Completed;
+            }
         }
 
         public virtual void OnStartExecute(bool forceAuto)
         {
-            if(!_started)
+            if(statu == ExecuteStatu.UnStarted)
             {
-                _started = true;
-                _complete = false;
+                statu = ExecuteStatu.Executing;
                 this.isForceAuto = forceAuto;
                 ChargeQueueIDs();
                 ExecuteAStep(isForceAuto);
@@ -52,10 +64,9 @@ namespace WorldActionSystem
 
         public virtual void OnEndExecute()
         {
-            if (!_complete)
+            if (statu != ExecuteStatu.Completed)
             {
-                _complete = true;
-                _started = true;
+                statu = ExecuteStatu.Completed;
                 foreach (var item in hooks)
                 {
                     if(item.Statu == ExecuteStatu.UnStarted)
@@ -72,10 +83,9 @@ namespace WorldActionSystem
 
         public virtual void OnUnDoExecute()
         {
-            if (_started)
+            if (statu != ExecuteStatu.UnStarted)
             {
-                _started = false;
-                _complete = false;
+                statu = ExecuteStatu.UnStarted;
                 foreach (var item in hooks)
                 {
                     if (item.Statu != ExecuteStatu.UnStarted)
@@ -88,7 +98,7 @@ namespace WorldActionSystem
 
         private void OnCommandObjComplete(ActionHook obj)
         {
-            if(!Complete)
+            if(statu != ExecuteStatu.Completed)
             {
                 var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == obj.QueueID && x.Statu != ExecuteStatu.Completed);
                 if (notComplete.Length == 0)
@@ -96,9 +106,9 @@ namespace WorldActionSystem
                     if (!ExecuteAStep(isForceAuto))
                     {
                         OnEndExecute();
-                        if(actionObj.Statu != ExecuteStatu.Completed)
+                        if(onEndExecute != null)
                         {
-                            actionObj.OnEndExecute(false);
+                            onEndExecute.Invoke();
                         }
                     }
                 }

@@ -20,4 +20,4 @@ MonoBehaviour:
   delyTime: 0
   speed: 1
   reverse: 0
-  animName: 
+  animName: anim1

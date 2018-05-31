@@ -220,7 +220,7 @@ namespace NodeGraph
          * An alternative way to get Window, becuase
          * GetWindow<NodeGraph.DataModelEditorWindow>() forces window to be active and present
          */
-        private static NodeGraphWindow Window
+        public static NodeGraphWindow Window
         {
             get
             {

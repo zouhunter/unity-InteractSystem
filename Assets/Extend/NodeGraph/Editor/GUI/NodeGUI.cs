@@ -82,6 +82,7 @@ namespace NodeGraph
                 m_controller = value;
             }
         }
+        
         public string Id
         {
             get
@@ -395,8 +396,8 @@ namespace NodeGraph
 
         public void DrawNode()
         {
-            //GUIStyle s = NodeGUIUtility.nodeSkin.FindStyle(m_nodeSyle);
-            GUI.Window(m_nodeWindowId, m_baseRect, DrawThisNode,string.Empty, m_nodeSyle);
+            GUI.Window(m_nodeWindowId, m_baseRect, DrawThisNode, string.Empty, m_nodeSyle);
+            Controller.DrawNodeGUI(this);
         }
 
         private void DrawThisNode(int id)
@@ -429,6 +430,7 @@ namespace NodeGraph
             {
                 EditorGUI.ProgressBar(new Rect(10f, m_baseRect.height - 20f, m_baseRect.width - 20f, 10f), m_progress, string.Empty);
             }
+
             if (m_hasErrors)
             {
                 GUIStyle errorStyle = new GUIStyle("CN EntryError");
@@ -461,7 +463,7 @@ namespace NodeGraph
             m_data.InputPoints.ForEach(drawConnectionPoint);
             m_data.OutputPoints.ForEach(drawConnectionPoint);
 
-            nodeDataDrawer.OnNodeGUI(new Rect(0,0,m_baseRect.width,m_baseRect.height), Data);
+            nodeDataDrawer.OnNodeGUI(new Rect(0, 0, m_baseRect.width, m_baseRect.height), Data);
             GUIStyle catStyle = new GUIStyle("WhiteMiniLabel");
             catStyle.alignment = TextAnchor.LowerRight;
             var categoryRect = new Rect(2f, m_baseRect.height - 14f, m_baseRect.width - 4f, 16f);
@@ -603,6 +605,10 @@ namespace NodeGraph
         public void SetProgress(float val)
         {
             m_progress = val;
+            if (NodeGraphWindow.Window)
+            {
+                NodeGraphWindow.Window.Repaint();
+            }
         }
 
         public void ShowProgress()
@@ -667,7 +673,8 @@ namespace NodeGraph
         {
             //JudgeName();
             EditorGUI.BeginChangeCheck();
-            if (nodeDataDrawer != null){
+            if (nodeDataDrawer != null)
+            {
                 nodeDataDrawer.OnInspectorGUI(this);
             }
             if (EditorGUI.EndChangeCheck())

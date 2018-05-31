@@ -50,11 +50,11 @@ namespace WorldActionSystem.Graph
         public abstract ControllerType CtrlType { get; }
         public static bool log = true;
 
-        [SerializeField, UnityEngine.Serialization.FormerlySerializedAs("m_name"), Attributes.DefultName]
+        [SerializeField, Attributes.DefultName]
         protected string _name;
         protected bool auto;
       
-        private HookCtroller hookCtrl;
+        private HookCtroller hookCtrl = new HookCtroller();
         private ActionGroup _system;
         protected static List<OperateNode> startedList = new List<OperateNode>();
         [SerializeField]
@@ -68,8 +68,21 @@ namespace WorldActionSystem.Graph
         {
             base.OnEnable();
             statu = ExecuteStatu.UnStarted;
-            hookCtrl = new HookCtroller(this);
+            InitHookCtrl();
         }
+        private void InitHookCtrl()
+        {
+            hookCtrl.SetContext(this);
+            hookCtrl.InitHooks(hooks);
+            hookCtrl.onEndExecute += () =>
+            {
+                if (Statu != ExecuteStatu.Completed)
+                {
+                    OnEndExecute(false);
+                }
+            };
+        }
+
         public override void Initialize(NodeData data)
         {
             base.Initialize(data);
@@ -100,46 +113,40 @@ namespace WorldActionSystem.Graph
         }
         public virtual void OnEndExecute(bool force)
         {
+            OnBeforeEnd(force);
+
             if (force)
             {
                 if (statu != ExecuteStatu.Completed)
+                {
                     CoreEndExecute(true);
+                }
             }
             else
             {
-                if (hooks.Length > 0)
+                if (hookCtrl.Statu == ExecuteStatu.Completed && statu != ExecuteStatu.Completed)
                 {
-                    if (hookCtrl.Complete)
-                    {
-                        if (statu != ExecuteStatu.Completed)
-                            CoreEndExecute(false);
-                    }
-                    else if (!hookCtrl.Started)
-                    {
-                        hookCtrl.OnStartExecute(auto);
-                    }
-                    else
-                    {
-                        Debug.Log("wait:" + Name);
-                    }
+                    CoreEndExecute(false);
+                }
+                else if (hookCtrl.Statu == ExecuteStatu.UnStarted)
+                {
+                    hookCtrl.OnStartExecute(auto);
                 }
                 else
                 {
-                    if (statu != ExecuteStatu.Completed)
-                        CoreEndExecute(false);
+                    Debug.Log("wait:" + Name);
                 }
             }
         }
         private void CoreEndExecute(bool force)
         {
             //angleCtrl.UnNotice(anglePos);
-
             if (log) Debug.Log("OnEndExecute:" + this + ":" + force);
 
             if (statu != ExecuteStatu.Completed)
             {
                 statu = ExecuteStatu.Completed;
-                startedList.Remove(this);
+              
                 //gameObject.SetActive(endActive);
 
                 if (hooks.Length > 0)
@@ -147,7 +154,6 @@ namespace WorldActionSystem.Graph
                     hookCtrl.OnEndExecute();
                 }
 
-                OnBeforeEnd(force);
                 if (log) Debug.Log("OnEndExecute:" + Name);
 
                 if (onEndExecute != null)
@@ -170,7 +176,6 @@ namespace WorldActionSystem.Graph
             {
                 statu = ExecuteStatu.UnStarted;
                 OnUnDoExecuteInternal();
-                startedList.Remove(this);
                 //gameObject.SetActive(startActive);
                 if (hooks.Length > 0)
                 {
@@ -206,9 +211,11 @@ namespace WorldActionSystem.Graph
         }
         protected virtual void OnBeforeEnd(bool force)
         {
+            startedList.Remove(this);
         }
         protected virtual void OnUnDoExecuteInternal()
         {
+            startedList.Remove(this);
         }
     }
 }
