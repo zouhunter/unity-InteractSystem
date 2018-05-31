@@ -72,6 +72,10 @@ namespace WorldActionSystem.Structure
         protected override void ExecuteCompleted(ExecuteUnit unit)
         {
             base.ExecuteCompleted(unit);
+            if (unit.parentUnits.Count == 0)
+            {
+                Debug.LogError(unit.node + "have no parent!");
+            }
             stateMechine.Execute(unit.parentUnits[0]);
         }
 

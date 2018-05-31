@@ -41,6 +41,7 @@ namespace WorldActionSystem.Structure
                     {
                         var position = copyOriginal.parentUnits[i].GetPositon(copyOriginal);
                         position.Add(newUnit);
+                        newUnit.parentUnits.Add(copyOriginal.parentUnits[i]);
                     }
                 }
             }
@@ -49,6 +50,7 @@ namespace WorldActionSystem.Structure
         public static ExecuteUnit MakeCopy(ExecuteUnit original, List<ExecuteUnit> enviroment)
         {
             var unit = CreateOringalUnit(ScriptableObject.Instantiate(original.node), enviroment);
+            Debug.Log("MakeCopy:"+unit);
 
             for (int i = 0; i < original.childUnits.Count; i++)
             {

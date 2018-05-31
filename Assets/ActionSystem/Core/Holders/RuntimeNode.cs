@@ -99,7 +99,12 @@ namespace WorldActionSystem.Actions
                 }
             }
         }
-        protected void CompleteElements(bool undo)
+
+        /// <summary>
+        /// 选择性结束element
+        /// </summary>
+        /// <param name="undo"></param>
+        protected virtual void CompleteElements(bool undo)
         {
             foreach (var element in NeedElements)
             {

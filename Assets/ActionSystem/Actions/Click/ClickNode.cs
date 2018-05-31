@@ -30,6 +30,7 @@ namespace WorldActionSystem.Actions
         private ClickItem[] finalGroup;
         private int clickedIndex = 0;
         private List<ClickItem> clickedItems = new List<ClickItem>();
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -69,19 +70,18 @@ namespace WorldActionSystem.Actions
         private void TryComplete(ClickItem item)
         {
             if (statu != ExecuteStatu.Executing) return;
+            if (!item.ClickAble) return;
 
             if (NeedElements[clickedIndex] == item.Name)
             {
                 clickedItems.Add(item);
                 clickedIndex++;
+                item.RecordPlayer(item);
             }
 
             if(clickedIndex == clickedItems.Count)
             {
                 finalGroup = clickedItems.ToArray();
-                foreach (var clickItem in finalGroup){
-                    clickItem.RecordPlayer(this);
-                }
                 OnEndExecute(false);
             }
 
@@ -100,6 +100,30 @@ namespace WorldActionSystem.Actions
                     element.StepActive();
                     element.RegistOnClick(TryComplete);
                 });
+            }
+        }
+        protected override void CompleteElements(bool undo)
+        {
+            base.CompleteElements(undo);
+
+            if (undo)
+            {
+                foreach (var item in clickedItems){
+                    item.StepUnDo();
+                }
+                clickedItems.Clear();
+            }
+            else
+            {
+                if (finalGroup == null) return;
+
+                foreach (var item in finalGroup)
+                {
+                    if(item.Active)
+                    {
+                        item.StepComplete();
+                    }
+                }
             }
         }
         /// <summary>

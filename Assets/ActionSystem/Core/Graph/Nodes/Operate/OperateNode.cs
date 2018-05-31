@@ -48,7 +48,7 @@ namespace WorldActionSystem.Graph
         public ActionGroup system { get { return _system; } set { _system = value; } }
         public OperateNode[] StartedList { get { return startedList.ToArray(); } }
         public abstract ControllerType CtrlType { get; }
-        public static bool log = true;
+        public static bool log = false;
 
         [SerializeField, Attributes.DefultName]
         protected string _name;

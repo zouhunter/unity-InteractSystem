@@ -87,9 +87,9 @@ namespace WorldActionSystem
         }
         public virtual void StepComplete()
         {
+            ElementController.Instence.SetPriority(subActions);
             Active = false;
             onInActive.Invoke();
-            ElementController.Instence.SetPriority(subActions);
         }
         public virtual void StepUnDo()
         {

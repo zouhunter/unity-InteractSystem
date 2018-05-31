@@ -11,7 +11,7 @@ namespace WorldActionSystem.Structure
     {
         public ActionStateMechine stateMechine { get; set; }
         protected Dictionary<ExecuteUnit, UnitStatus> statusDic { get { return stateMechine.statuDic; } }
-        public static bool log = true;
+        public static bool log = false;
 
         internal virtual void Execute(ExecuteUnit unit)
         {
