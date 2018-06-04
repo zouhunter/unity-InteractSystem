@@ -21,7 +21,7 @@ namespace WorldActionSystem.Structure
                 CompleteExecuteChildGroups(unit);
                 statusDic[unit].statu = ExecuteStatu.Completed;
             }
-            Debug.LogError("结束执行");
+            Debug.LogWarning("结束执行");
         }
 
         public override void UnDo(ExecuteUnit unit)
@@ -33,8 +33,6 @@ namespace WorldActionSystem.Structure
                 statusDic[unit].statu = ExecuteStatu.UnStarted;
             }
         }
-     
-
         //第一次执行
         protected override void ExecuteOnUnStarted(ExecuteUnit unit)
         {
@@ -54,7 +52,7 @@ namespace WorldActionSystem.Structure
             if (!LunchStackGroup(unit))
             {
                 statusDic[unit].statu = ExecuteStatu.Completed;
-                Debug.LogError("结束执行");
+                Debug.LogWarning("结束执行");
             }
         }
       

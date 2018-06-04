@@ -43,9 +43,11 @@ namespace WorldActionSystem
         public Button accept;
         public Button start;
         public Button backAstep;
+        public Button backASmallstep;
         public Button backMutiStap;
         public Button toTargetStap;
         public Button skipAStap;
+        public Button skipASmallStap;
         public Button skipMutiStap;
         public Button toEnd;
 
@@ -73,6 +75,8 @@ namespace WorldActionSystem
             notice.onValueChanged.AddListener(OnNoticeStateChanged);
             autoPlay.onValueChanged.AddListener(OnAutoPlayStateChanged);
             create.onClick.AddListener(CreateAnElement);
+            skipASmallStap.onClick.AddListener(OnSkipSmallStepClicked);
+            backASmallstep.onClick.AddListener(OnBackSmallStepClicked);
             //accept.onClick.AddListener(OnSelected);
             start.onClick.AddListener(OnStapChange);
             backAstep.onClick.AddListener(OnStapChange);
@@ -81,6 +85,16 @@ namespace WorldActionSystem
             skipAStap.onClick.AddListener(OnStapChange);
             skipMutiStap.onClick.AddListener(OnStapChange);
             toEnd.onClick.AddListener(OnStapChange);
+        }
+
+        private void OnBackSmallStepClicked()
+        {
+            ActionCtroller.Instence.OnUnDoExecuteOne();
+        }
+
+        private void OnSkipSmallStepClicked()
+        {
+            ActionCtroller.Instence.OnEndExecuteStarted();
         }
 
         private void CreateAnElement()

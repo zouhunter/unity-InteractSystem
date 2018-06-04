@@ -94,7 +94,8 @@ namespace WorldActionSystem
             {
                 statu = ExecuteStatu.Executing;
                 OnBeforeActionsStart();
-                ActionCtrl.OnStartExecute(objectCtrl, forceAuto);
+                ActionCtrl.SetContext(objectCtrl);
+                ActionCtrl.OnStartExecute(forceAuto);
                 return true;
             }
             else
@@ -133,14 +134,14 @@ namespace WorldActionSystem
         public void OnEndExecute()
         {
             OnBeforeActionsPlayEnd();
-            ActionCtrl.OnEndExecute(objectCtrl);
+            ActionCtrl.OnEndExecute();
         }
 
         public virtual void UnDoExecute()
         {
             statu = ExecuteStatu.UnStarted;
             OnBeforeActionsUnDo();
-            ActionCtrl.OnUnDoExecute(objectCtrl);
+            ActionCtrl.OnUnDoExecute();
         }
         private void OnBeforeActionsStart()
         {

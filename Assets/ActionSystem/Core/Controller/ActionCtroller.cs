@@ -100,13 +100,18 @@ namespace WorldActionSystem
                 ElementController.Instence.SetPriority(actionItems);
             }
         }
-
-        public virtual void OnStartExecute(Structure.ActionStateMechine activeObjCtrl, bool forceAuto)
+        public virtual void SetContext(Structure.ActionStateMechine activeObjCtrl)
         {
             this.activeObjCtrl = activeObjCtrl;
             this.activeObjCtrl.onCtrlStart = OnActionStart;
             this.activeObjCtrl.onCtrlStop = OnActionStop;
-            this.activeObjCtrl.OnStartExecute(forceAuto);
+        }
+        public virtual void OnStartExecute( bool forceAuto)
+        {
+            if (this.activeObjCtrl != null)
+            {
+                this.activeObjCtrl.OnStartExecute(forceAuto);
+            }
         }
 
         private void OnActionStart(ControllerType ctrlType)
@@ -131,16 +136,28 @@ namespace WorldActionSystem
            
         }
 
-        public virtual void OnEndExecute(Structure.ActionStateMechine activeObjCtrl)
+        public virtual void OnEndExecute()
         {
             if (activeObjCtrl != null)
-                activeObjCtrl.OnEndExecute();
+                activeObjCtrl.OnEndExecute(true);
         }
 
-        public virtual void OnUnDoExecute(Structure.ActionStateMechine activeObjCtrl)
+        public virtual void OnUnDoExecute()
         {
             if (activeObjCtrl != null)
-                activeObjCtrl.OnUnDoExecute();
+                activeObjCtrl.OnUnDoExecute(true);
+        }
+
+        public virtual void OnEndExecuteStarted()
+        {
+            if (activeObjCtrl != null)
+                activeObjCtrl.OnEndExecute(false);
+        }
+
+        public virtual void OnUnDoExecuteOne()
+        {
+            if (activeObjCtrl != null)
+                activeObjCtrl.OnUnDoExecute(false);
         }
     }
 }

@@ -57,6 +57,7 @@ namespace WorldActionSystem.Structure
 
         protected virtual void ExecuteOnUnStarted(ExecuteUnit unit)
         {
+            stateMechine.activedUnits.Push(unit);
             if (log) Debug.Log("ExecuteUnStarted：" + unit.node.name);
         }
 

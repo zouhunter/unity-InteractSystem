@@ -31,8 +31,8 @@ namespace WorldActionSystem.Structure
         public static bool log = false;
         //树型结构
         private List<OperateNode> startedActions = new List<OperateNode>();
-        //public Stack<ExecuteUnit> completeUnits = new Stack<ExecuteUnit>();
-        //public Stack<ExecuteUnit> undoUnits = new Stack<ExecuteUnit>();
+        public Stack<ExecuteUnit> activedUnits = new Stack<ExecuteUnit>();
+        public Stack<ExecuteUnit> redoUnits = new Stack<ExecuteUnit>();
 
         public ActionStateMechine(ActionCommand cmd)
         {
@@ -113,18 +113,58 @@ namespace WorldActionSystem.Structure
             Execute(root);
         }
 
-        public virtual void OnEndExecute()
+        public virtual void OnEndExecute(bool all)
         {
             StopUpdateAction(false);
-            Complete(root);
+            if (all)
+            {
+                Complete(root);
+            }
+            else
+            {
+                if(redoUnits.Count > 0)
+                {
+                    var unit = redoUnits.Pop();
+                    Execute(unit);
+                }
+                else
+                {
+                    var actions = startedActions.ToArray();
+                    foreach (var item in actions)
+                    {
+                        item.OnEndExecute(true);
+                    }
+                }
+            }
         }
-
-        public virtual void OnUnDoExecute()
+        ExecuteUnit currentUnit;
+        public virtual void OnUnDoExecute(bool all)
         {
             StopUpdateAction(true);
-            UnDo(root);
-        }
+            if(all)
+            {
+                UnDo(root);
+            }
+            else
+            {
+                if (activedUnits.Count > 0)
+                {
+                    var unit = activedUnits.Pop();
+                    if(unit == currentUnit)
+                    {
+                        redoUnits.Push(unit);
+                        UnDo(unit);
+                        unit = activedUnits.Pop();
+                    }
 
+                    currentUnit = unit;
+                    redoUnits.Push(currentUnit);
+                    Debug.Log("UnDo:" + currentUnit.node);
+                    UnDo(currentUnit);
+                    Execute(currentUnit);
+                }
+            }
+        }
         /// <summary>
         /// 结束开启的步骤
         /// </summary>
