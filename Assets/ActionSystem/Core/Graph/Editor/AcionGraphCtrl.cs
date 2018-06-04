@@ -8,7 +8,7 @@ using NodeGraph.DataModel;
 
 namespace WorldActionSystem.Graph
 {
-    public class AcionGraphCtrl : NodeGraphController
+    public class AcionGraphCtrl : NodeGraphController<ActionCommand>
     {
         public override string Group
         {

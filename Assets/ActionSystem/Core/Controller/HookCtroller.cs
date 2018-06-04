@@ -23,7 +23,7 @@ namespace WorldActionSystem
 
         public void InitHooks(params ActionHook[] actionHooks)
         {
-            if(actionHooks.Length > 0)
+            if(actionHooks != null && actionHooks.Length > 0)
             {
                 statu = ExecuteStatu.UnStarted;
                 hooks = new ActionHook[actionHooks.Length];

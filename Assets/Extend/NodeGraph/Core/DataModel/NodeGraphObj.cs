@@ -148,13 +148,6 @@ namespace NodeGraph.DataModel
             }
         }
 
-        public static NodeGraphObj CreateNewGraph(string controllerType)
-        {
-            var data = ScriptableObject.CreateInstance<NodeGraphObj>();
-            data.m_controllerType = controllerType;
-            return data;
-        }
-
         /*
 		 * Checks deserialized SaveData, and make some changes if necessary
 		 * return false if any changes are perfomed.

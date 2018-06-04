@@ -37,7 +37,7 @@ namespace WorldActionSystem.Structure
         public ActionStateMechine(ActionCommand cmd)
         {
             this.Cmd = cmd;
-            root = ExecuteUtil.AnalysisGraph(cmd.GraphObj);
+            root = ExecuteUtil.AnalysisGraph(cmd);
             InitStates();
         }
 

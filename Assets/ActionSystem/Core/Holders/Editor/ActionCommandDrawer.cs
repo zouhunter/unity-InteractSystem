@@ -15,22 +15,22 @@ namespace WorldActionSystem
         private ActionCommand command { get { return target as ActionCommand; } }
 
 
-        [UnityEditor.Callbacks.OnOpenAsset]
-        static bool QuickOpen(int instanceID, int line)
-        {
-            var command = EditorUtility.InstanceIDToObject(instanceID) as ActionCommand;
-            if (command != null)
-            {
-                if (command.GraphObj == null)
-                {
-                    CreateCommandGraph(command);
-                }
-                var window = EditorWindow.GetWindow<NodeGraph.NodeGraphWindow>();
-                window.OpenGraph(command.GraphObj);
-                return true;
-            }
-            return false;
-        }
+        //[UnityEditor.Callbacks.OnOpenAsset]
+        //static bool QuickOpen(int instanceID, int line)
+        //{
+        //    var command = EditorUtility.InstanceIDToObject(instanceID) as ActionCommand;
+        //    if (command != null)
+        //    {
+        //        if (command.GraphObj == null)
+        //        {
+        //            CreateCommandGraph(command);
+        //        }
+        //        var window = EditorWindow.GetWindow<NodeGraph.NodeGraphWindow>();
+        //        window.OpenGraph(command.GraphObj);
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         public static void CreateCommandGraph(ActionCommand command )
         {

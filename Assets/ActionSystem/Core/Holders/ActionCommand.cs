@@ -7,11 +7,8 @@ using System.Collections.Generic;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.ActionCommand)]
-    public class ActionCommand : ScriptableObject
+    public class ActionCommand : NodeGraph.DataModel.NodeGraphObj
     {
-        //图形化
-        [SerializeField]
-        protected NodeGraph.DataModel.NodeGraphObj _graphObj;
         //步骤名
         [SerializeField, Attributes.DefultName]
         private string _stepName;
@@ -35,7 +32,6 @@ namespace WorldActionSystem
         private UnityAction<string> stepComplete { get; set; }//步骤自动结束方法
         protected ActionCtroller ActionCtrl { get { return ActionCtroller.Instence; } }
         public ActionGroup Context { get; private set; }//上下文
-        public NodeGraph.DataModel.NodeGraphObj GraphObj { get { return _graphObj; } }
 
         //执行状态
         protected ExecuteStatu statu = ExecuteStatu.UnStarted;

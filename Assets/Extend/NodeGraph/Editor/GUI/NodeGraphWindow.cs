@@ -404,7 +404,8 @@ namespace NodeGraph
             activeSelection = null;
             currentEventSource = null;
 
-            controller = UserDefineUtility.CreateController(graph); //new NodeGraph.NodeGraphController(graph);
+            controller = UserDefineUtility.CreateController(graph.ControllerType); //new NodeGraph.NodeGraphController(graph);
+            controller.TargetGraph = graph;
             ConstructGraphGUI();
             Setup();
 
@@ -441,9 +442,8 @@ namespace NodeGraph
             {
                 return;
             }
-
-            Model.NodeGraphObj graph = Model.NodeGraphObj.CreateNewGraph(controllerType);
-            AssetDatabase.CreateAsset(graph, path);
+            controller = UserDefineUtility.CreateController(controllerType);
+            var graph = controller.CreateNodeGraphObject(path);
             OpenGraph(graph);
         }
 
@@ -858,7 +858,7 @@ namespace NodeGraph
                 GUI.BeginClip(viewRect);
                 #region DrawInteranl
                 if (connections == null) Window.Close();
-                
+
                 // draw node window x N.
                 {
                     BeginWindows();
@@ -875,7 +875,7 @@ namespace NodeGraph
                 // draw connections.
                 foreach (var con in connections)
                 {
-                   con.DrawConnection(nodes);
+                    con.DrawConnection(nodes);
                 }
 
                 // draw connection input point marks.
@@ -946,7 +946,7 @@ namespace NodeGraph
             var connectionsCopy = connections.ToArray();
             foreach (var connection in connectionsCopy)
             {
-                if(!connection.IsValid(nodes))
+                if (!connection.IsValid(nodes))
                 {
                     connections.Remove(connection);
                 }

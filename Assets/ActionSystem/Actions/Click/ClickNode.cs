@@ -27,7 +27,7 @@ namespace WorldActionSystem.Actions
         }
         [SerializeField]
         private List<string> clickList = new List<string>();
-        private ClickItem[] finalGroup;
+        private ClickItem[] finalGroup { get; set; }
         private int clickedIndex = 0;
         private List<ClickItem> clickedItems = new List<ClickItem>();
 
@@ -103,6 +103,7 @@ namespace WorldActionSystem.Actions
                 });
             }
         }
+
         protected override void CompleteElements(bool undo)
         {
             base.CompleteElements(undo);

@@ -12,6 +12,17 @@ using Model = NodeGraph.DataModel;
 
 namespace NodeGraph
 {
+    public abstract class NodeGraphController<T>: NodeGraphController where T : Model.NodeGraphObj
+    {
+        public override Model.NodeGraphObj CreateNodeGraphObject(string path)
+        {
+            Model.NodeGraphObj graph = ScriptableObject.CreateInstance<T>();
+            graph.ControllerType = this.GetType().FullName;
+            AssetDatabase.CreateAsset(graph, path);
+            return graph;
+        }
+    }
+
     [System.Serializable]
     public abstract class NodeGraphController
     {
@@ -97,5 +108,6 @@ namespace NodeGraph
         {
 
         }
+        public abstract Model.NodeGraphObj CreateNodeGraphObject(string path);
     }
 }

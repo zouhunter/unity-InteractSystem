@@ -37,19 +37,18 @@ namespace NodeGraph
         }
         private static Dictionary<Type, Type> userDrawer;
 
-        internal static NodeGraphController CreateController(NodeGraph.DataModel.NodeGraphObj graph)
+        internal static NodeGraphController CreateController(string controllerType)
         {
-            var type = CustomControllerTypes.Find(x => x.FullName == graph.ControllerType);
+            var type = CustomControllerTypes.Find(x => x.FullName == controllerType);
             if (type != null)
             {
                 var ctrl = System.Activator.CreateInstance(type);
                 var gctrl = ctrl as NodeGraphController;
-                gctrl.TargetGraph = graph;
                 return gctrl;
             }
             else
             {
-                Debug.LogError("can not find controllerType:" + graph.ControllerType);
+                Debug.LogError("can not find controllerType:" + controllerType);
                 return null;
             }
         }
