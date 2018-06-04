@@ -29,18 +29,6 @@ namespace WorldActionSystem.Graph
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
 
-        [SerializeField, Attributes.Range(0, 10)]
-        private int queueID;
-        public int QueueID
-        {
-            get
-            {
-                return queueID;
-            }
-        }
-        [SerializeField]
-        private bool _queueInAuto = true;
-        public bool QueueInAuto { get { return _queueInAuto; } }
         [SerializeField, Attributes.DefultCameraAttribute()]
         private string _cameraID;
         public string CameraID { get { return _cameraID; } }
@@ -54,27 +42,40 @@ namespace WorldActionSystem.Graph
         [SerializeField, Attributes.DefultName]
         protected string _name;
         protected bool auto;
-      
-        private HookCtroller hookCtrl = new HookCtroller();
+
+        private Hooks.HookCtroller hookCtrl;
+        private Binding.ActionBindingCtrl bindingCtrl;
+        private Enviroment.EnviromentCtrl enviromentCtrl;
         private ActionGroup _system;
         protected static List<OperateNode> startedList = new List<OperateNode>();
         [SerializeField]
         private ActionHook[] hooks;//外部结束钩子
         [SerializeField]
-        private ActionBinding[] binding;
+        private Binding.ActionBinding[] bindings;
         [SerializeField]
-        public Enviroment[] environment;
+        private Enviroment.EnviromentItem[] environments;
 
         protected override void OnEnable()
         {
             base.OnEnable();
             statu = ExecuteStatu.UnStarted;
             InitHookCtrl();
+            InitBindingCtrl();
+            InitEnviromentCtrl();
+        }
+
+        private void InitEnviromentCtrl()
+        {
+            enviromentCtrl = new Enviroment.EnviromentCtrl(environments);
+        }
+
+        private void InitBindingCtrl()
+        {
+            bindingCtrl = new Binding.ActionBindingCtrl(bindings);
         }
         private void InitHookCtrl()
         {
-            hookCtrl.SetContext(this);
-            hookCtrl.InitHooks(hooks);
+            hookCtrl = new WorldActionSystem.Hooks.HookCtroller(hooks);
             hookCtrl.onEndExecute += OnHookComplete;
         }
 
@@ -98,7 +99,6 @@ namespace WorldActionSystem.Graph
             if (statu == ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.Executing;
-                startedList.Add(this);
                 OnStartExecuteInternal(auto);
             }
             else
@@ -139,7 +139,7 @@ namespace WorldActionSystem.Graph
                     }
                 }
             }
-           
+
         }
 
         private void OnHookComplete()
@@ -153,11 +153,12 @@ namespace WorldActionSystem.Graph
         }
         private void CoreEndExecute()
         {
-            //angleCtrl.UnNotice(anglePos);
+            enviromentCtrl.CompleteState();
         }
         private void TryCallBack()
         {
-            if (onEndExecute != null) {
+            if (onEndExecute != null)
+            {
                 onEndExecute.Invoke();
             }
         }
@@ -170,11 +171,10 @@ namespace WorldActionSystem.Graph
             if (statu != ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.UnStarted;
-                OnUnDoExecuteInternal();
-                if (hookCtrl.Statu != ExecuteStatu.Completed)
-                {
+                if (hookCtrl.Statu != ExecuteStatu.UnStarted){
                     hookCtrl.OnUnDoExecute();
                 }
+                OnUnDoExecuteInternal();
             }
             else
             {
@@ -183,33 +183,32 @@ namespace WorldActionSystem.Graph
 
         }
 
-        public int CompareTo(OperateNode other)
-        {
-            if (QueueID > other.QueueID)
-            {
-                return 1;
-            }
-            else if (QueueID < other.QueueID)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-
         protected virtual void OnStartExecuteInternal(bool auto)
         {
+            enviromentCtrl.StartState();
+            bindingCtrl.OnBeforeActionsStart(this,auto);
+            if (!startedList.Contains(this))
+            {
+                startedList.Add(this);
+            }
+
         }
         protected virtual void OnBeforeEnd(bool force)
         {
-            startedList.Remove(this);
+            bindingCtrl.OnBeforeActionsPlayEnd(this, force);
+            if (startedList.Contains(this))
+            {
+                startedList.Remove(this);
+            }
         }
         protected virtual void OnUnDoExecuteInternal()
         {
-            startedList.Remove(this);
+            enviromentCtrl.OrignalState();
+            bindingCtrl.OnBeforeActionsUnDo(this);
+            if (startedList.Contains(this))
+            {
+                startedList.Remove(this);
+            }
         }
     }
 }

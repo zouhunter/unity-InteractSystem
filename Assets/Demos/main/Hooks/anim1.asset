@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51321ba2986423147bc162f7ac928ee9, type: 3}
-  m_Name: AnimHook
+  m_Name: anim1
   m_EditorClassIdentifier: 
   queueID: 0
   onBeforeEndExecuted:

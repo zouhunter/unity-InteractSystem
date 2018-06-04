@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Binding
 {
     public class ActionBinding : ScriptableObject
     {

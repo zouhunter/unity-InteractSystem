@@ -9,7 +9,7 @@ namespace WorldActionSystem
 {
     public class ActionCtroller
     {
-        public Structure.ActionStateMechine activeObjCtrl { get; private set; }
+        public ActionCommand activeCommand { get; private set; }
         private List<IOperateController> controllerList = new List<IOperateController>();
         protected Coroutine coroutine;
         private Dictionary<ControllerType, int> activeTypes = new Dictionary<ControllerType, int>();
@@ -36,7 +36,7 @@ namespace WorldActionSystem
             }
         }
 
-        public ActionCtroller(MonoBehaviour holder,PickUpController pickupCtrl)
+        public ActionCtroller(MonoBehaviour holder, PickUpController pickupCtrl)
         {
             //this.holder = holder;
             this.pickupCtrl = pickupCtrl;
@@ -52,7 +52,7 @@ namespace WorldActionSystem
                 yield return wait;//要保证在PickUpCtrl之前执行才不会有问题，否则拿起来就被放下了！！！
                 foreach (var ctrl in controllerList)
                 {
-                    if(activeTypes.ContainsKey(ctrl.CtrlType) && activeTypes[ctrl.CtrlType] > 0)
+                    if (activeTypes.ContainsKey(ctrl.CtrlType) && activeTypes[ctrl.CtrlType] > 0)
                     {
                         ctrl.Update();
                     }
@@ -78,7 +78,7 @@ namespace WorldActionSystem
                     }
                 }
             }
-          
+
             foreach (var ctrl in controllerList)
             {
                 ctrl.userErr = OnUserError;
@@ -87,8 +87,8 @@ namespace WorldActionSystem
 
         public void OnUserError(string error)
         {
-            if (activeObjCtrl != null)
-                activeObjCtrl.Cmd.UserError(error);
+            if (activeCommand != null)
+                activeCommand.UserError(error);
         }
         /// 激活首要对象
         /// </summary>
@@ -96,21 +96,22 @@ namespace WorldActionSystem
         internal void OnPickUpObj(PickUpAbleItem obj)
         {
             var actionItems = obj.GetComponentsInChildren<ActionItem>();
-            if (actionItems != null && actionItems.Length > 0){
+            if (actionItems != null && actionItems.Length > 0)
+            {
                 ElementController.Instence.SetPriority(actionItems);
             }
         }
-        public virtual void SetContext(Structure.ActionStateMechine activeObjCtrl)
+        public virtual void SetContext(ActionCommand activeCommand)
         {
-            this.activeObjCtrl = activeObjCtrl;
-            this.activeObjCtrl.onCtrlStart = OnActionStart;
-            this.activeObjCtrl.onCtrlStop = OnActionStop;
+            this.activeCommand = activeCommand;
+            this.activeCommand.objectCtrl.onCtrlStart = OnActionStart;
+            this.activeCommand.objectCtrl.onCtrlStop = OnActionStop;
         }
-        public virtual void OnStartExecute( bool forceAuto)
+        public virtual void OnStartExecute(bool forceAuto)
         {
-            if (this.activeObjCtrl != null)
+            if (activeCommand != null)
             {
-                this.activeObjCtrl.OnStartExecute(forceAuto);
+                activeCommand.objectCtrl.OnStartExecute(forceAuto);
             }
         }
 
@@ -125,7 +126,7 @@ namespace WorldActionSystem
 
         private void OnActionStop(ControllerType ctrlType)
         {
-            if(activeTypes.ContainsKey(ctrlType))
+            if (activeTypes.ContainsKey(ctrlType))
             {
                 activeTypes[ctrlType]++;
                 if (activeTypes[ctrlType] < 0)
@@ -133,31 +134,39 @@ namespace WorldActionSystem
                     activeTypes[ctrlType] = 0;
                 }
             }
-           
+
         }
 
         public virtual void OnEndExecute()
         {
-            if (activeObjCtrl != null)
-                activeObjCtrl.OnEndExecute(true);
+            if (activeCommand != null)
+            {
+                activeCommand.objectCtrl.OnEndExecute(true);
+            }
         }
 
         public virtual void OnUnDoExecute()
         {
-            if (activeObjCtrl != null)
-                activeObjCtrl.OnUnDoExecute(true);
+            if (activeCommand != null)
+            {
+                activeCommand.objectCtrl.OnUnDoExecute(true);
+            }
         }
 
         public virtual void OnEndExecuteStarted()
         {
-            if (activeObjCtrl != null)
-                activeObjCtrl.OnEndExecute(false);
+            if (activeCommand != null)
+            {
+                activeCommand.objectCtrl.OnEndExecute(false);
+            }
         }
 
         public virtual void OnUnDoExecuteOne()
         {
-            if (activeObjCtrl != null)
-                activeObjCtrl.OnUnDoExecute(false);
+            if (activeCommand != null)
+            {
+                activeCommand.objectCtrl.OnUnDoExecute(false);
+            }
         }
     }
 }

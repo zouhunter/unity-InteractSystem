@@ -3,25 +3,19 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WorldActionSystem
+namespace WorldActionSystem.Hooks
 {
-
     public class HookCtroller 
     {
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
-        public object Context { get; private set; }
         protected List<int> queueID = new List<int>();
         protected ActionHook[] hooks { get; set; }
         protected bool isForceAuto;
         public UnityEngine.Events.UnityAction onEndExecute { get; set; }
         protected bool active { get;private set; }
-        public void SetContext(object context)
-        {
-            this.Context = context;
-        }
 
-        public void InitHooks(params ActionHook[] actionHooks)
+        public HookCtroller(params ActionHook[] actionHooks)
         {
             if(actionHooks != null && actionHooks.Length > 0)
             {
@@ -35,7 +29,8 @@ namespace WorldActionSystem
             }
             else
             {
-                statu = ExecuteStatu.Completed; active = false;
+                statu = ExecuteStatu.Completed;
+                active = false;
             }
         }
 

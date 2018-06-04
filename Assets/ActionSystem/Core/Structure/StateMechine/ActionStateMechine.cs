@@ -135,15 +135,16 @@ namespace WorldActionSystem.Structure
             {
                 if (redoUnits.Count > 0)
                 {
-                    var unit = redoUnits.Pop();
-                    Execute(unit);
+                    currentUnit = redoUnits.Pop();
+                    Complete(currentUnit);
+                    Execute(currentUnit);
                 }
                 else
                 {
-                    var actions = startedActions.ToArray();
-                    foreach (var item in actions)
+                    if(startedActions.Count > 0)
                     {
-                        item.OnEndExecute(true);
+                        startedActions[0].OnEndExecute(true);
+                        OnStopAction(startedActions[0]);
                     }
                 }
             }

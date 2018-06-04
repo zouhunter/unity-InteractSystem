@@ -17,10 +17,10 @@ namespace WorldActionSystem
         private string _cameraID = CameraController.defultID;
         //功能绑定
         [SerializeField]
-        protected CommandBinding[] commandBindings;
+        protected Binding.CommandBinding[] commandBindings;
         //环境对象
         [SerializeField]
-        private Enviroment[] environments;
+        private Enviroment.EnviromentItem[] environments;
         [SerializeField]
         private ActionHook[] hooks;
 
@@ -30,28 +30,53 @@ namespace WorldActionSystem
         public ExecuteStatu Statu { get { return statu; } }
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<string> stepComplete { get; set; }//步骤自动结束方法
-        protected ActionCtroller ActionCtrl { get { return ActionCtroller.Instence; } }
+        protected ActionCtroller actionCtrl { get { return ActionCtroller.Instence; } }
         public ActionGroup Context { get; private set; }//上下文
 
         //执行状态
         protected ExecuteStatu statu = ExecuteStatu.UnStarted;
         //步骤控制器
-        protected Structure.ActionStateMechine objectCtrl;
+        public Structure.ActionStateMechine objectCtrl { get; private set; }
         //hook控制器
-        protected HookCtroller hookCtrl = new HookCtroller();
+        protected Hooks.HookCtroller hookCtrl;
+        protected Binding.CommandBingCtrl commandBindingCtrl;
+        protected Enviroment.EnviromentCtrl enviromentCtrl;
         protected bool forceAuto;
 
         protected virtual void OnEnable()
         {
             statu = ExecuteStatu.UnStarted;
+            InitOperateCtrl();
+            InitHookCtrl();
+            InitBindgCtrl();
+            InitEnviromentCtrl();
+        }
+
+        private void InitEnviromentCtrl()
+        {
+            if(environments != null && environments.Length > 0)
+            {
+                enviromentCtrl = new Enviroment.EnviromentCtrl(environments);
+            }
+        }
+
+        private void InitOperateCtrl()
+        {
             objectCtrl = new Structure.ActionStateMechine(this);
             objectCtrl.onComplete = OnEndExecute;
-            InitHookCtrl();
         }
+
+        private void InitBindgCtrl()
+        {
+            if(commandBindings != null && commandBindings.Length > 0)
+            {
+                commandBindingCtrl = new Binding.CommandBingCtrl(commandBindings);
+            }
+        }
+
         private void InitHookCtrl()
         {
-            hookCtrl.SetContext(this);
-            hookCtrl.InitHooks(hooks);
+            hookCtrl = new WorldActionSystem.Hooks.HookCtroller(hooks);
             hookCtrl.onEndExecute += OnHookComplete;
         }
 
@@ -85,8 +110,8 @@ namespace WorldActionSystem
             {
                 statu = ExecuteStatu.Executing;
                 OnBeforeActionsStart();
-                ActionCtrl.SetContext(objectCtrl);
-                ActionCtrl.OnStartExecute(forceAuto);
+                actionCtrl.SetContext(this);
+                actionCtrl.OnStartExecute(forceAuto);
                 return true;
             }
             else
@@ -130,7 +155,7 @@ namespace WorldActionSystem
         }
         public virtual void OnEndExecute()
         {
-            Debug.Log("EndExecute", this);
+            Debug.Log("OnEndExecute", this);
             if (statu != ExecuteStatu.Completed)
             {
                 if (hookCtrl.Statu == ExecuteStatu.Completed)
@@ -156,7 +181,7 @@ namespace WorldActionSystem
         public void CoreEndExecute()
         {
             OnBeforeActionsPlayEnd();
-            ActionCtrl.OnEndExecute();
+            actionCtrl.OnEndExecute();
         }
 
         private void TryCallBack()
@@ -167,28 +192,40 @@ namespace WorldActionSystem
 
         public virtual void UnDoExecute()
         {
+            Debug.Log("UnDoExecute:"+this);
             statu = ExecuteStatu.UnStarted;
 
-            if (hookCtrl.Statu != ExecuteStatu.Completed)
-            {
+            if (hookCtrl.Statu != ExecuteStatu.UnStarted){
                 hookCtrl.OnUnDoExecute();
             }
 
             OnBeforeActionsUnDo();
-
-            ActionCtrl.OnUnDoExecute();
+            actionCtrl.OnUnDoExecute();
+            if (enviromentCtrl != null){
+                enviromentCtrl.OrignalState();
+            }
         }
         private void OnBeforeActionsStart()
         {
-
+            if(enviromentCtrl != null){
+                enviromentCtrl.StartState();
+            }
+            if (commandBindingCtrl != null)
+                commandBindingCtrl.OnBeforeActionsStart(this);
         }
         private void OnBeforeActionsUnDo()
         {
-
+            if (commandBindingCtrl != null)
+                commandBindingCtrl.OnBeforeActionsUnDo(this);
         }
         private void OnBeforeActionsPlayEnd()
         {
+            if (commandBindingCtrl != null)
+                commandBindingCtrl.OnBeforeActionsPlayEnd(this);
 
+            if (enviromentCtrl != null){
+                enviromentCtrl.CompleteState();
+            }
         }
     }
 }

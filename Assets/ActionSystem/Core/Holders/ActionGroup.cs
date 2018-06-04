@@ -12,11 +12,9 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.ActionGroup)]
     public class ActionGroup : ScriptableObject
     {
-        [SerializeField]
+        [SerializeField]//步骤控制
         protected List<OptionalCommandItem> actionCommands = new List<OptionalCommandItem>();
-        [SerializeField]
-        public List<RunTimePrefabItem> runTimeElements = new List<RunTimePrefabItem>();
-        
+      
         #region Propertys
         public List<ActionCommand> activeCommands { get; private set; }
         public ICommandController RemoteController { get; private set; }
@@ -33,7 +31,6 @@ namespace WorldActionSystem
         private void OnEnable()
         {
             InitActionCommands();
-            ElementController.Instence.RegistRunTimeElements(runTimeElements);
             ActionSystem.RegistGroup(this);
         }
 
@@ -51,7 +48,6 @@ namespace WorldActionSystem
 
         private void OnDestroy()
         {
-            ElementController.Instence.RemoveRunTimeElements(runTimeElements);
             ActionSystem.RemoveGroup(this);
         }
         #endregion

@@ -76,7 +76,29 @@ MonoBehaviour:
   _stepName: command01
   _cameraID: defult
   commandBindings: []
-  environments: []
+  environments:
+  - originalState: 0
+    startState: 0
+    completeState: 0
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentObj: {fileID: 11400000, guid: 944ff398f56694142ae25755c33038a1, type: 2}
+    ignore: 0
   hooks:
   - {fileID: 11400000, guid: de891da769f71b1449eb9a9ac10e2248, type: 2}
 --- !u!114 &114308434188825626
@@ -101,14 +123,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad4f0f3ab2171b349969860a8194d74e, type: 3}
   m_Name: WorldActionSystem.Actions.ClickNode
   m_EditorClassIdentifier: 
-  queueID: 0
-  _queueInAuto: 1
   _cameraID: 
   _name: 
   hooks:
-  - {fileID: 11400000, guid: de891da769f71b1449eb9a9ac10e2248, type: 2}
-  binding: []
-  environment: []
+  - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
+  bindings: []
+  environments: []
   clickList:
   - click01
 --- !u!114 &114692948141289052

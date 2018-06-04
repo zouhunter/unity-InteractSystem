@@ -4,7 +4,7 @@ namespace WorldActionSystem
 {
 
     [System.Serializable]
-    public class AutoPrefabItem : IComparable<AutoPrefabItem>
+    public class RunTimePrefabItem : IComparable<RunTimePrefabItem>
     {
 #if UNITY_EDITOR
         public int instanceID;
@@ -16,22 +16,22 @@ namespace WorldActionSystem
             {
                 if (string.IsNullOrEmpty(_id))
                 {
-                    _id = CalcuteID(prefab, matrix);
+                    _id = CalcuteID(prefab);
                 }
                 return _id;
             }
         }
-        public Matrix4x4 matrix;
         public GameObject prefab;
-        public bool ignore;
-        public static string CalcuteID(GameObject prefab, Matrix4x4 matrix)
+
+        public static string CalcuteID(GameObject prefab)
         {
             string _id = null;
             var name = prefab == null ? "Null" : prefab.name;
-            _id = string.Format("[{0}][{1}]", name, matrix);
+            _id = name;
             return _id;
         }
-        public int CompareTo(AutoPrefabItem other)
+
+        public int CompareTo(RunTimePrefabItem other)
         {
             if (prefab == null || other.prefab == null) return 0;
             return string.Compare(prefab.name, other.prefab.name);

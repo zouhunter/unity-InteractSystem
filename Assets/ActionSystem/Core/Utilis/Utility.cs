@@ -44,8 +44,8 @@ namespace WorldActionSystem
 
         }
 
-        public static void CreateRunTimeObjects(Transform transform, List<AutoPrefabItem> prefabList)
-        {
+        //public static void CreateRunTimeObjects(Transform transform, List<EnviromentPrefabItem> prefabList)
+        //{
            
             //foreach (var item in prefabList)
             //{
@@ -60,7 +60,7 @@ namespace WorldActionSystem
             //        TransUtil.LoadmatrixInfo(item.matrix, created.transform);
             //    }
             //}
-        }
+        //}
         public static Transform GetParent(Transform transform, bool containsCommand, bool containsPickup)
         {
             Transform parent = transform;

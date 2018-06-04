@@ -6,7 +6,7 @@ using System;
 
 namespace WorldActionSystem.Hooks
 {
-    public class AnimItem : AnimPlayer
+    public class InnerAnim : AnimPlayer
     {
         public Animation anim;
         public string animName;
