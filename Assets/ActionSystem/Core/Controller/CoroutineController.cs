@@ -15,6 +15,18 @@ namespace WorldActionSystem
         private Dictionary<UnityAction, List<float>> delyActions = new Dictionary<UnityAction, List<float>>();
         private Queue<UnityAction> mainThreadActions = new Queue<UnityAction>();
         private static bool log = false;
+        private static CoroutineController _instence;
+        public static CoroutineController Instence
+        {
+            get
+            {
+                if (_instence == null)
+                {
+                    _instence = new CoroutineController(ActionSystem.Instence);
+                }
+                return _instence;
+            }
+        }
         public CoroutineController(MonoBehaviour holder)
         {
             this.holder = holder;

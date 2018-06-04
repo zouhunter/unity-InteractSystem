@@ -9,7 +9,6 @@ namespace WorldActionSystem.Actions
         protected ElementPool<T> elementPool = new ElementPool<T>();
         public abstract List<string> NeedElements { get; }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
-
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -108,6 +107,7 @@ namespace WorldActionSystem.Actions
         {
             foreach (var element in NeedElements)
             {
+                //找到所有被激活的对象
                 var active = startedList.Find(x => x is RuntimeNode<T> && (x as RuntimeNode<T>).NeedElements.Contains(element));
 
                 if (active == null)

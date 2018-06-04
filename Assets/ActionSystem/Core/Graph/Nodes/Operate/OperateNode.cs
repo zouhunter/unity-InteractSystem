@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NodeGraph;
 using NodeGraph.DataModel;
+using System;
 
 namespace WorldActionSystem.Graph
 {
@@ -74,13 +75,7 @@ namespace WorldActionSystem.Graph
         {
             hookCtrl.SetContext(this);
             hookCtrl.InitHooks(hooks);
-            hookCtrl.onEndExecute += () =>
-            {
-                if (Statu != ExecuteStatu.Completed)
-                {
-                    OnEndExecute(false);
-                }
-            };
+            hookCtrl.onEndExecute += OnHookComplete;
         }
 
         public override void Initialize(NodeData data)
@@ -119,6 +114,10 @@ namespace WorldActionSystem.Graph
             {
                 if (statu != ExecuteStatu.Completed)
                 {
+                    statu = ExecuteStatu.Completed;
+                    if (hookCtrl.Statu != ExecuteStatu.Completed){
+                        hookCtrl.OnEndExecute();
+                    }
                     CoreEndExecute(true);
                 }
             }
@@ -126,6 +125,7 @@ namespace WorldActionSystem.Graph
             {
                 if (hookCtrl.Statu == ExecuteStatu.Completed && statu != ExecuteStatu.Completed)
                 {
+                    statu = ExecuteStatu.Completed;
                     CoreEndExecute(false);
                 }
                 else if (hookCtrl.Statu == ExecuteStatu.UnStarted)
@@ -138,28 +138,22 @@ namespace WorldActionSystem.Graph
                 }
             }
         }
+
+        private void OnHookComplete()
+        {
+            if (Statu != ExecuteStatu.Completed)
+            {
+                statu = ExecuteStatu.Completed;
+                CoreEndExecute(false);
+            }
+        }
         private void CoreEndExecute(bool force)
         {
             //angleCtrl.UnNotice(anglePos);
-            if (log) Debug.Log("OnEndExecute:" + this + ":" + force);
-
-            if (statu != ExecuteStatu.Completed)
+            if (log) Debug.Log("CoreEndExecute:" + this + ":" + force);
+            if (onEndExecute != null)
             {
-                statu = ExecuteStatu.Completed;
-              
-                if (hooks.Length > 0)
-                {
-                    hookCtrl.OnEndExecute();
-                }
-
-                if (onEndExecute != null)
-                {
-                    onEndExecute.Invoke();
-                }
-            }
-            else
-            {
-                if (log) Debug.LogError("already completed");
+                onEndExecute.Invoke();
             }
         }
         public virtual void OnUnDoExecute()

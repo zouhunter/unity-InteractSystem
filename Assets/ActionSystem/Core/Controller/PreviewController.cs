@@ -31,7 +31,19 @@ namespace WorldActionSystem
         private Dictionary<GameObject, Queue<GameObject>> pool = new Dictionary<GameObject, Queue<GameObject>>();
         private bool Active { get { return Config.previewNotice; } }
         private static float alpha { get { return Config.previewAlpha; } }
+        private static PreviewController _instence;
+        public static PreviewController Instence
+        {
+            get
+            {
 
+                if (_instence == null)
+                {
+                    _instence = new PreviewController(ActionSystem.Instence);
+                }
+                return _instence;
+            }
+        }
         public PreviewController(ActionSystem system)
         {
             actionSystem = system;

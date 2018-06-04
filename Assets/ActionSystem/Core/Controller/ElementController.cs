@@ -21,7 +21,7 @@ namespace WorldActionSystem
             }
         }
 
-        public static bool log = false;
+        public static bool log = true;
         public event UnityAction<ISupportElement> onRegistElememt;
         public event UnityAction<ISupportElement> onRemoveElememt;
         //所有元素列表
@@ -89,7 +89,15 @@ namespace WorldActionSystem
 
         internal void SetPriority(ActionItem[] subActions)
         {
-            if(log) Debug.Log("SetPriority:" + subActions);
+            if (log)
+            {
+                var str = "SetPriority:";
+                foreach (var item in subActions)
+                {
+                    str += item;
+                }
+                Debug.Log(str);
+            }
             priorityList.Clear();
             priorityList.AddRange(subActions);
         }

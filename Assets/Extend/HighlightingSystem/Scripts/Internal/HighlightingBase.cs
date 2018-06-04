@@ -30,8 +30,8 @@ namespace HighlightingSystem
 			{
 				return
 					device == GraphicsDeviceType.Direct3D9			// SHADER_API_D3D9
-					|| device == GraphicsDeviceType.Xbox360			// SHADER_API_XBOX360
-					|| device == GraphicsDeviceType.PlayStation3		// SHADER_API_PS3
+					//|| device == GraphicsDeviceType.Xbox360			// SHADER_API_XBOX360
+					//|| device == GraphicsDeviceType.PlayStation3		// SHADER_API_PS3
 					|| device == GraphicsDeviceType.Direct3D11		// SHADER_API_D3D11
 					|| device == GraphicsDeviceType.PlayStationVita	// SHADER_API_PSP2
 					|| device == GraphicsDeviceType.PlayStation4		// SHADER_API_PSSL
@@ -483,11 +483,11 @@ namespace HighlightingSystem
 			}
 			
 			// Render Textures supported?
-			if (!SystemInfo.supportsRenderTextures)
-			{
-				if (verbose) { Debug.LogError("HighlightingSystem : RenderTextures is not supported on this platform!"); }
-				supported = false;
-			}
+			//if (!SystemInfo.supportsRenderTextures)
+			//{
+			//	if (verbose) { Debug.LogError("HighlightingSystem : RenderTextures is not supported on this platform!"); }
+			//	supported = false;
+			//}
 			
 			// Required Render Texture Format supported?
 			if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
@@ -497,11 +497,11 @@ namespace HighlightingSystem
 			}
 
 			// Stencil buffer supported?
-			if (SystemInfo.supportsStencil < 1)
-			{
-				if (verbose) { Debug.LogError("HighlightingSystem : Stencil buffer is not supported on this platform!"); }
-				supported = false;
-			}
+			//if (SystemInfo.supportsStencil < 1)
+			//{
+			//	if (verbose) { Debug.LogError("HighlightingSystem : Stencil buffer is not supported on this platform!"); }
+			//	supported = false;
+			//}
 			
 			// HighlightingOpaque shader supported?
 			if (!Highlighter.opaqueShader.isSupported)

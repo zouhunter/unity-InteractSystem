@@ -24,7 +24,7 @@ namespace WorldActionSystem.Structure
         {
             get
             {
-                return ActionSystem.Instence.cameraCtrl;
+                return CameraController.Instence;
             }
         }
 

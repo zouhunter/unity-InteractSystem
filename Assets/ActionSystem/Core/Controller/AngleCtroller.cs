@@ -14,7 +14,20 @@ namespace WorldActionSystem {
         //private Dictionary<string, Queue<GameObject>> objectDicQueue = new Dictionary<string, Queue<GameObject>>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private ActionSystem actionSystem;
-        public AngleCtroller(ActionSystem system)
+        private static AngleCtroller _instence;
+        public static AngleCtroller Instence
+        {
+            get
+            {
+
+                if (_instence == null)
+                {
+                    _instence = new AngleCtroller(ActionSystem.Instence);
+                }
+                return _instence;
+            }
+        }
+        private AngleCtroller(ActionSystem system)
         {
             actionSystem = system;
         }

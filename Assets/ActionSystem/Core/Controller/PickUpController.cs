@@ -25,7 +25,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return ActionSystem.Instence.cameraCtrl.currentCamera;
+                return CameraController.Instence.currentCamera;
             }
         }
 
@@ -35,11 +35,25 @@ namespace WorldActionSystem
         public event UnityAction<PickUpAbleItem> onPickTwinceLeft;
         public event UnityAction<PickUpAbleItem> onPickTwinceRight;
         private float timer = 0f;
+        private static PickUpController _instence;
+        public static PickUpController Instence
+        {
 
-        public PickUpController(MonoBehaviour holder)
+            get
+            {
+                if (_instence == null)
+                {
+                    _instence = new PickUpController(ActionSystem.Instence);
+                }
+                return _instence;
+            }
+        }
+
+        private PickUpController(MonoBehaviour holder)
         {
             holder.StartCoroutine(Update());
         }
+
         private IEnumerator Update()
         {
             while (true)

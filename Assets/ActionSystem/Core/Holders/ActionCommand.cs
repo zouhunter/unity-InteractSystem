@@ -33,7 +33,7 @@ namespace WorldActionSystem
         public ExecuteStatu Statu { get { return statu; } }
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<string> stepComplete { get; set; }//步骤自动结束方法
-        protected ActionCtroller ActionCtrl { get { return ActionSystem.Instence.actionCtrl; } }
+        protected ActionCtroller ActionCtrl { get { return ActionCtroller.Instence; } }
         public ActionGroup Context { get; private set; }//上下文
         public NodeGraph.DataModel.NodeGraphObj GraphObj { get { return _graphObj; } }
 

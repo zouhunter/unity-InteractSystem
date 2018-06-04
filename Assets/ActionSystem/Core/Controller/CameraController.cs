@@ -58,7 +58,20 @@ namespace WorldActionSystem
         private const float defultSpeed = 5;
         private const float maxTime = 2f;
         private MonoBehaviour holder;
-        public CameraController(MonoBehaviour holder)
+        private static CameraController _instence;
+        public static CameraController Instence
+        {
+            get
+            {
+                if (_instence == null)
+                {
+                    _instence = new CameraController(ActionSystem.Instence);
+                }
+                return _instence;
+            }
+        }
+
+        private CameraController(MonoBehaviour holder)
         {
             this.holder = holder;
             viewCameraParent = holder. transform;

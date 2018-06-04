@@ -14,12 +14,8 @@ namespace WorldActionSystem.Structure
         public Graph.ActionNode node;
         public List<ExecuteUnit> parentUnits = new List<ExecuteUnit>();
         public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();
-
-        /// <summary>
-        /// 便于检索
-        /// </summary>
+        //
         private List<Graph.ActionNode> childNodesList = new List<Graph.ActionNode>();
-        private List<ExecuteUnit> copyEnviroment = new List<ExecuteUnit>();
         
         public ExecuteUnit(Graph.ActionNode parentNode)
         {

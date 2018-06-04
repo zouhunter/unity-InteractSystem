@@ -20,7 +20,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return actionSystem.CoroutineCtrl;
+                return CoroutineController.Instence;
             }
         }
     }

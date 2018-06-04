@@ -14,7 +14,7 @@ namespace WorldActionSystem
         {
             get
             {
-                return ActionSystem.Instence.cameraCtrl;
+                return CameraController.Instence;
             }
         }
         protected Camera viewCamera

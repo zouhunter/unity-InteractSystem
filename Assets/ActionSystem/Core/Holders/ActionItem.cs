@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WorldActionSystem
 {
@@ -50,7 +51,7 @@ namespace WorldActionSystem
         protected virtual void Awake() { }
         protected virtual void OnEnable() {
             targets.Clear();
-            subActions = GetComponentsInChildren<ActionItem>();
+            subActions = GetComponentsInChildren<ActionItem>().Where(x=>x != this).ToArray();
         }
         protected virtual void Start()
         {
@@ -87,9 +88,9 @@ namespace WorldActionSystem
         }
         public virtual void StepComplete()
         {
-            ElementController.Instence.SetPriority(subActions);
             Active = false;
             onInActive.Invoke();
+            ElementController.Instence.SetPriority(subActions);
         }
         public virtual void StepUnDo()
         {

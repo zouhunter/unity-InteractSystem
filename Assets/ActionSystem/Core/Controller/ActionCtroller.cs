@@ -19,10 +19,22 @@ namespace WorldActionSystem
         {
             get
             {
-                return ActionSystem.Instence.cameraCtrl;
+                return CameraController.Instence;
             }
         }
         private PickUpController pickupCtrl { get; set; }
+        private static ActionCtroller _instence;
+        public static ActionCtroller Instence
+        {
+            get
+            {
+                if (_instence == null)
+                {
+                    _instence = new ActionCtroller(ActionSystem.Instence, PickUpController.Instence);
+                }
+                return _instence;
+            }
+        }
 
         public ActionCtroller(MonoBehaviour holder,PickUpController pickupCtrl)
         {

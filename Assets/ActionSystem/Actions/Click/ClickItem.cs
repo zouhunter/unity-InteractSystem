@@ -17,7 +17,7 @@ namespace WorldActionSystem.Actions
         public Collider Collider { get { return _collider; }protected set { _collider = value; } }
         public bool ClickAble { get { return playableCount > targets.Count; } }
 
-        private event UnityAction<ClickItem> onClicked;
+        private List<UnityAction<ClickItem>> onClickedList = new List<UnityAction<ClickItem>>();
 
         protected override void Start()
         {
@@ -36,20 +36,29 @@ namespace WorldActionSystem.Actions
 
         public void RegistOnClick(UnityAction<ClickItem> onClicked)
         {
-            this.onClicked += onClicked;
+            if(!onClickedList.Contains(onClicked))
+            {
+                onClickedList.Add(onClicked);
+            }
         }
 
         public void OnClick()
         {
-            if(onClicked != null)
+            if(onClickedList.Count > 0)
             {
-                onClicked.Invoke(this);
+                foreach (var onClicked in onClickedList)
+                {
+                    onClicked.Invoke(this);
+                }
             }
         }
 
         public void RemoveOnClicked(UnityAction<ClickItem> onClicked)
         {
-            this.onClicked -= onClicked;
+            if (onClickedList.Contains(onClicked))
+            {
+                onClickedList.Remove(onClicked);
+            }
         }
     }
 }

@@ -21,7 +21,6 @@ namespace WorldActionSystem.Hooks
         [SerializeField]
         private string animName;
         private AnimPlayer animPlayer;
-        private CoroutineController coroutineCtrl { get { return ActionSystem.Instence.CoroutineCtrl; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
 
         /// <summary>
@@ -37,14 +36,11 @@ namespace WorldActionSystem.Hooks
         {
             FindAnimCore(true);
             Debug.Assert(animPlayer != null, "no enough animplayer named:" + this);
-            if (animPlayer != null)
-            {
-                animPlayer.duration = speed;
-                animPlayer.reverse = reverse;
-                animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
-                animPlayer.SetVisible(true);
-                animPlayer.StepActive();
-            }
+            animPlayer.duration = speed;
+            animPlayer.reverse = reverse;
+            animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
+            animPlayer.SetVisible(true);
+            animPlayer.StepActive();
         }
         private void OnAnimPlayCallBack()
         {
@@ -63,12 +59,9 @@ namespace WorldActionSystem.Hooks
         {
             base.OnUnDoExecute();
             coroutineCtrl.Cansalce(DelyPlay);
-            if (animPlayer == null)
-            {
-                FindAnimCore(true);
-            }
             animPlayer.StepUnDo();
             animPlayer.RemovePlayer(this);
+            animPlayer = null;
         }
 
         private void FindAnimCore(bool record)

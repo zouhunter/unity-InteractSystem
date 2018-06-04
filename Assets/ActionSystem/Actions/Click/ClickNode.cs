@@ -69,23 +69,24 @@ namespace WorldActionSystem.Actions
 
         private void TryComplete(ClickItem item)
         {
-            if (statu != ExecuteStatu.Executing) return;
-            if (!item.ClickAble) return;
+            if (statu != ExecuteStatu.Executing) return;//没有执行
+            if (!item.ClickAble) return;//目标无法点击
+            if (clickedIndex >= NeedElements.Count) return;//超过需要
 
             if (NeedElements[clickedIndex] == item.Name)
             {
                 clickedItems.Add(item);
                 clickedIndex++;
-                item.RecordPlayer(item);
+                item.RecordPlayer(this);
             }
 
-            if(clickedIndex == clickedItems.Count)
+            if (clickedIndex == clickedItems.Count)
             {
                 finalGroup = clickedItems.ToArray();
                 OnEndExecute(false);
             }
-
         }
+
         /// <summary>
         /// 将所能点击的目标设置为激活状态
         /// </summary>
@@ -108,20 +109,39 @@ namespace WorldActionSystem.Actions
 
             if (undo)
             {
-                foreach (var item in clickedItems){
+                foreach (var item in clickedItems)
+                {
                     item.StepUnDo();
+                    item.RemovePlayer(this);
                 }
+                clickedIndex = 0;
                 clickedItems.Clear();
             }
             else
             {
-                if (finalGroup == null) return;
-
-                foreach (var item in finalGroup)
+                for (int i = 0; i < clickList.Count; i++)
                 {
-                    if(item.Active)
+                    if (clickedItems.Count <= i)
                     {
-                        item.StepComplete();
+                        var element = elementPool.Find(x => x.Name == clickList[i] && x.ClickAble);
+                        if (element != null)
+                        {
+                            element.RecordPlayer(this);
+                            element.StepComplete();
+                            clickedItems.Add(element);
+                        }
+                        else
+                        {
+                            Debug.LogError("缺少：" + clickList[i]);
+                        }
+                    }
+                    else
+                    {
+                        var item = clickedItems[i];
+                        if(item.Active){
+                            clickedItems[i].StepComplete();
+                        }
+                        clickedItems[i].RecordPlayer(this);
                     }
                 }
             }
@@ -139,8 +159,20 @@ namespace WorldActionSystem.Actions
         /// </summary>
         private void AutoClickItems()
         {
-
+            for (int i = 0; i < clickList.Count; i++)
+            {
+                var element = elementPool.Find(x => x.Name == clickList[i] && x.ClickAble);
+                if (element != null)
+                {
+                    element.RecordPlayer(this);
+                    element.StepComplete();
+                    clickedItems.Add(element);
+                }
+                else
+                {
+                    Debug.LogError("缺少：" + clickList[i]);
+                }
+            }
         }
     }
-
 }
