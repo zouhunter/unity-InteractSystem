@@ -473,6 +473,8 @@ namespace NodeGraph
 
             var activeGraph = controller.TargetGraph;
 
+            if (activeGraph == null) return;
+
             var currentNodes = new List<NodeGUI>();
             var currentConnections = new List<ConnectionGUI>();
 

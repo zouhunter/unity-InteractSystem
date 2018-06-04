@@ -13,13 +13,13 @@ namespace WorldActionSystem.Structure
         {
             base.ExecuteOnUnStarted(unit);
             statusDic[unit].statu = ExecuteStatu.Completed;
-            Debug.LogError("EndNode: 结束执行");
+            stateMechine.Complete();
         }
 
         protected override void ExecuteOnCompleted(ExecuteUnit unit)
         {
             base.ExecuteOnCompleted(unit);
-            Debug.LogError("已经结束");
+            Debug.LogWarning("已经结束");
         }
     }
 }

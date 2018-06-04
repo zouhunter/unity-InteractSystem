@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace WorldActionSystem
 {
     public class ElementController
@@ -252,18 +254,16 @@ namespace WorldActionSystem
         /// <returns></returns>
         public List<T> GetElements<T>(string elementName, bool priorit) where T : ISupportElement
         {
-            List<ISupportElement> list = null;
+            List<ISupportElement> list = new List<ISupportElement>();
             if (priorit)
             {
                 list = priorityList.FindAll(x => x.Name == elementName && x is T);
-                if (list.Count > 0)
-                {
-                    return list.ConvertAll<T>(x => (T)x);
-                }
             }
 
+            var otherList = elementList.FindAll(x => x.Name == elementName && x is T);
 
-            list = elementList.FindAll(x => x.Name == elementName && x is T);
+            list.AddRange(otherList.Where(x=>!list.Contains(x)));
+
             if (list.Count > 0)
             {
                 return list.ConvertAll<T>(x => (T)x);

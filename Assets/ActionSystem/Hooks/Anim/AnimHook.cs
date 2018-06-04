@@ -77,8 +77,7 @@ namespace WorldActionSystem.Hooks
 
             if (animPlayer)
             {
-                if (record)
-                {
+                if (record){
                     animPlayer.RecordPlayer(this);
                 }
                 animPlayer.gameObject.SetActive(true);

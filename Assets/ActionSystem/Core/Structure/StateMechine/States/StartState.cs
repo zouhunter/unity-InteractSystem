@@ -21,7 +21,6 @@ namespace WorldActionSystem.Structure
                 CompleteExecuteChildGroups(unit);
                 statusDic[unit].statu = ExecuteStatu.Completed;
             }
-            Debug.LogWarning("结束执行");
         }
 
         public override void UnDo(ExecuteUnit unit)
@@ -52,7 +51,7 @@ namespace WorldActionSystem.Structure
             if (!LunchStackGroup(unit))
             {
                 statusDic[unit].statu = ExecuteStatu.Completed;
-                Debug.LogWarning("结束执行");
+                stateMechine.Complete();
             }
         }
       

@@ -33,6 +33,8 @@ namespace WorldActionSystem.Structure
         private List<OperateNode> startedActions = new List<OperateNode>();
         public Stack<ExecuteUnit> activedUnits = new Stack<ExecuteUnit>();
         public Stack<ExecuteUnit> redoUnits = new Stack<ExecuteUnit>();
+        private ExecuteUnit currentUnit;
+        public UnityAction onComplete { get; set; }
 
         public ActionStateMechine(ActionCommand cmd)
         {
@@ -107,6 +109,15 @@ namespace WorldActionSystem.Structure
         }
         #endregion
 
+        /// <summary>
+        /// 状态机执行完成
+        /// </summary>
+        public virtual void Complete()
+        {
+            if (onComplete != null)
+                onComplete.Invoke();
+        }
+
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.IsAuto = forceAuto;
@@ -122,7 +133,7 @@ namespace WorldActionSystem.Structure
             }
             else
             {
-                if(redoUnits.Count > 0)
+                if (redoUnits.Count > 0)
                 {
                     var unit = redoUnits.Pop();
                     Execute(unit);
@@ -137,11 +148,12 @@ namespace WorldActionSystem.Structure
                 }
             }
         }
-        ExecuteUnit currentUnit;
+      
+
         public virtual void OnUnDoExecute(bool all)
         {
             StopUpdateAction(true);
-            if(all)
+            if (all)
             {
                 UnDo(root);
             }
@@ -150,7 +162,7 @@ namespace WorldActionSystem.Structure
                 if (activedUnits.Count > 0)
                 {
                     var unit = activedUnits.Pop();
-                    if(unit == currentUnit)
+                    if (unit == currentUnit)
                     {
                         redoUnits.Push(unit);
                         UnDo(unit);

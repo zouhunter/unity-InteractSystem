@@ -37,13 +37,23 @@ namespace WorldActionSystem
         protected ExecuteStatu statu = ExecuteStatu.UnStarted;
         //步骤控制器
         protected Structure.ActionStateMechine objectCtrl;
+        //hook控制器
+        protected HookCtroller hookCtrl = new HookCtroller();
+        protected bool forceAuto;
 
         protected virtual void OnEnable()
         {
             statu = ExecuteStatu.UnStarted;
             objectCtrl = new Structure.ActionStateMechine(this);
+            objectCtrl.onComplete = OnEndExecute;
+            InitHookCtrl();
         }
-
+        private void InitHookCtrl()
+        {
+            hookCtrl.SetContext(this);
+            hookCtrl.InitHooks(hooks);
+            hookCtrl.onEndExecute += OnHookComplete;
+        }
 
         public void SetContext(ActionGroup group)
         {
@@ -68,28 +78,9 @@ namespace WorldActionSystem
             }
         }
 
-        /// <summary>
-        /// 操作过程自动结束
-        /// </summary>
-        internal bool Complete()
-        {
-            if (statu != ExecuteStatu.Completed)
-            {
-                statu = ExecuteStatu.Completed;
-                OnEndExecute();
-                if (stepComplete != null)
-                    stepComplete.Invoke(StepName);
-                return true;
-            }
-            else
-            {
-                Debug.Log("already completed" + name);
-                return false;
-            }
-        }
-
         public virtual bool StartExecute(bool forceAuto)
         {
+            this.forceAuto = forceAuto;
             if (statu == ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.Executing;
@@ -105,42 +96,86 @@ namespace WorldActionSystem
             }
         }
 
+        private void OnHookComplete()
+        {
+            if(statu != ExecuteStatu.Completed)
+            {
+                statu = ExecuteStatu.Completed;
+                CoreEndExecute();
+                TryCallBack();
+            }
+        }
+
         internal void RegistCommandChanged(UnityAction<string, int, int> onActionObjStartExecute)
         {
             this.onActionObjStartExecute = onActionObjStartExecute;
         }
 
-        /// <summary>
-        /// 强制结束
-        /// </summary>
-        public virtual bool EndExecute()
+        public virtual void EndExecute()
         {
-            //Debug.Log("EndExecute", gameObject);
-
             if (statu != ExecuteStatu.Completed)
             {
                 statu = ExecuteStatu.Completed;
-                OnEndExecute();
-                return true;
+
+                CoreEndExecute();
+
+                if (hookCtrl.Statu != ExecuteStatu.Completed) {
+                    hookCtrl.OnEndExecute();
+                }
             }
             else
             {
-                Debug.Log("already completed" + name);
-                return false;
+                Debug.Log("already completed" + StepName);
             }
-
+        }
+        public virtual void OnEndExecute()
+        {
+            Debug.Log("EndExecute", this);
+            if (statu != ExecuteStatu.Completed)
+            {
+                if (hookCtrl.Statu == ExecuteStatu.Completed)
+                {
+                    statu = ExecuteStatu.Completed;
+                    CoreEndExecute();
+                }
+                else if (hookCtrl.Statu == ExecuteStatu.UnStarted)
+                {
+                    hookCtrl.OnStartExecute(forceAuto);
+                }
+                else
+                {
+                    Debug.Log("wait:" + StepName);
+                }
+            }
+            else
+            {
+                Debug.Log("already completed" + StepName);
+            }
         }
 
-        public void OnEndExecute()
+        public void CoreEndExecute()
         {
             OnBeforeActionsPlayEnd();
             ActionCtrl.OnEndExecute();
         }
 
+        private void TryCallBack()
+        {
+            if (stepComplete != null)
+                stepComplete.Invoke(StepName);
+        }
+
         public virtual void UnDoExecute()
         {
             statu = ExecuteStatu.UnStarted;
+
+            if (hookCtrl.Statu != ExecuteStatu.Completed)
+            {
+                hookCtrl.OnUnDoExecute();
+            }
+
             OnBeforeActionsUnDo();
+
             ActionCtrl.OnUnDoExecute();
         }
         private void OnBeforeActionsStart()

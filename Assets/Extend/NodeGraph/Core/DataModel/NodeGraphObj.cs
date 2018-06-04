@@ -22,9 +22,9 @@ namespace NodeGraph.DataModel
         public const int ABG_FILE_VERSION = 2;
 
         [SerializeField]
-        private List<NodeData> m_allNodes;
+        private List<NodeData> m_allNodes = new List<NodeData>();
         [SerializeField]
-        private List<ConnectionData> m_allConnections;
+        private List<ConnectionData> m_allConnections = new List<ConnectionData>();
         [SerializeField]
         private string m_lastModified;
         [SerializeField]

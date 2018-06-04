@@ -108,35 +108,38 @@ namespace WorldActionSystem.Graph
         }
         public virtual void OnEndExecute(bool force)
         {
-            OnBeforeEnd(force);
-
-            if (force)
+            if (statu != ExecuteStatu.Completed)
             {
-                if (statu != ExecuteStatu.Completed)
+                OnBeforeEnd(force);
+
+                if (force)
                 {
                     statu = ExecuteStatu.Completed;
-                    if (hookCtrl.Statu != ExecuteStatu.Completed){
+                    if (hookCtrl.Statu != ExecuteStatu.Completed)
+                    {
                         hookCtrl.OnEndExecute();
                     }
-                    CoreEndExecute(true);
-                }
-            }
-            else
-            {
-                if (hookCtrl.Statu == ExecuteStatu.Completed && statu != ExecuteStatu.Completed)
-                {
-                    statu = ExecuteStatu.Completed;
-                    CoreEndExecute(false);
-                }
-                else if (hookCtrl.Statu == ExecuteStatu.UnStarted)
-                {
-                    hookCtrl.OnStartExecute(auto);
+                    CoreEndExecute();
                 }
                 else
                 {
-                    Debug.Log("wait:" + Name);
+                    if (hookCtrl.Statu == ExecuteStatu.Completed)
+                    {
+                        statu = ExecuteStatu.Completed;
+                        CoreEndExecute();
+                        TryCallBack();
+                    }
+                    else if (hookCtrl.Statu == ExecuteStatu.UnStarted)
+                    {
+                        hookCtrl.OnStartExecute(auto);
+                    }
+                    else
+                    {
+                        Debug.Log("wait:" + Name);
+                    }
                 }
             }
+           
         }
 
         private void OnHookComplete()
@@ -144,15 +147,17 @@ namespace WorldActionSystem.Graph
             if (Statu != ExecuteStatu.Completed)
             {
                 statu = ExecuteStatu.Completed;
-                CoreEndExecute(false);
+                CoreEndExecute();
+                TryCallBack();
             }
         }
-        private void CoreEndExecute(bool force)
+        private void CoreEndExecute()
         {
             //angleCtrl.UnNotice(anglePos);
-            if (log) Debug.Log("CoreEndExecute:" + this + ":" + force);
-            if (onEndExecute != null)
-            {
+        }
+        private void TryCallBack()
+        {
+            if (onEndExecute != null) {
                 onEndExecute.Invoke();
             }
         }
@@ -166,8 +171,7 @@ namespace WorldActionSystem.Graph
             {
                 statu = ExecuteStatu.UnStarted;
                 OnUnDoExecuteInternal();
-                //gameObject.SetActive(startActive);
-                if (hooks.Length > 0)
+                if (hookCtrl.Statu != ExecuteStatu.Completed)
                 {
                     hookCtrl.OnUnDoExecute();
                 }

@@ -92,7 +92,9 @@ namespace WorldActionSystem.Structure
 
         private static ExecuteUnit CreateOriginalUnit(NodeGraphObj graphObj)
         {
-            NodeData startNodeData = graphObj.Nodes.Where(node => node.Object is Graph.StartNode).First();
+            if (graphObj == null || graphObj.Nodes == null) return null;
+            NodeData startNodeData = graphObj.Nodes.Where(node => node.Object is Graph.StartNode).FirstOrDefault();
+            if (startNodeData == null) return null;
             Debug.Assert(startNodeData != null, "this is no start node!");
             orignalUnits.Clear();
             copyDic.Clear();

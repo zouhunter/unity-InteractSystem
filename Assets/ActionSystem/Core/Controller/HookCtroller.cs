@@ -15,7 +15,7 @@ namespace WorldActionSystem
         protected ActionHook[] hooks { get; set; }
         protected bool isForceAuto;
         public UnityEngine.Events.UnityAction onEndExecute { get; set; }
-        
+        protected bool active { get;private set; }
         public void SetContext(object context)
         {
             this.Context = context;
@@ -25,6 +25,7 @@ namespace WorldActionSystem
         {
             if(actionHooks != null && actionHooks.Length > 0)
             {
+                active = true;
                 statu = ExecuteStatu.UnStarted;
                 hooks = new ActionHook[actionHooks.Length];
                 for (int i = 0; i < actionHooks.Length; i++)
@@ -34,13 +35,15 @@ namespace WorldActionSystem
             }
             else
             {
-                statu = ExecuteStatu.Completed;
+                statu = ExecuteStatu.Completed; active = false;
             }
         }
 
         public virtual void OnStartExecute(bool forceAuto)
         {
-            if(statu == ExecuteStatu.UnStarted)
+            if (!active) return;
+
+            if (statu == ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.Executing;
                 this.isForceAuto = forceAuto;
@@ -64,6 +67,8 @@ namespace WorldActionSystem
 
         public virtual void OnEndExecute()
         {
+            if (!active) return;
+
             if (statu != ExecuteStatu.Completed)
             {
                 statu = ExecuteStatu.Completed;
@@ -83,6 +88,8 @@ namespace WorldActionSystem
 
         public virtual void OnUnDoExecute()
         {
+            if (!active) return;
+
             if (statu != ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.UnStarted;
