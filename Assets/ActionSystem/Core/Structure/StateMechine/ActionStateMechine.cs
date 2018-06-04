@@ -31,8 +31,8 @@ namespace WorldActionSystem.Structure
         public static bool log = false;
         //树型结构
         private List<OperateNode> startedActions = new List<OperateNode>();
-        public List<Structure.ExecuteUnit> activeUnits = new List<ExecuteUnit>();
-
+        //public Stack<ExecuteUnit> completeUnits = new Stack<ExecuteUnit>();
+        //public Stack<ExecuteUnit> undoUnits = new Stack<ExecuteUnit>();
 
         public ActionStateMechine(ActionCommand cmd)
         {
@@ -59,6 +59,7 @@ namespace WorldActionSystem.Structure
         {
             currentState = statemap[state];
         }
+
         public void ExecuteGroup(List<ExecuteUnit> units)
         {
             foreach (var unit in units)
@@ -66,7 +67,26 @@ namespace WorldActionSystem.Structure
                 Execute(unit);
             }
         }
+
         public void Execute(ExecuteUnit unit)
+        {
+            SwitchState(unit);
+            currentState.Execute(unit);
+        }
+
+        public void Complete(ExecuteUnit unit)
+        {
+            SwitchState(unit);
+            currentState.Complete(unit);
+        }
+
+        public void UnDo(ExecuteUnit unit)
+        {
+            SwitchState(unit);
+            currentState.UnDo(unit);
+        }
+
+        public void SwitchState(ExecuteUnit unit)
         {
             if (unit.node is Graph.StartNode)
             {
@@ -84,10 +104,7 @@ namespace WorldActionSystem.Structure
             {
                 SetState(State.Operate);
             }
-
-            currentState.Execute(unit);
         }
-
         #endregion
 
         public virtual void OnStartExecute(bool forceAuto)
@@ -95,38 +112,29 @@ namespace WorldActionSystem.Structure
             this.IsAuto = forceAuto;
             Execute(root);
         }
-        /// <summary>
-        /// 设置优先执行
-        /// </summary>
-        /// <param name="obj"></param>
-        internal void OnPickUpObj(PickUpAbleItem obj)
-        {
-            var actionItems = obj.GetComponentsInChildren<ActionItem>();
-            if (actionItems != null && actionItems.Length > 0)
-            {
-                //foreach (var item in actionItems)
-                //{
-                //    var prio = startedActions.Find(x => x.Name == item.Name);
-                //    if (prio != null)
-                //    {
-                //        startedActions.Remove(prio);
-                //        startedActions.Insert(0, prio);
-                //    }
-                //}
-            }
-        }
-
 
         public virtual void OnEndExecute()
         {
             StopUpdateAction(false);
+            Complete(root);
         }
 
         public virtual void OnUnDoExecute()
         {
             StopUpdateAction(true);
+            UnDo(root);
         }
 
+        /// <summary>
+        /// 结束开启的步骤
+        /// </summary>
+        public virtual void CompleteStarted()
+        {
+            foreach (var item in startedActions)
+            {
+                item.OnEndExecute(true);
+            }
+        }
         /// <summary>
         /// 添加新的触发器
         /// </summary>

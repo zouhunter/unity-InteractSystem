@@ -14,9 +14,9 @@ namespace WorldActionSystem.Structure
         /// 首次执行
         /// </summary>
         /// <param name="unit"></param>
-        protected override void ExecuteUnStarted(ExecuteUnit unit)
+        protected override void ExecuteOnUnStarted(ExecuteUnit unit)
         {
-            base.ExecuteUnStarted(unit);
+            base.ExecuteOnUnStarted(unit);
             statusDic[unit].statu = ExecuteStatu.Executing;
             var operateNode = unit.node as OperateNode;
 
@@ -40,7 +40,7 @@ namespace WorldActionSystem.Structure
                     statusDic[unit].statu = ExecuteStatu.Completed;
                 }
 
-                Execute(unit);
+                stateMechine.Execute(unit);
             };
 
             operateNode.OnStartExecute(stateMechine.IsAuto);
@@ -51,17 +51,18 @@ namespace WorldActionSystem.Structure
         /// 再次执行
         /// </summary>
         /// <param name="unit"></param>
-        protected override void ExecuteExecuting(ExecuteUnit unit)
+        protected override void ExecuteOnExecuting(ExecuteUnit unit)
         {
-            base.ExecuteExecuting(unit);
-            if(HaveUnitNotComplete(unit)){
+            base.ExecuteOnExecuting(unit);
+            if (HaveUnitNotComplete(unit))
+            {
                 return;
             }
 
             if (!LunchStackGroup(unit))
             {
                 statusDic[unit].statu = ExecuteStatu.Completed;
-                Execute(unit);
+                stateMechine.Execute(unit);
             }
         }
 
@@ -69,9 +70,9 @@ namespace WorldActionSystem.Structure
         /// 结束执行
         /// </summary>
         /// <param name="unit"></param>
-        protected override void ExecuteCompleted(ExecuteUnit unit)
+        protected override void ExecuteOnCompleted(ExecuteUnit unit)
         {
-            base.ExecuteCompleted(unit);
+            base.ExecuteOnCompleted(unit);
             if (unit.parentUnits.Count == 0)
             {
                 Debug.LogError(unit.node + "have no parent!");
@@ -80,6 +81,27 @@ namespace WorldActionSystem.Structure
         }
 
 
-
+        public override void UnDo(ExecuteUnit unit)
+        {
+            base.UnDo(unit);
+            UndoExecuteChildGroups(unit);
+            if (statusDic[unit].statu != ExecuteStatu.UnStarted)
+            {
+                statusDic[unit].statu = ExecuteStatu.UnStarted;
+                var operateNode = unit.node as OperateNode;
+                operateNode.OnUnDoExecute();
+                stateMechine.OnStopAction(unit.node as Graph.OperateNode);
+            }
+        }
+        public override void Complete(ExecuteUnit unit)
+        {
+            base.Complete(unit);
+            CompleteExecuteChildGroups(unit);
+            statusDic[unit].statu = ExecuteStatu.Completed;
+            var operateNode = unit.node as OperateNode;
+            operateNode.onEndExecute = null;
+            operateNode.OnEndExecute(true);
+            stateMechine.OnStopAction(unit.node as Graph.OperateNode);
+        }
     }
 }

@@ -53,26 +53,29 @@ namespace WorldActionSystem.Hooks
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
-            if (animPlayer != null)
-            {
-                animPlayer.StepComplete();
+            coroutineCtrl.Cansalce(DelyPlay);
+            if (animPlayer == null) {
+                FindAnimCore(true);
             }
+            animPlayer.StepComplete();
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            if (animPlayer != null)
+            coroutineCtrl.Cansalce(DelyPlay);
+            if (animPlayer == null)
             {
-                animPlayer.StepUnDo();
-                animPlayer.RemovePlayer(this);
+                FindAnimCore(true);
             }
+            animPlayer.StepUnDo();
+            animPlayer.RemovePlayer(this);
         }
 
         private void FindAnimCore(bool record)
         {
             if (animPlayer == null)
             {
-                var elements = elementCtrl.GetElements<AnimPlayer>(animName,true);
+                var elements = elementCtrl.GetElements<AnimPlayer>(animName, true);
                 if (elements != null && elements.Count > 0)
                 {
                     animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];

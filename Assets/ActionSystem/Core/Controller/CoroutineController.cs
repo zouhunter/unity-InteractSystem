@@ -14,7 +14,7 @@ namespace WorldActionSystem
         private MonoBehaviour holder;
         private Dictionary<UnityAction, List<float>> delyActions = new Dictionary<UnityAction, List<float>>();
         private Queue<UnityAction> mainThreadActions = new Queue<UnityAction>();
-
+        private static bool log = false;
         public CoroutineController(MonoBehaviour holder)
         {
             this.holder = holder;
@@ -42,7 +42,7 @@ namespace WorldActionSystem
 
         public void DelyExecute(UnityAction action, float time)
         {
-            Debug.Log("DelyExecute" + action + ":" + time);
+            if (log) Debug.Log("DelyExecute" + action + ":" + time);
             if (delyActions.ContainsKey(action))
             {
                 delyActions[action].Add(time);
@@ -64,7 +64,8 @@ namespace WorldActionSystem
 
         public void Cansalce(UnityAction action)
         {
-            if (delyActions.ContainsKey(action)) {
+            if (delyActions.ContainsKey(action))
+            {
                 delyActions.Remove(action);
             }
 
@@ -126,7 +127,7 @@ namespace WorldActionSystem
                     if (timers.Count == 0)
                     {
                         delyActions.Remove(action);
-                        Debug.Log("Remove:" + action);
+                        if (log) Debug.Log("Remove:" + action);
                     }
                 }
                 yield return waitHandle;

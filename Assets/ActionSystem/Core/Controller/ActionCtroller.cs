@@ -83,8 +83,10 @@ namespace WorldActionSystem
         /// <param name="obj"></param>
         internal void OnPickUpObj(PickUpAbleItem obj)
         {
-            if (activeObjCtrl != null)
-                activeObjCtrl.OnPickUpObj(obj);
+            var actionItems = obj.GetComponentsInChildren<ActionItem>();
+            if (actionItems != null && actionItems.Length > 0){
+                ElementController.Instence.SetPriority(actionItems);
+            }
         }
 
         public virtual void OnStartExecute(Structure.ActionStateMechine activeObjCtrl, bool forceAuto)

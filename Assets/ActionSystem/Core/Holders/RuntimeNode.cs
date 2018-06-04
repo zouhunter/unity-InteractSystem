@@ -117,7 +117,16 @@ namespace WorldActionSystem.Actions
                     for (int i = 0; i < objs.Count; i++)
                     {
                         if (log)
-                            Debug.Log("CompleteElements:" + element + objs[i].Active);
+                        {
+                            if (undo)
+                            {
+                                Debug.Log("UnDoElements:" + element + objs[i].Active);
+                            }
+                            else
+                            {
+                                Debug.Log("CompleteElements:" + element + objs[i].Active);
+                            }
+                        }
 
                         if (objs[i].Active)
                         {

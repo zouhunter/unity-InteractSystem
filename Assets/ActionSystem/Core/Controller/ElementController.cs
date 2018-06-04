@@ -21,7 +21,7 @@ namespace WorldActionSystem
             }
         }
 
-        public static bool log = true;
+        public static bool log = false;
         public event UnityAction<ISupportElement> onRegistElememt;
         public event UnityAction<ISupportElement> onRemoveElememt;
         //所有元素列表

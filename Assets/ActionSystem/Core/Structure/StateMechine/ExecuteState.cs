@@ -13,7 +13,7 @@ namespace WorldActionSystem.Structure
         protected Dictionary<ExecuteUnit, UnitStatus> statusDic { get { return stateMechine.statuDic; } }
         public static bool log = false;
 
-        internal virtual void Execute(ExecuteUnit unit)
+        public virtual void Execute(ExecuteUnit unit)
         {
             if (!statusDic.ContainsKey(unit))
             {
@@ -23,33 +23,85 @@ namespace WorldActionSystem.Structure
             switch (statusDic[unit].statu)
             {
                 case ExecuteStatu.UnStarted:
-                    ExecuteUnStarted(unit);
+                    ExecuteOnUnStarted(unit);
                     break;
                 case ExecuteStatu.Executing:
-                    ExecuteExecuting(unit);
+                    ExecuteOnExecuting(unit);
                     break;
                 case ExecuteStatu.Completed:
-                    ExecuteCompleted(unit);
+                    ExecuteOnCompleted(unit);
                     break;
                 default:
                     break;
             }
         }
 
-        protected virtual void ExecuteCompleted(ExecuteUnit unit)
+        public virtual void Complete(ExecuteUnit unit)
+        {
+
+        }
+        public virtual void UnDo(ExecuteUnit unit)
+        {
+
+        }
+
+        protected virtual void ExecuteOnCompleted(ExecuteUnit unit)
         {
             if (log) Debug.Log("ExecuteCompleted:" + unit.node.name);
         }
 
-        protected virtual void ExecuteExecuting(ExecuteUnit unit)
+        protected virtual void ExecuteOnExecuting(ExecuteUnit unit)
         {
             if (log) Debug.Log("ExecuteExecuting:" + unit.node.name);
         }
 
-        protected virtual void ExecuteUnStarted(ExecuteUnit unit)
+        protected virtual void ExecuteOnUnStarted(ExecuteUnit unit)
         {
             if (log) Debug.Log("ExecuteUnStarted：" + unit.node.name);
         }
+
+        /// <summary>
+        /// 结束一组执行
+        /// </summary>
+        /// <param name="unit"></param>
+        protected void CompleteExecuteChildGroups(ExecuteUnit unit)
+        {
+            var childs = unit.childUnits.ToArray();
+            foreach (var list in childs)
+            {
+                foreach (var item in list)
+                {
+                    if(statusDic[item].statu != ExecuteStatu.Completed)
+                    {
+                        stateMechine.Complete(item);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 重置执行
+        /// </summary>
+        /// <param name="unit"></param>
+        protected void UndoExecuteChildGroups(ExecuteUnit unit)
+        {
+            var childUnits = unit.childUnits.ToArray();
+            Array.Reverse(childUnits);
+            foreach (var list in childUnits)
+            {
+                foreach (var item in list)
+                {
+                    if (statusDic[item].statu != ExecuteStatu.UnStarted)
+                    {
+                        stateMechine.UnDo(item);
+                    }
+                    stateMechine.UnDo(item);
+                }
+            }
+        }
+        /// <summary>
+        /// 开启执行
+        /// </summary>
+        /// <param name="unit"></param>
         protected void StartExecuteChildGroups(ExecuteUnit unit)
         {
             for (int i = 1; i < unit.childUnits.Count; i++)
@@ -68,10 +120,15 @@ namespace WorldActionSystem.Structure
                 //结束执行
                 Debug.LogError("结束执行");
                 statusDic[unit].statu = ExecuteStatu.Completed;
-                Execute(unit);
+                stateMechine.Execute(unit);
             }
         }
 
+        /// <summary>
+        /// 判读执行单元当前开启的列表是否执行完成
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <returns></returns>
         protected bool HaveUnitNotComplete(ExecuteUnit unit)
         {
             if (statusDic[unit].workUnits.Count > 0)
@@ -79,7 +136,7 @@ namespace WorldActionSystem.Structure
                 var lastworking = statusDic[unit].workUnits.Peek();
                 if (!IsGroupCompleted(lastworking))
                 {
-                    Debug.Log("等待还没有执行完的同级任务");
+                    Debug.Log(unit.node + "等待还没有执行完的同级任务");
                     return true;
                 }
             }
@@ -101,6 +158,11 @@ namespace WorldActionSystem.Structure
             }
         }
 
+        /// <summary>
+        /// 判断列表中的单元是否都已经执行完成
+        /// </summary>
+        /// <param name="units"></param>
+        /// <returns></returns>
         protected bool IsGroupCompleted(List<ExecuteUnit> units)
         {
             //判断是不否所有已经结束
@@ -109,7 +171,6 @@ namespace WorldActionSystem.Structure
             if (noCompleted.Count > 0)
             {
                 //等待还没有执行完的同级任务
-                Debug.Log("等待还没有执行完的同级任务");
                 return false;
             }
             return true;

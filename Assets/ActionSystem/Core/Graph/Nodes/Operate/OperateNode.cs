@@ -147,14 +147,10 @@ namespace WorldActionSystem.Graph
             {
                 statu = ExecuteStatu.Completed;
               
-                //gameObject.SetActive(endActive);
-
                 if (hooks.Length > 0)
                 {
                     hookCtrl.OnEndExecute();
                 }
-
-                if (log) Debug.Log("OnEndExecute:" + Name);
 
                 if (onEndExecute != null)
                 {

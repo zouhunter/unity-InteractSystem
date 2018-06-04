@@ -9,9 +9,9 @@ namespace WorldActionSystem.Structure
 {
     public class LogicState : ExecuteState
     {
-        protected override void ExecuteUnStarted(ExecuteUnit unit)
+        protected override void ExecuteOnUnStarted(ExecuteUnit unit)
         {
-            base.ExecuteUnStarted(unit);
+            base.ExecuteOnUnStarted(unit);
             var logicNode = unit.node as Graph.LogicNode;
 
             switch (logicNode.logicType)
@@ -32,9 +32,9 @@ namespace WorldActionSystem.Structure
                     break;
             }
         }
-        protected override void ExecuteExecuting(ExecuteUnit unit)
+        protected override void ExecuteOnExecuting(ExecuteUnit unit)
         {
-            base.ExecuteExecuting(unit);
+            base.ExecuteOnExecuting(unit);
             if (HaveUnitNotComplete(unit)){
                 return;
             }
@@ -45,24 +45,43 @@ namespace WorldActionSystem.Structure
                 Execute(unit);
             }
         }
-        protected override void ExecuteCompleted(ExecuteUnit unit)
+        protected override void ExecuteOnCompleted(ExecuteUnit unit)
         {
-            base.ExecuteCompleted(unit);
+            base.ExecuteOnCompleted(unit);
             Debug.Log("Logic Completed");
             stateMechine.ExecuteGroup(unit.parentUnits);
         }
+        public override void Complete(ExecuteUnit unit)
+        {
+            base.Complete(unit);
+            if (statusDic[unit].statu != ExecuteStatu.Completed)
+            {
+                CompleteExecuteChildGroups(unit);
+                statusDic[unit].statu = ExecuteStatu.Completed;
+            }
+        }
 
+
+        public override void UnDo(ExecuteUnit unit)
+        {
+            base.UnDo(unit);
+            if (statusDic[unit].statu != ExecuteStatu.UnStarted)
+            {
+                UndoExecuteChildGroups(unit);
+                statusDic[unit].statu = ExecuteStatu.UnStarted;
+            }
+        }
         private bool AllParentCompleted(ExecuteUnit unit)
         {
             var parentList = unit.parentUnits;
             Debug.Log(parentList.Count);
             foreach (var item in parentList)
             {
-                if(item.node is Graph.OperateNode)
+                if (item.node is Graph.OperateNode)
                 {
                     var node = item.node as Graph.OperateNode;
-                    Debug.Log(node+ ": statu:" + node.Statu);
-                    if(node.Statu != ExecuteStatu.Completed)
+                    Debug.Log(node + ": statu:" + node.Statu);
+                    if (node.Statu != ExecuteStatu.Completed)
                     {
                         return false;
                     }

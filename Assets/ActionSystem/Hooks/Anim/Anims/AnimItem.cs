@@ -59,10 +59,13 @@ namespace WorldActionSystem.Hooks
 
         public override void StepActive()
         {
+            base.StepActive();
+            Debug.Log("StepActive" + this);
             Init();
             state.normalizedTime = reverse ? 1 : 0f;
             state.speed = reverse ? -duration : duration;
             anim.Play();
+
             if (coroutine == null)
                 coroutine = StartCoroutine(DelyStop());
         }
@@ -70,8 +73,8 @@ namespace WorldActionSystem.Hooks
         public override void StepComplete()
         {
             base.StepComplete();
+            Debug.Log("StepComplete:" + this);
             SetCurrentAnim(reverse ? 0 : 1);
-
             if (coroutine != null)
                 StopCoroutine(coroutine);
             coroutine = null;
@@ -79,6 +82,7 @@ namespace WorldActionSystem.Hooks
 
         public override void StepUnDo()
         {
+            base.StepUnDo();
             SetCurrentAnim(reverse ? 1 : 0);
             if (coroutine != null)
                 StopCoroutine(coroutine);
