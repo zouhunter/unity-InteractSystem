@@ -1,0 +1,211 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
+  m_Name: ActionCommand
+  m_EditorClassIdentifier: 
+  m_allNodes:
+  - m_name: Click
+    m_id: 14d7a745-b498-459a-91b8-ea65a8aa957c
+    m_x: 250
+    m_y: 130
+    m_node: {fileID: 114584149696806938}
+    m_inputPoints:
+    - id: 1856361f-a923-494f-9ae9-60ff21e4342e
+      label: 
+      parentId: 14d7a745-b498-459a-91b8-ea65a8aa957c
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 0cfb9249-0df4-4952-866b-8d34420e97f5
+      label: 0
+      parentId: 14d7a745-b498-459a-91b8-ea65a8aa957c
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: Start
+    m_id: e6907a53-bae7-4fbc-95db-d5330abc4504
+    m_x: 80
+    m_y: 50
+    m_node: {fileID: 114308434188825626}
+    m_inputPoints: []
+    m_outputPoints:
+    - id: 0c539ddf-3023-4cc9-a121-b7a15dd686f5
+      label: 0
+      parentId: e6907a53-bae7-4fbc-95db-d5330abc4504
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  m_allConnections:
+  - m_id: 1fc8f9fb-a0cb-4f3f-bf65-77882b73c9e3
+    m_fromNodeId: e6907a53-bae7-4fbc-95db-d5330abc4504
+    m_fromNodeConnectionPointId: 0c539ddf-3023-4cc9-a121-b7a15dd686f5
+    m_toNodeId: 14d7a745-b498-459a-91b8-ea65a8aa957c
+    m_toNodeConnectionPoiontId: 1856361f-a923-494f-9ae9-60ff21e4342e
+    m_type: actionconnect
+    m_connection: {fileID: 114692948141289052}
+  m_lastModified: 131725981931900851
+  m_graphDescription: 
+  m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
+  _stepName: command01
+  _cameraID: defult
+  commandBindings: []
+  environments:
+  - originalState: 1
+    startState: 1
+    completeState: 0
+    matrix:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentName: anim0
+    ignore: 0
+  - originalState: 1
+    startState: 1
+    completeState: 0
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentName: anim1s
+    ignore: 0
+  hooks:
+  - {fileID: 11400000, guid: de891da769f71b1449eb9a9ac10e2248, type: 2}
+--- !u!114 &114308434188825626
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: WorldActionSystem.Graph.StartNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114584149696806938
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4f0f3ab2171b349969860a8194d74e, type: 3}
+  m_Name: WorldActionSystem.Actions.ClickNode
+  m_EditorClassIdentifier: 
+  _cameraID: 
+  _name: 
+  hooks:
+  - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
+  bindings: []
+  environments:
+  - originalState: 0
+    startState: 1
+    completeState: 1
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentName: anim1s
+    ignore: 0
+  - originalState: 0
+    startState: 1
+    completeState: 1
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentName: clickItems
+    ignore: 0
+  clickList:
+  - click01
+--- !u!114 &114692948141289052
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: WorldActionSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 1

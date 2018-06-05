@@ -12,13 +12,13 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.ActionGroup)]
     public class ActionGroup : MonoBehaviour
     {
-        [SerializeField]//步骤控制
+        [SerializeField, HideInInspector]//步骤控制
         protected OptionalCommandItem[] actionCommands;
-        [SerializeField]//用户创建元素
+        [SerializeField, HideInInspector]//用户创建元素
         protected RunTimePrefabItem[] runTimeElements;
-        [SerializeField]//自动创建元素
+        [SerializeField, HideInInspector]//自动创建元素
         protected AutoPrefabItem[] autoElements;
-        [SerializeField]//环境元素
+        [SerializeField, HideInInspector]//环境元素
         protected Enviroment.EnviromentItem[] enviroments;
       
         #region Propertys
@@ -93,7 +93,7 @@ namespace WorldActionSystem
         #region private Funtions
         private void InitActionCommands()
         {
-            activeCommands = actionCommands.Where(x => x.active).Select(x => x.command).ToList();
+            activeCommands = actionCommands.Where(x => !x.ignore).Select(x => x.command).ToList();
             foreach (var command in activeCommands)
             {
                 command.SetContext(this);

@@ -10,21 +10,14 @@ namespace WorldActionSystem
     [CustomPropertyDrawer(typeof(AutoPrefabItem), true)]
     public class AutoPrefabItemDrawer : PropertyDrawer
     {
-        protected SerializedProperty containsCommandProp;
-        protected SerializedProperty containsPickupProp;
-        protected SerializedProperty rematrixProp;
         protected SerializedProperty matrixProp;
-
         protected SerializedProperty instanceIDProp;
         protected SerializedProperty prefabProp;
         protected SerializedProperty ignoreProp;
         protected void FindCommonPropertys(SerializedProperty property)
         {
-            rematrixProp = property.FindPropertyRelative("rematrix");
             matrixProp = property.FindPropertyRelative("matrix");
-            containsPickupProp = property.FindPropertyRelative("containsPickup");
             instanceIDProp = property.FindPropertyRelative("instanceID");
-            containsCommandProp = property.FindPropertyRelative("containsCommand");
             ignoreProp = property.FindPropertyRelative("ignore");
         }
 
@@ -50,11 +43,11 @@ namespace WorldActionSystem
                 property.isExpanded = !property.isExpanded;
                 if (property.isExpanded)
                 {
-                    ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, containsCommandProp,containsPickupProp,  rematrixProp, matrixProp);
+                    //ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, containsCommandProp,containsPickupProp,  rematrixProp, matrixProp);
                 }
                 else
                 {
-                    ActionEditorUtility.SavePrefab(instanceIDProp, rematrixProp, matrixProp);
+                    //ActionEditorUtility.SavePrefab(instanceIDProp, rematrixProp, matrixProp);
                 }
             }
             GUI.contentColor = Color.white;
@@ -115,8 +108,8 @@ namespace WorldActionSystem
             var optionCount = 4;
             var width = rect.width / optionCount;
             var choiseRect = new Rect(rect.x, rect.y, width, rect.height);
-            rematrixProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Matrix", rematrixProp.boolValue);
-            choiseRect.x += width;
+            //rematrixProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Matrix", rematrixProp.boolValue);
+            //choiseRect.x += width;
             ignoreProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "[Ignore]", ignoreProp.boolValue);
             choiseRect.x += width;
         }
@@ -132,26 +125,26 @@ namespace WorldActionSystem
                 var infoRect = rect;
                 infoRect.x = infoRect.width - 80;
                 infoRect.width = 25;
-                if (containsPickupProp.boolValue)
-                {
-                    GUI.color = new Color(0.3f, 0.5f, 0.8f);
-                    EditorGUI.SelectableLabel(infoRect, "[p]");
-                    infoRect.x += infoRect.width;
-                }
+                //if (containsPickupProp.boolValue)
+                //{
+                //    GUI.color = new Color(0.3f, 0.5f, 0.8f);
+                //    EditorGUI.SelectableLabel(infoRect, "[p]");
+                //    infoRect.x += infoRect.width;
+                //}
 
-                if (rematrixProp.boolValue)
-                {
-                    GUI.color = new Color(0.8f, 0.8f, 0.4f);
-                    EditorGUI.SelectableLabel(infoRect, "[m]");
-                    infoRect.x += infoRect.width;
-                }
+                //if (rematrixProp.boolValue)
+                //{
+                //    GUI.color = new Color(0.8f, 0.8f, 0.4f);
+                //    EditorGUI.SelectableLabel(infoRect, "[m]");
+                //    infoRect.x += infoRect.width;
+                //}
 
-                if (containsCommandProp.boolValue)
-                {
-                    GUI.color = new Color(0.5f, 0.8f, 0.3f);
-                    EditorGUI.SelectableLabel(infoRect, "[c]");
-                    infoRect.x += infoRect.width;
-                }
+                //if (containsCommandProp.boolValue)
+                //{
+                //    GUI.color = new Color(0.5f, 0.8f, 0.3f);
+                //    EditorGUI.SelectableLabel(infoRect, "[c]");
+                //    infoRect.x += infoRect.width;
+                //}
                 if (EditorGUIUtility.isProSkin)
                 {
                     GUI.color = Color.red;

@@ -414,7 +414,7 @@ namespace NodeGraph
                 UpdateSpacerRect();
             }
 
-            Selection.activeObject = graph;
+            //Selection.activeObject = graph;
             NodeConnectionUtility.Reset();
         }
 

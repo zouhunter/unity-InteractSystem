@@ -9,7 +9,8 @@ namespace WorldActionSystem
     [System.Serializable]
     public class OptionalCommandItem
     {
-        public bool active;
+        public bool ignore;
+        public string commandName;
         public ActionCommand command;
     }
 }
