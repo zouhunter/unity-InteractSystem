@@ -22,12 +22,7 @@ namespace InteractSystem.Drawer
         protected ReorderableList autoElemnts_list;
         protected ReorderableList runtimeElements_list;
         protected ReorderableList enviroments_list;
-
-        protected const float smallButtonWidth = 20f;
-        protected const float middleButtonWidth = 45f;
-        protected const float bigButtonWidth = 60f;
-        protected const float span = 5;
-
+        
         protected GUIContent[] _selectables;
         protected GUIContent[] Selectables
         {
@@ -124,7 +119,7 @@ namespace InteractSystem.Drawer
         }
         private void DrawSwitchOptions()
         {
-            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight + span * 2f);
+            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight + ActionGUIUtil.span * 2f);
             rect = DrawBoxRect(rect,"");
             var searchRect = new Rect(rect.x, rect.y, rect.width * 0.55f, rect.height);
             ActionGUIUtil.searchWord = EditorGUI.TextField(searchRect, ActionGUIUtil.searchWord);
@@ -156,7 +151,7 @@ namespace InteractSystem.Drawer
             autoElemnts_list.elementHeightCallback = (index) =>
             {
                 var prop = autoElements_prop.GetArrayElementAtIndex(index);
-                return EditorGUI.GetPropertyHeight(prop, null, true) + span * 2;
+                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.span * 2;
             };
             autoElemnts_list.drawElementCallback = DrawAutoElementItem;
         }
@@ -179,7 +174,7 @@ namespace InteractSystem.Drawer
             var rect = GetDragRect();
             if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
             {
-                UpdateDragedGameObjects();
+                ActionGUIUtil.UpdateDragedObjects(".prefab", dragedGameObject);  
             }
             else if (Event.current.type == EventType.DragPerform && rect.Contains(Event.current.mousePosition))
             {
@@ -210,7 +205,7 @@ namespace InteractSystem.Drawer
             runtimeElements_list.elementHeightCallback = (index) =>
             {
                 var prop = runtimeElements_prop.GetArrayElementAtIndex(index);
-                return EditorGUI.GetPropertyHeight(prop, null, true) + span * 2;
+                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.span * 2;
             };
         }
 
@@ -231,7 +226,7 @@ namespace InteractSystem.Drawer
             var rect = GetDragRect();
             if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
             {
-                UpdateDragedGameObjects();
+                ActionGUIUtil.UpdateDragedObjects(".prefab", dragedGameObject);
             }
             else if (Event.current.type == EventType.DragPerform && rect.Contains(Event.current.mousePosition))
             {
@@ -264,7 +259,7 @@ namespace InteractSystem.Drawer
             enviroments_list.elementHeightCallback = (index) =>
             {
                 var prop = enviroments_prop.GetArrayElementAtIndex(index);
-                return EditorGUI.GetPropertyHeight(prop, null, true) + span * 2;
+                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.span * 2;
             };
         }
 
@@ -279,11 +274,11 @@ namespace InteractSystem.Drawer
             var prop = enviroments_prop.GetArrayElementAtIndex(index);
             EditorGUI.PropertyField(rect, prop, true);
 
-            var objRect = new Rect(rect.x + rect.width - bigButtonWidth, rect.y, bigButtonWidth, rect.height);
+            var objRect = new Rect(rect.x + rect.width - ActionGUIUtil.bigButtonWidth, rect.y, ActionGUIUtil.bigButtonWidth, rect.height);
 
             if (Event.current.type == EventType.DragUpdated && objRect.Contains(Event.current.mousePosition))
             {
-                ActionGUIUtil.UpdateDragedGameObjects(dragedGameObject);
+                ActionGUIUtil.UpdateDragedObjects(".prefab", dragedGameObject);
             }
             else if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition))
             {
@@ -310,7 +305,7 @@ namespace InteractSystem.Drawer
             var rect = GetDragRect();
             if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
             {
-                UpdateDragedGameObjects();
+                ActionGUIUtil.UpdateDragedObjects(".prefab", dragedGameObject);
             }
             else if (Event.current.type == EventType.DragPerform && rect.Contains(Event.current.mousePosition))
             {
@@ -361,23 +356,23 @@ namespace InteractSystem.Drawer
 
         private void DrawCommandHead(Rect rect)
         {
-            var btnRect = new Rect(rect.x + rect.width - middleButtonWidth - span, rect.y, middleButtonWidth, rect.height);
+            var btnRect = new Rect(rect.x + rect.width - ActionGUIUtil.middleButtonWidth - ActionGUIUtil.span, rect.y, ActionGUIUtil.middleButtonWidth, rect.height);
             if (GUI.Button(btnRect, new GUIContent("clear", "关闭全部"), EditorStyles.miniButtonRight))
             {
                 Undo.RecordObject(target, "清除commandList");
                 actionCommands_prop.ClearArray();
             }
-            btnRect.x -= middleButtonWidth + span;
+            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.span;
             if (GUI.Button(btnRect, new GUIContent("check", "资源检查"), EditorStyles.miniButton))
             {
 
             }
-            btnRect.x -= middleButtonWidth + span;
+            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.span;
             if (GUI.Button(btnRect, new GUIContent("export", "导出步骤"), EditorStyles.miniButton))
             {
 
             }
-            btnRect.x -= middleButtonWidth + span;
+            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.span;
             if (GUI.Button(btnRect, new GUIContent("import", "导入步骤"), EditorStyles.miniButton))
             {
 
@@ -391,11 +386,11 @@ namespace InteractSystem.Drawer
             var prop = actionCommands_prop.GetArrayElementAtIndex(index);
             if (prop.isExpanded)
             {
-                return 2 * EditorGUIUtility.singleLineHeight + 2 * span;
+                return 2 * EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.span;
             }
             else
             {
-                return EditorGUIUtility.singleLineHeight + 2 * span;
+                return EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.span;
             }
         }
 
@@ -413,7 +408,7 @@ namespace InteractSystem.Drawer
                 commandNameProp.stringValue = (commandProp.objectReferenceValue as ActionCommand).StepName;
             }
 
-            var btnRect = new Rect(rect.x, rect.y, rect.width - middleButtonWidth - smallButtonWidth, EditorGUIUtility.singleLineHeight);
+            var btnRect = new Rect(rect.x, rect.y, rect.width - ActionGUIUtil.middleButtonWidth - ActionGUIUtil.smallButtonWidth, EditorGUIUtility.singleLineHeight);
             GUI.contentColor = ignoreProp.boolValue ? ActionGUIUtil. IgnoreColor : ActionGUIUtil. NormalColor;
             if (!string.IsNullOrEmpty(ActionGUIUtil.searchWord)) GUI.contentColor = commandNameProp.stringValue.ToLower().Contains(ActionGUIUtil.searchWord.ToLower()) ? ActionGUIUtil.MatchColor : GUI.contentColor;
             if (GUI.Button(btnRect, commandNameProp.stringValue, EditorStyles.toolbarDropDown))
@@ -422,13 +417,13 @@ namespace InteractSystem.Drawer
             }
             GUI.contentColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
 
-            var openGraphRect = new Rect(btnRect.x + btnRect.width + 5, btnRect.y , smallButtonWidth, btnRect.height);
+            var openGraphRect = new Rect(btnRect.x + btnRect.width + 5, btnRect.y , ActionGUIUtil.smallButtonWidth, btnRect.height);
             if (GUI.Button(openGraphRect, "o", EditorStyles.miniButtonRight) && commandProp.objectReferenceValue != null)
             {
                 NodeGraph.NodeGraphWindow.OnOpenAsset(commandProp.objectReferenceInstanceIDValue, 0);
             }
 
-            var objRect = new Rect(rect.x + rect.width - smallButtonWidth - 10, rect.y + 2, smallButtonWidth, EditorGUIUtility.singleLineHeight);
+            var objRect = new Rect(rect.x + rect.width - ActionGUIUtil.smallButtonWidth - 10, rect.y + 2, ActionGUIUtil.smallButtonWidth, EditorGUIUtility.singleLineHeight);
             if (commandProp.objectReferenceValue == null)
             {
                 commandProp.objectReferenceValue = EditorGUI.ObjectField(objRect, commandProp.objectReferenceValue, typeof(ActionCommand), false);
@@ -442,7 +437,7 @@ namespace InteractSystem.Drawer
 
                 if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
                 {
-                    UpdateDragedCommands();
+                    ActionGUIUtil.UpdateDragedObjects(".asset", dragedCommands);
                 }
 
                 if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition))
@@ -467,50 +462,13 @@ namespace InteractSystem.Drawer
             }
         }
 
-        private void UpdateDragedCommands()
-        {
-            dragedCommands.Clear();
-            foreach (var item in DragAndDrop.objectReferences)
-            {
-                if (item is ActionCommand)
-                {
-                    dragedCommands.Add(item as ActionCommand);
-                }
-                else if (ProjectWindowUtil.IsFolder(item.GetInstanceID()))
-                {
-                    var folder = AssetDatabase.GetAssetPath(item);
-                    SearchDeep(folder, ".asset", dragedCommands);
-                }
-            }
-            DragAndDrop.visualMode = dragedCommands.Count > 0 ? DragAndDropVisualMode.Move : DragAndDropVisualMode.Rejected;
-        }
-
-        private static void SearchDeep<T>(string folder, string address, List<T> list) where T : UnityEngine.Object
-        {
-            var files = System.IO.Directory.GetFiles(folder, "*" + address, System.IO.SearchOption.AllDirectories);
-            foreach (var filePath in files)
-            {
-                var root = System.IO.Path.GetPathRoot(filePath);
-
-                if (filePath.EndsWith(address))
-                {
-                    var path = filePath.Substring(root.Length);
-                    var asset = AssetDatabase.LoadAssetAtPath<T>(path);
-                    if (asset != null)
-                    {
-                        list.Add(asset);
-                    }
-                }
-            }
-        }
-
         private void DrawCommandList()
         {
             commands_list.DoLayoutList();
             var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight);
             if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
             {
-                UpdateDragedCommands();
+                ActionGUIUtil.UpdateDragedObjects(".asset", dragedCommands);
             }
             else if (Event.current.type == EventType.DragPerform && rect.Contains(Event.current.mousePosition))
             {
@@ -561,35 +519,34 @@ namespace InteractSystem.Drawer
 
         private Rect DrawBoxRect(Rect orignalRect,string index)
         {
-            var idRect = new Rect(orignalRect.x -span, orignalRect.y + span, 20, 20);
+            var idRect = new Rect(orignalRect.x - ActionGUIUtil.span, orignalRect.y + ActionGUIUtil.span, 20, 20);
             EditorGUI.LabelField(idRect, index.ToString());
-            var boxRect = PaddingRect(orignalRect, span * 0.5f);
+            var boxRect = PaddingRect(orignalRect, ActionGUIUtil.span * 0.5f);
             GUI.Box(boxRect, "");
             var rect = PaddingRect(orignalRect);
             return rect;
         }
 
-        private void UpdateDragedGameObjects()
-        {
-            dragedGameObject.Clear();
-            foreach (var item in DragAndDrop.objectReferences)
-            {
-                if (item is GameObject)
-                {
-                    dragedGameObject.Add(item as GameObject);
-                }
-                else if (ProjectWindowUtil.IsFolder(item.GetInstanceID()))
-                {
-                    var folder = AssetDatabase.GetAssetPath(item);
-                    SearchDeep(folder, ".prefab", dragedGameObject);
-                }
-            }
-            DragAndDrop.visualMode = dragedGameObject.Count > 0 ? DragAndDropVisualMode.Move : DragAndDropVisualMode.Rejected;
-        }
+        //private void UpdateDragedGameObjects()
+        //{
+        //    dragedGameObject.Clear();
+        //    foreach (var item in DragAndDrop.objectReferences)
+        //    {
+        //        if (item is GameObject)
+        //        {
+        //            dragedGameObject.Add(item as GameObject);
+        //        }
+        //        else if (ProjectWindowUtil.IsFolder(item.GetInstanceID()))
+        //        {
+        //            var folder = AssetDatabase.GetAssetPath(item);
+        //            SearchDeep(folder, ".prefab", dragedGameObject);
+        //        }
+        //    }
+        //    DragAndDrop.visualMode = dragedGameObject.Count > 0 ? DragAndDropVisualMode.Move : DragAndDropVisualMode.Rejected;
+        //}
 
-        private Rect PaddingRect(Rect orignalRect, float padding = span)
+        private Rect PaddingRect(Rect orignalRect, float padding = ActionGUIUtil.span)
         {
-
             var rect = new Rect(orignalRect.x + padding, orignalRect.y + padding, orignalRect.width - padding * 2, orignalRect.height - padding * 2);
             return rect;
         }

@@ -212,32 +212,6 @@ namespace InteractSystem.Structure
             }
         }
 
-        private string GetCameraID(OperateNode obj)
-        {
-            //忽略匹配相机
-            if (Config.quickMoveElement)
-            {
-                return null;
-            }
-            //除要求使用特殊相机或是动画步骤,都用主摄像机
-            else if (Config.useOperateCamera)
-            {
-                if (string.IsNullOrEmpty(obj.CameraID))
-                {
-                    return Cmd.CameraID;
-                }
-                else
-                {
-                    return obj.CameraID;
-                }
-            }
-            //默认是主相机
-            else
-            {
-                return CameraController.defultID;
-            }
-        }
-
         private void StopUpdateAction(bool force)
         {
             if (cameraCtrl != null)

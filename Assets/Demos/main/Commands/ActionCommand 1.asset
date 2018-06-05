@@ -72,7 +72,7 @@ MonoBehaviour:
     m_connection: {fileID: 114692948141289052}
   m_lastModified: 131725981931900851
   m_graphDescription: 
-  m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
+  m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: command02
   _cameraID: defult
   commandBindings: []
@@ -80,49 +80,23 @@ MonoBehaviour:
   - originalState: 1
     startState: 1
     completeState: 0
-    matrix:
-      e00: 1
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
     enviromentName: anim0
     ignore: 0
   - originalState: 1
     startState: 1
     completeState: 0
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
     enviromentName: anim1s
     ignore: 0
-  hooks:
-  - {fileID: 11400000, guid: de891da769f71b1449eb9a9ac10e2248, type: 2}
+  startHooks: []
+  completeHooks: []
 --- !u!114 &114308434188825626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -154,45 +128,19 @@ MonoBehaviour:
   - originalState: 0
     startState: 1
     completeState: 1
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
     enviromentName: anim1s
     ignore: 0
   - originalState: 0
     startState: 1
     completeState: 1
-    matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
     enviromentName: clickItems
     ignore: 0
   clickList:

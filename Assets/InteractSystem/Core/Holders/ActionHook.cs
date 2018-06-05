@@ -47,9 +47,7 @@ namespace InteractSystem
                 CoreStartExecute();
             }
         }
-
         protected virtual void CoreStartExecute() { }
-
         public virtual void OnEndExecute(bool force)
         {
             if (status != ExecuteStatu.Completed)

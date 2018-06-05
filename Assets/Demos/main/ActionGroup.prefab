@@ -52,17 +52,25 @@ MonoBehaviour:
   m_Name: ActionGroup
   m_EditorClassIdentifier: 
   actionCommands:
-  - active: 1
+  - ignore: 0
+    commandName: command01
     command: {fileID: 11400000, guid: 2c5821bbd042d4d4697489794f29c6b0, type: 2}
   runTimeElements: []
-  autoElements: []
+  autoElements:
+  - instanceID: 0
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
+    prefab: {fileID: 1807419935861784, guid: 9ce4f5711f5969143805abbb0bf14113, type: 2}
+    ignore: 0
   enviroments:
   - instanceID: 0
-    _name: 
+    _name: anim0
     prefab: {fileID: 1076837334744952, guid: cbe03a4b827631240b0eaf290e1f1f3e, type: 2}
   - instanceID: 0
-    _name: 
+    _name: anim1s
     prefab: {fileID: 1476260358816580, guid: dee1bb32799ac234ab7a8c81dcf970dd, type: 2}
   - instanceID: 0
-    _name: 
+    _name: clickItems
     prefab: {fileID: 1874721690729464, guid: b27ec635c42e9a84c951cbb21044881f, type: 2}

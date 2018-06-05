@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Name: ActionGroup
   m_EditorClassIdentifier: 
   actionCommands:
-  - active: 1
+  - ignore: 0
+    commandName: command01
     command: {fileID: 11400000, guid: 2c5821bbd042d4d4697489794f29c6b0, type: 2}
   runTimeElements: []
+  autoElements: []
+  enviroments: []

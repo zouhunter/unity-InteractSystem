@@ -29,13 +29,7 @@ namespace InteractSystem.Graph
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
 
-        [SerializeField, Attributes.DefultCameraAttribute()]
-        private string _cameraID;
-        public string CameraID { get { return _cameraID; } }
         public UnityAction onEndExecute { get; set; }
-        public ActionHook[] Hooks { get { return hooks; } }
-        public ActionGroup system { get { return _system; } set { _system = value; } }
-        public OperateNode[] StartedList { get { return startedList.ToArray(); } }
         public abstract ControllerType CtrlType { get; }
         public static bool log = false;
 
@@ -43,7 +37,8 @@ namespace InteractSystem.Graph
         protected string _name;
         protected bool auto;
 
-        private Hooks.HookCtroller hookCtrl;
+        private Hooks.HookCtroller startHookCtrl;
+        private Hooks.HookCtroller completeHookCtrl;
         private Binding.ActionBindingCtrl bindingCtrl;
         private Enviroment.EnviromentCtrl enviromentCtrl {
             get {
@@ -53,7 +48,9 @@ namespace InteractSystem.Graph
         private ActionGroup _system;
         protected static List<OperateNode> startedList = new List<OperateNode>();
         [SerializeField]
-        private ActionHook[] hooks;//外部结束钩子
+        private ActionHook[] startHooks;//外部结束钩子
+        [SerializeField]
+        private ActionHook[] completeHooks;//外部结束钩子
         [SerializeField]
         private Binding.ActionBinding[] bindings;
         [SerializeField]
@@ -78,10 +75,12 @@ namespace InteractSystem.Graph
         }
         private void InitHookCtrl()
         {
-            hookCtrl = new InteractSystem.Hooks.HookCtroller(hooks);
-            hookCtrl.onEndExecute += OnHookComplete;
+            startHookCtrl = new Hooks.HookCtroller(startHooks);
+            startHookCtrl.onEndExecute += OnStartExecuteInternal;
+            completeHookCtrl = new InteractSystem.Hooks.HookCtroller(completeHooks);
+            completeHookCtrl.onEndExecute += OnCompleteHooksEnd;
         }
-
+        
         public override void Initialize(NodeData data)
         {
             base.Initialize(data);
@@ -102,7 +101,14 @@ namespace InteractSystem.Graph
             if (statu == ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.Executing;
-                OnStartExecuteInternal(auto);
+                if (startHookCtrl.Statu == ExecuteStatu.Completed)
+                {
+                    OnStartExecuteInternal();
+                }
+                else
+                {
+                    startHookCtrl.OnStartExecute(auto);
+                }
             }
             else
             {
@@ -118,23 +124,23 @@ namespace InteractSystem.Graph
                 if (force)
                 {
                     statu = ExecuteStatu.Completed;
-                    if (hookCtrl.Statu != ExecuteStatu.Completed)
+                    if (completeHookCtrl.Statu != ExecuteStatu.Completed)
                     {
-                        hookCtrl.OnEndExecute();
+                        completeHookCtrl.OnEndExecute();
                     }
                     CoreEndExecute();
                 }
                 else
                 {
-                    if (hookCtrl.Statu == ExecuteStatu.Completed)
+                    if (completeHookCtrl.Statu == ExecuteStatu.Completed)
                     {
                         statu = ExecuteStatu.Completed;
                         CoreEndExecute();
                         TryCallBack();
                     }
-                    else if (hookCtrl.Statu == ExecuteStatu.UnStarted)
+                    else if (completeHookCtrl.Statu == ExecuteStatu.UnStarted)
                     {
-                        hookCtrl.OnStartExecute(auto);
+                        completeHookCtrl.OnStartExecute(auto);
                     }
                     else
                     {
@@ -145,7 +151,7 @@ namespace InteractSystem.Graph
 
         }
 
-        private void OnHookComplete()
+        private void OnCompleteHooksEnd()
         {
             if (Statu != ExecuteStatu.Completed)
             {
@@ -174,10 +180,14 @@ namespace InteractSystem.Graph
             if (statu != ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.UnStarted;
-                if (hookCtrl.Statu != ExecuteStatu.UnStarted){
-                    hookCtrl.OnUnDoExecute();
+                if (completeHookCtrl.Statu != ExecuteStatu.UnStarted){
+                    completeHookCtrl.OnUnDoExecute();
                 }
                 OnUnDoExecuteInternal();
+
+                if (startHookCtrl.Statu != ExecuteStatu.UnStarted){
+                    startHookCtrl.OnUnDoExecute();
+                }
             }
             else
             {
@@ -186,7 +196,7 @@ namespace InteractSystem.Graph
 
         }
 
-        protected virtual void OnStartExecuteInternal(bool auto)
+        protected virtual void OnStartExecuteInternal()
         {
             enviromentCtrl.StartState(environments);
             bindingCtrl.OnBeforeActionsStart(this,auto);

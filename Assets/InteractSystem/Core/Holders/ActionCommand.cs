@@ -12,20 +12,16 @@ namespace InteractSystem
         //步骤名
         [SerializeField, Attributes.DefultName]
         private string _stepName;
-        //相机ID
-        [SerializeField,Attributes.DefultCamera]
-        private string _cameraID = CameraController.defultID;
-        //功能绑定
-        [SerializeField]
+        [SerializeField]//功能绑定
         protected Binding.CommandBinding[] commandBindings;
-        //环境对象
-        [SerializeField]
+        [SerializeField]//环境对象
         private Enviroment.EnviromentInfo[] environments;
-        [SerializeField]
-        private ActionHook[] hooks;
+        [SerializeField]//开始等待
+        private ActionHook[] startHooks;
+        [SerializeField]//结束等待
+        private ActionHook[] completeHooks;
 
         protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
-        public string CameraID { get { return _cameraID; } }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
         public ExecuteStatu Statu { get { return statu; } }
         private Events.OperateErrorAction userErr { get; set; }
@@ -38,7 +34,8 @@ namespace InteractSystem
         //步骤控制器
         public Structure.ActionStateMechine objectCtrl { get; private set; }
         //hook控制器
-        protected Hooks.HookCtroller hookCtrl;
+        protected Hooks.HookCtroller startHookCtrl;
+        protected Hooks.HookCtroller completeHookCtrl;
         protected Binding.CommandBingCtrl commandBindingCtrl;
         protected Enviroment.EnviromentCtrl enviromentCtrl { get { return Context.enviromentCtrl; } }
         protected bool forceAuto;
@@ -66,8 +63,10 @@ namespace InteractSystem
 
         private void InitHookCtrl()
         {
-            hookCtrl = new InteractSystem.Hooks.HookCtroller(hooks);
-            hookCtrl.onEndExecute += OnHookComplete;
+            startHookCtrl = new Hooks.HookCtroller(startHooks);
+            startHookCtrl.onEndExecute += StartExecuteInternal;
+            completeHookCtrl = new InteractSystem.Hooks.HookCtroller(completeHooks);
+            completeHookCtrl.onEndExecute += OnCompleteHookEnd;
         }
 
         public void SetContext(ActionGroup group)
@@ -82,6 +81,7 @@ namespace InteractSystem
         {
             this.userErr = userErr;
         }
+
         public void RegistComplete(UnityAction<string> stepComplete)
         {
             this.stepComplete = stepComplete;
@@ -101,9 +101,15 @@ namespace InteractSystem
             if (statu == ExecuteStatu.UnStarted)
             {
                 statu = ExecuteStatu.Executing;
-                OnBeforeActionsStart();
-                actionCtrl.SetContext(this);
-                actionCtrl.OnStartExecute(forceAuto);
+                if (startHookCtrl.Statu == ExecuteStatu.Completed)
+                {
+                    OnBeforeActionsStart();
+                    StartExecuteInternal();
+                }
+                else
+                {
+                    startHookCtrl.OnStartExecute(forceAuto);
+                }
                 return true;
             }
             else
@@ -113,7 +119,13 @@ namespace InteractSystem
             }
         }
 
-        private void OnHookComplete()
+        private void StartExecuteInternal()
+        {
+            actionCtrl.SetContext(this);
+            actionCtrl.OnStartExecute(forceAuto);
+        }
+
+        private void OnCompleteHookEnd()
         {
             if(statu != ExecuteStatu.Completed)
             {
@@ -134,10 +146,15 @@ namespace InteractSystem
             {
                 statu = ExecuteStatu.Completed;
 
+                if(startHookCtrl.Statu != ExecuteStatu.Completed)
+                {
+                    startHookCtrl.OnEndExecute();
+                }
+
                 CoreEndExecute();
 
-                if (hookCtrl.Statu != ExecuteStatu.Completed) {
-                    hookCtrl.OnEndExecute();
+                if (completeHookCtrl.Statu != ExecuteStatu.Completed) {
+                    completeHookCtrl.OnEndExecute();
                 }
             }
             else
@@ -150,14 +167,14 @@ namespace InteractSystem
             Debug.Log("OnEndExecute", this);
             if (statu != ExecuteStatu.Completed)
             {
-                if (hookCtrl.Statu == ExecuteStatu.Completed)
+                if (completeHookCtrl.Statu == ExecuteStatu.Completed)
                 {
                     statu = ExecuteStatu.Completed;
                     CoreEndExecute();
                 }
-                else if (hookCtrl.Statu == ExecuteStatu.UnStarted)
+                else if (completeHookCtrl.Statu == ExecuteStatu.UnStarted)
                 {
-                    hookCtrl.OnStartExecute(forceAuto);
+                    completeHookCtrl.OnStartExecute(forceAuto);
                 }
                 else
                 {
@@ -187,16 +204,23 @@ namespace InteractSystem
             Debug.Log("UnDoExecute:"+this);
             statu = ExecuteStatu.UnStarted;
 
-            if (hookCtrl.Statu != ExecuteStatu.UnStarted){
-                hookCtrl.OnUnDoExecute();
+            if (completeHookCtrl.Statu != ExecuteStatu.UnStarted){
+                completeHookCtrl.OnUnDoExecute();
             }
 
             OnBeforeActionsUnDo();
             actionCtrl.OnUnDoExecute();
+
+            if(startHookCtrl.Statu != ExecuteStatu.UnStarted)
+            {
+                startHookCtrl.OnUnDoExecute();
+            }
+
             if (enviromentCtrl != null){
                 enviromentCtrl.OrignalState(environments);
             }
         }
+
         private void OnBeforeActionsStart()
         {
             if(enviromentCtrl != null){
