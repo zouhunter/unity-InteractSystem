@@ -219,7 +219,7 @@ namespace WorldActionSystem
             return element;
         }
 
-        internal void RemoveRunTimeElements(List<RunTimePrefabItem> elements)
+        internal void RemoveRunTimeElements(IList<RunTimePrefabItem> elements)
         {
             foreach (var item in elements)
             {
@@ -232,7 +232,7 @@ namespace WorldActionSystem
             }
         }
 
-        internal void RegistRunTimeElements(List<RunTimePrefabItem> elements)
+        internal void RegistRunTimeElements(IList<RunTimePrefabItem> elements)
         {
             foreach (var item in elements)
             {

@@ -16,7 +16,7 @@ namespace WorldActionSystem.Structure
         private static List<KeyValuePair<ExecuteUnit, int>> copyDic = new List<KeyValuePair<ExecuteUnit, int>>();
         private static Dictionary<ExecuteUnit, List<ExecuteUnit>> enviroment = new Dictionary<ExecuteUnit, List<ExecuteUnit>>();
 
-        public static ExecuteUnit AnalysisGraph(NodeGraphObj graphObj)
+        public static ExecuteUnit AnalysisGraph(ActionCommand graphObj)
         {
             if (log) Debug.Log("AnalysisGraph...");
             return DeepCopy(CreateOriginalUnit(graphObj));
@@ -49,8 +49,10 @@ namespace WorldActionSystem.Structure
         }
         public static ExecuteUnit MakeCopy(ExecuteUnit original, List<ExecuteUnit> enviroment)
         {
-            var unit = CreateOringalUnit(ScriptableObject.Instantiate(original.node), enviroment);
-            Debug.Log("MakeCopy:"+ unit);
+            var node = ScriptableObject.Instantiate(original.node) as Graph.ActionNode;
+            (node as Graph.ActionNode).SetContext(original.node.Context);//设置上下文
+            var unit = CreateOringalUnit(node, enviroment);
+            if(log) Debug.Log("MakeCopy:"+ unit);
 
             for (int i = 0; i < original.childUnits.Count; i++)
             {
@@ -77,20 +79,20 @@ namespace WorldActionSystem.Structure
         }
 
 
-        private static ExecuteUnit CreateCopyExecuteUnit(ExecuteUnit unit, int count)
-        {
-            var copyUnit = new ExecuteUnit(ScriptableObject.Instantiate(unit.node));
-            for (int i = 0; i < unit.parentUnits.Count; i++)
-            {
-                var parent = unit.parentUnits[i];
-                var orignalList = parent.GetPositon(unit);
-                orignalList.Add(copyUnit);
-                copyUnit.AddParentUnit(unit.parentUnits[i]);
-            }
-            return copyUnit;
-        }
+        //private static ExecuteUnit CreateCopyExecuteUnit(ExecuteUnit unit, int count)
+        //{
+        //    var copyUnit = new ExecuteUnit(ScriptableObject.Instantiate(unit.node));
+        //    for (int i = 0; i < unit.parentUnits.Count; i++)
+        //    {
+        //        var parent = unit.parentUnits[i];
+        //        var orignalList = parent.GetPositon(unit);
+        //        orignalList.Add(copyUnit);
+        //        copyUnit.AddParentUnit(unit.parentUnits[i]);
+        //    }
+        //    return copyUnit;
+        //}
 
-        private static ExecuteUnit CreateOriginalUnit(NodeGraphObj graphObj)
+        private static ExecuteUnit CreateOriginalUnit(ActionCommand graphObj)
         {
             if (graphObj == null || graphObj.Nodes == null) return null;
             NodeData startNodeData = graphObj.Nodes.Where(node => node.Object is Graph.StartNode).FirstOrDefault();
@@ -103,7 +105,7 @@ namespace WorldActionSystem.Structure
             return executeUnit;
         }
 
-        private static void RetiveChildNode(NodeGraphObj graphObj, NodeData parentNode, ExecuteUnit unit)
+        private static void RetiveChildNode(ActionCommand graphObj, NodeData parentNode, ExecuteUnit unit)
         {
             //按连接点分组
             var connectionGroup = graphObj.Connections.Where(connection => connection.FromNodeId == parentNode.Id).GroupBy(
@@ -124,6 +126,7 @@ namespace WorldActionSystem.Structure
                 {
                     var copyCount = (connection.Object as Graph.ActionConnection).copyCount;
                     var node = graphObj.Nodes.Find(x => x.Id == connection.ToNodeId);
+                    (node.Object as Graph.ActionNode).SetContext(graphObj);//设置上下文
                     var childUnit = CreateOringalUnit(node.Object as Graph.ActionNode, orignalUnits);
                     RetiveChildNode(graphObj, node, childUnit);
                     childNodes.Add(childUnit);

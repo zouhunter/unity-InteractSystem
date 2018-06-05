@@ -10,16 +10,23 @@ using System.Linq;
 namespace WorldActionSystem
 {
     [AddComponentMenu(MenuName.ActionGroup)]
-    public class ActionGroup : ScriptableObject
+    public class ActionGroup : MonoBehaviour
     {
         [SerializeField]//步骤控制
-        protected List<OptionalCommandItem> actionCommands = new List<OptionalCommandItem>();
+        protected OptionalCommandItem[] actionCommands;
+        [SerializeField]//用户创建元素
+        protected RunTimePrefabItem[] runTimeElements;
+        [SerializeField]//自动创建元素
+        protected AutoPrefabItem[] autoElements;
+        [SerializeField]//环境元素
+        protected Enviroment.EnviromentItem[] enviroments;
       
         #region Propertys
         public List<ActionCommand> activeCommands { get; private set; }
         public ICommandController RemoteController { get; private set; }
         public EventController EventCtrl { get; private set; }
         public EventTransfer EventTransfer { get; private set; }
+        public Enviroment.EnviromentCtrl enviromentCtrl { get; private set; }
         #endregion
 
         #region UnityFunctions
@@ -30,25 +37,22 @@ namespace WorldActionSystem
 
         private void OnEnable()
         {
+            InitEnviromentCtrl();
             InitActionCommands();
             ActionSystem.RegistGroup(this);
+            ElementController.Instence.RegistRunTimeElements(runTimeElements);
         }
 
-        private void InitActionCommands()
+        private void InitEnviromentCtrl()
         {
-            activeCommands = actionCommands.Where(x => x.active).Select(x => x.command).ToList();
-            foreach (var command in activeCommands)
-            {
-                command.SetContext(this);
-                command.RegistAsOperate(EventTransfer.OnUserError);
-                command.RegistComplete(EventTransfer.OnStepComplete);
-                command.RegistCommandChanged(EventTransfer.OnCommandExectute);
-            }
+            enviromentCtrl = new Enviroment.EnviromentCtrl(enviroments);
+            enviromentCtrl.SetContext(this);
         }
 
         private void OnDestroy()
         {
             ActionSystem.RemoveGroup(this);
+            ElementController.Instence.RemoveRunTimeElements(runTimeElements);
         }
         #endregion
 
@@ -87,6 +91,17 @@ namespace WorldActionSystem
         #endregion
 
         #region private Funtions
+        private void InitActionCommands()
+        {
+            activeCommands = actionCommands.Where(x => x.active).Select(x => x.command).ToList();
+            foreach (var command in activeCommands)
+            {
+                command.SetContext(this);
+                command.RegistAsOperate(EventTransfer.OnUserError);
+                command.RegistComplete(EventTransfer.OnStepComplete);
+                command.RegistCommandChanged(EventTransfer.OnCommandExectute);
+            }
+        }
 
         private static List<ActionCommand> WorpCommandList(List<ActionCommand> commandList, string[] steps)
         {

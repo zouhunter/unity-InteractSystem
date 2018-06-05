@@ -212,16 +212,21 @@ namespace WorldActionSystem
     {
         public GameObject panel;
         public ActionGroup groupPrefab;
-        private ActionGroup group { get { return groupPrefab; } }
+        private ActionGroup group;
         ICommandController remoteController { get { return group.RemoteController; } }
         public string[] steps;
 
         void Start()
         {
             panel.SetActive(false);
+            group = Instantiate(groupPrefab);
             group.LunchActionSystem(steps, out steps);
             group.EventTransfer.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
             panel.SetActive(true);
+        }
+        private void OnDestroy()
+        {
+            if (group) Destroy(group);
         }
     }
 

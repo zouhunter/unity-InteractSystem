@@ -77,8 +77,30 @@ MonoBehaviour:
   _cameraID: defult
   commandBindings: []
   environments:
-  - originalState: 0
-    startState: 0
+  - originalState: 1
+    startState: 1
+    completeState: 0
+    matrix:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentName: anim0
+    ignore: 0
+  - originalState: 1
+    startState: 1
     completeState: 0
     matrix:
       e00: 0
@@ -97,7 +119,7 @@ MonoBehaviour:
       e31: 0
       e32: 0
       e33: 0
-    enviromentObj: {fileID: 11400000, guid: 944ff398f56694142ae25755c33038a1, type: 2}
+    enviromentName: anim1s
     ignore: 0
   hooks:
   - {fileID: 11400000, guid: de891da769f71b1449eb9a9ac10e2248, type: 2}
@@ -128,7 +150,51 @@ MonoBehaviour:
   hooks:
   - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
   bindings: []
-  environments: []
+  environments:
+  - originalState: 0
+    startState: 1
+    completeState: 1
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentName: anim1s
+    ignore: 0
+  - originalState: 0
+    startState: 1
+    completeState: 1
+    matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    enviromentName: clickItems
+    ignore: 0
   clickList:
   - click01
 --- !u!114 &114692948141289052

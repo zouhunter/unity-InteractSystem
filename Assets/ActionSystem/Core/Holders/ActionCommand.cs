@@ -20,7 +20,7 @@ namespace WorldActionSystem
         protected Binding.CommandBinding[] commandBindings;
         //环境对象
         [SerializeField]
-        private Enviroment.EnviromentItem[] environments;
+        private Enviroment.EnviromentInfo[] environments;
         [SerializeField]
         private ActionHook[] hooks;
 
@@ -40,24 +40,14 @@ namespace WorldActionSystem
         //hook控制器
         protected Hooks.HookCtroller hookCtrl;
         protected Binding.CommandBingCtrl commandBindingCtrl;
-        protected Enviroment.EnviromentCtrl enviromentCtrl;
+        protected Enviroment.EnviromentCtrl enviromentCtrl { get { return Context.enviromentCtrl; } }
         protected bool forceAuto;
 
         protected virtual void OnEnable()
         {
             statu = ExecuteStatu.UnStarted;
-            InitOperateCtrl();
             InitHookCtrl();
             InitBindgCtrl();
-            InitEnviromentCtrl();
-        }
-
-        private void InitEnviromentCtrl()
-        {
-            if(environments != null && environments.Length > 0)
-            {
-                enviromentCtrl = new Enviroment.EnviromentCtrl(environments);
-            }
         }
 
         private void InitOperateCtrl()
@@ -82,8 +72,10 @@ namespace WorldActionSystem
 
         public void SetContext(ActionGroup group)
         {
-            this.Context = group;
             //重置当前command的信息
+            this.Context = group;
+            InitOperateCtrl();
+            enviromentCtrl.OrignalState(environments);
         }
 
         public void RegistAsOperate(Events.OperateErrorAction userErr)
@@ -202,13 +194,13 @@ namespace WorldActionSystem
             OnBeforeActionsUnDo();
             actionCtrl.OnUnDoExecute();
             if (enviromentCtrl != null){
-                enviromentCtrl.OrignalState();
+                enviromentCtrl.OrignalState(environments);
             }
         }
         private void OnBeforeActionsStart()
         {
             if(enviromentCtrl != null){
-                enviromentCtrl.StartState();
+                enviromentCtrl.StartState(environments);
             }
             if (commandBindingCtrl != null)
                 commandBindingCtrl.OnBeforeActionsStart(this);
@@ -224,7 +216,7 @@ namespace WorldActionSystem
                 commandBindingCtrl.OnBeforeActionsPlayEnd(this);
 
             if (enviromentCtrl != null){
-                enviromentCtrl.CompleteState();
+                enviromentCtrl.CompleteState(environments);
             }
         }
     }

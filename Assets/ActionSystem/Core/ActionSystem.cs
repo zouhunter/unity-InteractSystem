@@ -34,8 +34,9 @@ namespace WorldActionSystem
 
         public static void RegistGroup(ActionGroup group)
         {
-            if(actionGroup.Contains(group))
+            if(!actionGroup.Contains(group))
             {
+                group.transform.SetParent(Instence.transform);
                 actionGroup.Add(group);
             }
         }

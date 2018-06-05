@@ -45,7 +45,11 @@ namespace WorldActionSystem.Graph
 
         private Hooks.HookCtroller hookCtrl;
         private Binding.ActionBindingCtrl bindingCtrl;
-        private Enviroment.EnviromentCtrl enviromentCtrl;
+        private Enviroment.EnviromentCtrl enviromentCtrl {
+            get {
+                return Context.Context.enviromentCtrl;
+            }
+        }
         private ActionGroup _system;
         protected static List<OperateNode> startedList = new List<OperateNode>();
         [SerializeField]
@@ -53,7 +57,7 @@ namespace WorldActionSystem.Graph
         [SerializeField]
         private Binding.ActionBinding[] bindings;
         [SerializeField]
-        private Enviroment.EnviromentItem[] environments;
+        private Enviroment.EnviromentInfo[] environments;
 
         protected override void OnEnable()
         {
@@ -61,12 +65,11 @@ namespace WorldActionSystem.Graph
             statu = ExecuteStatu.UnStarted;
             InitHookCtrl();
             InitBindingCtrl();
-            InitEnviromentCtrl();
         }
-
-        private void InitEnviromentCtrl()
+        public override void SetContext(ActionCommand command)
         {
-            enviromentCtrl = new Enviroment.EnviromentCtrl(environments);
+            base.SetContext(command);
+            enviromentCtrl.OrignalState(environments);
         }
 
         private void InitBindingCtrl()
@@ -153,7 +156,7 @@ namespace WorldActionSystem.Graph
         }
         private void CoreEndExecute()
         {
-            enviromentCtrl.CompleteState();
+            enviromentCtrl.CompleteState(environments);
         }
         private void TryCallBack()
         {
@@ -185,7 +188,7 @@ namespace WorldActionSystem.Graph
 
         protected virtual void OnStartExecuteInternal(bool auto)
         {
-            enviromentCtrl.StartState();
+            enviromentCtrl.StartState(environments);
             bindingCtrl.OnBeforeActionsStart(this,auto);
             if (!startedList.Contains(this))
             {
@@ -203,7 +206,7 @@ namespace WorldActionSystem.Graph
         }
         protected virtual void OnUnDoExecuteInternal()
         {
-            enviromentCtrl.OrignalState();
+            enviromentCtrl.OrignalState(environments);
             bindingCtrl.OnBeforeActionsUnDo(this);
             if (startedList.Contains(this))
             {
