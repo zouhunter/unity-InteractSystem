@@ -12,13 +12,13 @@ namespace WorldActionSystem
     [AddComponentMenu(MenuName.ActionGroup)]
     public class ActionGroup : MonoBehaviour
     {
-        [SerializeField, HideInInspector]//步骤控制
+        [SerializeField]//步骤控制
         protected OptionalCommandItem[] actionCommands;
-        [SerializeField, HideInInspector]//用户创建元素
+        [SerializeField]//用户创建元素
         protected RunTimePrefabItem[] runTimeElements;
-        [SerializeField, HideInInspector]//自动创建元素
+        [SerializeField]//自动创建元素
         protected AutoPrefabItem[] autoElements;
-        [SerializeField, HideInInspector]//环境元素
+        [SerializeField]//环境元素
         protected Enviroment.EnviromentItem[] enviroments;
       
         #region Propertys

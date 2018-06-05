@@ -5,18 +5,19 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-namespace WorldActionSystem
+namespace WorldActionSystem.Drawer
 {
     [CustomPropertyDrawer(typeof(AutoPrefabItem), true)]
     public class AutoPrefabItemDrawer : PropertyDrawer
     {
-        protected SerializedProperty matrixProp;
+        protected SerializedProperty coordinateProp;
         protected SerializedProperty instanceIDProp;
         protected SerializedProperty prefabProp;
         protected SerializedProperty ignoreProp;
+
         protected void FindCommonPropertys(SerializedProperty property)
         {
-            matrixProp = property.FindPropertyRelative("matrix");
+            coordinateProp = property.FindPropertyRelative("coordinate");
             instanceIDProp = property.FindPropertyRelative("instanceID");
             ignoreProp = property.FindPropertyRelative("ignore");
         }
@@ -25,36 +26,51 @@ namespace WorldActionSystem
         {
             FindCommonPropertys(property);
             prefabProp = property.FindPropertyRelative("prefab");
-            return (property.isExpanded ? 2:1)* EditorGUIUtility.singleLineHeight;
+            return (property.isExpanded ? 2 : 1) * EditorGUIUtility.singleLineHeight;
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             FindCommonPropertys(property);
             prefabProp = property.FindPropertyRelative("prefab");
 
-            if (prefabProp.objectReferenceValue != null){
+            if (instanceIDProp.intValue != 0 && EditorUtility.InstanceIDToObject(instanceIDProp.intValue) == null)
+            {
+                instanceIDProp.intValue = 0;
+            }
+            if (prefabProp.objectReferenceValue != null)
+            {
                 label = new GUIContent(prefabProp.objectReferenceValue.name);
             }
+
+            property.isExpanded = instanceIDProp.intValue != 0;
+
             var rect = new Rect(position.x, position.y, position.width * 0.9f, EditorGUIUtility.singleLineHeight);
             var str = prefabProp.objectReferenceValue == null ? "" : prefabProp.objectReferenceValue.name;
-            GUI.contentColor = Color.cyan;
+
+            GUI.contentColor = ignoreProp.boolValue ? ActionGUIUtil.IgnoreColor : ActionGUIUtil.NormalColor;
+            if (!string.IsNullOrEmpty(ActionGUIUtil.searchWord) && prefabProp.objectReferenceValue != null)
+            {
+                GUI.contentColor = prefabProp.objectReferenceValue.ToString().ToLower().Contains(ActionGUIUtil.searchWord.ToLower()) ?
+                   ActionGUIUtil.MatchColor : GUI.contentColor;
+            }
+
             if (GUI.Button(rect, str, EditorStyles.toolbarDropDown))
             {
-                property.isExpanded = !property.isExpanded;
-                if (property.isExpanded)
+                if (instanceIDProp.intValue == 0)
                 {
-                    //ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, containsCommandProp,containsPickupProp,  rematrixProp, matrixProp);
+                    ActionEditorUtility.LoadPrefab(prefabProp, instanceIDProp, coordinateProp);
                 }
                 else
                 {
-                    //ActionEditorUtility.SavePrefab(instanceIDProp, rematrixProp, matrixProp);
+                    ActionEditorUtility.SavePrefab(instanceIDProp, coordinateProp);
                 }
             }
             GUI.contentColor = Color.white;
 
+
             InformationShow(rect);
 
-             rect = new Rect(position.max.x - position.width * 0.1f, position.y,20, EditorGUIUtility.singleLineHeight);
+            rect = new Rect(position.max.x - position.width * 0.1f, position.y, 20, EditorGUIUtility.singleLineHeight);
 
             switch (Event.current.type)
             {
@@ -71,7 +87,8 @@ namespace WorldActionSystem
                         if (DragAndDrop.objectReferences.Length > 0)
                         {
                             var obj = DragAndDrop.objectReferences[0];
-                            if (obj is GameObject){
+                            if (obj is GameObject)
+                            {
                                 ActionEditorUtility.InsertItem(prefabProp, obj);
                             }
                             DragAndDrop.AcceptDrag();
@@ -94,7 +111,7 @@ namespace WorldActionSystem
             {
                 prefabProp.objectReferenceValue = EditorGUI.ObjectField(rect, null, typeof(GameObject), false);
             }
-          
+
             rect = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
 
             if (property.isExpanded)
@@ -108,8 +125,6 @@ namespace WorldActionSystem
             var optionCount = 4;
             var width = rect.width / optionCount;
             var choiseRect = new Rect(rect.x, rect.y, width, rect.height);
-            //rematrixProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "Matrix", rematrixProp.boolValue);
-            //choiseRect.x += width;
             ignoreProp.boolValue = EditorGUI.ToggleLeft(choiseRect, "[Ignore]", ignoreProp.boolValue);
             choiseRect.x += width;
         }
@@ -124,40 +139,13 @@ namespace WorldActionSystem
             {
                 var infoRect = rect;
                 infoRect.x = infoRect.width - 80;
-                infoRect.width = 25;
-                //if (containsPickupProp.boolValue)
-                //{
-                //    GUI.color = new Color(0.3f, 0.5f, 0.8f);
-                //    EditorGUI.SelectableLabel(infoRect, "[p]");
-                //    infoRect.x += infoRect.width;
-                //}
-
-                //if (rematrixProp.boolValue)
-                //{
-                //    GUI.color = new Color(0.8f, 0.8f, 0.4f);
-                //    EditorGUI.SelectableLabel(infoRect, "[m]");
-                //    infoRect.x += infoRect.width;
-                //}
-
-                //if (containsCommandProp.boolValue)
-                //{
-                //    GUI.color = new Color(0.5f, 0.8f, 0.3f);
-                //    EditorGUI.SelectableLabel(infoRect, "[c]");
-                //    infoRect.x += infoRect.width;
-                //}
-                if (EditorGUIUtility.isProSkin)
+                infoRect.width = 100;
+                GUI.contentColor = ActionGUIUtil.WarningColor;
+                if (instanceIDProp.intValue != 0)
                 {
-                    GUI.color = Color.red;
+                    EditorGUI.LabelField(infoRect, "开启中");
                 }
-                else
-                {
-                    GUI.color = new Color(1, 0, 0, 0.3f);
-                }
-                if (ignoreProp.boolValue)
-                {
-                    GUI.Box(rect,"");
-                }
-                GUI.color = Color.white;
+                GUI.contentColor = Color.white;
             }
         }
     }

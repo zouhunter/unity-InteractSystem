@@ -9,7 +9,7 @@ namespace WorldActionSystem
 #if UNITY_EDITOR
         public int instanceID;
 #endif
-        private string _id;
+        private string _id; 
         public string ID
         {
             get
@@ -21,8 +21,7 @@ namespace WorldActionSystem
                 return _id;
             }
         }
-        public GameObject prefab;
-
+        public GameObject prefab;//ISupportElement
         public static string CalcuteID(GameObject prefab)
         {
             string _id = null;
@@ -30,7 +29,6 @@ namespace WorldActionSystem
             _id = name;
             return _id;
         }
-
         public int CompareTo(RunTimePrefabItem other)
         {
             if (prefab == null || other.prefab == null) return 0;

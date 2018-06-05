@@ -5,7 +5,8 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-namespace WorldActionSystem
+
+namespace WorldActionSystem.Drawer
 {
     [CustomPropertyDrawer(typeof(RunTimePrefabItem), true)]
     public class RunTimePrefabItemDrawer : PropertyDrawer
@@ -34,12 +35,20 @@ namespace WorldActionSystem
             }
             var rect = new Rect(position.x, position.y, position.width * 0.9f, EditorGUIUtility.singleLineHeight);
             var str = prefabProp.objectReferenceValue == null ? "" : prefabProp.objectReferenceValue.name;
-            GUI.contentColor = Color.cyan;
+
+            GUI.contentColor = ActionGUIUtil.NormalColor;
+            if (!string.IsNullOrEmpty(ActionGUIUtil.searchWord) && prefabProp.objectReferenceValue != null)
+            {
+                GUI.contentColor = prefabProp.objectReferenceValue.ToString().ToLower().Contains(ActionGUIUtil.searchWord.ToLower()) ?
+                   ActionGUIUtil.MatchColor : GUI.contentColor;
+            }
+
             if (GUI.Button(rect, str, EditorStyles.toolbarDropDown))
             {
                 property.isExpanded = !property.isExpanded;
                 ToggleLoadPrefab();
             }
+
             GUI.contentColor = Color.white;
 
             InformationShow(rect);
@@ -108,13 +117,18 @@ namespace WorldActionSystem
                 EditorGUI.HelpBox(rect, "丢失", MessageType.Error);
             }
 
-            if(instanceIDProp.intValue != 0 )
+            if(instanceIDProp.intValue !=  0)
             {
                 var instence = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
                 if(instence)
                 {
-                    var r1 = new Rect(rect.x + rect.width * 0.5f, rect.y, rect.width * 0.5f, EditorGUIUtility.singleLineHeight);
-                    EditorGUI.LabelField(r1, instence.name);
+                    var infoRect = rect;
+                    infoRect.x = infoRect.width - 80;
+                    infoRect.width = 100;
+
+                    GUI.color = ActionGUIUtil.WarningColor;
+                    EditorGUI.LabelField(infoRect, "开启中");
+                    GUI.color = Color.white;
                 }
                
             }

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
-  m_Name: ActionCommand
+  m_Name: ActionCommand 1
   m_EditorClassIdentifier: 
   m_allNodes:
   - m_name: Click
@@ -73,7 +73,7 @@ MonoBehaviour:
   m_lastModified: 131725981931900851
   m_graphDescription: 
   m_controllerType: WorldActionSystem.Graph.AcionGraphCtrl
-  _stepName: command01
+  _stepName: command02
   _cameraID: defult
   commandBindings: []
   environments:

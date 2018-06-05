@@ -3,38 +3,40 @@ using System.Collections;
 using UnityEditor;
 using System;
 using UnityEditorInternal;
+using System.Collections.Generic;
+
 namespace WorldActionSystem
 {
-    public partial class ActionEditorUtility
+    public class ActionEditorUtility
     {
-        public static void LoadmatrixInfo(SerializedProperty matrixProp, Transform transform)
+        //记录坐标加载时,不需要记录下列信息变化
+        private static List<string> ignoreModifyed = new List<string>
         {
-            var materix = Matrix4x4.identity;
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    materix[i, j] = matrixProp.FindPropertyRelative("e" + i + "" + j).floatValue;
-                }
-            }
-            transform.localPosition = materix.GetColumn(0);
-            transform.localEulerAngles = materix.GetColumn(1);
-            transform.localScale = materix.GetColumn(2);
-        }
-        public static void SaveMatrixInfo(SerializedProperty matrixProp, Transform transform)
+            "m_LocalPosition.x",
+            "m_LocalPosition.y",
+            "m_LocalPosition.z",
+            "m_LocalRotation.x",
+            "m_LocalRotation.y",
+            "m_LocalRotation.z",
+            "m_LocalRotation.w",
+            "m_LocalScale.x",
+            "m_LocalScale.y",
+            "m_LocalScale.z",
+            "m_RootOrder"
+        };
+        public static void LoadCoordinatePropInfo(SerializedProperty coordinateProp, Transform transform)
         {
-            var materix = Matrix4x4.identity;
-            materix.SetColumn(0, transform.localPosition);
-            materix.SetColumn(1, transform.localEulerAngles);
-            materix.SetColumn(2, transform.localScale);
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    matrixProp.FindPropertyRelative("e" + i + "" + j).floatValue = materix[i, j];
-                }
-            }
+            transform.localPosition = coordinateProp.FindPropertyRelative("localPosition").vector3Value;
+            transform.localEulerAngles = coordinateProp.FindPropertyRelative("localEulerAngles").vector3Value;
+            transform.localScale = coordinateProp.FindPropertyRelative("localScale").vector3Value;
         }
+        public static void SaveCoordinatesInfo(SerializedProperty coordinate, Transform transform)
+        {
+            coordinate.FindPropertyRelative("localPosition").vector3Value = transform.localPosition;
+            coordinate.FindPropertyRelative("localEulerAngles").vector3Value = transform.localEulerAngles;
+            coordinate.FindPropertyRelative("localScale").vector3Value = transform.localScale;
+        }
+
         public static void ApplyPrefab(GameObject gitem)
         {
             var instanceRoot = PrefabUtility.FindValidUploadPrefabInstanceRoot(gitem);
@@ -61,11 +63,11 @@ namespace WorldActionSystem
             }
             if (prefab != null)
             {
-                //var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
-                //var parent = actionSystem == null ? null : actionSystem.transform;
+                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                var parent = actionSystem == null ? null : actionSystem.transform;
                 GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
                 instanceID = go.GetInstanceID();
-                //go.transform.SetParent(parent, false);
+                go.transform.SetParent(parent, false);
             }
         }
 
@@ -90,16 +92,16 @@ namespace WorldActionSystem
             GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
             if (gopfb != null)
             {
-                //var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
-                //var parent = actionSystem == null ? null : actionSystem.transform;
-                //GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
-                //instanceIDProp.intValue = go.GetInstanceID();
-                //go.transform.SetParent(parent, false);
+                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                var parent = actionSystem == null ? null : actionSystem.transform;
+                GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
+                instanceIDProp.intValue = go.GetInstanceID();
+                go.transform.SetParent(parent, false);
             }
         }
 
 
-        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty ct_commandProp, SerializedProperty ct_pickProp,  SerializedProperty rematrixProp, SerializedProperty matrixProp)
+        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty matrixProp)
         {
             if (prefabProp.objectReferenceValue == null)
             {
@@ -119,18 +121,13 @@ namespace WorldActionSystem
             GameObject gopfb = prefabProp.objectReferenceValue as GameObject;
             if (gopfb != null)
             {
-                //var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
-                ////var parent = actionSystem == null ? null : actionSystem.transform;
-                //parent = Utility.GetParent(parent, ct_commandProp.boolValue, ct_pickProp.boolValue);
-                //GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
-                //instanceIDProp.intValue = go.GetInstanceID();
-                //instanceIDProp.serializedObject.ApplyModifiedProperties();
-                //go.transform.SetParent(parent, false);
-
-                //if (rematrixProp.boolValue)
-                //{
-                //    LoadmatrixInfo(matrixProp, go.transform);
-                //}
+                var actionSystem = GameObject.FindObjectOfType<ActionGroup>();
+                var parent = actionSystem == null ? null : actionSystem.transform;
+                GameObject go = PrefabUtility.InstantiatePrefab(gopfb) as GameObject;
+                instanceIDProp.intValue = go.GetInstanceID();
+                instanceIDProp.serializedObject.ApplyModifiedProperties();
+                go.transform.SetParent(parent, false);
+                LoadCoordinatePropInfo(matrixProp, go.transform);
             }
         }
         internal static void SavePrefab(ref int instanceID)
@@ -153,16 +150,31 @@ namespace WorldActionSystem
             }
             instanceIDProp.intValue = 0;
         }
-        internal static void SavePrefab(SerializedProperty instanceIDProp, SerializedProperty rematrixProp, SerializedProperty matrixProp)
+        private static bool Ignore(PropertyModification[] modifyed)
+        {
+            foreach (var item in modifyed)
+            {
+                if(!ignoreModifyed.Contains(item.propertyPath))
+                {
+                    Debug.Log(item.propertyPath);
+                    return false;
+                }
+            }
+            Debug.Log("ignore changes");
+            return true;
+        }
+
+        internal static void SavePrefab(SerializedProperty instanceIDProp, SerializedProperty coordinate)
         {
             var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
             if (gitem != null)
             {
-                if (rematrixProp.boolValue)
-                {
-                    ActionEditorUtility.SaveMatrixInfo(matrixProp, (gitem as GameObject).transform);
+                var transform = (gitem as GameObject).transform;
+                ActionEditorUtility.SaveCoordinatesInfo(coordinate, transform);
+                var modifyeds = PrefabUtility.GetPropertyModifications(gitem);
+                if (!Ignore(modifyeds)){
+                    ActionEditorUtility.ApplyPrefab(gitem as GameObject);
                 }
-                ActionEditorUtility.ApplyPrefab(gitem as GameObject);
                 GameObject.DestroyImmediate(gitem);
             }
             instanceIDProp.intValue = 0;

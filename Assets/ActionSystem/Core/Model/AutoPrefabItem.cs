@@ -16,19 +16,19 @@ namespace WorldActionSystem
             {
                 if (string.IsNullOrEmpty(_id))
                 {
-                    _id = CalcuteID(prefab, matrix);
+                    _id = CalcuteID(prefab, coordinate);
                 }
                 return _id;
             }
         }
-        public Matrix4x4 matrix;
+        public Coordinate coordinate;
         public GameObject prefab;
         public bool ignore;
-        public static string CalcuteID(GameObject prefab, Matrix4x4 matrix)
+        public static string CalcuteID(GameObject prefab, Coordinate coordinate)
         {
             string _id = null;
             var name = prefab == null ? "Null" : prefab.name;
-            _id = string.Format("[{0}][{1}]", name, matrix);
+            _id = string.Format("[{0}][{1}]", name, coordinate.StringValue);
             return _id;
         }
         public int CompareTo(AutoPrefabItem other)

@@ -34,7 +34,7 @@ namespace WorldActionSystem.Enviroment
             {
                 if (item.ignore) continue;
                 var enviroment = SurchItem(item);
-                SetEnviroment(enviroment, item.matrix, item.originalState);
+                SetEnviroment(enviroment, item.coordinate, item.originalState);
             }
         }
 
@@ -47,7 +47,7 @@ namespace WorldActionSystem.Enviroment
                 var enviroment = SurchItem(item);
                 if (enviroment != null)
                 {
-                    SetEnviroment(enviroment, item.matrix, item.startState);
+                    SetEnviroment(enviroment, item.coordinate, item.startState);
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace WorldActionSystem.Enviroment
                 var enviroment = SurchItem(item);
                 if (enviroment != null)
                 {
-                    SetEnviroment(enviroment, item.matrix, item.completeState);
+                    SetEnviroment(enviroment, item.coordinate, item.completeState);
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace WorldActionSystem.Enviroment
             }
         }
 
-        private void SetEnviroment(EnviromentItem obj, Matrix4x4 matrix, bool active)
+        private void SetEnviroment(EnviromentItem obj, Coordinate coordinates, bool active)
         {
             if(log) Debug.Log("SetEnviroment:" + obj.prefab + " -> " + active);
             if (obj.Created || active)//如果没有创建并且当前不需要显示,略过
@@ -95,7 +95,7 @@ namespace WorldActionSystem.Enviroment
                 if (obj.Body != null)
                 {
                     obj.Body.transform.SetParent(Context.transform);
-                    TransUtil.LoadmatrixInfo(matrix, obj.Body.transform);
+                    TransUtil.LoadCoordinatesInfo(coordinates, obj.Body.transform);
                     obj.Body.SetActive(active);
                 }
             }
