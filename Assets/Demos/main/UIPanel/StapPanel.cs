@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace WorldActionSystem
+namespace InteractSystem
 {
     public partial class StapPanel
     {

@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
-using WorldActionSystem;
+using InteractSystem;
 using System;
 
-using WorldActionSystem.Hooks;
+using InteractSystem.Hooks;
 
 public class SimpleHook :TimerHook
 {

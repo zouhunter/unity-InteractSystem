@@ -4,10 +4,10 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-using WorldActionSystem;
-using WorldActionSystem.Graph;
+using InteractSystem;
+using InteractSystem.Graph;
 
-public class PrintBinding : WorldActionSystem.Binding.ActionBinding
+public class PrintBinding : InteractSystem.Binding.ActionBinding
 {
     public override void OnStartExecuteInternal(OperateNode node, bool auto)
     {
