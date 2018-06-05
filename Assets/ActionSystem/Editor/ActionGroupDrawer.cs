@@ -125,7 +125,7 @@ namespace WorldActionSystem.Drawer
         private void DrawSwitchOptions()
         {
             var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight + span * 2f);
-            rect = DrawBoxRect(rect);
+            rect = DrawBoxRect(rect,"");
             var searchRect = new Rect(rect.x, rect.y, rect.width * 0.55f, rect.height);
             ActionGUIUtil.searchWord = EditorGUI.TextField(searchRect, ActionGUIUtil.searchWord);
 
@@ -168,7 +168,7 @@ namespace WorldActionSystem.Drawer
 
         private void DrawAutoElementItem(Rect rect, int index, bool isActive, bool isFocused)
         {
-            rect = DrawBoxRect(rect);
+            rect = DrawBoxRect(rect, index.ToString());
             var prop = autoElements_prop.GetArrayElementAtIndex(index);
             EditorGUI.PropertyField(rect, prop);
         }
@@ -199,7 +199,7 @@ namespace WorldActionSystem.Drawer
 
         private void DrawRuntimeElementItem(Rect rect, int index, bool isActive, bool isFocused)
         {
-            rect = DrawBoxRect(rect);
+            rect = DrawBoxRect(rect, index.ToString());
             var prop = runtimeElements_prop.GetArrayElementAtIndex(index);
             EditorGUI.PropertyField(rect, prop, true);
         }
@@ -253,7 +253,7 @@ namespace WorldActionSystem.Drawer
 
         private void DrawEnviromentElement(Rect rect, int index, bool isActive, bool isFocused)
         {
-            rect = DrawBoxRect(rect);
+            rect = DrawBoxRect(rect, index.ToString());
             var prop = enviroments_prop.GetArrayElementAtIndex(index);
             EditorGUI.PropertyField(rect, prop, true);
 
@@ -379,9 +379,8 @@ namespace WorldActionSystem.Drawer
 
         private void DrawCommandItem(Rect rect, int index, bool isActive, bool isFocused)
         {
-            var boxRect = PaddingRect(rect, span * 0.5f);
-            GUI.Box(boxRect, "");
-            rect = PaddingRect(rect);
+            rect = DrawBoxRect(rect,index.ToString());
+
             var prop = actionCommands_prop.GetArrayElementAtIndex(index);
             var commandProp = prop.FindPropertyRelative("command");
             var ignoreProp = prop.FindPropertyRelative("ignore");
@@ -538,8 +537,10 @@ namespace WorldActionSystem.Drawer
             }
         }
 
-        private Rect DrawBoxRect(Rect orignalRect)
+        private Rect DrawBoxRect(Rect orignalRect,string index)
         {
+            var idRect = new Rect(orignalRect.x -span, orignalRect.y + span, 20, 20);
+            EditorGUI.LabelField(idRect, index.ToString());
             var boxRect = PaddingRect(orignalRect, span * 0.5f);
             GUI.Box(boxRect, "");
             var rect = PaddingRect(orignalRect);
