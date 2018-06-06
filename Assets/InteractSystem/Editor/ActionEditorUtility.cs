@@ -10,7 +10,7 @@ namespace InteractSystem
     public static class ActionEditorUtility
     {
         //记录坐标加载时,不需要记录下列信息变化
-        private static List<string> ignoreModifyed = new List<string>
+        public static List<string> coondinatePaths = new List<string>
         {
             "m_LocalPosition.x",
             "m_LocalPosition.y",
@@ -32,9 +32,17 @@ namespace InteractSystem
         }
         public static void SaveCoordinatesInfo(SerializedProperty coordinate, Transform transform)
         {
-            coordinate.FindPropertyRelative("localPosition").vector3Value = transform.localPosition;
-            coordinate.FindPropertyRelative("localEulerAngles").vector3Value = transform.localEulerAngles;
-            coordinate.FindPropertyRelative("localScale").vector3Value = transform.localScale;
+            coordinate.FindPropertyRelative("localPosition").vector3Value = RecordClamp(transform.localPosition);
+            coordinate.FindPropertyRelative("localEulerAngles").vector3Value = RecordClamp(transform.localEulerAngles);
+            coordinate.FindPropertyRelative("localScale").vector3Value = RecordClamp(transform.localScale);
+        }
+
+        private static Vector3 RecordClamp(Vector3 vec)
+        {
+            vec.x = (float)Math.Round(vec.x, 2);
+            vec.y = (float)Math.Round(vec.y, 2);
+            vec.z = (float)Math.Round(vec.z, 2);
+            return vec;
         }
 
         public static void ApplyPrefab(GameObject gitem)
@@ -57,15 +65,14 @@ namespace InteractSystem
             return prop;
         }
 
-        internal static void LoadPrefab(GameObject prefab, ref int instanceID)
+        internal static GameObject LoadPrefab(GameObject prefab, ref int instanceID)
         {
             if (instanceID != 0)
             {
                 var gitem = EditorUtility.InstanceIDToObject(instanceID);
-
                 if (gitem != null)
                 {
-                    return;
+                    GameObject.DestroyImmediate(gitem);
                 }
             }
             if (prefab != null)
@@ -75,7 +82,36 @@ namespace InteractSystem
                 GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
                 instanceID = go.GetInstanceID();
                 go.transform.SetParent(parent, false);
+                return go;
             }
+            return null;
+        }
+
+        internal static GameObject LoadPrefab(string guid, SerializedProperty instenceIDProp, SerializedProperty coordinateProp)
+        {
+            if (instenceIDProp.intValue != 0)
+            {
+                var gitem = EditorUtility.InstanceIDToObject(instenceIDProp.intValue);
+                if (gitem != null)
+                {
+                    GameObject.DestroyImmediate(gitem);
+                }
+            }
+
+            if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(AssetDatabase.GUIDToAssetPath(guid)))
+            {
+                return null;
+            }
+            else
+            {
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid));
+                var id = instenceIDProp.intValue;
+                var instenceObj = ActionEditorUtility.LoadPrefab(prefab, ref id);
+                instenceIDProp.intValue = id;
+                ActionEditorUtility.LoadCoordinatePropInfo(coordinateProp, instenceObj.transform);
+                return instenceObj;
+            }
+
         }
         internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp)
         {
@@ -104,7 +140,7 @@ namespace InteractSystem
                 go.transform.SetParent(parent, false);
             }
         }
-        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty matrixProp)
+        internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty coodinate)
         {
             if (prefabProp.objectReferenceValue == null)
             {
@@ -130,7 +166,7 @@ namespace InteractSystem
                 instanceIDProp.intValue = go.GetInstanceID();
                 instanceIDProp.serializedObject.ApplyModifiedProperties();
                 go.transform.SetParent(parent, false);
-                LoadCoordinatePropInfo(matrixProp, go.transform);
+                LoadCoordinatePropInfo(coodinate, go.transform);
             }
         }
         internal static void SavePrefab(ref int instanceID)
@@ -157,7 +193,7 @@ namespace InteractSystem
         {
             foreach (var item in modifyed)
             {
-                if(!ignoreModifyed.Contains(item.propertyPath))
+                if (!coondinatePaths.Contains(item.propertyPath))
                 {
                     Debug.Log(item.propertyPath);
                     return false;
@@ -174,7 +210,8 @@ namespace InteractSystem
                 var transform = (gitem as GameObject).transform;
                 ActionEditorUtility.SaveCoordinatesInfo(coordinate, transform);
                 var modifyeds = PrefabUtility.GetPropertyModifications(gitem);
-                if (!Ignore(modifyeds)){
+                if (!Ignore(modifyeds))
+                {
                     ActionEditorUtility.ApplyPrefab(gitem as GameObject);
                 }
                 GameObject.DestroyImmediate(gitem);
@@ -265,7 +302,7 @@ namespace InteractSystem
             ResetChildPropertyValues(property);
         }
 
-        public static bool HaveElement(this SerializedProperty arryProp,string path, UnityEngine. Object obj)
+        public static bool HaveElement(this SerializedProperty arryProp, string path, UnityEngine.Object obj)
         {
             for (int i = 0; i < arryProp.arraySize; i++)
             {

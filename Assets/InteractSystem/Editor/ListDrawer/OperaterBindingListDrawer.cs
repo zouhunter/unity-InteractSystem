@@ -28,6 +28,7 @@ namespace InteractSystem.Drawer
         }
         private List<Binding.OperaterBinding> dragBindings = new List<Binding.OperaterBinding>();
         private float elementHeight = EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2;
+        private Editor drawer;
 
         protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
         {
@@ -35,6 +36,13 @@ namespace InteractSystem.Drawer
             var prop = property.GetArrayElementAtIndex(index);
             var content = prop.objectReferenceValue == null ? new GUIContent("Null") : new GUIContent(prop.objectReferenceValue.GetType().Name);
             EditorGUI.PropertyField(rect, prop, content);
+            if(isActive)
+            {
+                if(prop.objectReferenceValue != null)
+                {
+                    DrawOperateBindingDetail(prop.objectReferenceValue as Binding.OperaterBinding);
+                }
+            }
         }
 
         protected override void DrawHeaderCallBack(Rect rect)
@@ -68,6 +76,11 @@ namespace InteractSystem.Drawer
                     prop.objectReferenceValue = item;
                 }
             }
+        }
+        protected void DrawOperateBindingDetail(Binding.OperaterBinding operaterBinding)
+        {
+            Editor.CreateCachedEditor(operaterBinding, typeof(Editor), ref drawer);
+            drawer.OnInspectorGUI();
         }
         private void OnAddBindingItem()
         {

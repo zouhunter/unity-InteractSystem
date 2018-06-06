@@ -13,6 +13,7 @@ namespace InteractSystem.Drawer
     public class HookListDrawer : ReorderListDrawer
     {
         private string title;
+        private Editor editor;
         public HookListDrawer(string title)
         {
             this.title = title;
@@ -23,6 +24,15 @@ namespace InteractSystem.Drawer
             var prop = property.GetArrayElementAtIndex(index);
             var content = prop.objectReferenceValue == null ? new GUIContent("Null"): new GUIContent(prop.objectReferenceValue.GetType().FullName);
             EditorGUI.ObjectField(rect,prop, content);
+
+            if(isActive)
+            {
+                if(prop.objectReferenceValue != null)
+                {
+                    Editor.CreateCachedEditor(prop.objectReferenceValue, typeof(Editor), ref editor);
+                    editor.OnInspectorGUI();
+                }
+            }
         }
 
         protected override void DrawHeaderCallBack(Rect rect)

@@ -12,6 +12,7 @@ namespace InteractSystem.Drawer
 {
     public class NodeListDrawer : ReorderListDrawer
     {
+        protected Editor drawer;
         public override void InitReorderList(IList list, Type type)
         {
             base.InitReorderList(list, type);
@@ -26,8 +27,8 @@ namespace InteractSystem.Drawer
             EditorGUI.ObjectField(rect, item.Name, item, typeof(Graph.OperaterNode), false);
             if (isActive)
             {
-                var editor = Editor.CreateEditor(item);
-                editor.OnInspectorGUI();
+                Editor.CreateCachedEditor(item, typeof(OperateNodeDrawer), ref drawer);
+                drawer.OnInspectorGUI();
             }
         }
         protected override void DrawHeaderCallBack(Rect rect)

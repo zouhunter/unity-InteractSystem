@@ -27,7 +27,7 @@ namespace InteractSystem.Drawer
             }
         }
         protected List<ActionCommand> dragedCommands = new List<ActionCommand>();
-
+        protected Editor drawer;
         protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
         {
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
@@ -94,6 +94,20 @@ namespace InteractSystem.Drawer
                 var ignoreRect = new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight, rect.width, EditorGUIUtility.singleLineHeight);
                 ignoreProp.boolValue = EditorGUI.ToggleLeft(ignoreRect, "[ignore]", ignoreProp.boolValue);
             }
+
+            if (isActive)
+            {
+                if (commandProp.objectReferenceValue)
+                {
+                    DrawCommandItem(commandProp.objectReferenceValue as ActionCommand);
+                }
+            }
+        }
+
+        private void DrawCommandItem(ActionCommand command)
+        {
+            Editor.CreateCachedEditor(command,typeof(ActionCommandDrawer),ref drawer);
+            drawer.OnInspectorGUI();
         }
 
         protected override void DrawHeaderCallBack(Rect rect)

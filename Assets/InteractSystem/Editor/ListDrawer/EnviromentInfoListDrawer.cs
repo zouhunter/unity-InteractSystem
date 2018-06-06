@@ -17,6 +17,11 @@ namespace InteractSystem.Drawer
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
             var prop = property.GetArrayElementAtIndex(index);
             EditorGUI.PropertyField(rect, prop, null, true);
+            if (isFocused)
+            {
+                prop.isExpanded = true;
+                reorderList.ReleaseKeyboardFocus();
+            }
         }
 
         protected override void DrawHeaderCallBack(Rect rect)

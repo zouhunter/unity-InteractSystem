@@ -74,27 +74,33 @@ MonoBehaviour:
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: command02
-  commandBindings: []
+  commandBindings:
+  - {fileID: 0}
   environments:
-  - originalState: 1
-    startState: 1
-    completeState: 0
-    coordinate:
-      localPosition: {x: 0, y: 0, z: 0}
-      localEulerAngles: {x: 0, y: 0, z: 0}
-      localScale: {x: 0, y: 0, z: 0}
+  - instenceID: 0
+    guid: 
     enviromentName: anim0
-    ignore: 0
-  - originalState: 1
+    originalState: 1
     startState: 1
     completeState: 0
     coordinate:
       localPosition: {x: 0, y: 0, z: 0}
       localEulerAngles: {x: 0, y: 0, z: 0}
       localScale: {x: 0, y: 0, z: 0}
-    enviromentName: anim1s
     ignore: 0
-  startHooks: []
+  - instenceID: 0
+    guid: 
+    enviromentName: anim1s
+    originalState: 1
+    startState: 1
+    completeState: 0
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
+    ignore: 0
+  startHooks:
+  - {fileID: 0}
   completeHooks: []
 --- !u!114 &114308434188825626
 MonoBehaviour:
@@ -123,23 +129,27 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments:
-  - originalState: 0
-    startState: 1
-    completeState: 1
-    coordinate:
-      localPosition: {x: 0, y: 0, z: 0}
-      localEulerAngles: {x: 0, y: 0, z: 0}
-      localScale: {x: 0, y: 0, z: 0}
+  - instenceID: 0
+    guid: 
     enviromentName: anim1s
-    ignore: 0
-  - originalState: 0
+    originalState: 0
     startState: 1
     completeState: 1
     coordinate:
       localPosition: {x: 0, y: 0, z: 0}
       localEulerAngles: {x: 0, y: 0, z: 0}
       localScale: {x: 0, y: 0, z: 0}
+    ignore: 0
+  - instenceID: 0
+    guid: 
     enviromentName: clickItems
+    originalState: 0
+    startState: 1
+    completeState: 1
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
     ignore: 0
   clickList:
   - click01

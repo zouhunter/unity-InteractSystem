@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditorInternal;
 using System.Linq;
+using InteractSystem.Binding;
 
 namespace InteractSystem.Drawer
 {
@@ -28,6 +29,7 @@ namespace InteractSystem.Drawer
         }
         private List<Binding.CommandBinding> dragBindings = new List<Binding.CommandBinding>();
         private float elementHeight = EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2;
+        private Editor drawer;
 
         protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
         {
@@ -35,6 +37,13 @@ namespace InteractSystem.Drawer
             var prop = property.GetArrayElementAtIndex(index);
             var content = prop.objectReferenceValue == null ? new GUIContent("Null") : new GUIContent(prop.objectReferenceValue.GetType().Name);
             EditorGUI.PropertyField(rect, prop, content);
+            if (isActive)
+            {
+                if(prop.objectReferenceValue != null)
+                {
+                    DrawCommandBindigDetail(prop.objectReferenceValue as Binding.CommandBinding);
+                }
+            }
         }
 
         protected override void DrawHeaderCallBack(Rect rect)
@@ -69,7 +78,14 @@ namespace InteractSystem.Drawer
                 }
             }
         }
-        private void OnAddBindingItem()
+
+        protected void DrawCommandBindigDetail(CommandBinding commandBinding)
+        {
+            Editor.CreateCachedEditor(commandBinding, typeof(Editor),ref drawer);
+            drawer.OnInspectorGUI();
+        }
+
+        protected void OnAddBindingItem()
         {
             var options = commandBindingTypes.ConvertAll(x => new GUIContent(x.FullName)).ToArray();
             Debug.Log(options.Length);

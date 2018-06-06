@@ -43,7 +43,15 @@ namespace InteractSystem.Drawer
                 }
             }
         }
-
+        protected override void DrawHeaderCallBack(Rect rect)
+        {
+            base.DrawHeaderCallBack(rect);
+            var btnRect = new Rect(rect.x + rect.width - ActionGUIUtil.bigButtonWidth, rect.y, ActionGUIUtil.bigButtonWidth, rect.height);
+            if (GUI.Button(btnRect,"analysis"))
+            {
+                AnalysisFromNodes();
+            }
+        }
         protected override float ElementHeightCallback(int index)
         {
             var prop = property.GetArrayElementAtIndex(index);
@@ -75,6 +83,11 @@ namespace InteractSystem.Drawer
                     }
                 }
             }
+        }
+
+        protected void AnalysisFromNodes()
+        {
+            Debug.LogWarning("节点中解析相应的元素");
         }
     }
 }
