@@ -9,7 +9,7 @@ using System;
 
 namespace InteractSystem.Graph
 {
-    public abstract class OperateNode : ActionNode
+    public abstract class OperaterNode : ActionNode
     {
         public string Name
         {
@@ -28,31 +28,29 @@ namespace InteractSystem.Graph
         }
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
-
         public UnityAction onEndExecute { get; set; }
         public abstract ControllerType CtrlType { get; }
         public static bool log = false;
 
-        [SerializeField, Attributes.DefultName]
+        [SerializeField]
         protected string _name;
         protected bool auto;
-
         private Hooks.HookCtroller startHookCtrl;
         private Hooks.HookCtroller completeHookCtrl;
-        private Binding.ActionBindingCtrl bindingCtrl;
+        private Binding.OpreaterBindingCtrl bindingCtrl;
         private Enviroment.EnviromentCtrl enviromentCtrl {
             get {
                 return Context.Context.enviromentCtrl;
             }
         }
         private ActionGroup _system;
-        protected static List<OperateNode> startedList = new List<OperateNode>();
+        protected static List<OperaterNode> startedList = new List<OperaterNode>();
         [SerializeField]
         private ActionHook[] startHooks;//外部结束钩子
         [SerializeField]
         private ActionHook[] completeHooks;//外部结束钩子
         [SerializeField]
-        private Binding.ActionBinding[] bindings;
+        private Binding.OperaterBinding[] bindings;
         [SerializeField]
         private Enviroment.EnviromentInfo[] environments;
 
@@ -71,7 +69,7 @@ namespace InteractSystem.Graph
 
         private void InitBindingCtrl()
         {
-            bindingCtrl = new Binding.ActionBindingCtrl(bindings);
+            bindingCtrl = new Binding.OpreaterBindingCtrl(bindings);
         }
         private void InitHookCtrl()
         {
@@ -80,7 +78,6 @@ namespace InteractSystem.Graph
             completeHookCtrl = new InteractSystem.Hooks.HookCtroller(completeHooks);
             completeHookCtrl.onEndExecute += OnCompleteHooksEnd;
         }
-        
         public override void Initialize(NodeData data)
         {
             base.Initialize(data);
@@ -93,7 +90,6 @@ namespace InteractSystem.Graph
                 data.AddOutputPoint("0", "actionconnect", 100);
             }
         }
-
         public virtual void OnStartExecute(bool auto = false)
         {
             if (log) Debug.Log("OnStartExecute:" + this.Name);
@@ -150,7 +146,6 @@ namespace InteractSystem.Graph
             }
 
         }
-
         private void OnCompleteHooksEnd()
         {
             if (Statu != ExecuteStatu.Completed)
@@ -173,8 +168,6 @@ namespace InteractSystem.Graph
         }
         public virtual void OnUnDoExecute()
         {
-            //angleCtrl.UnNotice(anglePos);
-
             if (log) Debug.Log("OnUnDoExecute:" + this);
 
             if (statu != ExecuteStatu.UnStarted)
@@ -195,7 +188,6 @@ namespace InteractSystem.Graph
             }
 
         }
-
         protected virtual void OnStartExecuteInternal()
         {
             enviromentCtrl.StartState(environments);

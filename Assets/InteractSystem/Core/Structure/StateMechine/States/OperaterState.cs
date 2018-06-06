@@ -4,11 +4,11 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using OperateNode = InteractSystem.Graph.OperateNode;
+using OperaterNode = InteractSystem.Graph.OperaterNode;
 
 namespace InteractSystem.Structure
 {
-    public class OperateState : ExecuteState
+    public class OperaterState : ExecuteState
     {
         /// <summary>
         /// 首次执行
@@ -18,7 +18,7 @@ namespace InteractSystem.Structure
         {
             base.ExecuteOnUnStarted(unit);
             statusDic[unit].statu = ExecuteStatu.Executing;
-            var operateNode = unit.node as OperateNode;
+            var operateNode = unit.node as OperaterNode;
 
             //判断是不是叶节点
             var leaf = unit.childUnits.Count == 0;
@@ -33,7 +33,7 @@ namespace InteractSystem.Structure
 
             operateNode.onEndExecute = () =>
             {
-                stateMechine.OnStopAction(unit.node as Graph.OperateNode);
+                stateMechine.OnStopAction(unit.node as Graph.OperaterNode);
 
                 if (leaf || statusDic[unit].waitUnits.Count == 0)
                 {
@@ -44,7 +44,7 @@ namespace InteractSystem.Structure
             };
 
             operateNode.OnStartExecute(stateMechine.IsAuto);
-            stateMechine.OnStartAction(unit.node as Graph.OperateNode);
+            stateMechine.OnStartAction(unit.node as Graph.OperaterNode);
         }
 
         /// <summary>
@@ -88,9 +88,9 @@ namespace InteractSystem.Structure
             if (statusDic[unit].statu != ExecuteStatu.UnStarted)
             {
                 statusDic[unit].statu = ExecuteStatu.UnStarted;
-                var operateNode = unit.node as OperateNode;
+                var operateNode = unit.node as OperaterNode;
                 operateNode.OnUnDoExecute();
-                stateMechine.OnStopAction(unit.node as Graph.OperateNode);
+                stateMechine.OnStopAction(unit.node as Graph.OperaterNode);
             }
         }
         public override void Complete(ExecuteUnit unit)
@@ -98,10 +98,10 @@ namespace InteractSystem.Structure
             base.Complete(unit);
             CompleteExecuteChildGroups(unit);
             statusDic[unit].statu = ExecuteStatu.Completed;
-            var operateNode = unit.node as OperateNode;
+            var operateNode = unit.node as OperaterNode;
             operateNode.onEndExecute = null;
             operateNode.OnEndExecute(true);
-            stateMechine.OnStopAction(unit.node as Graph.OperateNode);
+            stateMechine.OnStopAction(unit.node as Graph.OperaterNode);
         }
     }
 }

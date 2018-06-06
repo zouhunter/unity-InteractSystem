@@ -38,9 +38,9 @@ namespace InteractSystem.Graph
         {
             base.DrawNodeGUI(nodeGUI);
 
-            if (nodeGUI.Data.Object is InteractSystem.Graph.OperateNode)
+            if (nodeGUI.Data.Object is InteractSystem.Graph.OperaterNode)
             {
-                var node = nodeGUI.Data.Object as InteractSystem.Graph.OperateNode;
+                var node = nodeGUI.Data.Object as InteractSystem.Graph.OperaterNode;
                 if (node.Statu == ExecuteStatu.Executing)
                 {
                     nodeGUI.ShowProgress();

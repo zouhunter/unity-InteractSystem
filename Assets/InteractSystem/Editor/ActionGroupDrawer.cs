@@ -119,7 +119,7 @@ namespace InteractSystem.Drawer
         }
         private void DrawSwitchOptions()
         {
-            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight + ActionGUIUtil.span * 2f);
+            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2f);
             rect = DrawBoxRect(rect,"");
             var searchRect = new Rect(rect.x, rect.y, rect.width * 0.55f, rect.height);
             ActionGUIUtil.searchWord = EditorGUI.TextField(searchRect, ActionGUIUtil.searchWord);
@@ -151,7 +151,7 @@ namespace InteractSystem.Drawer
             autoElemnts_list.elementHeightCallback = (index) =>
             {
                 var prop = autoElements_prop.GetArrayElementAtIndex(index);
-                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.span * 2;
+                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.padding * 2;
             };
             autoElemnts_list.drawElementCallback = DrawAutoElementItem;
         }
@@ -205,7 +205,7 @@ namespace InteractSystem.Drawer
             runtimeElements_list.elementHeightCallback = (index) =>
             {
                 var prop = runtimeElements_prop.GetArrayElementAtIndex(index);
-                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.span * 2;
+                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.padding * 2;
             };
         }
 
@@ -259,7 +259,7 @@ namespace InteractSystem.Drawer
             enviroments_list.elementHeightCallback = (index) =>
             {
                 var prop = enviroments_prop.GetArrayElementAtIndex(index);
-                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.span * 2;
+                return EditorGUI.GetPropertyHeight(prop, null, true) + ActionGUIUtil.padding * 2;
             };
         }
 
@@ -356,23 +356,23 @@ namespace InteractSystem.Drawer
 
         private void DrawCommandHead(Rect rect)
         {
-            var btnRect = new Rect(rect.x + rect.width - ActionGUIUtil.middleButtonWidth - ActionGUIUtil.span, rect.y, ActionGUIUtil.middleButtonWidth, rect.height);
+            var btnRect = new Rect(rect.x + rect.width - ActionGUIUtil.middleButtonWidth - ActionGUIUtil.padding, rect.y, ActionGUIUtil.middleButtonWidth, rect.height);
             if (GUI.Button(btnRect, new GUIContent("clear", "关闭全部"), EditorStyles.miniButtonRight))
             {
                 Undo.RecordObject(target, "清除commandList");
                 actionCommands_prop.ClearArray();
             }
-            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.span;
+            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.padding;
             if (GUI.Button(btnRect, new GUIContent("check", "资源检查"), EditorStyles.miniButton))
             {
 
             }
-            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.span;
+            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.padding;
             if (GUI.Button(btnRect, new GUIContent("export", "导出步骤"), EditorStyles.miniButton))
             {
 
             }
-            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.span;
+            btnRect.x -= ActionGUIUtil.middleButtonWidth + ActionGUIUtil.padding;
             if (GUI.Button(btnRect, new GUIContent("import", "导入步骤"), EditorStyles.miniButton))
             {
 
@@ -386,11 +386,11 @@ namespace InteractSystem.Drawer
             var prop = actionCommands_prop.GetArrayElementAtIndex(index);
             if (prop.isExpanded)
             {
-                return 2 * EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.span;
+                return 2 * EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.padding;
             }
             else
             {
-                return EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.span;
+                return EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.padding;
             }
         }
 
@@ -519,9 +519,9 @@ namespace InteractSystem.Drawer
 
         private Rect DrawBoxRect(Rect orignalRect,string index)
         {
-            var idRect = new Rect(orignalRect.x - ActionGUIUtil.span, orignalRect.y + ActionGUIUtil.span, 20, 20);
+            var idRect = new Rect(orignalRect.x - ActionGUIUtil.padding, orignalRect.y + ActionGUIUtil.padding, 20, 20);
             EditorGUI.LabelField(idRect, index.ToString());
-            var boxRect = PaddingRect(orignalRect, ActionGUIUtil.span * 0.5f);
+            var boxRect = PaddingRect(orignalRect, ActionGUIUtil.padding * 0.5f);
             GUI.Box(boxRect, "");
             var rect = PaddingRect(orignalRect);
             return rect;
@@ -545,7 +545,7 @@ namespace InteractSystem.Drawer
         //    DragAndDrop.visualMode = dragedGameObject.Count > 0 ? DragAndDropVisualMode.Move : DragAndDropVisualMode.Rejected;
         //}
 
-        private Rect PaddingRect(Rect orignalRect, float padding = ActionGUIUtil.span)
+        private Rect PaddingRect(Rect orignalRect, float padding = ActionGUIUtil.padding)
         {
             var rect = new Rect(orignalRect.x + padding, orignalRect.y + padding, orignalRect.width - padding * 2, orignalRect.height - padding * 2);
             return rect;

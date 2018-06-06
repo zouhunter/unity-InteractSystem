@@ -70,8 +70,6 @@ namespace InteractSystem
                 go.transform.SetParent(parent, false);
             }
         }
-
-
         internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp)
         {
             if (prefabProp.objectReferenceValue == null)
@@ -99,8 +97,6 @@ namespace InteractSystem
                 go.transform.SetParent(parent, false);
             }
         }
-
-
         internal static void LoadPrefab(SerializedProperty prefabProp, SerializedProperty instanceIDProp, SerializedProperty matrixProp)
         {
             if (prefabProp.objectReferenceValue == null)
@@ -163,7 +159,6 @@ namespace InteractSystem
             Debug.Log("ignore changes");
             return true;
         }
-
         internal static void SavePrefab(SerializedProperty instanceIDProp, SerializedProperty coordinate)
         {
             var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
@@ -179,7 +174,6 @@ namespace InteractSystem
             }
             instanceIDProp.intValue = 0;
         }
-
         internal static void InsertItem(SerializedProperty prefabProp, UnityEngine.Object obj)
         {
             var prefab = PrefabUtility.GetPrefabParent(obj);

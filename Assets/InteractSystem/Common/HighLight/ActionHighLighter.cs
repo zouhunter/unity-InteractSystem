@@ -7,7 +7,7 @@ using HighlightingSystem;
 
 namespace InteractSystem.Binding
 {
-    public class ActionHighLighter : ActionBinding
+    public class ActionHighLighter : OperaterBinding
     {
         [SerializeField]
         protected Color color = Color.green;

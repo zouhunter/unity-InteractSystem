@@ -111,6 +111,8 @@ namespace NodeGraph
         {
             get
             {
+                if (Controller == null)
+                    return null;
                 return Controller.TargetGraph;
             }
         }
@@ -679,7 +681,7 @@ namespace NodeGraph
             }
             if (EditorGUI.EndChangeCheck())
             {
-                Controller.Validate(this);
+                if(Controller!=null) Controller.Validate(this);
                 EditorUtility.SetDirty(Data.Object);
                 EditorUtility.SetDirty(ParentGraph);
             }

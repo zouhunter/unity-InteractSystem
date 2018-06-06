@@ -74,7 +74,6 @@ MonoBehaviour:
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: command02
-  _cameraID: defult
   commandBindings: []
   environments:
   - originalState: 1
@@ -119,10 +118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad4f0f3ab2171b349969860a8194d74e, type: 3}
   m_Name: WorldActionSystem.Actions.ClickNode
   m_EditorClassIdentifier: 
-  _cameraID: 
   _name: 
-  hooks:
-  - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
+  startHooks: []
+  completeHooks: []
   bindings: []
   environments:
   - originalState: 0

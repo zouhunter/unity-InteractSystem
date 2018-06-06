@@ -30,7 +30,7 @@ namespace InteractSystem.Structure
 
         public static bool log = false;
         //树型结构
-        private List<OperateNode> startedActions = new List<OperateNode>();
+        private List<OperaterNode> startedActions = new List<OperaterNode>();
         public Stack<ExecuteUnit> activedUnits = new Stack<ExecuteUnit>();
         public Stack<ExecuteUnit> redoUnits = new Stack<ExecuteUnit>();
         private ExecuteUnit currentUnit;
@@ -49,7 +49,7 @@ namespace InteractSystem.Structure
             statemap.Add(State.Start, new StartState());
             statemap.Add(State.End, new EndState());
             statemap.Add(State.Logic, new LogicState());
-            statemap.Add(State.Operate, new OperateState());
+            statemap.Add(State.Operate, new OperaterState());
 
             foreach (var item in statemap)
             {
@@ -102,7 +102,7 @@ namespace InteractSystem.Structure
             {
                 SetState(State.Logic);
             }
-            else if (unit.node is Graph.OperateNode)
+            else if (unit.node is Graph.OperaterNode)
             {
                 SetState(State.Operate);
             }
@@ -192,7 +192,7 @@ namespace InteractSystem.Structure
         /// 添加新的触发器
         /// </summary>
         /// <param name="action"></param>
-        public void OnStartAction(OperateNode action)
+        public void OnStartAction(OperaterNode action)
         {
             startedActions.Add(action);
             if (onCtrlStart != null)
@@ -203,7 +203,7 @@ namespace InteractSystem.Structure
         /// 移除触发器
         /// </summary>
         /// <param name="action"></param>
-        public void OnStopAction(OperateNode action)
+        public void OnStopAction(OperaterNode action)
         {
             startedActions.Remove(action);
             if (onCtrlStop != null && startedActions.Find(x => x.CtrlType == action.CtrlType) == null)

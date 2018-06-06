@@ -14,7 +14,7 @@ namespace InteractSystem
         protected Coroutine coroutine;
         private Dictionary<ControllerType, int> activeTypes = new Dictionary<ControllerType, int>();
         public static bool log = false;
-        public UnityAction<Graph.OperateNode> onActionStart;
+        public UnityAction<Graph.OperaterNode> onActionStart;
         private CameraController cameraCtrl
         {
             get

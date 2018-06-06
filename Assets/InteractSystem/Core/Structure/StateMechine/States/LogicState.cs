@@ -77,9 +77,9 @@ namespace InteractSystem.Structure
             Debug.Log(parentList.Count);
             foreach (var item in parentList)
             {
-                if (item.node is Graph.OperateNode)
+                if (item.node is Graph.OperaterNode)
                 {
-                    var node = item.node as Graph.OperateNode;
+                    var node = item.node as Graph.OperaterNode;
                     Debug.Log(node + ": statu:" + node.Statu);
                     if (node.Statu != ExecuteStatu.Completed)
                     {

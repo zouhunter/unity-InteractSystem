@@ -11,7 +11,7 @@ namespace InteractSystem.Drawer
         public const float smallButtonWidth = 20f;
         public const float middleButtonWidth = 45f;
         public const float bigButtonWidth = 60f;
-        public const float span = 5;
+        public const float padding = 5;
         public static string searchWord;
         public static Color IgnoreColor
         {
@@ -40,6 +40,17 @@ namespace InteractSystem.Drawer
             {
                 return EditorGUIUtility.isProSkin ? Color.cyan : Color.white;
             }
+        }
+
+        /// <summary>
+        /// 手动把脚本绘制出来
+        /// </summary>
+        /// <param name="script_prop"></param>
+        public static void DrawDisableProperty(SerializedProperty script_prop)
+        {
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.PropertyField(script_prop,true);
+            EditorGUI.EndDisabledGroup();
         }
         /// <summary>
         /// address: ".prefab"
@@ -85,14 +96,14 @@ namespace InteractSystem.Drawer
         }
         public static Rect DrawBoxRect(Rect orignalRect, string index)
         {
-            var idRect = new Rect(orignalRect.x - span, orignalRect.y + span, 20, 20);
+            var idRect = new Rect(orignalRect.x - padding, orignalRect.y + padding, 20, 20);
             EditorGUI.LabelField(idRect, index.ToString());
-            var boxRect = PaddingRect(orignalRect, span * 0.5f);
+            var boxRect = PaddingRect(orignalRect, padding * 0.5f);
             GUI.Box(boxRect, "");
             var rect = PaddingRect(orignalRect);
             return rect;
         }
-        public static Rect PaddingRect(Rect orignalRect, float padding = span)
+        public static Rect PaddingRect(Rect orignalRect, float padding = padding)
         {
             var rect = new Rect(orignalRect.x + padding, orignalRect.y + padding, orignalRect.width - padding * 2, orignalRect.height - padding * 2);
             return rect;

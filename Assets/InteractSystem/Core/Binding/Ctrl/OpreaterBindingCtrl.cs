@@ -7,11 +7,11 @@ using System.Collections.Generic;
 namespace InteractSystem.Binding
 {
 
-    public class ActionBindingCtrl
+    public class OpreaterBindingCtrl
     { 
-        public ActionBinding[] bindings;
+        public OperaterBinding[] bindings;
 
-        public ActionBindingCtrl(ActionBinding[] bindings)
+        public OpreaterBindingCtrl(OperaterBinding[] bindings)
         {
             if (bindings != null && bindings.Length > 0)
             {
@@ -19,16 +19,16 @@ namespace InteractSystem.Binding
             }
         }
 
-        private static ActionBinding[] CreateInstenceBindings(ActionBinding[] bindings)
+        private static OperaterBinding[] CreateInstenceBindings(OperaterBinding[] bindings)
         {
-            var worps = new ActionBinding[bindings.Length];
+            var worps = new OperaterBinding[bindings.Length];
             for (int i = 0; i < bindings.Length; i++)
             {
                 worps[i] = bindings[i];
             }
             return worps;
         }
-        public void OnBeforeActionsStart(Graph.OperateNode node,bool auto)
+        public void OnBeforeActionsStart(Graph.OperaterNode node,bool auto)
         {
             if (bindings == null) return;
             foreach (var item in bindings)
@@ -36,7 +36,7 @@ namespace InteractSystem.Binding
                 item.OnStartExecuteInternal(node,auto);
             }
         }
-        public void OnBeforeActionsUnDo(Graph.OperateNode node)
+        public void OnBeforeActionsUnDo(Graph.OperaterNode node)
         {
             if (bindings == null) return;
             foreach (var item in bindings)
@@ -44,7 +44,7 @@ namespace InteractSystem.Binding
                 item.OnUnDoExecuteInternal(node);
             }
         }
-        public void OnBeforeActionsPlayEnd(Graph.OperateNode node,bool force)
+        public void OnBeforeActionsPlayEnd(Graph.OperaterNode node,bool force)
         {
             if (bindings == null) return;
             foreach (var item in bindings)

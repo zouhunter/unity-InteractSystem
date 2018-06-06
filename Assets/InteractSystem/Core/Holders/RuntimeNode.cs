@@ -4,7 +4,7 @@ using InteractSystem.Graph;
 
 namespace InteractSystem.Actions
 {
-    public abstract class RuntimeNode<T> : OperateNode where T : ActionItem, ISupportElement
+    public abstract class RuntimeNode<T> : OperaterNode where T : ActionItem, ISupportElement
     {
         protected ElementPool<T> elementPool = new ElementPool<T>();
         public abstract List<string> NeedElements { get; }

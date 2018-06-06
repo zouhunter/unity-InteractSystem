@@ -6,8 +6,8 @@ using NodeGraph.DataModel;
 
 namespace InteractSystem.Graph
 {
-    [CustomNodeView(typeof(OperateNode))]
-    public class OperateNodeView : ActionNodeView
+    [CustomNodeView(typeof(OperaterNode))]
+    public class OperaterNodeView : ActionNodeView
     {
         public override string Category
         {
@@ -30,7 +30,7 @@ namespace InteractSystem.Graph
             inactiveStyle.border = new RectOffset(11, 11, 11, 19);
             return inactiveStyle;
         }
-        public OperateNode node { get { return target as OperateNode; } }
+        public OperaterNode node { get { return target as OperaterNode; } }
 
         public override void OnNodeGUI(Rect position, NodeData data)
         {
