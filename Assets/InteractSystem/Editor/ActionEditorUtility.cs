@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace InteractSystem
 {
-    public class ActionEditorUtility
+    public static class ActionEditorUtility
     {
         //记录坐标加载时,不需要记录下列信息变化
         private static List<string> ignoreModifyed = new List<string>
@@ -48,6 +48,13 @@ namespace InteractSystem
                     PrefabUtility.ReplacePrefab(gitem, prefab, ReplacePrefabOptions.ConnectToPrefab);
                 }
             }
+        }
+
+        internal static SerializedProperty AddItem(this SerializedProperty arrayProperty)
+        {
+            arrayProperty.InsertArrayElementAtIndex(arrayProperty.arraySize);
+            var prop = arrayProperty.GetArrayElementAtIndex(arrayProperty.arraySize - 1);
+            return prop;
         }
 
         internal static void LoadPrefab(GameObject prefab, ref int instanceID)
@@ -174,7 +181,7 @@ namespace InteractSystem
             }
             instanceIDProp.intValue = 0;
         }
-        internal static void InsertItem(SerializedProperty prefabProp, UnityEngine.Object obj)
+        internal static void InsertPrefab(SerializedProperty prefabProp, UnityEngine.Object obj)
         {
             var prefab = PrefabUtility.GetPrefabParent(obj);
             if (prefab != null)
@@ -258,6 +265,19 @@ namespace InteractSystem
             ResetChildPropertyValues(property);
         }
 
+        public static bool HaveElement(this SerializedProperty arryProp,string path, UnityEngine. Object obj)
+        {
+            for (int i = 0; i < arryProp.arraySize; i++)
+            {
+                var prop = arryProp.GetArrayElementAtIndex(i);
+                var prefab_prop = prop.FindPropertyRelative(path);
+                if (prefab_prop.objectReferenceValue == obj)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         private static void ResetChildPropertyValues(SerializedProperty element)
         {
             if (!element.hasChildren)

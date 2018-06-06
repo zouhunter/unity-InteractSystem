@@ -16,6 +16,7 @@ namespace InteractSystem.Drawer
         protected SerializedProperty property;
         protected IList list;
         protected Type type;
+        public ReorderableList.HeaderCallbackDelegate drawHeaderCallback { get; set; }
         public virtual void InitReorderList(SerializedProperty property)
         {
             this.property = property;
@@ -39,7 +40,11 @@ namespace InteractSystem.Drawer
 
         protected abstract float ElementHeightCallback(int index);
         protected abstract void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused);
-        protected abstract void DrawHeaderCallBack(Rect rect);
+        protected virtual void DrawHeaderCallBack(Rect rect)
+        {
+            if (drawHeaderCallback != null)
+                drawHeaderCallback.Invoke(rect);
+        }
         public virtual void DoLayoutList()
         {
             reorderList.DoLayoutList();

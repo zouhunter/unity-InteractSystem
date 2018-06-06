@@ -71,7 +71,7 @@ namespace InteractSystem.Drawer
                             var obj = DragAndDrop.objectReferences[0];
                             if (obj is GameObject)
                             {
-                                ActionEditorUtility.InsertItem(prefabProp, obj);
+                                ActionEditorUtility.InsertPrefab(prefabProp, obj);
                             }
                             DragAndDrop.AcceptDrag();
                         }

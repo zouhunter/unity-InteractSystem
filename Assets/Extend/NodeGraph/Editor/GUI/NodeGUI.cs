@@ -82,7 +82,7 @@ namespace NodeGraph
                 m_controller = value;
             }
         }
-        
+
         public string Id
         {
             get
@@ -681,9 +681,9 @@ namespace NodeGraph
             }
             if (EditorGUI.EndChangeCheck())
             {
-                if(Controller!=null) Controller.Validate(this);
+                if (Controller != null) Controller.Validate(this);
                 EditorUtility.SetDirty(Data.Object);
-                EditorUtility.SetDirty(ParentGraph);
+                if (ParentGraph) EditorUtility.SetDirty(ParentGraph);
             }
         }
 
