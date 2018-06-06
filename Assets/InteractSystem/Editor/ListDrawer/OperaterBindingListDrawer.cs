@@ -10,91 +10,54 @@ using System.Linq;
 
 namespace InteractSystem.Drawer
 {
-    public class OperaterBindingListDrawer : ReorderListDrawer
+    public class OperaterBindingListDrawer : BindingListDrawer
     {
-        private List<Type> _operateBindingTypes;
-        protected List<Type> operateBindingTypes
-        {
-            get
-            {
-                if (_operateBindingTypes == null || _operateBindingTypes.Count == 0)
-                {
-                    _operateBindingTypes = typeof(ActionGroup).Assembly.GetTypes().
-                        Where(x => x.IsSubclassOf(typeof(Binding.OperaterBinding))).ToList();
-                }
-                return _operateBindingTypes;
-            }
+        protected List<Binding.OperaterBinding> dragBindings = new List<Binding.OperaterBinding>();
 
-        }
-        private List<Binding.OperaterBinding> dragBindings = new List<Binding.OperaterBinding>();
-        private float elementHeight = EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2;
-        private Editor drawer;
-
-        protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
+        protected override void DrawDragField(Rect objRect, SerializedProperty prop)
         {
-            rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
-            var prop = property.GetArrayElementAtIndex(index);
-            var content = prop.objectReferenceValue == null ? new GUIContent("Null") : new GUIContent(prop.objectReferenceValue.GetType().Name);
-            EditorGUI.PropertyField(rect, prop, content);
-            if(isActive)
-            {
-                if(prop.objectReferenceValue != null)
-                {
-                    DrawOperateBindingDetail(prop.objectReferenceValue as Binding.OperaterBinding);
-                }
-            }
-        }
-
-        protected override void DrawHeaderCallBack(Rect rect)
-        {
-            var btnRect = new Rect(rect.x + rect.width - ActionGUIUtil.bigButtonWidth, rect.y, ActionGUIUtil.bigButtonWidth, rect.height);
-            if (GUI.Button(btnRect, "new", EditorStyles.miniButtonRight))
-            {
-                OnAddBindingItem();
-            }
-        }
-
-        protected override float ElementHeightCallback(int index)
-        {
-            return elementHeight;
-        }
-        public override void DoLayoutList()
-        {
-            base.DoLayoutList();
-            var rect = ActionGUIUtil.GetDragRect();
-
-            if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects(".asset", dragBindings);
             }
-            else if (Event.current.type == EventType.dragPerform && rect.Contains(Event.current.mousePosition))
+
+            else if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition))
             {
                 foreach (var item in dragBindings)
                 {
-                    property.InsertArrayElementAtIndex(property.arraySize);
-                    var prop = property.GetArrayElementAtIndex(property.arraySize - 1);
                     prop.objectReferenceValue = item;
+                    break;
                 }
             }
         }
-        protected void DrawOperateBindingDetail(Binding.OperaterBinding operaterBinding)
+
+        protected override void DrawDragField(Rect objRect)
         {
-            Editor.CreateCachedEditor(operaterBinding, typeof(Editor), ref drawer);
-            drawer.OnInspectorGUI();
-        }
-        private void OnAddBindingItem()
-        {
-            var options = operateBindingTypes.ConvertAll(x => new GUIContent(x.FullName)).ToArray();
-            Debug.Log(options.Length);
-            EditorUtility.DisplayCustomMenu(new Rect(Event.current.mousePosition, Vector2.zero), options, -1, (data, ops, s) =>
+            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
             {
-                if (s >= 0)
+                ActionGUIUtil.UpdateDragedObjects(".asset", dragBindings);
+            }
+
+            else if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition))
+            {
+                foreach (var item in dragBindings)
                 {
-                    var type = operateBindingTypes[s];
-                    var asset = ScriptableObject.CreateInstance(type);
-                    ProjectWindowUtil.CreateAsset(asset, "new_" + type.Name + ".asset");
+                    var prop = property.AddItem();
+                    prop.objectReferenceValue = item;
+                    break;
                 }
-            }, null);
+            }
+        }
+
+        protected override void DrawObjectField(Rect objRect, SerializedProperty prop)
+        {
+            prop.objectReferenceValue = EditorGUI.ObjectField(objRect, prop.objectReferenceValue, typeof(Binding.OperaterBinding), false);
+        }
+
+        protected override List<Type> LoadBindingTypes()
+        {
+            return typeof(ActionGroup).Assembly.GetTypes().
+                       Where(x => x.IsSubclassOf(typeof(Binding.OperaterBinding))).ToList();
         }
     }
 }

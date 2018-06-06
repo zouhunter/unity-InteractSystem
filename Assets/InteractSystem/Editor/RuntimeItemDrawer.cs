@@ -105,7 +105,7 @@ namespace InteractSystem.Drawer
             }
             else
             {
-                ActionEditorUtility.SavePrefab(instanceIDProp);
+                ActionEditorUtility.SavePrefab(instanceIDProp,true);
             }
         }
 

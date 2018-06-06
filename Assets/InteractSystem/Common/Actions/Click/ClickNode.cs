@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using NodeGraph;
-namespace InteractSystem.Actions
+namespace InteractSystem.Common.Actions
 {
     [AddComponentMenu(MenuName.ClickObj)]
     [CustomNode("Operate/Click", 10, "ActionSystem")]

@@ -78,7 +78,7 @@ namespace InteractSystem.Drawer
 
                 if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
                 {
-                    ActionGUIUtil.UpdateDragedObjects<GameObject>("prefab", dragedGameObjs);
+                    ActionGUIUtil.UpdateDragedObjects<GameObject>(".prefab", dragedGameObjs);
                 }
 
                 else if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition))
@@ -108,7 +108,7 @@ namespace InteractSystem.Drawer
             {
                 position.y += EditorGUIUtility.singleLineHeight + 2f;
                 EditorGUI.BeginChangeCheck();
-                DrawChildInContent(property, position);
+                ActionGUIUtil.DrawChildInContent(property, position,null, "ignore",-1);
                 if(EditorGUI.EndChangeCheck())
                 {
                     if (instenceTranform)
@@ -149,24 +149,7 @@ namespace InteractSystem.Drawer
             }
         }
 
-        private void DrawChildInContent(SerializedProperty serializedProperty, Rect position)
-        {
-            bool enterChildren = true;
-            var endProperty = serializedProperty.FindPropertyRelative("ignore");
-            while (serializedProperty.NextVisible(enterChildren))
-            {
-                EditorGUI.indentLevel = serializedProperty.depth - 1;
-                position.height = EditorGUI.GetPropertyHeight(serializedProperty, null, true);
-                EditorGUI.PropertyField(position, serializedProperty, true);
-                position.y += position.height + 2f;
-                enterChildren = false;
-
-                if (SerializedProperty.EqualContents(serializedProperty, endProperty))
-                {
-                    break;
-                }
-            }
-        }
+       
     }
 
 }

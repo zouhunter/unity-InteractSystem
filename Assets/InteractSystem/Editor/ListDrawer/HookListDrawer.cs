@@ -10,39 +10,60 @@ using System.Linq;
 
 namespace InteractSystem.Drawer
 {
-    public class HookListDrawer : ReorderListDrawer
+    public class HookListDrawer : ScriptObjectListDrawer
     {
         private string title;
-        private Editor editor;
+        private List<ActionHook> dragHooks = new List<ActionHook>();
         public HookListDrawer(string title)
         {
             this.title = title;
         }
-        protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
-            var prop = property.GetArrayElementAtIndex(index);
-            var content = prop.objectReferenceValue == null ? new GUIContent("Null"): new GUIContent(prop.objectReferenceValue.GetType().FullName);
-            EditorGUI.ObjectField(rect,prop, content);
 
-            if(isActive)
+      
+        protected override void DrawObjectField(Rect objRect, SerializedProperty prop)
+        {
+            prop.objectReferenceValue = EditorGUI.ObjectField(objRect, prop.objectReferenceValue, typeof(ActionHook), false);
+        }
+
+        protected override void DrawDragField(Rect objRect, SerializedProperty prop)
+        {
+            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
             {
-                if(prop.objectReferenceValue != null)
+                ActionGUIUtil.UpdateDragedObjects<ActionHook>(".asset", dragHooks);
+            }
+
+            else if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition))
+            {
+                foreach (var item in dragHooks)
                 {
-                    Editor.CreateCachedEditor(prop.objectReferenceValue, typeof(Editor), ref editor);
-                    editor.OnInspectorGUI();
+                    prop.objectReferenceValue = item;
+                    break;
                 }
             }
         }
-
         protected override void DrawHeaderCallBack(Rect rect)
         {
-            EditorGUI.LabelField(rect, title);
+            base.DrawHeaderCallBack(rect);
+            var labelRect = new Rect(rect.x, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
+            EditorGUI.LabelField(labelRect, title);
         }
-
-        protected override float ElementHeightCallback(int index)
+        protected override void DrawDragField(Rect rect)
         {
-            return EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2;
+
+            if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
+            {
+                ActionGUIUtil.UpdateDragedObjects<ActionHook>(".asset", dragHooks);
+            }
+
+            else if (Event.current.type == EventType.DragPerform && rect.Contains(Event.current.mousePosition))
+            {
+                foreach (var item in dragHooks)
+                {
+                    var prop = property.AddItem();
+                    prop.objectReferenceValue = item;
+                    break;
+                }
+            }
         }
     }
 }

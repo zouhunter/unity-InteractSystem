@@ -11,59 +11,16 @@ using InteractSystem.Binding;
 
 namespace InteractSystem.Drawer
 {
-    public class CommandBindingListDrawer : ReorderListDrawer
+    public class CommandBindingListDrawer : BindingListDrawer
     {
-        private List<Type> _commandBindingTypes;
-        protected List<Type> commandBindingTypes
-        {
-            get
-            {
-                if (_commandBindingTypes == null || _commandBindingTypes.Count == 0)
-                {
-                    _commandBindingTypes = typeof(ActionGroup).Assembly.GetTypes().
-                        Where(x => x.IsSubclassOf(typeof(Binding.CommandBinding))).ToList();
-                }
-                return _commandBindingTypes;
-            }
-
-        }
         private List<Binding.CommandBinding> dragBindings = new List<Binding.CommandBinding>();
-        private float elementHeight = EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2;
-        private Editor drawer;
-
-        protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
+        protected override List<Type> LoadBindingTypes()
         {
-            rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
-            var prop = property.GetArrayElementAtIndex(index);
-            var content = prop.objectReferenceValue == null ? new GUIContent("Null") : new GUIContent(prop.objectReferenceValue.GetType().Name);
-            EditorGUI.PropertyField(rect, prop, content);
-            if (isActive)
-            {
-                if(prop.objectReferenceValue != null)
-                {
-                    DrawCommandBindigDetail(prop.objectReferenceValue as Binding.CommandBinding);
-                }
-            }
+            return typeof(ActionGroup).Assembly.GetTypes().
+                       Where(x => x.IsSubclassOf(typeof(Binding.CommandBinding))).ToList();
         }
-
-        protected override void DrawHeaderCallBack(Rect rect)
+        protected override void DrawDragField(Rect rect)
         {
-            var btnRect = new Rect(rect.x + rect.width - ActionGUIUtil.bigButtonWidth, rect.y, ActionGUIUtil.bigButtonWidth, rect.height);
-            if (GUI.Button(btnRect, "new", EditorStyles.miniButtonRight))
-            {
-                OnAddBindingItem();
-            }
-        }
-
-        protected override float ElementHeightCallback(int index)
-        {
-            return elementHeight;
-        }
-        public override void DoLayoutList()
-        {
-            base.DoLayoutList();
-            var rect = ActionGUIUtil.GetDragRect();
-
             if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects(".asset", dragBindings);
@@ -78,26 +35,28 @@ namespace InteractSystem.Drawer
                 }
             }
         }
-
-        protected void DrawCommandBindigDetail(CommandBinding commandBinding)
+        protected override void DrawDragField(Rect objRect, SerializedProperty prop)
         {
-            Editor.CreateCachedEditor(commandBinding, typeof(Editor),ref drawer);
-            drawer.OnInspectorGUI();
+            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
+            {
+                ActionGUIUtil.UpdateDragedObjects(".asset", dragBindings);
+            }
+
+            else if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition))
+            {
+                foreach (var item in dragBindings)
+                {
+                    prop.objectReferenceValue = item;
+                    break;
+                }
+            }
         }
 
-        protected void OnAddBindingItem()
+        protected override void DrawObjectField(Rect objRect, SerializedProperty prop)
         {
-            var options = commandBindingTypes.ConvertAll(x => new GUIContent(x.FullName)).ToArray();
-            Debug.Log(options.Length);
-            EditorUtility.DisplayCustomMenu(new Rect(Event.current.mousePosition, Vector2.zero), options, -1, (data, ops, s) =>
-            {
-                if (s >= 0)
-                {
-                    var type = commandBindingTypes[s];
-                    var asset = ScriptableObject.CreateInstance(type);
-                    ProjectWindowUtil.CreateAsset(asset, "new_" + type.Name + ".asset");
-                }
-            }, null);
+            prop.objectReferenceValue = EditorGUI.ObjectField(objRect, prop.objectReferenceValue, typeof(Binding.CommandBinding), false);
         }
     }
+
+
 }

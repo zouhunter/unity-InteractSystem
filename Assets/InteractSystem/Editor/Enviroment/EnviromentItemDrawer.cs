@@ -53,16 +53,14 @@ namespace InteractSystem.Drawer
             {
                 if (instanceID_prop.intValue == 0)
                 {
-                    var instence = PrefabUtility.InstantiatePrefab(prefab_prop.objectReferenceValue);
-                    instanceID_prop.intValue = instence.GetInstanceID();
+                    ActionEditorUtility.LoadPrefab(prefab_prop, instanceID_prop);
                 }
                 else
                 {
                     var instence = EditorUtility.InstanceIDToObject(instanceID_prop.intValue);
                     if (instence)
                     {
-                        GameObject.DestroyImmediate(instence);
-                        instanceID_prop.intValue = 0;
+                        ActionEditorUtility.SavePrefab(instanceID_prop,true);
                     }
                 }
             }

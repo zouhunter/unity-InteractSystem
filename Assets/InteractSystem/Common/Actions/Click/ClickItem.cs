@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace InteractSystem.Actions
+namespace InteractSystem.Common.Actions
 {
     public class ClickItem : ActionItem
     {

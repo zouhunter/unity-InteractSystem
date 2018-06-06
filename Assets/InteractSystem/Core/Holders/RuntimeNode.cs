@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using InteractSystem.Graph;
 
-namespace InteractSystem.Actions
+namespace InteractSystem
 {
     public abstract class RuntimeNode<T> : OperaterNode where T : ActionItem, ISupportElement
     {

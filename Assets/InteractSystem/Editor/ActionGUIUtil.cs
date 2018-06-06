@@ -4,6 +4,8 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using System;
+
 namespace InteractSystem.Drawer
 {
     public static class ActionGUIUtil
@@ -13,6 +15,8 @@ namespace InteractSystem.Drawer
         public const float bigButtonWidth = 60f;
         public const float padding = 5;
         public static string searchWord;
+        public static Dictionary<UnityEngine.Object, Editor> editorDic = new Dictionary<UnityEngine.Object, Editor>();
+        public static Dictionary<UnityEngine.Object, SerializedObject> serializedDic = new Dictionary<UnityEngine.Object, SerializedObject>();
         public static Color IgnoreColor
         {
             get
@@ -42,6 +46,68 @@ namespace InteractSystem.Drawer
             }
         }
 
+        public static Editor CreateCachedEditor(UnityEngine.Object objectReferenceValue)
+        {
+            if (!editorDic.ContainsKey(objectReferenceValue) || editorDic[objectReferenceValue] == null)
+            {
+                editorDic[objectReferenceValue] = Editor.CreateEditor(objectReferenceValue);
+            }
+            return editorDic[objectReferenceValue];
+        }
+
+        public static SerializedObject CreateCachedSerializedObject(UnityEngine.Object objectReferenceValue)
+        {
+            if (!serializedDic.ContainsKey(objectReferenceValue) || serializedDic[objectReferenceValue] == null)
+            {
+                serializedDic[objectReferenceValue] = new SerializedObject(objectReferenceValue);
+            }
+            return serializedDic[objectReferenceValue];
+        }
+
+        /// <summary>
+        /// 在指定区域绘制默认属性
+        /// </summary>
+        /// <param name="serializedProperty"></param>
+        /// <param name="position"></param>
+        /// <param name="finalPropertyName"></param>
+        public static void DrawChildInContent(SerializedProperty serializedProperty, Rect position,List<string> ignorePorps =null, string finalPropertyName = null,int level = 0)
+        {
+            bool enterChildren = true;
+            SerializedProperty endProperty = string.IsNullOrEmpty(finalPropertyName) ? null:  serializedProperty.FindPropertyRelative(finalPropertyName);
+            while (serializedProperty.NextVisible(enterChildren))
+            {
+                if (ignorePorps != null && ignorePorps.Contains(serializedProperty.propertyPath)) continue;
+
+                EditorGUI.indentLevel = serializedProperty.depth + level;
+                position.height = EditorGUI.GetPropertyHeight(serializedProperty, null, true);
+                EditorGUI.PropertyField(position, serializedProperty, true);
+                position.y += position.height + 2f;
+                enterChildren = false;
+
+                if (SerializedProperty.EqualContents(serializedProperty, endProperty))
+                {
+                    break;
+                }
+            }
+        }
+        /// <summary>
+        /// 计算
+        /// </summary>
+        internal static float GetSerializedObjectHeight(SerializedObject se,List<string> ignorePorps = null)
+        {
+            var prop = se.GetIterator();
+            var enterChildern = true;
+            float hight = 0;
+            while (prop.NextVisible(enterChildern))
+            {
+                enterChildern = false;
+                if (ignorePorps != null && ignorePorps.Contains(prop.propertyPath))
+                    continue;
+                hight += EditorGUI.GetPropertyHeight(prop, null, true);
+            }
+            return hight ;
+        }
+
         /// <summary>
         /// 手动把脚本绘制出来
         /// </summary>
@@ -49,7 +115,7 @@ namespace InteractSystem.Drawer
         public static void DrawDisableProperty(SerializedProperty script_prop)
         {
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.PropertyField(script_prop,true);
+            EditorGUILayout.PropertyField(script_prop, true);
             EditorGUI.EndDisabledGroup();
         }
         /// <summary>
@@ -58,7 +124,7 @@ namespace InteractSystem.Drawer
         /// <typeparam name="T"></typeparam>
         /// <param name="address"></param>
         /// <param name="dragedGameObject"></param>
-        public static void UpdateDragedObjects<T>(string address,List<T> dragedGameObject) where T:UnityEngine.Object
+        public static void UpdateDragedObjects<T>(string address, List<T> dragedGameObject) where T : UnityEngine.Object
         {
             dragedGameObject.Clear();
             foreach (var item in DragAndDrop.objectReferences)

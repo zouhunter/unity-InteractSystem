@@ -179,18 +179,22 @@ namespace InteractSystem
             }
             instanceID = 0;
         }
-        internal static void SavePrefab(SerializedProperty instanceIDProp)
+        internal static void SavePrefab(SerializedProperty instanceIDProp,bool ignoreTranform)
         {
             var gitem = EditorUtility.InstanceIDToObject(instanceIDProp.intValue);
             if (gitem != null)
             {
-                ActionEditorUtility.ApplyPrefab(gitem as GameObject);
+                if (!ignoreTranform || !Ignore(gitem)){
+                    ActionEditorUtility.ApplyPrefab(gitem as GameObject);
+                }
                 GameObject.DestroyImmediate(gitem);
             }
             instanceIDProp.intValue = 0;
         }
-        private static bool Ignore(PropertyModification[] modifyed)
+        private static bool Ignore(UnityEngine.Object instence)
         {
+            var modifyed = PrefabUtility.GetPropertyModifications(instence);
+
             foreach (var item in modifyed)
             {
                 if (!coondinatePaths.Contains(item.propertyPath))
@@ -209,8 +213,7 @@ namespace InteractSystem
             {
                 var transform = (gitem as GameObject).transform;
                 ActionEditorUtility.SaveCoordinatesInfo(coordinate, transform);
-                var modifyeds = PrefabUtility.GetPropertyModifications(gitem);
-                if (!Ignore(modifyeds))
+                if (!Ignore(gitem))
                 {
                     ActionEditorUtility.ApplyPrefab(gitem as GameObject);
                 }

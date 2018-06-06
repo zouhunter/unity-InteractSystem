@@ -126,11 +126,25 @@ MonoBehaviour:
   m_Name: WorldActionSystem.Actions.ClickNode
   m_EditorClassIdentifier: 
   _name: "\u70B9\u51FBclick01"
-  startHooks: []
+  startHooks:
+  - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
   completeHooks: []
-  bindings: []
-  environments: []
+  bindings:
+  - {fileID: 0}
+  environments:
+  - instenceID: 0
+    guid: 9ce4f5711f5969143805abbb0bf14113
+    enviromentName: Cube
+    originalState: 0
+    startState: 0
+    completeState: 0
+    coordinate:
+      localPosition: {x: -2.26, y: 4.78, z: 4.35}
+      localEulerAngles: {x: 33, y: 33, z: 0}
+      localScale: {x: 3, y: 3, z: 3}
+    ignore: 0
   clickList:
+  - click01
   - click01
 --- !u!114 &114692948141289052
 MonoBehaviour:

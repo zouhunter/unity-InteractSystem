@@ -9,6 +9,9 @@ using InteractSystem.Graph;
 
 public class PrintBinding : InteractSystem.Binding.OperaterBinding
 {
+    public int a;
+    public string b;
+    public float[] c;
     public override void OnStartExecuteInternal(OperaterNode node, bool auto)
     {
         base.OnStartExecuteInternal(node, auto);

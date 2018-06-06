@@ -13,6 +13,8 @@ namespace InteractSystem.Drawer
     public class NodeListDrawer : ReorderListDrawer
     {
         protected Editor drawer;
+        protected Dictionary<Graph.OperaterNode, Editor> drawerDic = new Dictionary<Graph.OperaterNode, Editor>();
+
         public override void InitReorderList(IList list, Type type)
         {
             base.InitReorderList(list, type);
@@ -25,12 +27,21 @@ namespace InteractSystem.Drawer
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
             var item = list[index] as Graph.OperaterNode;
             EditorGUI.ObjectField(rect, item.Name, item, typeof(Graph.OperaterNode), false);
-            if (isActive)
+            if (isActive && item != null)
             {
-                Editor.CreateCachedEditor(item, typeof(OperateNodeDrawer), ref drawer);
+                drawer = GetEditor(item as Graph.OperaterNode);
                 drawer.OnInspectorGUI();
             }
         }
+        private Editor GetEditor(Graph.OperaterNode node)
+        {
+            if (!drawerDic.ContainsKey(node)||drawerDic[node] == null)
+            {
+                drawerDic[node] = Editor.CreateEditor(node);
+            }
+            return drawerDic[node];
+        }
+
         protected override void DrawHeaderCallBack(Rect rect)
         {
             EditorGUI.LabelField(rect, "");
