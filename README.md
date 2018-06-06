@@ -1,27 +1,14 @@
-# ActionSystem
-安装卸载快进回退
+# InteractSystem (3维环境交互系统)
 
-## 1.模块微观化
-![ActionSystem](Pics/1.png)
-## 2.步骤命令化
-![ActionCommand](Pics/2.png)
-## 3.可拿起可放下的元素
-![PickupAbleElement](Pics/3.png)
-## 4.点击步骤
-![ClickObj](Pics/4.png)
-## 5.连线步骤
-![Connect](Pics/5.png)
-## 6.安放步骤
-![InstallObj](Pics/6.png)
-## 7.触发步骤
-![MatchObj](Pics/7.png)
-## 8.旋转步骤
-![RotateObj](Pics/8.png)
-## 9.拉拽步骤
-![Drag](Pics/9.png)
-## 11.组装步骤
-![Link](Pics/10.png)
-## 12.装载步骤
-![Charge](Pics/11.png)
-## 13.拔除步骤(soon)
-## 14.....
+## 相关配制界面
+![-](Pics/1.png)
+![-](Pics/2.png)
+![-](Pics/3.png)
+![-](Pics/4.png)
+![-](Pics/5.png)
+![-](Pics/6.png)
+![-](Pics/7.png)
+![-](Pics/8.png)
+## 操作对象列表
+## 工作环境搭建
+## 绑定执行功能
