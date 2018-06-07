@@ -74,17 +74,12 @@ namespace InteractSystem.Enviroment
                 {
                     environmentDic[info.ID] = item.CreateCopy();
                 }
+                else
+                {
+                    Debug.LogError("缺少环境配制 :" + info.enviromentName);
+                }
             }
-
-            if (environmentDic.ContainsKey(info.ID))
-            {
-                return environmentDic[info.ID];
-            }
-            else
-            {
-                Debug.LogError("缺少环境配制 :" + info.enviromentName);
-                return null;
-            }
+            return environmentDic[info.ID];
         }
 
         private void SetEnviroment(EnviromentItem obj, Coordinate coordinates, bool active)

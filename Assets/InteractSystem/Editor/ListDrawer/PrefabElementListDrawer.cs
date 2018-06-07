@@ -43,9 +43,7 @@ namespace InteractSystem.Drawer
                     if (!ActionEditorUtility.HaveElement(property, "prefab", item))
                     {
                         var prop = ActionEditorUtility.AddItem(property);
-                        var prefabProp = prop.FindPropertyRelative("prefab");
-                        prefabProp.objectReferenceValue = item;
-
+                        OnAddItem(prop, item);
                     }
                     else
                     {
@@ -53,6 +51,11 @@ namespace InteractSystem.Drawer
                     }
                 }
             }
+        }
+        protected virtual void OnAddItem(SerializedProperty prop,UnityEngine.Object obj)
+        {
+            var prefabProp = prop.FindPropertyRelative("prefab");
+            prefabProp.objectReferenceValue = obj;
         }
     }
 }

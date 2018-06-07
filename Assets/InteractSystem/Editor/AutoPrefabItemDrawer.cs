@@ -90,6 +90,8 @@ namespace InteractSystem.Drawer
                             if (obj is GameObject)
                             {
                                 ActionEditorUtility.InsertPrefab(prefabProp, obj);
+                                var coordinate = property.FindPropertyRelative("coordinate");
+                                ActionEditorUtility.SaveCoordinatesInfo(coordinate, (obj as GameObject).transform);
                             }
                             DragAndDrop.AcceptDrag();
                         }

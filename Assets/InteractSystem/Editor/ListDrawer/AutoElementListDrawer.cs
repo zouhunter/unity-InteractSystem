@@ -12,6 +12,11 @@ namespace InteractSystem.Drawer
 {
     public class AutoElementListDrawer : PrefabElementListDrawer
     {
-       
+        protected override void OnAddItem(SerializedProperty prop, UnityEngine.Object obj)
+        {
+            base.OnAddItem(prop, obj);
+            var coordinate = prop.FindPropertyRelative("coordinate");
+            ActionEditorUtility.SaveCoordinatesInfo(coordinate, (obj as GameObject).transform);
+        }
     }
 }

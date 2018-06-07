@@ -27,6 +27,7 @@ namespace InteractSystem
         public EventController EventCtrl { get; private set; }
         public EventTransfer EventTransfer { get; private set; }
         public Enviroment.EnviromentCtrl enviromentCtrl { get; private set; }
+        public AutoElementCtrl autoElementCtrl { get; private set; }
         #endregion
 
         #region UnityFunctions
@@ -37,10 +38,17 @@ namespace InteractSystem
 
         private void OnEnable()
         {
+            InitAutoElementCtrl();
             InitEnviromentCtrl();
             InitActionCommands();
             ActionSystem.RegistGroup(this);
             ElementController.Instence.RegistRunTimeElements(runTimeElements);
+        }
+
+        private void InitAutoElementCtrl()
+        {
+            autoElementCtrl = new AutoElementCtrl(transform,autoElements);
+            autoElementCtrl.Create();
         }
 
         private void InitEnviromentCtrl()
