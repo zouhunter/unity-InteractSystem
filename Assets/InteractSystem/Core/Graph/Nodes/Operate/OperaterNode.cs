@@ -53,7 +53,7 @@ namespace InteractSystem.Graph
         private Binding.OperaterBinding[] bindings;
         [SerializeField]
         private Enviroment.EnviromentInfo[] environments;
-
+        protected virtual void Awake() { }
         protected override void OnEnable()
         {
             base.OnEnable();

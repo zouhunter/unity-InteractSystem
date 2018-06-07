@@ -9,6 +9,7 @@ namespace InteractSystem
         protected ElementPool<T> elementPool = new ElementPool<T>();
         public abstract List<string> NeedElements { get; }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
+
         protected override void OnEnable()
         {
             base.OnEnable();

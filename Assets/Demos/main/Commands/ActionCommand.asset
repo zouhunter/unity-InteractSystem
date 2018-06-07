@@ -14,8 +14,8 @@ MonoBehaviour:
   m_allNodes:
   - m_name: Click
     m_id: 14d7a745-b498-459a-91b8-ea65a8aa957c
-    m_x: 260
-    m_y: 60
+    m_x: 276
+    m_y: 120
     m_node: {fileID: 114584149696806938}
     m_inputPoints:
     - id: 1856361f-a923-494f-9ae9-60ff21e4342e
@@ -74,30 +74,29 @@ MonoBehaviour:
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: command01
-  commandBindings:
-  - {fileID: 11400000, guid: d87bfbcac2f2c1e428eb1b8fb16b7d3e, type: 2}
+  commandBindings: []
   environments:
   - instenceID: 0
     guid: dee1bb32799ac234ab7a8c81dcf970dd
     enviromentName: anim1
-    originalState: 0
-    startState: 0
-    completeState: 0
+    originalState: 1
+    startState: 1
+    completeState: 1
     coordinate:
       localPosition: {x: -1.99, y: -0.05, z: 0.08}
       localEulerAngles: {x: 0, y: 1, z: 1}
       localScale: {x: 1, y: 1, z: 1}
     ignore: 0
   - instenceID: 0
-    guid: dee1bb32799ac234ab7a8c81dcf970dd
-    enviromentName: anim1
+    guid: cbe03a4b827631240b0eaf290e1f1f3e
+    enviromentName: anim0
     originalState: 0
     startState: 0
     completeState: 0
     coordinate:
-      localPosition: {x: 0, y: 0, z: 0}
+      localPosition: {x: -486.96, y: -413.18, z: 0}
       localEulerAngles: {x: 0, y: 0, z: 0}
-      localScale: {x: 0, y: 0, z: 0}
+      localScale: {x: 1, y: 1, z: 1}
     ignore: 0
   startHooks:
   - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
@@ -126,25 +125,12 @@ MonoBehaviour:
   m_Name: WorldActionSystem.Actions.ClickNode
   m_EditorClassIdentifier: 
   _name: "\u70B9\u51FBclick01"
-  startHooks:
+  startHooks: []
+  completeHooks:
   - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
-  completeHooks: []
-  bindings:
-  - {fileID: 0}
-  environments:
-  - instenceID: 0
-    guid: 9ce4f5711f5969143805abbb0bf14113
-    enviromentName: Cube
-    originalState: 0
-    startState: 0
-    completeState: 0
-    coordinate:
-      localPosition: {x: -2.26, y: 4.78, z: 4.35}
-      localEulerAngles: {x: 33, y: 33, z: 0}
-      localScale: {x: 3, y: 3, z: 3}
-    ignore: 0
+  bindings: []
+  environments: []
   clickList:
-  - click01
   - click01
 --- !u!114 &114692948141289052
 MonoBehaviour:

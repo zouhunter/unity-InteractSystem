@@ -18,17 +18,21 @@ namespace InteractSystem.Hooks
 
         public HookCtroller(params ActionHook[] actionHooks)
         {
-            var goodHooks = (from hook in actionHooks
-                            where hook != null
-                            select hook).ToArray();
-            if (goodHooks != null && goodHooks.Length > 0)
+            if(actionHooks != null)//删除无用的hooks
+            {
+                 actionHooks = (from hook in actionHooks
+                                 where hook != null
+                                 select hook).ToArray();
+            }
+          
+            if (actionHooks != null && actionHooks.Length > 0)
             {
                 active = true;
                 statu = ExecuteStatu.UnStarted;
-                hooks = new ActionHook[goodHooks.Length];
-                for (int i = 0; i < goodHooks.Length; i++)
+                hooks = new ActionHook[actionHooks.Length];
+                for (int i = 0; i < actionHooks.Length; i++)
                 {
-                    hooks[i] = ScriptableObject.Instantiate(goodHooks[i]);
+                    hooks[i] = ScriptableObject.Instantiate(actionHooks[i]);
                 }
             }
             else

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem
 {
+    [RequireComponent(typeof(PickUpAbleItem))]
     public abstract class PickUpAbleElement : PickUpAbleItem, ISupportElement
     {
         public virtual GameObject Body
