@@ -26,7 +26,6 @@ namespace InteractSystem
         public ICommandController RemoteController { get; private set; }
         public EventController EventCtrl { get; private set; }
         public EventTransfer EventTransfer { get; private set; }
-        public Enviroment.EnviromentCtrl enviromentCtrl { get; private set; }
         public AutoElementCtrl autoElementCtrl { get; private set; }
         #endregion
 
@@ -39,9 +38,9 @@ namespace InteractSystem
         private void OnEnable()
         {
             InitAutoElementCtrl();
-            InitEnviromentCtrl();
             InitActionCommands();
             ActionSystem.RegistGroup(this);
+            Enviroment.EnviromentCtrl.Instence.RegistElements(enviroments);
             ElementController.Instence.RegistRunTimeElements(runTimeElements);
         }
 
@@ -50,17 +49,12 @@ namespace InteractSystem
             autoElementCtrl = new AutoElementCtrl(transform,autoElements);
             autoElementCtrl.Create();
         }
-
-        private void InitEnviromentCtrl()
-        {
-            enviromentCtrl = new Enviroment.EnviromentCtrl(enviroments);
-            enviromentCtrl.SetContext(this);
-        }
-
+        
         private void OnDestroy()
         {
             ActionSystem.RemoveGroup(this);
             ElementController.Instence.RemoveRunTimeElements(runTimeElements);
+            Enviroment.EnviromentCtrl.Instence.RemoveElements(enviroments);
         }
         #endregion
 

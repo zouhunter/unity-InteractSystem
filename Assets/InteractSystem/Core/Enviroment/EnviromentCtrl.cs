@@ -13,18 +13,34 @@ namespace InteractSystem.Enviroment
     public class EnviromentCtrl
     {
         public static bool log = false;
-        private ActionGroup Context { get; set; }
+        private ActionSystem Context { get { return ActionSystem.Instence; } }
         private List<EnviromentItem> oringalItems = new List<EnviromentItem>();
         private Dictionary<string, EnviromentItem> environmentDic = new Dictionary<string, EnviromentItem>();
+        private static EnviromentCtrl _intence;
+        public static EnviromentCtrl Instence
+        {
+            get
+            {
+                if (_intence == null)
+                    _intence = new EnviromentCtrl();
+                return _intence;
+            }
+        }
 
-        public EnviromentCtrl(Enviroment.EnviromentItem[] environments)
+        public void RegistElements(Enviroment.EnviromentItem[] environments)
         {
             oringalItems.AddRange(environments);
         }
 
-        public void SetContext(ActionGroup actionGroup)
+        public void RemoveElements(Enviroment.EnviromentItem[] environments)
         {
-            Context = actionGroup;
+            foreach (var item in environments)
+            {
+                if(oringalItems.Contains(item))
+                {
+                    oringalItems.Remove(item);
+                }
+            }
         }
 
         internal void OrignalState(EnviromentInfo[] enviromentItems)

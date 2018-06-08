@@ -128,7 +128,7 @@ Prefab:
     - target: {fileID: 114484371079307382, guid: b69035fbd6144624ca3d822b25aabad1,
         type: 2}
       propertyPath: actionCommands.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114484371079307382, guid: b69035fbd6144624ca3d822b25aabad1,
         type: 2}

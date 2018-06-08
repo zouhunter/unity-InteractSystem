@@ -8,8 +8,8 @@ using NodeGraph;
 
 namespace InteractSystem.Hooks
 {
-    //[CustomNode("Auto/Anim", 0, "ActionSystem")]
-    [AddComponentMenu(MenuName.AnimObj)]
+    //[CustomNode("Auto/Anim", 0, "InteratSystem")]
+    [AddComponentMenu(MenuName.AnimHook)]
     public class AnimHook : ActionHook
     {
         [SerializeField]

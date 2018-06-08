@@ -11,15 +11,21 @@ namespace InteractSystem.Common.Actions
     {
         public IHighLightItems highLight;
         private PickUpController pickCtrl { get { return PickUpController.Instence; } }
-        public PlaceElement pickedUpObj { get { return pickCtrl.pickedUpObj is PlaceElement ? pickCtrl.pickedUpObj as PlaceElement : null; } }
-        public PlaceObj installPos;
+        public PlaceElement pickedUpObj
+        {
+            get
+            {
+                return pickCtrl.pickedUpObj.GetComponent<PlaceElement>();
+            }
+        }
+        public PlaceItem installPos;
         public bool installAble;
         public string resonwhy;
         public bool activeNotice { get { return Config.highLightNotice; } }
         public float hitDistence { get { return Config.hitDistence; } }
 
         private int _placePosLayerMask = 0;
-        public int PlacePoslayerMask { get { if(_placePosLayerMask == 0) _placePosLayerMask = LayerMask.GetMask(Layers.placePosLayer); return _placePosLayerMask; } }
+        public int PlacePoslayerMask { get { if (_placePosLayerMask == 0) _placePosLayerMask = LayerMask.GetMask(Layers.placePosLayer); return _placePosLayerMask; } }
 
         public override ControllerType CtrlType
         {
@@ -33,7 +39,7 @@ namespace InteractSystem.Common.Actions
         public Ray ray;
         public RaycastHit hit;
         public RaycastHit[] hits;
-      
+
         public PlaceCtrl()
         {
             highLight = new ShaderHighLight();
@@ -42,10 +48,10 @@ namespace InteractSystem.Common.Actions
 
         private void OnPickStay(PickUpAbleItem arg0)
         {
-            if (arg0 is PlaceElement)
-            {
-                TryPlaceObject(arg0 as PlaceElement);
-            }
+            //if (arg0 is PlaceElement)
+            //{
+            //    TryPlaceObject(arg0 as PlaceElement);
+            //}
         }
 
         #region 鼠标操作事件
@@ -75,7 +81,7 @@ namespace InteractSystem.Common.Actions
                     var hitedObj = false;
                     for (int i = 0; i < hits.Length; i++)
                     {
-                        installPos = hits[i].collider.GetComponentInParent<PlaceObj>();
+                        installPos = hits[i].collider.GetComponentInParent<PlaceItem>();
                         if (installPos)
                         {
                             hitedObj = true;
@@ -129,12 +135,12 @@ namespace InteractSystem.Common.Actions
             }
         }
 
-        public void PlaceObject(PlaceObj pos, PlaceElement pickup)
+        public void PlaceObject(PlaceItem pos, PlaceElement pickup)
         {
             pos.PlaceObject(pickup);
         }
 
-        public bool CanPlace(PlaceObj pos, PickUpAbleItem element, out string why)
+        public bool CanPlace(PlaceItem pos, PickUpAbleItem element, out string why)
         {
             if (pos == null)
             {
@@ -150,10 +156,10 @@ namespace InteractSystem.Common.Actions
 
         public void PlaceWrong(PlaceElement pickup)
         {
-            if (pickup)
-            {
-                pickup.OnPickDown();
-            }
+            //if (pickup)
+            //{
+            //    pickup.OnPickDown();
+            //}
         }
         #endregion
     }

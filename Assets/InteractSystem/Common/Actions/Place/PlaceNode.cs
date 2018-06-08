@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem.Common.Actions
 {
-    public abstract class PlaceObj : RuntimeNode<PlaceItem>
+    public abstract class PlaceNode<T> : RuntimeNode<T> where T:PlaceItem
     {
         public bool autoInstall;//自动安装
         public bool ignorePass;//反忽略
@@ -52,13 +52,11 @@ namespace InteractSystem.Common.Actions
         protected virtual void OnInstallComplete() { }
 
         protected virtual void OnUnInstallComplete() { }
-        public abstract void PlaceObject(PlaceElement pickup);
-        public abstract bool CanPlace(PickUpAbleItem element, out string why);
         /// <summary>
         /// 注册
         /// </summary>
         /// <param name="arg0"></param>
-        protected override void OnAdd(PlaceItem arg0)
+        protected override void OnAdd(T arg0)
         {
             base.OnAdd(arg0);
             //if (arg0 is PlaceElement)
@@ -82,7 +80,7 @@ namespace InteractSystem.Common.Actions
         /// 注销
         /// </summary>
         /// <param name="arg0"></param>
-        protected override void OnRemove(PlaceItem arg0)
+        protected override void OnRemove(T arg0)
         {
             //if (arg0.IsRuntimeCreated && arg0 is PlaceElement)
             //{

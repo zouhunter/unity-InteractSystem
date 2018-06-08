@@ -8,7 +8,7 @@ using NodeGraph.DataModel;
 
 namespace InteractSystem.Graph
 {
-    [CustomNode("State/End", 1, "ActionSystem")]
+    [CustomNode("State/End", 1, "InteratSystem")]
     public class EndNode: ActionNode
     {
         public override void Initialize(NodeData data)

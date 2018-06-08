@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace InteractSystem.Common.Actions
 {
-    public class PlaceItem:ActionItem
+    public abstract class PlaceItem:ActionItem
     {
         public Collider Collider { get; private set; }
 
@@ -19,5 +20,8 @@ namespace InteractSystem.Common.Actions
             Collider.enabled = false;
         }
 
+        public abstract bool CanPlace(PickUpAbleItem element, out string why);
+
+        public abstract void PlaceObject(PlaceElement pickup);
     }
 }

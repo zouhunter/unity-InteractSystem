@@ -12,7 +12,7 @@ namespace InteractSystem.Common.Actions
     /// 可操作对象具体行为实现
     /// </summary>
     [RequireComponent(typeof(PickUpAbleItem))]
-    public class PlaceElement : PickUpAbleElement, ISupportElement
+    public class PlaceElement : ActionItem, ISupportElement
     {
         public class Tweener
         {
@@ -93,12 +93,12 @@ namespace InteractSystem.Common.Actions
         protected int smooth = 50;
         protected IHighLightItems highLighter;
         protected bool actived;
-        protected Actions.PlaceObj target;
-        public Actions.PlaceObj BindingObj { get { return target; } }
-        protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
-        protected bool StraightMove { get { return target ? target.straightMove : false; } }
-        protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
-        protected Transform Passby { get { return target ? target.passBy : null; } }
+        protected Graph.OperaterNode target;
+        public Graph.OperaterNode BindingObj { get { return target; } }
+        //protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
+        //protected bool StraightMove { get { return target ? target.straightMove : false; } }
+        //protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
+        //protected Transform Passby { get { return target ? target.passBy : null; } }
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
         protected Vector3 lastPos;
@@ -157,40 +157,40 @@ namespace InteractSystem.Common.Actions
             rotList = new List<Vector3>();
             Vector3 midPos = Vector3.zero;
 
-            if (Passby != null)
-            {
-                midPos = Passby.position;
-            }
-            else
-            {
-                var player = FindObjectOfType<Camera>().transform;
-                midPos = player.transform.position + player.transform.forward * Config.elementFoward;
-            }
+            //if (Passby != null)
+            //{
+            //    midPos = Passby.position;
+            //}
+            //else
+            //{
+            //    var player = FindObjectOfType<Camera>().transform;
+            //    midPos = player.transform.position + player.transform.forward * Config.elementFoward;
+            //}
 
-            var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
-            if (StraightMove || IgnoreMiddle)
-            {
-                posList.Add(transform.position);
-                rotList.Add(transform.eulerAngles);
+            //var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
+            //if (StraightMove || IgnoreMiddle)
+            //{
+            //    posList.Add(transform.position);
+            //    rotList.Add(transform.eulerAngles);
 
-                if (!IgnoreMiddle)
-                {
-                    posList.Add(midPos);
-                    rotList.Add(midRot);
-                }
+            //    if (!IgnoreMiddle)
+            //    {
+            //        posList.Add(midPos);
+            //        rotList.Add(midRot);
+            //    }
 
-                posList.Add(end);
-                rotList.Add(endRot);
-            }
-            else
-            {
-                for (int i = 0; i < smooth; i++)
-                {
-                    float curr = (i + 0f) / (smooth - 1);
-                    posList.Add(Bezier.CalculateBezierPoint(curr, transform.position, midPos, end));
-                    rotList.Add(Bezier.CalculateBezierPoint(curr, transform.eulerAngles, midRot, endRot));
-                }
-            }
+            //    posList.Add(end);
+            //    rotList.Add(endRot);
+            //}
+            //else
+            //{
+            //    for (int i = 0; i < smooth; i++)
+            //    {
+            //        float curr = (i + 0f) / (smooth - 1);
+            //        posList.Add(Bezier.CalculateBezierPoint(curr, transform.position, midPos, end));
+            //        rotList.Add(Bezier.CalculateBezierPoint(curr, transform.eulerAngles, midRot, endRot));
+            //    }
+            //}
 
         }
 
@@ -218,7 +218,7 @@ namespace InteractSystem.Common.Actions
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(Actions.PlaceObj target, bool binding)
+        public virtual void NormalInstall(Graph.OperaterNode target, bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -243,7 +243,7 @@ namespace InteractSystem.Common.Actions
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(Actions.PlaceObj target, bool binding)
+        public virtual void QuickInstall(Graph.OperaterNode target, bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -308,51 +308,51 @@ namespace InteractSystem.Common.Actions
         /// <summary>
         /// 拿起事件
         /// </summary>
-        public override void OnPickUp()
-        {
-            base.OnPickUp();
-            StopTween();
+        //public override void OnPickUp()
+        //{
+        //    base.OnPickUp();
+        //    StopTween();
 
-            if (onPickUp != null)
-            {
-                onPickUp.Invoke();
-            }
-        }
+        //    if (onPickUp != null)
+        //    {
+        //        onPickUp.Invoke();
+        //    }
+        //}
 
-        public override void OnPickDown()
-        {
-            base.OnPickDown();
-            StopTween();
-            if (onPickDown != null)
-            {
-                onPickDown.Invoke();
-            }
-        }
-        public override void SetPosition(Vector3 pos)
-        {
-            if (lastPos != pos)
-            {
-                lastPos = pos;
-                transform.position = pos;
-            }
-        }
+        //public override void OnPickDown()
+        //{
+        //    base.OnPickDown();
+        //    StopTween();
+        //    if (onPickDown != null)
+        //    {
+        //        onPickDown.Invoke();
+        //    }
+        //}
+        //public override void SetPosition(Vector3 pos)
+        //{
+        //    if (lastPos != pos)
+        //    {
+        //        lastPos = pos;
+        //        transform.position = pos;
+        //    }
+        //}
 
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
         /// </summary>
         public override void StepActive()
         {
-            actived = true;
-            PickUpAble = true;
-            onStepActive.Invoke();
-            gameObject.SetActive(true);
+            //actived = true;
+            //PickUpAble = true;
+            //onStepActive.Invoke();
+            //gameObject.SetActive(true);
         }
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
         /// </summary>
         public override void StepComplete()
         {
-            if (log) Debug.Log("StepComplete:" + Name, gameObject);
+            //if (log) Debug.Log("StepComplete:" + Name, gameObject);
             actived = false;
             onStepComplete.Invoke();
             if (tweening)
@@ -380,10 +380,10 @@ namespace InteractSystem.Common.Actions
 
         protected virtual void OnInstallComplete()
         {
-            if (hideOnInstall)
-            {
-                gameObject.SetActive(false);
-            }
+            //if (hideOnInstall)
+            //{
+            //    gameObject.SetActive(false);
+            //}
 
             if (onInstallOkEvent != null)
                 onInstallOkEvent();
@@ -396,11 +396,11 @@ namespace InteractSystem.Common.Actions
             if (IsRuntimeCreated)
                 Destroy(gameObject);
         }
-        protected virtual void Binding(Actions.PlaceObj target)
+        protected virtual void Binding(Graph.OperaterNode target)
         {
             this.target = target;
         }
-        protected virtual Actions.PlaceObj UnBinding()
+        protected virtual Graph.OperaterNode UnBinding()
         {
             var old = target;
             target = null;

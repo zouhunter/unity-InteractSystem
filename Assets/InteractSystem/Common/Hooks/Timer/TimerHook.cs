@@ -13,7 +13,7 @@ using System;
 
 namespace InteractSystem.Hooks
 {
-    [AddComponentMenu(MenuName.AutoObj)]
+    [AddComponentMenu(MenuName.TimeHook)]
     public class TimerHook : ActionHook
     {
         [SerializeField]

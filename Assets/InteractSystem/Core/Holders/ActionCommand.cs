@@ -37,7 +37,7 @@ namespace InteractSystem
         protected Hooks.HookCtroller startHookCtrl;
         protected Hooks.HookCtroller completeHookCtrl;
         protected Binding.CommandBingCtrl commandBindingCtrl;
-        protected Enviroment.EnviromentCtrl enviromentCtrl { get { return Context.enviromentCtrl; } }
+        protected Enviroment.EnviromentCtrl enviromentCtrl { get { return Enviroment.EnviromentCtrl.Instence; } }
         protected bool forceAuto;
 
         protected virtual void OnEnable()

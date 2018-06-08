@@ -8,8 +8,8 @@ using System.Collections.Generic;
 
 namespace InteractSystem.Common.Actions
 {
-    [AddComponentMenu(MenuName.MatchObj)]
-    public class MatchObj : PlaceObj
+    [NodeGraph. CustomNode("Operate/Match", 10, "InteratSystem")]
+    public class MatchNode : PlaceNode<MatchItem>
     {
         public bool completeMoveBack = true;//结束时退回
         public override ControllerType CtrlType
@@ -93,44 +93,6 @@ namespace InteractSystem.Common.Actions
             //{
             //    OnEndExecute(false);
             //}
-        }
-
-        public override void PlaceObject(PlaceElement pickup)
-        {
-            Attach(pickup);
-            pickup.QuickInstall(this, false);
-        }
-
-        public override bool CanPlace(PickUpAbleItem element, out string why)
-        {
-            var matchAble = true;
-            if (this == null)
-            {
-                why = "【配制错误】:零件未挂MatchObj脚本";
-                Debug.LogError("【配制错误】:零件未挂MatchObj脚本");
-                matchAble = false;
-            }
-            //else if (!this.Started)
-            //{
-            //    matchAble = false;
-            //    why = "操作顺序错误";
-            //}
-            else if (this.AlreadyPlaced)
-            {
-                matchAble = false;
-                why = "已经触发结束";
-            }
-            else if (this.Name != element.Name)
-            {
-                matchAble = false;
-                why = "零件不匹配";
-            }
-            else
-            {
-                why = null;
-                matchAble = true;
-            }
-            return matchAble;
         }
 
     }

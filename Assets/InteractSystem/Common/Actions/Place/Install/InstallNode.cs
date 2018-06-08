@@ -9,14 +9,25 @@ using UnityEngine.Internal;
 
 namespace InteractSystem.Common.Actions
 {
-    [NodeGraph.CustomNode("OperateNode/Install")]
-    public class InstallObj : Graph.OperaterNode
+    [NodeGraph.CustomNode("Operate/Install", 10, "InteratSystem")]
+    public class InstallNode : RuntimeNode<InstallItem>
     {
         public override ControllerType CtrlType
         {
             get
             {
                 return ControllerType.Place;
+            }
+        }
+        [SerializeField]
+        private List<string> names = new List<string>();
+        private InstallItem[] finalgroup { get; set; }
+        private List<InstallItem> currents = new List<InstallItem>();
+        public override List<string> NeedElements
+        {
+            get
+            {
+                return names;
             }
         }
 
@@ -102,39 +113,7 @@ namespace InteractSystem.Common.Actions
         //    }
         //}
 
-        //public override void PlaceObject(PlaceElement pickup)
-        //{
-        //    Attach(pickup);
-        //    pickup.QuickInstall(this, true);
-        //    pickup.PickUpAble = false;
-        //}
-
-        //public override bool CanPlace(PickUpAbleItem element, out string why)
-        //{
-        //    why = null;
-        //    var canplace = true;
-        //    if (!this.Started)
-        //    {
-        //        canplace = false;
-        //        why = "操作顺序错误";
-        //    }
-        //    else if (this.AlreadyPlaced)
-        //    {
-        //        canplace = false;
-        //        why = "已经安装";
-        //    }
-
-        //    else if (element.Name != this.Name)
-        //    {
-        //        canplace = false;
-        //        why = "零件不匹配";
-        //    }
-        //    else
-        //    {
-        //        canplace = true;
-        //    }
-        //    return canplace;
-        //}
+     
 
     }
 }

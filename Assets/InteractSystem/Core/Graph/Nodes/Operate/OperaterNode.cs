@@ -40,7 +40,7 @@ namespace InteractSystem.Graph
         private Binding.OpreaterBindingCtrl bindingCtrl;
         private Enviroment.EnviromentCtrl enviromentCtrl {
             get {
-                return Context.Context.enviromentCtrl;
+                return Enviroment.EnviromentCtrl.Instence ;
             }
         }
         private ActionGroup _system;

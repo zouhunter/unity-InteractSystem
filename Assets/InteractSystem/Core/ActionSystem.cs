@@ -19,7 +19,7 @@ namespace InteractSystem
             {
                 if (_instence == null && !isQuit)
                 {
-                    _instence = new GameObject("ActionSystem").AddComponent<ActionSystem>();
+                    _instence = new GameObject("InteratSystem").AddComponent<ActionSystem>();
                 }
                 return _instence;
             }
