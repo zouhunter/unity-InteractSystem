@@ -21,14 +21,6 @@ namespace InteractSystem.Common.Actions
         }
         public bool Matched { get { return obj != null; } }
 
-        public override List<string> NeedElements
-        {
-            get
-            {
-                return null;
-            }
-        }
-
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);

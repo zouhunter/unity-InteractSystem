@@ -34,11 +34,11 @@ namespace InteractSystem.Common.Actions
             //    matchAble = false;
             //    why = "已经触发结束";
             //}
-            else if (this.Name != element.Name)
-            {
-                matchAble = false;
-                why = "零件不匹配";
-            }
+            //else if (this.Name != element.Name)
+            //{
+            //    matchAble = false;
+            //    why = "零件不匹配";
+            //}
             else
             {
                 why = null;

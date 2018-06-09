@@ -49,6 +49,7 @@ namespace InteractSystem.Drawer
 
         protected virtual void OnEnable()
         {
+            if (target == null) Debug.LogError("no target !!!");
             InitPrefers();
             InitPropertys();
             InitDrawers();
@@ -100,7 +101,7 @@ namespace InteractSystem.Drawer
 
             if (selected == 0)
             {
-                DrawDefult();
+                OnDrawDefult();
             }
             else if (selected == 1)
             {
@@ -116,7 +117,7 @@ namespace InteractSystem.Drawer
                 completeHooksList.DoLayoutList();
             }
         }
-        protected virtual void DrawDefult()
+        protected virtual void OnDrawDefult()
         {
             var iterator = serializedObject.GetIterator();
             var enterChildern = true;

@@ -33,7 +33,7 @@ namespace InteractSystem.Common.Actions
             }
             else
             {
-                obj.OnClick();
+                obj.OnComplete();
             }
         }
 
@@ -78,7 +78,7 @@ namespace InteractSystem.Common.Actions
 
             if (TryHitClickObj(out hitObj))
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && !HoverUI())
                 {
                     OnBtnClicked(hitObj);
                 }
@@ -88,11 +88,16 @@ namespace InteractSystem.Common.Actions
             {
                 OnHoverNothing();
 
-                if (Input.GetMouseButtonDown(0) && EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject())
+                if (Input.GetMouseButtonDown(0) && !HoverUI())
                 {
                     OnClickEmpty();
                 }
             }
+        }
+
+        private bool HoverUI()
+        {
+            return EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject();
         }
     }
 

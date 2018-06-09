@@ -11,13 +11,111 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
   m_Name: installcommand
   m_EditorClassIdentifier: 
-  m_allNodes: []
-  m_allConnections: []
-  m_lastModified: 
+  m_allNodes:
+  - m_name: Install
+    m_id: e3cfd41b-2c0e-40aa-9cc8-6edb2086026a
+    m_x: 228
+    m_y: 72
+    m_node: {fileID: 114738988542663478}
+    m_inputPoints:
+    - id: f3dd7ac0-d030-4f5a-871a-fbead2aeddab
+      label: 
+      parentId: e3cfd41b-2c0e-40aa-9cc8-6edb2086026a
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 40c6aafb-8d88-4d30-86f2-46278e5d6108
+      label: 0
+      parentId: e3cfd41b-2c0e-40aa-9cc8-6edb2086026a
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: Start
+    m_id: 86f12f1c-c602-45df-a261-65fd24f1fe38
+    m_x: 36
+    m_y: 72
+    m_node: {fileID: 114509087512272958}
+    m_inputPoints: []
+    m_outputPoints:
+    - id: 85da1e33-1861-460f-adde-0d217717f597
+      label: 0
+      parentId: 86f12f1c-c602-45df-a261-65fd24f1fe38
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  m_allConnections:
+  - m_id: 71bcb831-2224-4d2b-8d92-4c25a1716b70
+    m_fromNodeId: 86f12f1c-c602-45df-a261-65fd24f1fe38
+    m_fromNodeConnectionPointId: 85da1e33-1861-460f-adde-0d217717f597
+    m_toNodeId: e3cfd41b-2c0e-40aa-9cc8-6edb2086026a
+    m_toNodeConnectionPoiontId: f3dd7ac0-d030-4f5a-871a-fbead2aeddab
+    m_type: actionconnect
+    m_connection: {fileID: 114810708122072500}
+  m_lastModified: 131730172904017014
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
-  _stepName: 
+  _stepName: installcommand
   commandBindings: []
   environments: []
   startHooks: []
   completeHooks: []
+--- !u!114 &114509087512272958
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: InteractSystem.Graph.StartNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114738988542663478
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eea71440ecb02d14d824289410356475, type: 3}
+  m_Name: InteractSystem.Common.Actions.InstallNode
+  m_EditorClassIdentifier: 
+  _name: 
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  itemList:
+  - "\u5B89\u88C5\u5DE6\u7403"
+--- !u!114 &114810708122072500
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0

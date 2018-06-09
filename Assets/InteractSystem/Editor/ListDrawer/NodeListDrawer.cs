@@ -27,7 +27,7 @@ namespace InteractSystem.Drawer
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
             var item = list[index] as Graph.OperaterNode;
             EditorGUI.ObjectField(rect, item.Name, item, typeof(Graph.OperaterNode), false);
-            if (isActive && item != null)
+            if (isActive && item as Graph.OperaterNode != null)
             {
                 drawer = GetEditor(item as Graph.OperaterNode);
                 drawer.OnInspectorGUI();

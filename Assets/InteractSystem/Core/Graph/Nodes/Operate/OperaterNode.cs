@@ -9,7 +9,7 @@ using System;
 
 namespace InteractSystem.Graph
 {
-    public abstract class OperaterNode : ActionNode
+    public class OperaterNode : ActionNode
     {
         public string Name
         {
@@ -29,7 +29,7 @@ namespace InteractSystem.Graph
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
         public UnityAction onEndExecute { get; set; }
-        public abstract ControllerType CtrlType { get; }
+        public virtual ControllerType CtrlType { get { return 0; } }
         public static bool log = false;
 
         [SerializeField]

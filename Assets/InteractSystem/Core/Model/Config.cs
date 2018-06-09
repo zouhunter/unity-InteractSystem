@@ -42,6 +42,7 @@ namespace InteractSystem
         public GameObject[] _angleObjs = null;
         public Material _previewMat;//预览材质
         public  float _previewAlpha = 0.5f;
+        public List<Type> _actionItemBindings = new List<Type>();
 
         public static int autoExecuteTime { get { return Global._autoExecuteTime; } }
         public static int hitDistence { get { return Global._hitDistence; } }
@@ -67,6 +68,13 @@ namespace InteractSystem
         public static float previewAlpha
         {
             get { return Global._previewAlpha; }
+        }
+        public static List<Type> actionItemBindings
+        {
+            get
+            {
+                return Global._actionItemBindings;
+            }
         }
     }
 }

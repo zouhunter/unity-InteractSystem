@@ -7,58 +7,22 @@ using System;
 
 namespace InteractSystem.Common.Actions
 {
-    public class ClickItem : ActionItem
+  
+    public class ClickItem : GenericActionItem<ClickItem>
     {
         [SerializeField]
-        protected int playableCount = 1;
-        [SerializeField]
-        protected Collider _collider;
-
-        public Collider Collider { get { return _collider; }protected set { _collider = value; } }
-        public bool ClickAble { get { return playableCount > targets.Count; } }
-
-        private List<UnityAction<ClickItem>> onClickedList = new List<UnityAction<ClickItem>>();
-
-        protected override void Start()
+        protected int clickableCount = 1;
+        public override bool OperateAble
         {
-            base.Start();
-            InitLayer();
+            get { return clickableCount > targets.Count; }
         }
 
-        private void InitLayer()
+        protected override string LayerName
         {
-            if(!Collider)
+            get
             {
-                Collider = GetComponentInChildren<Collider>();
+                return Layers.clickItemLayer;
             }
-            Collider.gameObject.layer = LayerMask.NameToLayer(Layers.clickItemLayer);
-        }
-
-        public void RegistOnClick(UnityAction<ClickItem> onClicked)
-        {
-            if(!onClickedList.Contains(onClicked))
-            {
-                onClickedList.Add(onClicked);
-            }
-        }
-
-        public void OnClick()
-        {
-            if(onClickedList.Count > 0)
-            {
-                foreach (var onClicked in onClickedList)
-                {
-                    onClicked.Invoke(this);
-                }
-            }
-        }
-
-        public void RemoveOnClicked(UnityAction<ClickItem> onClicked)
-        {
-            if (onClickedList.Contains(onClicked))
-            {
-                onClickedList.Remove(onClicked);
-            }
-        }
+        } 
     }
 }

@@ -9,8 +9,11 @@ using UnityEngine.Internal;
 
 namespace InteractSystem.Common.Actions
 {
+    /// <summary>
+    /// 执行完指定顺序的InstallItem
+    /// </summary>
     [NodeGraph.CustomNode("Operate/Install", 10, "InteratSystem")]
-    public class InstallNode : RuntimeNode<InstallItem>
+    public class InstallNode : GenericActionNode<InstallItem>
     {
         public override ControllerType CtrlType
         {
@@ -19,16 +22,9 @@ namespace InteractSystem.Common.Actions
                 return ControllerType.Place;
             }
         }
-        [SerializeField]
-        private List<string> names = new List<string>();
-        private InstallItem[] finalgroup { get; set; }
-        private List<InstallItem> currents = new List<InstallItem>();
-        public override List<string> NeedElements
+        protected override void AutoCompleteItems()
         {
-            get
-            {
-                return names;
-            }
+            //throw new NotImplementedException();
         }
 
         protected override void OnBeforeEnd(bool force)

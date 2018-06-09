@@ -4,17 +4,18 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace InteractSystem
 {
-    public class ActionItem : MonoBehaviour, ISupportElement
+    public abstract class ActionItem : MonoBehaviour, ISupportElement
     {
+        [SerializeField, Attributes.DefultName]
+        protected string _name;
         [SerializeField]
         protected bool startactive = true;
         [SerializeField]
         protected bool endactive = true;
-        [SerializeField, Attributes.DefultName]
-        protected string _name;
         public string Name
         {
             get
@@ -38,8 +39,9 @@ namespace InteractSystem
             }
         }
         public bool IsRuntimeCreated { get; set; }
-        protected bool _active;
+        public abstract bool OperateAble { get; }
         public virtual bool Active { get { return _active; } protected set { _active = value; } }
+        protected bool _active;
         protected List<UnityEngine.Object> targets = new List<UnityEngine.Object>();
         //子类actionItem(用于优先执行)
         protected ActionItem[] subActions;
@@ -48,7 +50,24 @@ namespace InteractSystem
 #endif
         public UnityEvent onActive,onInActive;
 
-        protected virtual void Awake() { }
+        protected virtual void Awake() {
+            InitBindingScripts();
+        }
+
+        private void InitBindingScripts()
+        {
+           if(Config.actionItemBindings != null)
+            {
+                foreach (var item in Config.actionItemBindings)
+                {
+                    if(item.IsSubclassOf(typeof(Binding.ActionItemBinding)))
+                    {
+                        gameObject.AddComponent(item);
+                    }
+                }
+            }
+        }
+
         protected virtual void OnEnable() {
             targets.Clear();
             subActions = GetComponentsInChildren<ActionItem>().Where(x=>x != this).ToArray();

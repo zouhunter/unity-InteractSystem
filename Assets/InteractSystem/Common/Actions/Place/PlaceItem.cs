@@ -4,24 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace InteractSystem.Common.Actions
 {
-    public abstract class PlaceItem:ActionItem
+    public abstract class PlaceItem:GenericActionItem<PlaceItem>
     {
-        public Collider Collider { get; private set; }
-
-        protected override void Awake()
+        public string elementName;
+        protected override string LayerName
         {
-            base.Awake();
-            InitLayer();
+            get
+            {
+               return Layers.placePosLayer;
+            }
         }
-        private void InitLayer()
+        public override bool OperateAble
         {
-            Collider = GetComponentInChildren<Collider>();
-            Collider.gameObject.layer = LayerMask.NameToLayer(Layers.placePosLayer);
-            Collider.enabled = false;
+            get
+            {
+                return Active;
+            }
         }
-
         public abstract bool CanPlace(PickUpAbleItem element, out string why);
-
         public abstract void PlaceObject(PlaceElement pickup);
     }
 }

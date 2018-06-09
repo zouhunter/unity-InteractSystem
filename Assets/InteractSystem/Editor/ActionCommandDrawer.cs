@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace InteractSystem.Drawer
 {
-    [CustomEditor(typeof(ActionCommand)), CanEditMultipleObjects]
+    [CustomEditor(typeof(ActionCommand))]
     public class ActionCommandDrawer : Editor
     {
         public Graph.OperaterNode[] opreateNodes;

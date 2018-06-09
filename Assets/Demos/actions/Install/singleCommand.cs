@@ -11,6 +11,10 @@ public class singleCommand : MonoBehaviour {
     private void Start()
     {
         command.RegistComplete((x) => { Debug.Log(x +":Completed"); });
+        command.RegistAsOperate((stepName, err) =>
+        {
+            Debug.Log(err);
+        });
     }
     private void OnGUI()
     {

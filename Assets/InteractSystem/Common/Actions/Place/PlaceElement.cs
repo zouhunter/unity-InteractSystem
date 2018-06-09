@@ -73,16 +73,21 @@ namespace InteractSystem.Common.Actions
         public int animTime { get { return Config.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
+        public override bool OperateAble
+        {
+            get
+            {
+                return actived;
+            }
+        }
 
         public Renderer Render { get { return m_render; } }
 
         public event UnityAction onInstallOkEvent;
         public event UnityAction onUnInstallOkEvent;
-#if ActionSystem_G
-        [HideInInspector]
-#endif
-        public UnityEvent onPickUp, onPickDown, onStepActive, onStepComplete, onStepUnDo;
 
+        [HideInInspector]
+        public UnityEvent onStepActive, onStepComplete, onStepUnDo;
         [SerializeField]
         private Renderer m_render;
         [SerializeField]

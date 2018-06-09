@@ -9,8 +9,8 @@ namespace InteractSystem.Binding
     {
         [SerializeField]
         private Color highLightColor = Color.green;
-        [SerializeField]
-        protected GameObject viewObj;
+
+        protected GameObject viewObj { get { return actionItem.Body; } }
         protected IHighLightItems highLighter;
         protected bool notice { get { return Config.highLightNotice; } }
         protected bool actived;
@@ -18,7 +18,6 @@ namespace InteractSystem.Binding
         protected override void Awake()
         {
             base.Awake();
-            if (viewObj == null) viewObj = gameObject;
             highLighter = new ShaderHighLight();
         }
         protected void Update()

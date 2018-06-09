@@ -45,6 +45,7 @@ namespace InteractSystem
             statu = ExecuteStatu.UnStarted;
             InitHookCtrl();
             InitBindgCtrl();
+            InitOperateCtrl();
         }
 
         private void InitOperateCtrl()
@@ -73,7 +74,6 @@ namespace InteractSystem
         {
             //重置当前command的信息
             this.Context = group;
-            InitOperateCtrl();
             enviromentCtrl.OrignalState(environments);
         }
 

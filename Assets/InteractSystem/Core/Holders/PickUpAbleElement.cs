@@ -1,36 +1,26 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
-using System.Collections;
-using System.Collections.Generic;
-namespace InteractSystem
-{
-    [RequireComponent(typeof(PickUpAbleItem))]
-    public abstract class PickUpAbleElement : PickUpAbleItem, ISupportElement
-    {
-        public virtual GameObject Body
-        {
-            get
-            {
-                return gameObject;
-            }
-        }
-        public virtual bool IsRuntimeCreated { get; set; }
-        public virtual bool Active { get; set; }
-        
-        protected override void Start()
-        {
-            ElementController.Instence.RegistElement(this);
-            base.Start();
-        }
-        protected override void OnDestroy()
-        {
-            ElementController.Instence.RemoveElement(this);
-            base.OnDestroy();
-        }
-        public abstract void StepActive();
-        public abstract void StepComplete();
-        public abstract void StepUnDo();
-        public abstract void SetVisible(bool visible);
-    }
-}
+﻿//using UnityEngine;
+//using UnityEngine.UI;
+//using UnityEngine.Events;
+//using System.Collections;
+//using System.Collections.Generic;
+//namespace InteractSystem
+//{
+//    [RequireComponent(typeof(PickUpAbleItem))]
+//    public abstract class PickUpAbleElement : ActionItem
+//    {
+//        protected override void Start()
+//        {
+//            base.Start();
+//            ElementController.Instence.RegistElement(this);
+//        }
+//        protected virtual void OnDestroy()
+//        {
+
+//            ElementController.Instence.RemoveElement(this);
+//        }
+//        public abstract void StepActive();
+//        public abstract void StepComplete();
+//        public abstract void StepUnDo();
+//        public abstract void SetVisible(bool visible);
+//    }
+//}

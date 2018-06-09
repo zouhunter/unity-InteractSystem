@@ -4,26 +4,36 @@ using InteractSystem.Graph;
 
 namespace InteractSystem
 {
-    public abstract class RuntimeNode<T> : OperaterNode where T : ActionItem, ISupportElement
+    /// <summary>
+    /// 【动态执行节点】
+    /// 收集指定元素
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class RuntimeCollectNode<T> : OperaterNode where T : ActionItem, ISupportElement
     {
+        [SerializeField, HideInInspector]
+        protected List<string> itemList = new List<string>();
+
         protected ElementPool<T> elementPool = new ElementPool<T>();
-        public abstract List<string> NeedElements { get; }
+        protected T[] finalGroup { get; set; }
+        protected List<T> currents = new List<T>();
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            elementPool.onAdd = OnAdd;
-            elementPool.onRemove = OnRemove;
+            elementPool.onAdded = OnAddedToPool;
+            elementPool.onRemoved = OnRemovedFromPool;
             
             elementCtrl.onRegistElememt += OnRegistElement;
             elementCtrl.onRemoveElememt += OnRemoveElement;
         }
-        protected virtual void OnRemove(T arg0)
+        protected virtual void OnRemovedFromPool(T arg0)
         {
 
         }
-        protected virtual void OnAdd(T arg0)
+
+        protected virtual void OnAddedToPool(T arg0)
         {
             if (statu == ExecuteStatu.Executing)
             {
@@ -52,9 +62,9 @@ namespace InteractSystem
         protected void UpdateElementPool()
         {
             List<string> elementKeys = new List<string>();
-            for (int i = 0; i < NeedElements.Count; i++)
+            for (int i = 0; i < itemList.Count; i++)
             {
-                var elementName = NeedElements[i];
+                var elementName = itemList[i];
                 if (!elementKeys.Contains(elementName))
                 {
                     elementKeys.Add(elementName);
@@ -74,7 +84,7 @@ namespace InteractSystem
         protected void OnRegistElement(ISupportElement arg0)
         {
             //LinkObj
-            if (arg0 is T && NeedElements.Contains(arg0.Name))
+            if (arg0 is T && itemList.Contains(arg0.Name))
             {
                 var element = arg0 as T;
                 if (!elementPool.Contains(element))
@@ -90,7 +100,7 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRemoveElement(ISupportElement arg0)
         {
-            if (arg0 is T && NeedElements.Contains(arg0.Name))
+            if (arg0 is T && itemList.Contains(arg0.Name))
             {
                 var element = arg0 as T;
                 if (elementPool.Contains(element))
@@ -106,10 +116,10 @@ namespace InteractSystem
         /// <param name="undo"></param>
         protected virtual void CompleteElements(bool undo)
         {
-            foreach (var element in NeedElements)
+            foreach (var element in itemList)
             {
                 //找到所有被激活的对象
-                var active = startedList.Find(x => x is RuntimeNode<T> && (x as RuntimeNode<T>).NeedElements.Contains(element));
+                var active = startedList.Find(x => x is RuntimeCollectNode<T> && (x as RuntimeCollectNode<T>).itemList.Contains(element));
 
                 if (active == null)
                 {

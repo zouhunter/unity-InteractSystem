@@ -8,6 +8,14 @@ namespace InteractSystem.Common.Actions
 {
     public class InstallItem : PlaceItem
     {
+        public override bool OperateAble
+        {
+            get
+            {
+                return Active;
+            }
+        }
+
         public override void PlaceObject(PlaceElement pickup)
         {
             //Attach(pickup);

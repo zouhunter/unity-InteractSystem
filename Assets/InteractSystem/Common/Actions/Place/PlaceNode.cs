@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem.Common.Actions
 {
-    public abstract class PlaceNode<T> : RuntimeNode<T> where T:PlaceItem
+    public abstract class PlaceNode<T> : RuntimeCollectNode<T> where T:PlaceItem
     {
         public bool autoInstall;//自动安装
         public bool ignorePass;//反忽略
@@ -56,9 +56,9 @@ namespace InteractSystem.Common.Actions
         /// 注册
         /// </summary>
         /// <param name="arg0"></param>
-        protected override void OnAdd(T arg0)
+        protected override void OnAddedToPool(T arg0)
         {
-            base.OnAdd(arg0);
+            base.OnAddedToPool(arg0);
             //if (arg0 is PlaceElement)
             //{
             //    if (arg0.Name == Name)
@@ -80,7 +80,7 @@ namespace InteractSystem.Common.Actions
         /// 注销
         /// </summary>
         /// <param name="arg0"></param>
-        protected override void OnRemove(T arg0)
+        protected override void OnRemovedFromPool(T arg0)
         {
             //if (arg0.IsRuntimeCreated && arg0 is PlaceElement)
             //{

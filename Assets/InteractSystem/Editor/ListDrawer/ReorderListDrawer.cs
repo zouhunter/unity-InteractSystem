@@ -17,6 +17,7 @@ namespace InteractSystem.Drawer
         protected IList list;
         protected Type type;
         public ReorderableList.HeaderCallbackDelegate drawHeaderCallback { get; set; }
+
         public virtual void InitReorderList(SerializedProperty property)
         {
             this.property = property;
