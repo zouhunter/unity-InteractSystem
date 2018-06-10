@@ -35,17 +35,23 @@ namespace InteractSystem.Drawer
                 return _secondSelectables;
             }
         }
-        protected int secondSelected;
-        protected const string prefer_second_selected = "actiongroup_prefer_second_selected";
+        protected int secondSelected {
+            get { return _selected.value; }
+            set { _selected.value = value; }
+        }
+        private static Prefer.EditorPrefsInt _selected = new Prefer.EditorPrefsInt("prefer_ElementGroupDrawer_selected");
+        private static Prefer.EditorPrefsBool _showAll = new Prefer.EditorPrefsBool("prefer_ElementGroupDrawer_showAll");
+        public bool showAll
+        {
+            get { return _showAll.value; }
+            set { _showAll.value = value; }
+        }
         public bool showScript = true;
-        public bool showAll;
 
         private void OnEnable()
         {
-            InitSelected();
             FindPropertys();
             InitReorderLists();
-
         }
 
         public override void OnInspectorGUI()
@@ -58,8 +64,7 @@ namespace InteractSystem.Drawer
 
                 var content = showAll ? "-" : "+";
                 var style = showAll ? EditorStyles.toolbarDropDown : EditorStyles.toolbarPopup;
-                if (GUILayout.Button(content, style))
-                {
+                if (GUILayout.Button(content, style)){
                     showAll = !showAll;
                 }
             }
@@ -87,14 +92,7 @@ namespace InteractSystem.Drawer
                 }
             }
         }
-        private void InitSelected()
-        {
-            if (EditorPrefs.HasKey(prefer_second_selected))
-            {
-                secondSelected = EditorPrefs.GetInt(prefer_second_selected);
-            }
-}
-
+       
         private void FindPropertys()
         {
             script_prop = serializedObject.FindProperty("m_Script");
@@ -130,10 +128,6 @@ namespace InteractSystem.Drawer
                 GUI.contentColor = ActionGUIUtil.WarningColor;
                 secondSelected = EditorGUI.Popup(headRect, secondSelected, SecondSelectables, EditorStyles.miniLabel);
                 GUI.contentColor = Color.white;
-            }
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorPrefs.SetInt(prefer_second_selected, secondSelected);
             }
         }
     }

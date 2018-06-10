@@ -12,6 +12,7 @@ namespace InteractSystem
 
         public AutoElementCtrl(Transform parent,AutoPrefabItem[] autoPrefabItems)
         {
+            this.parent = parent;
             this.autoPrefabItems = autoPrefabItems;
         }
 

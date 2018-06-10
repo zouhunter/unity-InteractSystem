@@ -7,9 +7,11 @@ using InteractSystem;
 
 public class singleCommand : MonoBehaviour {
     public ActionCommand command;
+    public ElementGroup elementGroup;
     public bool autoExecute;
     private void Start()
     {
+        elementGroup.SetActive(transform); 
         command.RegistComplete((x) => { Debug.Log(x +":Completed"); });
         command.RegistAsOperate((stepName, err) =>
         {

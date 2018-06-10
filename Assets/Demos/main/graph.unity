@@ -347,6 +347,12 @@ Prefab:
       propertyPath: autoElements.Array.data[0].coordinate.localScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114484371079307382, guid: b69035fbd6144624ca3d822b25aabad1,
+        type: 2}
+      propertyPath: elementGroup
+      value: 
+      objectReference: {fileID: 11400000, guid: cb730a5b884148d41beb3b5e4b13f986,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b69035fbd6144624ca3d822b25aabad1, type: 2}
   m_IsPrefabParent: 0
