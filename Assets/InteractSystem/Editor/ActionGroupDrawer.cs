@@ -35,9 +35,10 @@ namespace InteractSystem.Drawer
         protected ElementGroupDrawer elementGroupDrawer;
         protected int selected;
         protected const string prefer_selected = "actiongroup_prefer_selected";
-
+        public static ActionGroupDrawer Current;
         private void OnEnable()
         {
+            Current = this;
             FindPropertys();
             InitReorderLists();
             InitSelected();

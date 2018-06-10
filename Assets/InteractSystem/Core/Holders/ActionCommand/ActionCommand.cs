@@ -20,7 +20,6 @@ namespace InteractSystem
         private ActionHook[] startHooks;
         [SerializeField]//结束等待
         private ActionHook[] completeHooks;
-
         protected UnityAction<string, int, int> onActionObjStartExecute { get; set; }
         public string StepName { get { if (string.IsNullOrEmpty(_stepName)) _stepName = name; return _stepName; } }
         public ExecuteStatu Statu { get { return statu; } }

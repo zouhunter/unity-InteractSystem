@@ -75,7 +75,18 @@ MonoBehaviour:
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: installcommand
   commandBindings: []
-  environments: []
+  environments:
+  - instenceID: 0
+    guid: b27ec635c42e9a84c951cbb21044881f
+    enviromentName: clickItems
+    originalState: 1
+    startState: 1
+    completeState: 1
+    coordinate:
+      localPosition: {x: 486.96, y: 413.18, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 1, y: 1, z: 1}
+    ignore: 0
   startHooks: []
   completeHooks: []
 --- !u!114 &114509087512272958

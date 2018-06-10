@@ -47,7 +47,6 @@ namespace InteractSystem.Drawer
             set { _showAll.value = value; }
         }
         public bool showScript = true;
-
         private void OnEnable()
         {
             FindPropertys();
@@ -57,7 +56,7 @@ namespace InteractSystem.Drawer
         public override void OnInspectorGUI()
         {
             //base.OnInspectorGUI();
-      
+            serializedObject.Update();
             if(showScript)
             {
                 EditorGUILayout.PropertyField(script_prop);
@@ -91,6 +90,7 @@ namespace InteractSystem.Drawer
                     enviroments_list.DoLayoutList();
                 }
             }
+            serializedObject.ApplyModifiedProperties();
         }
        
         private void FindPropertys()
