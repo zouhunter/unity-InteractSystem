@@ -14,19 +14,13 @@ namespace InteractSystem
     {
         [SerializeField]//步骤控制
         protected OptionalCommandItem[] actionCommands;
-        [SerializeField]//用户创建元素
-        protected RunTimePrefabItem[] runTimeElements;
-        [SerializeField]//自动创建元素
-        protected AutoPrefabItem[] autoElements;
-        [SerializeField]//环境元素
-        protected Enviroment.EnviromentItem[] enviroments;
-      
+        [SerializeField]
+        protected ElementGroup elementGroup;
         #region Propertys
         public List<ActionCommand> activeCommands { get; private set; }
         public ICommandController RemoteController { get; private set; }
         public EventController EventCtrl { get; private set; }
         public EventTransfer EventTransfer { get; private set; }
-        public AutoElementCtrl autoElementCtrl { get; private set; }
         #endregion
 
         #region UnityFunctions
@@ -37,24 +31,16 @@ namespace InteractSystem
 
         private void OnEnable()
         {
-            InitAutoElementCtrl();
+            Debug.Log("OnEnable");
             InitActionCommands();
             ActionSystem.RegistGroup(this);
-            Enviroment.EnviromentCtrl.Instence.RegistElements(enviroments);
-            ElementController.Instence.RegistRunTimeElements(runTimeElements);
-        }
-
-        private void InitAutoElementCtrl()
-        {
-            autoElementCtrl = new AutoElementCtrl(transform,autoElements);
-            autoElementCtrl.Create();
+            elementGroup.SetActive(transform);
         }
         
         private void OnDestroy()
         {
             ActionSystem.RemoveGroup(this);
-            ElementController.Instence.RemoveRunTimeElements(runTimeElements);
-            Enviroment.EnviromentCtrl.Instence.RemoveElements(enviroments);
+            elementGroup.SetInActive();
         }
         #endregion
 

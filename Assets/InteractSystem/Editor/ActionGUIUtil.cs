@@ -118,6 +118,39 @@ namespace InteractSystem.Drawer
             EditorGUILayout.PropertyField(script_prop, true);
             EditorGUI.EndDisabledGroup();
         }
+
+        /// <summary>
+        /// 绘制一个拖拽区
+        /// </summary>
+        /// <param name="objRect"></param>
+        /// <param name="elementGroup_prop"></param>
+        /// <param name="type"></param>
+        internal static void AcceptDrawField(Rect objRect, SerializedProperty elementGroup_prop, Type type)
+        {
+            if (GUI.Button(objRect, "", EditorStyles.objectFieldMiniThumb))
+            {
+                EditorGUIUtility.PingObject(elementGroup_prop.objectReferenceInstanceIDValue);
+            }
+            UnityEngine.Object obj = null;
+            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
+            {
+                foreach (var item in DragAndDrop.objectReferences)
+                {
+                    if (item.GetType() == type)
+                    {
+                        obj = item;
+                        break;
+                    }
+                }
+                DragAndDrop.visualMode = obj ? DragAndDropVisualMode.Move : DragAndDropVisualMode.Rejected;
+            }
+
+            if (Event.current.type == EventType.DragPerform && objRect.Contains(Event.current.mousePosition) && obj)
+            {
+                elementGroup_prop.objectReferenceValue = obj;
+            }
+        }
+
         /// <summary>
         /// address: ".prefab"
         /// </summary>

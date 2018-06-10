@@ -14,15 +14,9 @@ namespace InteractSystem.Drawer
     {
         protected SerializedProperty script_prop;
         protected SerializedProperty actionCommands_prop;
-        protected SerializedProperty runtimeElements_prop;
-        protected SerializedProperty autoElements_prop;
-        protected SerializedProperty enviroments_prop;
-
+        protected SerializedProperty elementGroup_prop;
         protected ReorderListDrawer commands_list = new CommandListDrawer();
-        protected ReorderListDrawer autoElemnts_list = new AutoElementListDrawer();
-        protected ReorderListDrawer runtimeElements_list = new RuntimeElementListDrawer();
-        protected ReorderListDrawer enviroments_list = new EnviromentItemListDrawer();
-
+       
         protected GUIContent[] _selectables;
         protected GUIContent[] Selectables
         {
@@ -38,28 +32,9 @@ namespace InteractSystem.Drawer
                 return _selectables;
             }
         }
-        protected GUIContent[] _secondSelectables;
-        protected GUIContent[] SecondSelectables
-        {
-            get
-            {
-                if (_secondSelectables == null || _secondSelectables.Length == 0)
-                {
-                    _secondSelectables = new GUIContent[] {
-                        new GUIContent("静态生成元素"),
-                        new GUIContent("动态创建元素"),
-                        new GUIContent("环境切换元素"),
-                    };
-                }
-                return _secondSelectables;
-            }
-        }
+        protected ElementGroupDrawer elementGroupDrawer;
         protected int selected;
-        protected int secondSelected;
-
-
         protected const string prefer_selected = "actiongroup_prefer_selected";
-        protected const string prefer_second_selected = "actiongroup_prefer_second_selected";
 
         private void OnEnable()
         {
@@ -83,18 +58,13 @@ namespace InteractSystem.Drawer
             {
                 selected = EditorPrefs.GetInt(prefer_selected);
             }
-            if (EditorPrefs.HasKey(prefer_second_selected))
-            {
-                secondSelected = EditorPrefs.GetInt(prefer_second_selected);
-            }
+            
         }
         private void FindPropertys()
         {
             script_prop = serializedObject.FindProperty("m_Script");
             actionCommands_prop = serializedObject.FindProperty("actionCommands");
-            runtimeElements_prop = serializedObject.FindProperty("runTimeElements");
-            autoElements_prop = serializedObject.FindProperty("autoElements");
-            enviroments_prop = serializedObject.FindProperty("enviroments");
+            elementGroup_prop = serializedObject.FindProperty("elementGroup");
         }
         private void DrawSwitchOptions()
         {
@@ -116,29 +86,9 @@ namespace InteractSystem.Drawer
         private void InitReorderLists()
         {
             commands_list.InitReorderList(actionCommands_prop);
-
-            autoElemnts_list.InitReorderList(autoElements_prop);
-            autoElemnts_list.drawHeaderCallback = DrawHeadSwitch;
-
-            runtimeElements_list.InitReorderList(runtimeElements_prop);
-            runtimeElements_list.drawHeaderCallback = DrawHeadSwitch;
-
-            enviroments_list.InitReorderList(enviroments_prop);
-            enviroments_list.drawHeaderCallback = DrawHeadSwitch;
         }
 
-        private void DrawHeadSwitch(Rect rect)
-        {
-            var headRect = new Rect(rect.x, rect.y, rect.width * 0.3f, rect.height);
-            EditorGUI.BeginChangeCheck();
-            GUI.contentColor = ActionGUIUtil.WarningColor;
-            secondSelected = EditorGUI.Popup(headRect, secondSelected, SecondSelectables, EditorStyles.miniLabel);
-            GUI.contentColor = Color.white;
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorPrefs.SetInt(prefer_second_selected, secondSelected);
-            }
-        }
+ 
         private void SwitchDrawLists()
         {
             if (selected == 0)
@@ -147,21 +97,57 @@ namespace InteractSystem.Drawer
             }
             else if (selected == 1)
             {
-                if (secondSelected == 0)
-                {
-                    autoElemnts_list.DoLayoutList();
-                }
-                else if (secondSelected == 1)
-                {
-                    runtimeElements_list.DoLayoutList();
-                }
-                else
-                {
-                    enviroments_list.DoLayoutList();
-                }
+                DrawElementGroupHold();
+                DrawElementGroup(); 
             }
         }
 
+        private void DrawElementGroupHold()
+        {
+            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight +ActionGUIUtil.padding * 2);
+            var innerRect = ActionGUIUtil.DrawBoxRect(rect, "");
+            var btnRect = new Rect(innerRect.x, innerRect.y, innerRect.width - ActionGUIUtil.middleButtonWidth, innerRect.height);
+            var style = elementGroupDrawer != null && elementGroupDrawer.showAll ? EditorStyles.toolbarPopup : EditorStyles.toolbarDropDown;
+            if (GUI.Button(btnRect,"元素列表", style))
+            {
+                if (elementGroupDrawer != null){
+                    elementGroupDrawer.showAll = !elementGroupDrawer.showAll;
+                }
+            }
+
+            var contentRect = new Rect(innerRect.x + innerRect.width - ActionGUIUtil.middleButtonWidth, innerRect.y, ActionGUIUtil.middleButtonWidth, innerRect.height);
+            if (elementGroup_prop.objectReferenceValue == null)
+            {
+                elementGroup_prop.objectReferenceValue =  EditorGUI.ObjectField(contentRect, elementGroup_prop.objectReferenceValue, typeof(ElementGroup), false);
+            }
+            else
+            {
+                ActionGUIUtil.AcceptDrawField(contentRect, elementGroup_prop, typeof(ElementGroup));
+            }
+        }
+
+        private void DrawElementGroup()
+        {
+            if (elementGroup_prop.objectReferenceValue == null)
+            {
+                if (GUILayout.Button("create new element group"))
+                {
+                    var group = ScriptableObject.CreateInstance<ElementGroup>();
+                    ProjectWindowUtil.CreateAsset(group, "new element_group.asset");
+                }
+            }
+            else
+            {
+                if (elementGroupDrawer == null)
+                {
+                    Editor editor = null;
+                    Editor.CreateCachedEditor(elementGroup_prop.objectReferenceValue, typeof(ElementGroupDrawer), ref editor);
+                    elementGroupDrawer = editor as ElementGroupDrawer;
+                    elementGroupDrawer.showScript = false;
+                }
+                elementGroupDrawer.OnInspectorGUI();
+            }
+        }
     }
 
 }
