@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace InteractSystem
 {
 
-    public class ActionSystemObject : ScriptableObject
+    public class InteractObject : ScriptableObject
     {
         public ActionSystem actionSystem
         {

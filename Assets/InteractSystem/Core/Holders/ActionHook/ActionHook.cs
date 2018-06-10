@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem
 {
-    public class ActionHook : ActionSystemObject
+    public class ActionHook : InteractObject
     {
         [SerializeField, Attributes.Range(0, 10)]
         private int queueID;
@@ -26,9 +26,9 @@ namespace InteractSystem
         public Toggle.ToggleEvent onBeforeEndExecuted;
         public static bool log = false;
         protected ExecuteStatu status;
-        protected ActionSystemObject operater;
+        protected InteractObject operater;
 
-        public void SetContext(ActionSystemObject operater)
+        public void SetContext(InteractObject operater)
         {
             this.operater = operater;
         }
