@@ -10,7 +10,7 @@ namespace InteractSystem
     ///顺序执行
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class GenericActionNode<T> : RuntimeCollectNode<T> where T : ActionItem, ISupportElement
+    public abstract class ClickAbleActionNode : RuntimeCollectNode<ClickAbleActionItem> 
     {
         protected override void OnEnable()
         {
@@ -18,28 +18,22 @@ namespace InteractSystem
             currents.Clear();
             finalGroup = null;
         }
-
-        protected override void OnAddedToPool(T arg0)
+      
+        protected override void OnAddedToPool(ClickAbleActionItem arg0)
         {
             base.OnAddedToPool(arg0);
-
-            if (Statu == ExecuteStatu.Executing)
-            {
-                if(arg0 is GenericActionItem<T>)
-                {
-                    (arg0 as GenericActionItem<T>).RegistOnComplete(TryComplete);
-                }
-            }
+            RegistComplete(arg0);
         }
-        protected override void OnRemovedFromPool(T arg0)
+
+     
+        protected override void OnRemovedFromPool(ClickAbleActionItem arg0)
         {
             base.OnRemovedFromPool(arg0);
-            if (arg0 is GenericActionItem<T>)
-            {
-                (arg0 as GenericActionItem<T>).RemoveOnComplete(TryComplete);
-            }
+            RemoveComplete(arg0);            
         }
-        protected virtual void TryComplete(T item)
+
+      
+        protected virtual void TryComplete(ClickAbleActionItem item)
         {
             if (statu != ExecuteStatu.Executing) return;//没有执行
             if (!item.OperateAble) return;//目标无法点击
@@ -63,8 +57,7 @@ namespace InteractSystem
         {
             base.OnStartExecute(auto);
             FindOperateAbleItems();
-            if (auto)
-            {
+            if (auto){
                 AutoCompleteItems();
             }
         }
@@ -77,11 +70,15 @@ namespace InteractSystem
             if (itemList.Count > currents.Count)
             {
                 var key = itemList[currents.Count];
+                foreach (var item in elementPool)
+                {
+                    Debug.Log(item.Name + ":" + item.OperateAble);
+                }
                 var elements = elementPool.FindAll(x => x.Name == key && x.OperateAble);
                 elements.ForEach(element =>
                 {
                     element.StepActive();
-                    (element as GenericActionItem<T>).RegistOnComplete(TryComplete);
+                    (element as ClickAbleActionItem).RegistOnCompleteSafety(TryComplete);
                 });
             }
         }
@@ -90,6 +87,10 @@ namespace InteractSystem
         /// </summary>
         protected abstract void AutoCompleteItems();
 
+        /// <summary>
+        ///尝试将元素设置为结束状态
+        /// </summary>
+        /// <param name="undo"></param>
         protected override void CompleteElements(bool undo)
         {
             base.CompleteElements(undo);
@@ -131,6 +132,32 @@ namespace InteractSystem
                         currents[i].RecordPlayer(this);
                     }
                 }
+            }
+        }
+        /// <summary>
+        /// 注册结束事件（仅元素在本步骤开始后创建时执行注册）
+        /// </summary>
+        /// <param name="arg0"></param>
+        protected void RegistComplete(ClickAbleActionItem arg0)
+        {
+            if (Statu == ExecuteStatu.Executing)
+            {
+                if (arg0 is ClickAbleActionItem)
+                {
+                    // 注册元素结束事件
+                    (arg0 as ClickAbleActionItem).RegistOnCompleteSafety(TryComplete);
+                }
+            }
+        }
+        /// <summary>
+        /// 注销结束事件（仅元素被销毁后执行）
+        /// </summary>
+        /// <param name="arg0"></param>
+        protected void RemoveComplete(ClickAbleActionItem arg0)
+        {
+            if (arg0 is ClickAbleActionItem)
+            {
+                (arg0 as ClickAbleActionItem).RemoveOnComplete(TryComplete);
             }
         }
 

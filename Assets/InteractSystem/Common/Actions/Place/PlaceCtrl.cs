@@ -48,10 +48,11 @@ namespace InteractSystem.Common.Actions
 
         private void OnPickStay(PickUpAbleItem arg0)
         {
-            //if (arg0 is PlaceElement)
-            //{
-            //    TryPlaceObject(arg0 as PlaceElement);
-            //}
+            var placeElement = arg0.GetComponent<PlaceElement>();
+            if (placeElement)
+            {
+                TryPlaceObject(placeElement);
+            }
         }
 
         #region 鼠标操作事件
@@ -85,7 +86,7 @@ namespace InteractSystem.Common.Actions
                         if (installPos)
                         {
                             hitedObj = true;
-                            installAble = CanPlace(installPos, pickCtrl.pickedUpObj, out resonwhy);
+                            installAble = CanPlace(installPos, pickedUpObj, out resonwhy);
                             if (installAble)
                             {
                                 break;
@@ -140,7 +141,7 @@ namespace InteractSystem.Common.Actions
             pos.PlaceObject(pickup);
         }
 
-        public bool CanPlace(PlaceItem pos, PickUpAbleItem element, out string why)
+        public bool CanPlace(PlaceItem pos, PlaceElement element, out string why)
         {
             if (pos == null)
             {
@@ -156,10 +157,11 @@ namespace InteractSystem.Common.Actions
 
         public void PlaceWrong(PlaceElement pickup)
         {
-            //if (pickup)
-            //{
-            //    pickup.OnPickDown();
-            //}
+            if (pickup)
+            {
+                var plickupItem = pickup.GetComponent<PickUpAbleItem>();
+                plickupItem.OnPickDown();
+            }
         }
         #endregion
     }
