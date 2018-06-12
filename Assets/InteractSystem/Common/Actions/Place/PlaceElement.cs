@@ -12,7 +12,7 @@ namespace InteractSystem.Common.Actions
     /// 可操作对象具体行为实现
     /// </summary>
     [RequireComponent(typeof(PickUpAbleItem))]
-    public class PlaceElement : ActionItem, ISupportElement
+    public class PlaceElement : PickUpAbleElement, ISupportElement
     {
         public class Tweener
         {
@@ -77,7 +77,7 @@ namespace InteractSystem.Common.Actions
         {
             get
             {
-                return actived;
+                return BindingObj == null;
             }
         }
 
@@ -98,12 +98,21 @@ namespace InteractSystem.Common.Actions
         protected int smooth = 50;
         protected IHighLightItems highLighter;
         protected bool actived;
-        protected Graph.OperaterNode target;
-        public Graph.OperaterNode BindingObj { get { return target; } }
-        //protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
-        //protected bool StraightMove { get { return target ? target.straightMove : false; } }
-        //protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
-        //protected Transform Passby { get { return target ? target.passBy : null; } }
+        protected PlaceItem target;
+        public PlaceItem BindingObj { get { return target; } }
+        public PickUpAbleItem pickUpAbleItem { get;private set; }
+        protected override string LayerName
+        {
+            get
+            {
+                return Layers.pickUpElementLayer;
+            }
+        }
+
+        protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
+        protected bool StraightMove { get { return target ? target.straightMove : false; } }
+        protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
+        protected Transform Passby { get { return target ? target.passBy : null; } }
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
         protected Vector3 lastPos;
@@ -111,12 +120,13 @@ namespace InteractSystem.Common.Actions
         {
             base.Awake();
             move = new Tweener(this);
+            pickUpAbleItem = GetComponent<PickUpAbleItem>();
+            pickUpAbleItem.PickUpAble = false;
         }
         protected override void Start()
         {
             base.Start();
             InitRender();
-            InitLayer();
             startPos = transform.position;
             startRotation = transform.eulerAngles;
             gameObject.SetActive(startActive);
@@ -144,11 +154,7 @@ namespace InteractSystem.Common.Actions
             move.Kill();
             elementCtrl.RemoveElement(this);
         }
-
-        private void InitLayer()
-        {
-            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
-        }
+        
         protected virtual void InitRender()
         {
             if (m_render == null)
@@ -162,40 +168,40 @@ namespace InteractSystem.Common.Actions
             rotList = new List<Vector3>();
             Vector3 midPos = Vector3.zero;
 
-            //if (Passby != null)
-            //{
-            //    midPos = Passby.position;
-            //}
-            //else
-            //{
-            //    var player = FindObjectOfType<Camera>().transform;
-            //    midPos = player.transform.position + player.transform.forward * Config.elementFoward;
-            //}
+            if (Passby != null)
+            {
+                midPos = Passby.position;
+            }
+            else
+            {
+                var player = FindObjectOfType<Camera>().transform;
+                midPos = player.transform.position + player.transform.forward * Config.elementFoward;
+            }
 
-            //var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
-            //if (StraightMove || IgnoreMiddle)
-            //{
-            //    posList.Add(transform.position);
-            //    rotList.Add(transform.eulerAngles);
+            var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
+            if (StraightMove || IgnoreMiddle)
+            {
+                posList.Add(transform.position);
+                rotList.Add(transform.eulerAngles);
 
-            //    if (!IgnoreMiddle)
-            //    {
-            //        posList.Add(midPos);
-            //        rotList.Add(midRot);
-            //    }
+                if (!IgnoreMiddle)
+                {
+                    posList.Add(midPos);
+                    rotList.Add(midRot);
+                }
 
-            //    posList.Add(end);
-            //    rotList.Add(endRot);
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < smooth; i++)
-            //    {
-            //        float curr = (i + 0f) / (smooth - 1);
-            //        posList.Add(Bezier.CalculateBezierPoint(curr, transform.position, midPos, end));
-            //        rotList.Add(Bezier.CalculateBezierPoint(curr, transform.eulerAngles, midRot, endRot));
-            //    }
-            //}
+                posList.Add(end);
+                rotList.Add(endRot);
+            }
+            else
+            {
+                for (int i = 0; i < smooth; i++)
+                {
+                    float curr = (i + 0f) / (smooth - 1);
+                    posList.Add(Bezier.CalculateBezierPoint(curr, transform.position, midPos, end));
+                    rotList.Add(Bezier.CalculateBezierPoint(curr, transform.eulerAngles, midRot, endRot));
+                }
+            }
 
         }
 
@@ -223,7 +229,7 @@ namespace InteractSystem.Common.Actions
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(Graph.OperaterNode target, bool binding)
+        public virtual void NormalInstall(PlaceItem target, bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -248,7 +254,7 @@ namespace InteractSystem.Common.Actions
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(Graph.OperaterNode target, bool binding)
+        public virtual void QuickInstall(PlaceItem target, bool binding)
         {
             StopTween();
             if (!HaveBinding)
@@ -324,15 +330,10 @@ namespace InteractSystem.Common.Actions
         //    }
         //}
 
-        //public override void OnPickDown()
-        //{
-        //    base.OnPickDown();
-        //    StopTween();
-        //    if (onPickDown != null)
-        //    {
-        //        onPickDown.Invoke();
-        //    }
-        //}
+        protected override void OnPickDown()
+        {
+            StopTween();
+        }
         //public override void SetPosition(Vector3 pos)
         //{
         //    if (lastPos != pos)
@@ -347,18 +348,24 @@ namespace InteractSystem.Common.Actions
         /// </summary>
         public override void StepActive()
         {
-            //actived = true;
-            //PickUpAble = true;
-            //onStepActive.Invoke();
-            //gameObject.SetActive(true);
+            base.StepActive();
+            if (log)
+                Debug.Log("StepActive:" + Name, gameObject);
+            actived = true;
+            pickUpAbleItem.PickUpAble = true;
+            onStepActive.Invoke();
+            gameObject.SetActive(true);
         }
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
         /// </summary>
         public override void StepComplete()
         {
-            //if (log) Debug.Log("StepComplete:" + Name, gameObject);
+            base.StepComplete();
+            if (log)
+                Debug.Log("StepComplete:" + Name, gameObject);
             actived = false;
+            pickUpAbleItem.PickUpAble = false;
             onStepComplete.Invoke();
             if (tweening)
             {
@@ -372,7 +379,11 @@ namespace InteractSystem.Common.Actions
         /// </summary>
         public override void StepUnDo()
         {
+            base.StepUnDo();
+            if (log)
+                Debug.Log("StepUnDo:" + Name, gameObject);
             actived = false;
+            pickUpAbleItem.PickUpAble = false;
             onStepUnDo.Invoke();
             gameObject.SetActive(startActive);
         }
@@ -389,7 +400,6 @@ namespace InteractSystem.Common.Actions
             //{
             //    gameObject.SetActive(false);
             //}
-
             if (onInstallOkEvent != null)
                 onInstallOkEvent();
         }
@@ -401,11 +411,11 @@ namespace InteractSystem.Common.Actions
             if (IsRuntimeCreated)
                 Destroy(gameObject);
         }
-        protected virtual void Binding(Graph.OperaterNode target)
+        protected virtual void Binding(PlaceItem target)
         {
             this.target = target;
         }
-        protected virtual Graph.OperaterNode UnBinding()
+        protected virtual PlaceItem UnBinding()
         {
             var old = target;
             target = null;

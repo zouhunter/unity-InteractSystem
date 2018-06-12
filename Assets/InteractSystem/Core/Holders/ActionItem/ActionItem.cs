@@ -49,7 +49,7 @@ namespace InteractSystem
         [HideInInspector]
 #endif
         public UnityEvent onActive,onInActive;
-
+        public static bool log = false;
         protected virtual void Awake() {
             InitBindingScripts();
         }

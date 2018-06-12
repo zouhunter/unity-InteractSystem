@@ -8,12 +8,12 @@ using System;
 
 namespace InteractSystem
 {
-    public abstract class GenericActionItem<T> : ActionItem where T : ActionItem
+    public abstract class ClickAbleActionItem : ActionItem
     {
         [SerializeField,Attributes.DefultCollider]
         protected Collider _collider;
         public Collider Collider { get { return _collider; } protected set { _collider = value; } }
-        private List<UnityAction<T>> onCompleteActions = new List<UnityAction<T>>();
+        private List<UnityAction<ClickAbleActionItem>> onCompleteActions = new List<UnityAction<ClickAbleActionItem>>();
 
         protected override void Awake()
         {
@@ -30,7 +30,7 @@ namespace InteractSystem
 
         protected abstract string LayerName { get; }
 
-        public void RegistOnComplete(UnityAction<T> onClicked)
+        public void RegistOnCompleteSafety(UnityAction<ClickAbleActionItem> onClicked)
         {
             if (!onCompleteActions.Contains(onClicked))
             {
@@ -58,12 +58,12 @@ namespace InteractSystem
             {
                 foreach (var onClicked in onCompleteActions)
                 {
-                    onClicked.Invoke(this as T);
+                    onClicked.Invoke(this as ClickAbleActionItem);
                 }
             }
         }
 
-        public void RemoveOnComplete(UnityAction<T> onClicked)
+        public void RemoveOnComplete(UnityAction<ClickAbleActionItem> onClicked)
         {
             if (onCompleteActions.Contains(onClicked))
             {

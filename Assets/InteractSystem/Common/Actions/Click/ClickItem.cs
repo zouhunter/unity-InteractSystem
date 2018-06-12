@@ -8,7 +8,7 @@ using System;
 namespace InteractSystem.Common.Actions
 {
   
-    public class ClickItem : GenericActionItem<ClickItem>
+    public class ClickItem : ClickAbleActionItem
     {
         [SerializeField]
         protected int clickableCount = 1;

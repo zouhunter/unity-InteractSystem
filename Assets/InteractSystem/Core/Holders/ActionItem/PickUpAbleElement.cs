@@ -8,7 +8,7 @@ using System;
 namespace InteractSystem
 {
     [RequireComponent(typeof(PickUpAbleItem))]
-    public abstract class PickUpAbleElement : ActionItem
+    public abstract class PickUpAbleElement : ClickAbleActionItem
     {
         private PickUpAbleItem pickUpAbleItem;
 

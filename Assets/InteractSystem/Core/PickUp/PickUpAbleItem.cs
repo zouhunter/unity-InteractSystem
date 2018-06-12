@@ -9,6 +9,8 @@ namespace InteractSystem
         private bool _pickUpAble = true;
         [HideInInspector]
         public UnityEvent onPickUp, onPickDown, onPickStay;
+        public event UnityAction<Vector3> onSetPosition;
+        public event UnityAction<Vector3> onSetViewForward;
         public static bool log = false;
         public Collider Collider { get { return _collider; } }
 
@@ -47,9 +49,25 @@ namespace InteractSystem
         }
         public void SetPosition(Vector3 pos)
         {
-
+            if(onSetPosition == null)
+            {
+                transform.position = pos;
+            }
+            else
+            {
+                onSetPosition.Invoke(pos);
+            }
         }
-        public void SetViewForward(Vector3 forward) { }
+        public void SetViewForward(Vector3 forward) {
+            if (onSetViewForward == null)
+            {
+                transform.forward = forward;
+            }
+            else
+            {
+                onSetViewForward.Invoke(forward);
+            }
+        }
 
     
     }

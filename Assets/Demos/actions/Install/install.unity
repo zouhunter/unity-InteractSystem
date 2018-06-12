@@ -255,6 +255,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1258059478}
   - component: {fileID: 1258059479}
+  - component: {fileID: 1258059480}
   m_Layer: 0
   m_Name: installItem
   m_TagString: Untagged
@@ -302,6 +303,18 @@ MonoBehaviour:
       PublicKeyToken=null
   _collider: {fileID: 1300248639}
   elementName: install01
+--- !u!114 &1258059480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1258059477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2328181f7fd604448c574c185c02c1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highLightColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &1300248636
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,12 +463,12 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -585,6 +598,7 @@ GameObject:
   - component: {fileID: 2088078994}
   - component: {fileID: 2088078996}
   - component: {fileID: 2088078995}
+  - component: {fileID: 2088078997}
   m_Layer: 0
   m_Name: installElement
   m_TagString: Untagged
@@ -617,7 +631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c06fd52861d11e40aa755a61a5252f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: 
+  _name: install01
   startactive: 1
   endactive: 1
   onActive:
@@ -674,3 +688,15 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+--- !u!114 &2088078997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2088078993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2328181f7fd604448c574c185c02c1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highLightColor: {r: 0, g: 1, b: 0, a: 1}

@@ -9,7 +9,7 @@ namespace InteractSystem.Common.Actions
 {
     [AddComponentMenu(MenuName.ClickNode)]
     [CustomNode("Operate/Click", 10, "InteratSystem")]
-    public class ClickNode : GenericActionNode<ClickItem>
+    public class ClickNode : ClickAbleActionNode
     {
         public override ControllerType CtrlType
         {
