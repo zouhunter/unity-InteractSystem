@@ -7,8 +7,7 @@ using System.Collections.Generic;
 using NodeGraph;
 namespace InteractSystem.Common.Actions
 {
-    [AddComponentMenu(MenuName.ClickNode)]
-    [CustomNode("Operate/Click", 10, "InteratSystem")]
+    [CustomNode("Operate/Click", 12, "InteratSystem")]
     public class ClickNode : ClickAbleActionNode
     {
         public override ControllerType CtrlType

@@ -129,8 +129,7 @@ namespace NodeGraph
             {
                 CustomNode attr =
                     type.GetCustomAttributes(typeof(CustomNode), false).FirstOrDefault() as CustomNode;
-                if (attr != null)
-                {
+                if (attr != null){
                     return attr.OrderPriority;
                 }
             }

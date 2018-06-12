@@ -1,23 +1,28 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace InteractSystem.Common.Actions
-{
-    
-    [NodeGraph. CustomNode("Operate/Match", 11, "InteratSystem")]
-    public class MatchNode : PlaceNode
+{ 
+    [NodeGraph.CustomNode("Operate/Drag", 13, "InteratSystem")]
+    public class DragNode : ClickAbleActionNode
     {
+
         public override ControllerType CtrlType
         {
             get
             {
-                return ControllerType.Place;
+                return ControllerType.Drag;
             }
         }
+     
+
+        protected override void AutoCompleteItems()
+        {
+        }
     }
+
 }
