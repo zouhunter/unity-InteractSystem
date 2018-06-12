@@ -26,7 +26,16 @@ namespace InteractSystem
                 pickUpAbleItem = gameObject.AddComponent<PickUpAbleItem>();
             }
             pickUpAbleItem.onPickDown.AddListener(OnPickDown);
+            pickUpAbleItem.onPickUp.AddListener(OnPickUp);
+            pickUpAbleItem.onPickStay.AddListener(OnPickStay);
+            pickUpAbleItem.onSetPosition += OnSetPosition;
+            pickUpAbleItem.onSetViewForward += OnSetViewForward;
         }
+
+        protected abstract void OnPickUp();
+        protected abstract void OnPickStay();
+        protected virtual void OnSetPosition(Vector3 arg0) { }
+        protected virtual void OnSetViewForward(Vector3 arg0) { }
 
         protected abstract void OnPickDown();
     }

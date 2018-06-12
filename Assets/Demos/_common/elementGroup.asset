@@ -9,8 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04d4cafc71ff5c44a996c76f0fd89d8, type: 3}
-  m_Name: new element_group
+  m_Name: elementGroup
   m_EditorClassIdentifier: 
   runTimeElements: []
   autoElements: []
-  enviroments: []
+  enviroments:
+  - instanceID: 0
+    _name: clickItems
+    prefab: {fileID: 1874721690729464, guid: b27ec635c42e9a84c951cbb21044881f, type: 2}

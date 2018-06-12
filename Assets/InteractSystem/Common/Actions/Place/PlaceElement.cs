@@ -241,7 +241,7 @@ namespace InteractSystem.Common.Actions
                     OnInstallComplete();
                 };
 
-                //DoPath(target.transform.position, target.transform.eulerAngles);
+                DoPath(target.transform.position, target.transform.eulerAngles);
 
                 if (!binding)
                 {
@@ -260,8 +260,8 @@ namespace InteractSystem.Common.Actions
             if (!HaveBinding)
             {
                 Binding(target);
-                //transform.position = target.transform.position;
-                //transform.rotation = target.transform.rotation;
+                transform.position = target.transform.position;
+                transform.rotation = target.transform.rotation;
 
                 if (!binding)
                     UnBinding();
@@ -273,7 +273,10 @@ namespace InteractSystem.Common.Actions
                 Debug.LogError(this + "HaveBinding:" + BindingObj);
             }
         }
-
+        protected override void OnPickStay()
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// 卸载
         /// </summary>
@@ -319,22 +322,17 @@ namespace InteractSystem.Common.Actions
         /// <summary>
         /// 拿起事件
         /// </summary>
-        //public override void OnPickUp()
-        //{
-        //    base.OnPickUp();
-        //    StopTween();
+        protected override void OnPickUp()
+        {
+            StopTween();
 
-        //    if (onPickUp != null)
-        //    {
-        //        onPickUp.Invoke();
-        //    }
-        //}
+        }
 
         protected override void OnPickDown()
         {
             StopTween();
         }
-        //public override void SetPosition(Vector3 pos)
+        //protected override void SetPosition(Vector3 pos)
         //{
         //    if (lastPos != pos)
         //    {
