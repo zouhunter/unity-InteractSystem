@@ -31,12 +31,16 @@ namespace InteractSystem
             pickUpAbleItem.onSetPosition += OnSetPosition;
             pickUpAbleItem.onSetViewForward += OnSetViewForward;
         }
-
+        protected virtual void OnSetPosition(Vector3 arg0)
+        {
+            transform.position = arg0;
+        }
+        protected virtual void OnSetViewForward(Vector3 arg0)
+        {
+            transform.forward = arg0;
+        }
         protected abstract void OnPickUp();
         protected abstract void OnPickStay();
-        protected virtual void OnSetPosition(Vector3 arg0) { }
-        protected virtual void OnSetViewForward(Vector3 arg0) { }
-
         protected abstract void OnPickDown();
     }
 }

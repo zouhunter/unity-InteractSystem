@@ -57,7 +57,7 @@ namespace InteractSystem.Common.Actions
 
         public override void OnAutoInstall()
         {
-            PlaceElement obj = GetUnInstalledObj(Name);
+            PlaceElement obj = GetUnInstalledObj(elementName);
             Attach(obj);
             obj.StepActive();
             if (Config.quickMoveElement && !ignorePass)
@@ -69,6 +69,7 @@ namespace InteractSystem.Common.Actions
                 obj.NormalInstall(this, true);
             }
         }
+
         protected override void OnInstallComplete()
         {
             if (Active)

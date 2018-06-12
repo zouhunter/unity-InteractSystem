@@ -275,7 +275,7 @@ namespace InteractSystem.Common.Actions
         }
         protected override void OnPickStay()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
         /// <summary>
         /// 卸载

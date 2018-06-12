@@ -10,6 +10,7 @@ namespace InteractSystem.Common.Actions
     public class MatchItem : PlaceItem
     {
         public bool completeMoveBack;
+
         public override void PlaceObject(PlaceElement pickup)
         {
             Attach(pickup);
@@ -81,7 +82,7 @@ namespace InteractSystem.Common.Actions
 
         public override void OnAutoInstall()
         {
-            var obj = GetUnInstalledObj(Name);
+            var obj = GetUnInstalledObj(elementName);
             Attach(obj);
             if (Config.quickMoveElement && !ignorePass)
             {

@@ -56,7 +56,8 @@ namespace InteractSystem
         {
             if (onCompleteActions.Count > 0)
             {
-                foreach (var onClicked in onCompleteActions)
+                var actions = onCompleteActions.ToArray();
+                foreach (var onClicked in actions)
                 {
                     onClicked.Invoke(this as ClickAbleActionItem);
                 }

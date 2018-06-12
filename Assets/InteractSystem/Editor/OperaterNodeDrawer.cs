@@ -12,6 +12,7 @@ namespace InteractSystem.Drawer
     public class OperateNodeDrawer : Editor
     {
         private Graph.OperaterNode node { get { return target as Graph.OperaterNode; } }
+
         protected SerializedProperty script_prop;
         protected SerializedProperty bindings_prop;
         protected SerializedProperty _name_prop;
@@ -49,7 +50,12 @@ namespace InteractSystem.Drawer
 
         protected virtual void OnEnable()
         {
-            if (target == null) Debug.LogError("no target !!!");
+            if (target == null)
+            {
+                Debug.LogError("no target !!!");
+                DestroyImmediate(this);
+            }
+
             InitPrefers();
             InitPropertys();
             InitDrawers();
@@ -59,6 +65,7 @@ namespace InteractSystem.Drawer
         {
             ActionGUIUtil.DrawDisableProperty(script_prop);
             serializedObject.Update();
+            EditorGUILayout.PropertyField(_name_prop);
             DrawSwitch();
             serializedObject.ApplyModifiedProperties();
         }

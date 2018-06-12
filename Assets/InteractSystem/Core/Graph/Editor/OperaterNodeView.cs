@@ -13,7 +13,7 @@ namespace InteractSystem.Graph
         {
             get
             {
-                return "lunch";
+                return target.GetType().Name;
             }
         }
         protected override GUIStyle CreateActiveStyle()
@@ -36,6 +36,17 @@ namespace InteractSystem.Graph
         {
             base.OnNodeGUI(position, data);
             DrawAddNodes(position, data);
+            data.Name = Get_Name();
+        }
+
+        private string Get_Name()
+        {
+            var field = typeof(OperaterNode).GetField("_name", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetField);
+            if (field == null || node == null || !(node is OperaterNode)|| field.GetValue(node) == null)
+            {
+                return null;
+            }
+            return field.GetValue(node).ToString();
         }
     }
 }

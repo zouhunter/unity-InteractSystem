@@ -12,7 +12,6 @@ namespace InteractSystem.Common.Actions
     [NodeGraph. CustomNode("Operate/Match", 10, "InteratSystem")]
     public class MatchNode : PlaceNode
     {
-        public bool completeMoveBack = true;//结束时退回
         public override ControllerType CtrlType
         {
             get
@@ -20,10 +19,5 @@ namespace InteractSystem.Common.Actions
                 return ControllerType.Place;
             }
         }
-        protected override void AutoCompleteItems()
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

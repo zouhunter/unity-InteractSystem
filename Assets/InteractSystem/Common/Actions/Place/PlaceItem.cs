@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace InteractSystem.Common.Actions
 {
-    public abstract class PlaceItem:ClickAbleContentActionItem<PlaceElement>
+    public abstract class PlaceItem : ClickAbleContentActionItem<PlaceElement>
     {
         public bool autoInstall;//自动安装
         public bool ignorePass;//反忽略
@@ -18,14 +18,14 @@ namespace InteractSystem.Common.Actions
         {
             get
             {
-               return Layers.placePosLayer;
+                return Layers.placePosLayer;
             }
         }
         public override bool OperateAble
         {
             get
             {
-                return element == null;
+                return targets == null || targets.Count == 0;
             }
         }
         public abstract bool CanPlace(PlaceElement element, out string why);
@@ -45,7 +45,7 @@ namespace InteractSystem.Common.Actions
             base.StepComplete();
             if (!AlreadyPlaced)
             {
-                PlaceElement obj = GetUnInstalledObj(Name);
+                PlaceElement obj = GetUnInstalledObj(elementName);
                 Attach(obj);
                 obj.QuickInstall(this, true);
                 obj.StepComplete();
@@ -59,7 +59,7 @@ namespace InteractSystem.Common.Actions
         /// <returns></returns>
         public PlaceElement GetUnInstalledObj(string elementName)
         {
-            var elements = elementCtrl.GetElements<PlaceElement>(elementName,true);
+            var elements = elementCtrl.GetElements<PlaceElement>(elementName, true);
             if (elements != null)
             {
                 for (int i = 0; i < elements.Count; i++)

@@ -9,7 +9,7 @@ namespace InteractSystem
 {
     public class PickUpController
     {
-        internal PickUpAbleItem pickedUpObj { get; set; }
+        internal PickUpAbleItem pickedUpObj { get;private set; }
         public bool PickedUp { get { return pickedUpObj != null; } }
         private Ray ray;
         private RaycastHit hit;
@@ -121,6 +121,8 @@ namespace InteractSystem
         {
             if (pickedUpObj != null)
             {
+                if (log) Debug.Log("onPickStay:" + pickedUpObj);
+
                 var obj = pickedUpObj;
                 pickedUpObj = null;
 
@@ -128,7 +130,6 @@ namespace InteractSystem
 
                 if (onPickStay != null)
                     onPickStay(obj);
-
             }
         }
 

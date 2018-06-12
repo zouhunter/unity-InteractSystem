@@ -22,13 +22,5 @@ namespace InteractSystem.Common.Actions
                 return ControllerType.Place;
             }
         }
-
-        /// <summary>
-        /// 自动进行安装演示
-        /// </summary>
-        protected override void AutoCompleteItems()
-        {
-           //
-        }
     }
 }

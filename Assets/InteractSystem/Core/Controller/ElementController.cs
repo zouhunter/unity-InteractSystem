@@ -91,11 +91,10 @@ namespace InteractSystem
 
         internal void SetPriority(ActionItem[] subActions)
         {
-            if (log)
+            if (log && subActions.Length > 0)
             {
                 var str = "SetPriority:";
-                foreach (var item in subActions)
-                {
+                foreach (var item in subActions){
                     str += item;
                 }
                 Debug.Log(str);

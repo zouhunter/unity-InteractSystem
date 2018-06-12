@@ -145,8 +145,7 @@ namespace InteractSystem
             {
                 statu = ExecuteStatu.Completed;
 
-                if(startHookCtrl.Statu != ExecuteStatu.Completed)
-                {
+                if(startHookCtrl.Statu != ExecuteStatu.Completed){
                     startHookCtrl.OnEndExecute();
                 }
 
@@ -170,6 +169,7 @@ namespace InteractSystem
                 {
                     statu = ExecuteStatu.Completed;
                     CoreEndExecute();
+                    TryCallBack();
                 }
                 else if (completeHookCtrl.Statu == ExecuteStatu.UnStarted)
                 {
