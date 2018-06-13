@@ -13,7 +13,7 @@ namespace InteractSystem.Common.Actions
         {
             get
             {
-                throw new NotImplementedException();
+                return targets.Count == 0;
             }
         }
         public float lineWight = 0.1f;
@@ -58,7 +58,11 @@ namespace InteractSystem.Common.Actions
             positionDic.Clear();
             ResetLinRenders();
         }
-
+        public override void AutoExecute()
+        {
+            base.AutoExecute();
+            StartCoroutine(AutoConnect());
+        }
         private IEnumerator AutoConnect()
         {
             for (int i = 0; i < connectGroup.Count; i++)

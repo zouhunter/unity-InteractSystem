@@ -56,11 +56,11 @@ namespace InteractSystem
             if (statu != ExecuteStatu.Executing) return;//没有执行
             if (!item.OperateAble) return;//目标无法点击
             if (currents.Count >= itemList.Count) return;//超过需要
-            if (!(item is ClickAbleActionItem)) return;
+            if (!(item is CompleteAbleActionItem)) return;
 
             if (itemList[currents.Count] == item.Name)
             {
-                currents.Add(item as ClickAbleActionItem);
+                currents.Add(item as CompleteAbleActionItem);
                 item.RecordPlayer(this);
                 item.StepComplete();
             }
@@ -103,7 +103,7 @@ namespace InteractSystem
                 elements.ForEach(element =>
                 {
                     element.StepActive();
-                    (element as ClickAbleActionItem).RegistOnCompleteSafety(TryComplete);
+                    (element as CompleteAbleActionItem).RegistOnCompleteSafety(TryComplete);
                 });
             }
         }
