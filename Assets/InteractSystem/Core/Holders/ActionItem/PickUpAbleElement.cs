@@ -55,8 +55,8 @@ namespace InteractSystem
             base.StepUnDo();
             PickUpItem.PickUpAble = false;
         }
-        protected abstract void OnPickUp();
-        protected abstract void OnPickStay();
-        protected abstract void OnPickDown();
+        protected virtual void OnPickUp() { }
+        protected virtual void OnPickStay() { }
+        protected virtual void OnPickDown() { }
     }
 }

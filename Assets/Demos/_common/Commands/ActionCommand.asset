@@ -62,6 +62,37 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
+  - m_name: 
+    m_id: b60ddbef-b293-4886-8a18-03f0a489cbb7
+    m_x: 459
+    m_y: 205
+    m_node: {fileID: 114085418443741622}
+    m_inputPoints:
+    - id: 8a8ef227-116e-4216-893e-ba4ade6da736
+      label: 
+      parentId: b60ddbef-b293-4886-8a18-03f0a489cbb7
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.455078
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: fd23b43d-1628-4572-b439-761a25e90f4d
+      label: 0
+      parentId: b60ddbef-b293-4886-8a18-03f0a489cbb7
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.455078
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
   m_allConnections:
   - m_id: 1fc8f9fb-a0cb-4f3f-bf65-77882b73c9e3
     m_fromNodeId: e6907a53-bae7-4fbc-95db-d5330abc4504
@@ -70,7 +101,7 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 1856361f-a923-494f-9ae9-60ff21e4342e
     m_type: actionconnect
     m_connection: {fileID: 114692948141289052}
-  m_lastModified: 131727655701352584
+  m_lastModified: 131733933988127279
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: command01
@@ -102,6 +133,26 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
   completeHooks:
   - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
+--- !u!114 &114085418443741622
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd8515d6c82ae6e4483f37911eb02cf0, type: 3}
+  m_Name: InteractSystem.Common.Actions.LinkNode
+  m_EditorClassIdentifier: 
+  _name: 
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  itemList: []
+  quickLink: 0
+  autoLinkTime: 1
+  defultLink: []
 --- !u!114 &114308434188825626
 MonoBehaviour:
   m_ObjectHideFlags: 1
