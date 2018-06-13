@@ -8,13 +8,14 @@ using System;
 
 namespace InteractSystem
 {
-    public abstract class ClickAbleActionItem : ActionItem
+    /// <summary>
+    /// 可点击操作对象
+    /// </summary>
+    public abstract class ClickAbleActionItem : CompleteAbleActionItem
     {
         [SerializeField,Attributes.DefultCollider]
         protected Collider _collider;
         public Collider Collider { get { return _collider; } protected set { _collider = value; } }
-        private List<UnityAction<ClickAbleActionItem>> onCompleteActions = new List<UnityAction<ClickAbleActionItem>>();
-
         protected override void Awake()
         {
             base.Awake();
@@ -30,13 +31,7 @@ namespace InteractSystem
 
         protected abstract string LayerName { get; }
 
-        public void RegistOnCompleteSafety(UnityAction<ClickAbleActionItem> onClicked)
-        {
-            if (!onCompleteActions.Contains(onClicked))
-            {
-                onCompleteActions.Add(onClicked);
-            }
-        }
+     
         public override void StepActive()
         {
             base.StepActive();
@@ -51,25 +46,6 @@ namespace InteractSystem
         {
             base.StepComplete();
             Collider.enabled = false;
-        }
-        public void OnComplete()
-        {
-            if (onCompleteActions.Count > 0)
-            {
-                var actions = onCompleteActions.ToArray();
-                foreach (var onClicked in actions)
-                {
-                    onClicked.Invoke(this as ClickAbleActionItem);
-                }
-            }
-        }
-
-        public void RemoveOnComplete(UnityAction<ClickAbleActionItem> onClicked)
-        {
-            if (onCompleteActions.Contains(onClicked))
-            {
-                onCompleteActions.Remove(onClicked);
-            }
         }
     }
 }

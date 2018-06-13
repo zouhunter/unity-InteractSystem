@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace InteractSystem.Common.Actions
 {
-    public abstract class PlaceItem : ClickAbleContentActionItem<PlaceElement>
+    public abstract class PlaceItem : CompleteAbleContentActionItem<PlaceElement>
     {
         public bool autoInstall;//自动安装
         public bool ignorePass;//反忽略

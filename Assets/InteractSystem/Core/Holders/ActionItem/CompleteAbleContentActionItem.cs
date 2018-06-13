@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace InteractSystem
 {
-    public abstract class ClickAbleContentActionItem<S> : ClickAbleActionItem where S: ClickAbleActionItem
+    public abstract class CompleteAbleContentActionItem<S> : ClickAbleActionItem where S: CompleteAbleActionItem
     {
         [SerializeField]
         protected string elementName;
@@ -86,7 +86,7 @@ namespace InteractSystem
         protected virtual void CompleteElements(bool undo)
         {
             //找到所有被激活的对象
-            var active = startedList.Find(x => x is ClickAbleContentActionItem<S> && (x as ClickAbleContentActionItem<S>).elementName == elementName);
+            var active = startedList.Find(x => x is CompleteAbleContentActionItem<S> && (x as CompleteAbleContentActionItem<S>).elementName == elementName);
 
             if (active == null)
             {

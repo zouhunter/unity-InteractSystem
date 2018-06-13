@@ -8,10 +8,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca7da6373b317db4ead51ff60092bc25, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a8153b0a28b3e0448610df1582aa891, type: 3}
   m_Name: appera_point
   m_EditorClassIdentifier: 
-  coordinate:
-    localPosition: {x: 5, y: 5, z: 5}
-    localEulerAngles: {x: 0, y: 0, z: 0}
-    localScale: {x: 1, y: 1, z: 1}
+  center: {x: 0, y: 0, z: 0}
+  range: 10
