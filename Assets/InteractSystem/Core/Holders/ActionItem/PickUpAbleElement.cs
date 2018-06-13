@@ -7,7 +7,6 @@ using System;
 
 namespace InteractSystem
 {
-    [RequireComponent(typeof(PickUpAbleItem))]
     public abstract class PickUpAbleElement : ClickAbleActionItem
     {
         private PickUpAbleItem pickUpAbleItem;
@@ -21,9 +20,11 @@ namespace InteractSystem
         protected virtual void InitPickupAbleComponent()
         {
             pickUpAbleItem = GetComponent<PickUpAbleItem>();
-            if (pickUpAbleItem == null)
-            {
-                pickUpAbleItem = gameObject.AddComponent<PickUpAbleItem>();
+            if (pickUpAbleItem == null){
+                pickUpAbleItem = Collider.gameObject.AddComponent<PickUpAbleItem>();
+                pickUpAbleItem.onPickUp = new UnityEvent();
+                pickUpAbleItem.onPickDown = new UnityEvent();
+                pickUpAbleItem.onPickStay = new UnityEvent();
             }
             pickUpAbleItem.onPickDown.AddListener(OnPickDown);
             pickUpAbleItem.onPickUp.AddListener(OnPickUp);

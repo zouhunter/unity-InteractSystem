@@ -37,15 +37,15 @@ namespace InteractSystem
 
         public void OnPickUp()
         {
-            onPickUp.Invoke();
+           if(onPickUp != null) onPickUp.Invoke();
         }
         public void OnPickStay()
         {
-            onPickStay.Invoke();
+            if (onPickUp != null) onPickStay.Invoke();
         }
         public void OnPickDown()
         {
-            onPickDown.Invoke();
+            if (onPickUp != null) onPickDown.Invoke();
         }
         public void SetPosition(Vector3 pos)
         {

@@ -30,6 +30,7 @@ namespace InteractSystem
         public const string placePosLayer = "w:placepos";
         public const string dragItemLayer = "w:dragitem";
         public const string linknodeLayer = "w:linknode";
+        public const string detachItemLayer = "w:detachitem";
     }
 
 }
