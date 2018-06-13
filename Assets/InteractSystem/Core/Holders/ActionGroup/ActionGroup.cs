@@ -28,19 +28,20 @@ namespace InteractSystem
         {
             EventTransfer = new EventTransfer(this);
         }
-
+    
         private void OnEnable()
         {
             Debug.Log("OnEnable");
+            Debug.Log(elementGroup);
+            elementGroup.SetActive(transform);
             InitActionCommands();
             ActionSystem.RegistGroup(this);
-            elementGroup.SetActive(transform);
         }
         
-        private void OnDestroy()
+        private void OnDisable()
         {
-            ActionSystem.RemoveGroup(this);
             elementGroup.SetInActive();
+            ActionSystem.RemoveGroup(this);
         }
         #endregion
 

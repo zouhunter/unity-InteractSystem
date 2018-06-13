@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: ActionCommand
   m_EditorClassIdentifier: 
   m_allNodes:
-  - m_name: Click
+  - m_name: "\u70B9\u51FBclick01"
     m_id: 14d7a745-b498-459a-91b8-ea65a8aa957c
     m_x: 276
     m_y: 120
@@ -130,7 +130,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1c747ed63554f6d43a163e4a64ebe940, type: 2}
   bindings: []
   environments: []
-  clickList:
+  itemList:
+  - click01
   - click01
 --- !u!114 &114692948141289052
 MonoBehaviour:
@@ -143,4 +144,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: WorldActionSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 1
+  copyCount: 0

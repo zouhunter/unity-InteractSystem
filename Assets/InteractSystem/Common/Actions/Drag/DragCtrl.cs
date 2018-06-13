@@ -55,8 +55,6 @@ namespace InteractSystem.Common.Actions
             return selectedObj != null;
         }
 
-
-
         void TransformSelected()
         {
             if (Input.GetMouseButtonDown(0))
@@ -82,6 +80,7 @@ namespace InteractSystem.Common.Actions
             if (Input.GetMouseButtonUp(0))
             {
                 selectedObj.Clamp();
+                selectedObj = null;
             }
         }
 

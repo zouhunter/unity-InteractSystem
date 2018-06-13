@@ -21,7 +21,6 @@ namespace InteractSystem.Common.Actions
                 return Layers.dragItemLayer;
             }
         }
-        private Coroutine waitCoroutine;
         public Vector3 targetPos { get; private set; }
         public Vector3 startPos { get; private set; }
 
@@ -32,41 +31,50 @@ namespace InteractSystem.Common.Actions
         [SerializeField]
         private bool clampHard;
         private float autoDragTime { get { return Config.autoExecuteTime; } }
+        private bool auto;
+        private CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
+        protected override void Awake()
+        {
+            base.Awake();
+            auto = false;
+        }
         protected override void Start()
         {
             base.Start();
             InitPositions();
         }
+        public override void AutoExecute()
+        {
+            base.AutoExecute();
+            coroutineCtrl.StartCoroutine (AutoDrag());
+        }
 
-        //IEnumerator AutoDrag()
-        //{
-        //    for (float i = 0; i < autoDragTime; i += Time.deltaTime)
-        //    {
-        //        transform.localPosition = Vector3.Lerp(startPos, targetPos, i / autoDragTime);
-        //        yield return null;
-        //    }
-        //    OnEndExecute(false);
-        //}
-        //protected override void OnBeforeEnd(bool force)
-        //{
-        //    base.OnBeforeEnd(force);
-        //    if (auto && waitCoroutine != null)
-        //    {
-        //        StopCoroutine(waitCoroutine);
-        //        waitCoroutine = null;
-        //    }
-        //    transform.localPosition = targetPos;
-        //}
-        //public override void OnUnDoExecute()
-        //{
-        //    base.OnUnDoExecute();
-        //    if (auto && waitCoroutine != null)
-        //    {
-        //        StopCoroutine(waitCoroutine);
-        //        waitCoroutine = null;
-        //    }
-        //    transform.localPosition = startPos;
-        //}
+        IEnumerator AutoDrag()
+        {
+            auto = true;
+            for (float i = 0; i < autoDragTime; i += Time.deltaTime)
+            {
+                transform.localPosition = Vector3.Lerp(startPos, targetPos, i / autoDragTime);
+                yield return null;
+            }
+            OnComplete();
+        }
+        public override void StepComplete()
+        {
+            base.StepComplete();
+            if (auto){
+                coroutineCtrl.StopCoroutine(AutoDrag());
+            }
+            transform.localPosition = targetPos;
+        }
+        public override void StepUnDo()
+        {
+            base.StepUnDo();
+            if (auto) {
+                coroutineCtrl.StopCoroutine(AutoDrag());
+            }
+            transform.localPosition = startPos;
+        }
 
         internal void Clamp()
         {
@@ -99,10 +107,10 @@ namespace InteractSystem.Common.Actions
 
         private void TryTrigger()
         {
-            //if (Vector3.Distance(transform.localPosition, targetPos) < 0.2f)
-            //{
-            //    OnEndExecute(false);
-            //}
+            if (Vector3.Distance(transform.localPosition, targetPos) < 0.2f)
+            {
+                OnComplete();
+            }
         }
 
         internal void TryMove(Vector3 vector3)
@@ -124,7 +132,7 @@ namespace InteractSystem.Common.Actions
         private void InitPositions()
         {
             startPos = transform.localPosition;
-            targetPos = startPos + targetHolder.localPosition;
+            targetPos = startPos + transform.InverseTransformPoint( targetHolder.position);
         }
     }
 

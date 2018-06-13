@@ -55,22 +55,4 @@ MonoBehaviour:
   - ignore: 0
     commandName: command01
     command: {fileID: 11400000, guid: 2c5821bbd042d4d4697489794f29c6b0, type: 2}
-  runTimeElements: []
-  autoElements:
-  - instanceID: 0
-    coordinate:
-      localPosition: {x: 486.96, y: 413.18, z: 0}
-      localEulerAngles: {x: 0, y: 0, z: 0}
-      localScale: {x: 1, y: 1, z: 1}
-    prefab: {fileID: 1874721690729464, guid: b27ec635c42e9a84c951cbb21044881f, type: 2}
-    ignore: 0
-  enviroments:
-  - instanceID: 0
-    _name: anim1
-    prefab: {fileID: 1476260358816580, guid: dee1bb32799ac234ab7a8c81dcf970dd, type: 2}
-  - instanceID: 0
-    _name: anim0
-    prefab: {fileID: 1076837334744952, guid: cbe03a4b827631240b0eaf290e1f1f3e, type: 2}
-  - instanceID: 0
-    _name: clickItems
-    prefab: {fileID: 1874721690729464, guid: b27ec635c42e9a84c951cbb21044881f, type: 2}
+  elementGroup: {fileID: 11400000, guid: cb730a5b884148d41beb3b5e4b13f986, type: 2}

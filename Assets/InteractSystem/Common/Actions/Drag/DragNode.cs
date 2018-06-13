@@ -8,7 +8,7 @@ using System;
 namespace InteractSystem.Common.Actions
 { 
     [NodeGraph.CustomNode("Operate/Drag", 13, "InteratSystem")]
-    public class DragNode : ClickAbleActionNode
+    public class DragNode : ClickAbleCollectNode<DragItem>
     {
 
         public override ControllerType CtrlType
@@ -17,11 +17,6 @@ namespace InteractSystem.Common.Actions
             {
                 return ControllerType.Drag;
             }
-        }
-     
-
-        protected override void AutoCompleteItems()
-        {
         }
     }
 

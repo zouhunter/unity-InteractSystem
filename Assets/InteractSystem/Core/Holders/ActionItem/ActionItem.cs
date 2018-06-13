@@ -51,7 +51,20 @@ namespace InteractSystem
         public UnityEvent onActive,onInActive;
         public static bool log = false;
         protected virtual void Awake() {
+        }
+        protected virtual void Start()
+        {
+            ElementController.Instence.RegistElement(this);
             InitBindingScripts();
+        }
+        protected virtual void OnEnable()
+        {
+            targets.Clear();
+            subActions = GetComponentsInChildren<ActionItem>().Where(x => x != this).ToArray();
+        }
+        protected virtual void OnDestroy()
+        {
+            ElementController.Instence.RemoveElement(this);
         }
 
         private void InitBindingScripts()
@@ -68,20 +81,11 @@ namespace InteractSystem
             }
         }
 
-        protected virtual void OnEnable() {
-            targets.Clear();
-            subActions = GetComponentsInChildren<ActionItem>().Where(x=>x != this).ToArray();
-        }
-        protected virtual void Start()
-        {
-            ElementController.Instence.RegistElement(this);
-        }
-        protected virtual void OnDestroy()
-        {
-            ElementController.Instence.RemoveElement(this);
-        }
+       
         protected virtual void Update() { }
         protected virtual void OnDisable() { }
+
+        public virtual void AutoExecute() { }
         public virtual void SetVisible(bool visible)
         {
             Body.SetActive(visible);
@@ -100,6 +104,7 @@ namespace InteractSystem
                 this.targets.Remove(target);
             }
         }
+
         public virtual void StepActive()
         {
             Active = true;

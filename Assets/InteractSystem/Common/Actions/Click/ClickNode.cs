@@ -8,7 +8,7 @@ using NodeGraph;
 namespace InteractSystem.Common.Actions
 {
     [CustomNode("Operate/Click", 12, "InteratSystem")]
-    public class ClickNode : ClickAbleActionNode
+    public class ClickNode : ClickAbleCollectNode<ClickItem>
     {
         public override ControllerType CtrlType
         {
@@ -17,25 +17,5 @@ namespace InteractSystem.Common.Actions
                 return ControllerType.Click;
             }
         }
-
-        protected override void AutoCompleteItems()
-        {
-            for (int i = 0; i < itemList.Count; i++)
-            {
-                var element = elementPool.Find(x => x.Name == itemList[i] && x.OperateAble);
-                if (element != null)
-                {
-                    element.RecordPlayer(this);
-                    element.StepComplete();
-                    currents.Add(element);
-                }
-                else
-                {
-                    Debug.LogError("缺少：" + itemList[i]);
-                }
-            }
-            OnEndExecute(false);
-        }
-
     }
 }

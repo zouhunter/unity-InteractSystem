@@ -97,6 +97,5 @@ namespace InteractSystem.Common.Actions
             element = default(PlaceElement);
             return old;
         }
-        public abstract void OnAutoInstall();
     }
 }

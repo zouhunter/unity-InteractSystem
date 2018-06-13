@@ -12,6 +12,10 @@ namespace InteractSystem.Common.Actions
     {
         [SerializeField]
         protected int clickableCount = 1;
+        [SerializeField]
+        protected float autoCompleteTime = 2;
+        protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
+
         public override bool OperateAble
         {
             get { return clickableCount > targets.Count; }
@@ -23,6 +27,11 @@ namespace InteractSystem.Common.Actions
             {
                 return Layers.clickItemLayer;
             }
-        } 
+        }
+        public override void AutoExecute()
+        {
+            base.AutoExecute();
+            coroutineCtrl.DelyExecute(OnComplete, autoCompleteTime);
+        }
     }
 }

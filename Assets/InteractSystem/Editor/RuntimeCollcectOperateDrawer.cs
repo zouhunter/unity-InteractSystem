@@ -11,8 +11,8 @@ namespace InteractSystem.Drawer
     {
         protected override void OnDrawDefult()
         {
-            DrawItemList();
             base.OnDrawDefult();
+            DrawItemList();
         }
         private SerializedProperty itemList_prop;
         private ReorderableList reorderList;
@@ -46,7 +46,7 @@ namespace InteractSystem.Drawer
         }
     }
 
-    [CustomEditor(typeof(ClickAbleActionNode), true)]
+    [CustomEditor(typeof(ClickAbleCollectNode<>), true)]
     public class RuntimeOrderCollectNodeDrawer : RuntimeCollcectOperateDrawer
     {
         protected override void DrawHead(Rect rect)

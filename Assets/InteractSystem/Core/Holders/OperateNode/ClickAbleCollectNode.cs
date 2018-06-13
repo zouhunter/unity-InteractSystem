@@ -10,7 +10,7 @@ namespace InteractSystem
     ///顺序执行
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class ClickAbleActionNode : RuntimeCollectNode<ClickAbleActionItem> 
+    public abstract class ClickAbleCollectNode<T> : RuntimeCollectNode<ClickAbleActionItem>  where T:ClickAbleActionItem
     {
         protected override void OnEnable()
         {
@@ -32,7 +32,30 @@ namespace InteractSystem
             RemoveComplete(arg0);            
         }
 
-      
+        protected void TryAutoComplete(int index)
+        {
+            if (index < itemList.Count)
+            {
+                var key = itemList[index];
+                var item = elementPool.Find(x => x.Name == key && x.Active && x.OperateAble && x is T) as T;
+                if (item != null)
+                {
+                    item.RegistOnCompleteSafety(OnAutoComplete);
+                    item.AutoExecute();
+                }
+                else
+                {
+                    Debug.LogError("have no active useful element Name:" + key);
+                }
+            }
+        }
+
+        private void OnAutoComplete(ClickAbleActionItem arg0)
+        {
+            arg0.RemoveOnComplete(OnAutoComplete);
+            TryAutoComplete(currents.Count);
+        }
+
         protected virtual void TryComplete(ClickAbleActionItem item)
         {
             if (statu != ExecuteStatu.Executing) return;//没有执行
@@ -43,12 +66,17 @@ namespace InteractSystem
             {
                 currents.Add(item);
                 item.RecordPlayer(this);
+                item.StepComplete();
             }
 
             if (currents.Count >= itemList.Count)
             {
                 finalGroup = currents.ToArray();
                 OnEndExecute(false);
+            }
+            else
+            {
+                FindOperateAbleItems();
             }
         }
 
@@ -85,7 +113,10 @@ namespace InteractSystem
         /// <summary>
         /// 自动点击目标元素
         /// </summary>
-        protected abstract void AutoCompleteItems();
+        protected virtual void AutoCompleteItems()
+        {
+            TryAutoComplete(0);
+        }
 
         /// <summary>
         ///尝试将元素设置为结束状态

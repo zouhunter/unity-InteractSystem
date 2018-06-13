@@ -80,7 +80,7 @@ namespace InteractSystem.Common.Actions
             }
         }
 
-        public override void OnAutoInstall()
+        public override void AutoExecute()
         {
             var obj = GetUnInstalledObj(elementName);
             Attach(obj);

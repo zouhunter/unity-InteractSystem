@@ -163,13 +163,6 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: f3dd7ac0-d030-4f5a-871a-fbead2aeddab
     m_type: actionconnect
     m_connection: {fileID: 114810708122072500}
-  - m_id: f2f20e2a-f586-4261-9798-21923fcf1b8c
-    m_fromNodeId: e3cfd41b-2c0e-40aa-9cc8-6edb2086026a
-    m_fromNodeConnectionPointId: 40c6aafb-8d88-4d30-86f2-46278e5d6108
-    m_toNodeId: b47c11aa-4491-4b08-8c71-b4797d36c63e
-    m_toNodeConnectionPoiontId: c30fd3ca-65a0-4fbc-96ef-0a0c4d49367f
-    m_type: actionconnect
-    m_connection: {fileID: 114805232327769314}
   - m_id: 2e414009-cceb-498f-802e-2b9977a52eb2
     m_fromNodeId: b47c11aa-4491-4b08-8c71-b4797d36c63e
     m_fromNodeConnectionPointId: c88d1826-174c-4652-a7ad-db149dc3b9c0
@@ -184,7 +177,7 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 7966c614-2252-4528-a9fa-2f0132117e26
     m_type: actionconnect
     m_connection: {fileID: 114975394795467930}
-  m_lastModified: 131733103810865321
+  m_lastModified: 131733558792165543
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: installcommand
@@ -286,19 +279,8 @@ MonoBehaviour:
   environments: []
   itemList:
   - "\u5B89\u88C5\u5DE6\u7403"
+  - "\u5B89\u88C5\u53F3\u7403"
 --- !u!114 &114796899661384118
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: InteractSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
---- !u!114 &114805232327769314
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

@@ -55,7 +55,7 @@ namespace InteractSystem.Common.Actions
             }
         }
 
-        public override void OnAutoInstall()
+        public override void AutoExecute()
         {
             PlaceElement obj = GetUnInstalledObj(elementName);
             Attach(obj);

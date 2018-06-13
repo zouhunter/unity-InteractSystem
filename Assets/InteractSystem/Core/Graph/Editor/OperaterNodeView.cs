@@ -21,6 +21,7 @@ namespace InteractSystem.Graph
             var activeStyle = new GUIStyle();
             activeStyle.normal.background = GraphUtil.BackgroundContent.LoadTexture("on_node4") as Texture2D;
             activeStyle.border = new RectOffset(11, 11, 11, 19);
+            activeStyle.normal.textColor = Color.blue;
             return activeStyle;
         }
         protected override GUIStyle CreateInactiveStyle()

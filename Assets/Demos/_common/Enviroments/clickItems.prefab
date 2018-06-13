@@ -538,9 +538,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c1700754e4bf74c941870f232c0a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: 
   startactive: 1
   endactive: 1
-  _name: 
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -552,12 +552,12 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   _reverse: 0
-  playableCount: 10
   onPlayComplete:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  playableCount: 10
   time: 2
   animCurve:
     serializedVersion: 2
@@ -591,9 +591,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 169e3de1682f92c4dac4f3db91ff9a9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: click01
   startactive: 1
   endactive: 1
-  _name: click01
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -604,8 +604,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  playableCount: 1
-  _collider: {fileID: 0}
+  _collider: {fileID: 135994420525839812}
+  clickableCount: 1
 --- !u!114 &114377567166541018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -618,7 +618,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highLightColor: {r: 0, g: 1, b: 0, a: 1}
-  viewObj: {fileID: 0}
 --- !u!114 &114807443898678832
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -631,7 +630,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highLightColor: {r: 0, g: 1, b: 0, a: 1}
-  viewObj: {fileID: 0}
 --- !u!114 &114919321979575430
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -643,9 +641,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 169e3de1682f92c4dac4f3db91ff9a9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: click01
   startactive: 1
   endactive: 1
-  _name: click01
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -656,8 +654,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  playableCount: 1
-  _collider: {fileID: 0}
+  _collider: {fileID: 135955009151864508}
+  clickableCount: 1
 --- !u!114 &114962276518119846
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -669,9 +667,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c1700754e4bf74c941870f232c0a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: 
   startactive: 1
   endactive: 1
-  _name: 
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -683,12 +681,12 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   _reverse: 0
-  playableCount: 10
   onPlayComplete:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  playableCount: 10
   time: 2
   animCurve:
     serializedVersion: 2

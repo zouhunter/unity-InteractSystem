@@ -12,8 +12,21 @@ MonoBehaviour:
   m_Name: elementGroup
   m_EditorClassIdentifier: 
   runTimeElements: []
-  autoElements: []
+  autoElements:
+  - instanceID: 0
+    coordinate:
+      localPosition: {x: 0, y: 0, z: 0}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 0, y: 0, z: 0}
+    prefab: {fileID: 1874721690729464, guid: b27ec635c42e9a84c951cbb21044881f, type: 2}
+    ignore: 0
   enviroments:
   - instanceID: 0
     _name: clickItems
     prefab: {fileID: 1874721690729464, guid: b27ec635c42e9a84c951cbb21044881f, type: 2}
+  - instanceID: 0
+    _name: anim1
+    prefab: {fileID: 1476260358816580, guid: dee1bb32799ac234ab7a8c81dcf970dd, type: 2}
+  - instanceID: 0
+    _name: anim0
+    prefab: {fileID: 1076837334744952, guid: cbe03a4b827631240b0eaf290e1f1f3e, type: 2}
