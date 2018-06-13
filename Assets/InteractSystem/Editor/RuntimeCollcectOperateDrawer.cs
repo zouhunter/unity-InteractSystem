@@ -51,17 +51,7 @@ namespace InteractSystem.Drawer
     {
         protected override void DrawHead(Rect rect)
         {
-            EditorGUI.LabelField(rect, "点击列表（顺序）");
+            EditorGUI.LabelField(rect, "操作列表");
         }
     }
-
-    //[CustomEditor(typeof(RuntimeDisorderCollectNode<>), true)]
-    //public class RuntimeDisorderCollectNodeDrawer : RuntimeCollcectOperateDrawer
-    //{
-    //    protected override void DrawHead(Rect rect)
-    //    {
-    //        EditorGUI.LabelField(rect, "点击列表（无序）");
-    //    }
-    //}
-
 }

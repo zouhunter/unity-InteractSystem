@@ -26,27 +26,17 @@ namespace InteractSystem.Common.Actions
         public ChargeEvent onCharge { get; set; }
 
         public bool Used { get; set; }
-        public GameObject Body
-        {
-            get
-            {
-                return gameObject;
-            }
-        }
         public bool charged { get { return chargeData.type != null && chargeData.value > 0; } }
         public ChargeData data { get { return (ChargeData)chargeData; } }
         public float capacity { get { return _capacity; } }
 
-        public bool Active { get; private set; }
         public float Range { get { return triggerRange; } }
-
-        public bool IsRuntimeCreated { get; set; }
 
         protected override string LayerName
         {
             get
             {
-                throw new NotImplementedException();
+                return Layers.pickUpElementLayer;
             }
         }
 
@@ -54,7 +44,7 @@ namespace InteractSystem.Common.Actions
         {
             get
             {
-                throw new NotImplementedException();
+                return true;
             }
         }
 

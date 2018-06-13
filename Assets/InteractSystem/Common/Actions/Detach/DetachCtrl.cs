@@ -28,17 +28,21 @@ namespace InteractSystem.Common.Actions
         private void OnPickStayElement(PickUpAbleItem arg0)
         {
             var detachItem = arg0.GetComponentInParent<DetachItem>();
-            if (detachItem)
-            {
-                detachItem.OnDetach();
-            }
+            DetachTargetItem(detachItem);
         }
 
         private void OnPickDownElement(PickUpAbleItem arg0)
         {
             var detachItem = arg0.GetComponentInParent<DetachItem>();
+            DetachTargetItem(detachItem);
         }
-
+        private void DetachTargetItem(DetachItem detachItem)
+        {
+            if (detachItem)
+            {
+                detachItem.OnDetach();
+            }
+        }
         private void OnPickUpElement(PickUpAbleItem arg0)
         {
             var detachItem = arg0.GetComponentInParent<DetachItem>();

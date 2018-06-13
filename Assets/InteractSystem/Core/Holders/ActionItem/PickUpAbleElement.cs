@@ -40,6 +40,21 @@ namespace InteractSystem
         {
             transform.forward = arg0;
         }
+        public override void StepActive()
+        {
+            base.StepActive();
+            PickUpItem.PickUpAble = true;
+        }
+        public override void StepComplete()
+        {
+            base.StepComplete();
+            PickUpItem.PickUpAble = false;
+        }
+        public override void StepUnDo()
+        {
+            base.StepUnDo();
+            PickUpItem.PickUpAble = false;
+        }
         protected abstract void OnPickUp();
         protected abstract void OnPickStay();
         protected abstract void OnPickDown();
