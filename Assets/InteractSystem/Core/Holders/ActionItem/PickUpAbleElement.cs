@@ -7,10 +7,10 @@ using System;
 
 namespace InteractSystem
 {
-    public abstract class PickUpAbleElement : ClickAbleActionItem
+    public abstract class PickUpAbleElement : ClickAbleCompleteAbleActionItem
     {
         private PickUpAbleItem pickUpAbleItem;
-
+        public PickUpAbleItem PickUpItem { get { return pickUpAbleItem; } }
         protected override void Awake()
         {
             base.Awake();

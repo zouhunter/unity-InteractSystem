@@ -8,7 +8,7 @@ using System;
 namespace InteractSystem.Common.Actions
 {
   
-    public class ClickItem : ClickAbleActionItem
+    public class ClickItem : ClickAbleCompleteAbleActionItem
     {
         [SerializeField]
         protected int clickableCount = 1;
@@ -30,7 +30,6 @@ namespace InteractSystem.Common.Actions
         }
         public override void AutoExecute()
         {
-            base.AutoExecute();
             coroutineCtrl.DelyExecute(OnComplete, autoCompleteTime);
         }
     }

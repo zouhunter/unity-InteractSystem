@@ -85,7 +85,6 @@ namespace InteractSystem
         protected virtual void Update() { }
         protected virtual void OnDisable() { }
 
-        public virtual void AutoExecute() { }
         public virtual void SetVisible(bool visible)
         {
             Body.SetActive(visible);

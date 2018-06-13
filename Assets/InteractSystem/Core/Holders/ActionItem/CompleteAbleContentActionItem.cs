@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace InteractSystem
 {
-    public abstract class CompleteAbleContentActionItem<S> : ClickAbleActionItem where S: CompleteAbleActionItem
+    public abstract class CompleteAbleContentActionItem<S> : ClickAbleCompleteAbleActionItem where S: CompleteAbleActionItem
     {
         [SerializeField]
         protected string elementName;

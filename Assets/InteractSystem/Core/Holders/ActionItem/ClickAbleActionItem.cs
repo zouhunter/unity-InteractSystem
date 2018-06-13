@@ -11,7 +11,7 @@ namespace InteractSystem
     /// <summary>
     /// 可点击操作对象
     /// </summary>
-    public abstract class ClickAbleActionItem : CompleteAbleActionItem
+    public abstract class ClickAbleCompleteAbleActionItem : CompleteAbleActionItem
     {
         [SerializeField,Attributes.DefultCollider]
         protected Collider _collider;

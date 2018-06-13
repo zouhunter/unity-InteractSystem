@@ -10,7 +10,7 @@ namespace InteractSystem
     ///可点击操作的节点
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class ClickAbleCollectNode<T> : CompleteAbleCollectNode<ClickAbleActionItem> ,IRuntimeCtrl where T:ClickAbleActionItem
+    public abstract class ClickAbleCollectNode<T> : CompleteAbleCollectNode<ClickAbleCompleteAbleActionItem> ,IRuntimeCtrl where T:ClickAbleCompleteAbleActionItem
     {
         public abstract ControllerType CtrlType { get; }
     }

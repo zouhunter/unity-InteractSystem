@@ -60,7 +60,6 @@ namespace InteractSystem.Common.Actions
         }
         public override void AutoExecute()
         {
-            base.AutoExecute();
             StartCoroutine(AutoConnect());
         }
         private IEnumerator AutoConnect()

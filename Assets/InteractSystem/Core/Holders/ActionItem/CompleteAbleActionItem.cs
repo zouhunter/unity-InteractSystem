@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace InteractSystem
 {
-    public abstract class CompleteAbleActionItem : ActionItem
+    public abstract class CompleteAbleActionItem : ActionItem,IAutoExecuteAble
     {
         private List<UnityAction<CompleteAbleActionItem>> onCompleteActions = new List<UnityAction<CompleteAbleActionItem>>();
 
@@ -37,5 +37,7 @@ namespace InteractSystem
                 onCompleteActions.Remove(onClicked);
             }
         }
+
+        public abstract void AutoExecute();
     }
 }

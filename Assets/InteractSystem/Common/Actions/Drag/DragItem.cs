@@ -5,7 +5,7 @@ using UnityEngine;
 namespace InteractSystem.Common.Actions
 {
 
-    public class DragItem : ClickAbleActionItem
+    public class DragItem : ClickAbleCompleteAbleActionItem
     {
         public override bool OperateAble
         {
@@ -45,7 +45,6 @@ namespace InteractSystem.Common.Actions
         }
         public override void AutoExecute()
         {
-            base.AutoExecute();
             coroutineCtrl.StartCoroutine (AutoDrag());
         }
 

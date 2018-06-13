@@ -424,6 +424,11 @@ namespace InteractSystem.Common.Actions
         {
             gameObject.SetActive(visible);
         }
+
+        public override void AutoExecute()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
