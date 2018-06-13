@@ -20,7 +20,7 @@ namespace InteractSystem
         {
             foreach (var cmd in commandList)
             {
-                cmd.SetContext(group);
+                cmd.SetContext(group.transform);
             }
         }
     }

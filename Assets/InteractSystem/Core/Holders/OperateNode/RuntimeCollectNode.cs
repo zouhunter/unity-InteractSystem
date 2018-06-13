@@ -9,7 +9,7 @@ namespace InteractSystem
     /// 收集指定元素
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class RuntimeCollectNode<T> : OperaterNode where T : ActionItem, ISupportElement
+    public abstract class RuntimeCollectNode<T> : OperaterNode where T : ISupportElement
     {
         [SerializeField, HideInInspector]
         protected List<string> itemList = new List<string>();
@@ -86,7 +86,7 @@ namespace InteractSystem
             //LinkObj
             if (arg0 is T && itemList.Contains(arg0.Name))
             {
-                var element = arg0 as T;
+                var element = (T)arg0;
                 if (!elementPool.Contains(element))
                 {
                     elementPool.ScureAdd(element);
@@ -102,7 +102,7 @@ namespace InteractSystem
         {
             if (arg0 is T && itemList.Contains(arg0.Name))
             {
-                var element = arg0 as T;
+                var element = (T)arg0;
                 if (elementPool.Contains(element))
                 {
                     elementPool.ScureRemove(element);

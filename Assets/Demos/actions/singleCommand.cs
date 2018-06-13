@@ -10,6 +10,7 @@ public class singleCommand : MonoBehaviour {
     public bool autoExecute;
     private void Start()
     {
+        command.SetContext(transform);
         command.RegistComplete((x) => { Debug.Log(x +":Completed"); });
         command.RegistAsOperate((stepName, err) =>
         {

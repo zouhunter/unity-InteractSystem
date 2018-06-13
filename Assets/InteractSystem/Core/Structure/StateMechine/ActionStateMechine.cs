@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using InteractSystem.Graph;
+using System.Linq;
 
 namespace InteractSystem.Structure
 {
@@ -15,7 +16,7 @@ namespace InteractSystem.Structure
         public Dictionary<State, ExecuteState> statemap = new Dictionary<State, ExecuteState>();
         public Dictionary<ExecuteUnit, UnitStatus> statuDic = new Dictionary<ExecuteUnit, UnitStatus>();
         public ExecuteUnit root;
-        protected ActionGroup Context { get { return Cmd.Context; } }
+        protected ActionGroup Context { get { return Cmd.Context.GetComponent<ActionGroup>(); } }
         public ActionCommand Cmd { get; private set; }
 
         public UnityAction<ControllerType> onCtrlStart { get; set; }
@@ -195,8 +196,12 @@ namespace InteractSystem.Structure
         public void OnStartAction(OperaterNode action)
         {
             startedActions.Add(action);
-            if (onCtrlStart != null)
-                onCtrlStart.Invoke(action.CtrlType);
+            if(action is IRuntimeCtrl)
+            {
+                if (onCtrlStart != null)
+                    onCtrlStart.Invoke((action as IRuntimeCtrl).CtrlType);
+            }
+           
         }
 
         /// <summary>
@@ -206,10 +211,18 @@ namespace InteractSystem.Structure
         public void OnStopAction(OperaterNode action)
         {
             startedActions.Remove(action);
-            if (onCtrlStop != null && startedActions.Find(x => x.CtrlType == action.CtrlType) == null)
+            if (action is IRuntimeCtrl)
             {
-                onCtrlStop.Invoke(action.CtrlType);
+                var otherAction = from node in startedActions
+                                  where node is IRuntimeCtrl
+                                  where (node as IRuntimeCtrl).CtrlType == (action as IRuntimeCtrl).CtrlType
+                                  select node;
+                if(otherAction.Count() == 0 && onCtrlStop != null)
+                {
+                    onCtrlStop.Invoke((action as IRuntimeCtrl).CtrlType);
+                }
             }
+           
         }
 
         private void StopUpdateAction(bool force)

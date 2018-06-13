@@ -10,8 +10,10 @@ namespace InteractSystem
     ///顺序执行
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class ClickAbleCollectNode<T> : RuntimeCollectNode<ClickAbleActionItem>  where T:ClickAbleActionItem
+    public abstract class ClickAbleCollectNode<T> : RuntimeCollectNode<ClickAbleActionItem> ,IRuntimeCtrl where T:ClickAbleActionItem
     {
+        public abstract ControllerType CtrlType { get; }
+
         protected override void OnEnable()
         {
             base.OnEnable();

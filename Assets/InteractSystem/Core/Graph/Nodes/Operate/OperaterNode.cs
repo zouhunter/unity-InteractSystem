@@ -29,7 +29,6 @@ namespace InteractSystem.Graph
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
         public UnityAction onEndExecute { get; set; }
-        public virtual ControllerType CtrlType { get { return 0; } }
         public static bool log = false;
 
         [SerializeField]

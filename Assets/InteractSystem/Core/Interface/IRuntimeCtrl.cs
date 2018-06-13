@@ -12,9 +12,9 @@ using System.Collections;
 namespace InteractSystem
 {
 
-    //public interface IRuntimeActive
-    //{
-       
-    //}
+    public interface IRuntimeCtrl
+    {
+        ControllerType CtrlType { get; }
+    }
 
 }

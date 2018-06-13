@@ -46,7 +46,7 @@ namespace InteractSystem.Drawer
         }
     }
 
-    [CustomEditor(typeof(ClickAbleCollectNode<>), true)]
+    [CustomEditor(typeof(RuntimeCollectNode<>), true)]
     public class RuntimeOrderCollectNodeDrawer : RuntimeCollcectOperateDrawer
     {
         protected override void DrawHead(Rect rect)

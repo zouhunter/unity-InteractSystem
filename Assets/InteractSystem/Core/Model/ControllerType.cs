@@ -12,7 +12,7 @@ namespace InteractSystem
         Drag ,//拖拽
         Link,//关联
         Charge,//填充
-        Create,//创建
+        Erasing,//擦试
         Detach,//拔除
     }
 }

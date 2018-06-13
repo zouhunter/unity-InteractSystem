@@ -26,7 +26,7 @@ namespace InteractSystem
         private Events.OperateErrorAction userErr { get; set; }
         private UnityAction<string> stepComplete { get; set; }//步骤自动结束方法
         protected ActionCtroller actionCtrl { get { return ActionCtroller.Instence; } }
-        public ActionGroup Context { get; private set; }//上下文
+        public Transform Context { get; private set; }//上下文
 
         //执行状态
         protected ExecuteStatu statu = ExecuteStatu.UnStarted;
@@ -69,7 +69,7 @@ namespace InteractSystem
             completeHookCtrl.onEndExecute += OnCompleteHookEnd;
         }
 
-        public void SetContext(ActionGroup group)
+        public void SetContext(Transform group)
         {
             //重置当前command的信息
             this.Context = group;

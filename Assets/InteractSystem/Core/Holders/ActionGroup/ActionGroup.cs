@@ -85,7 +85,7 @@ namespace InteractSystem
             activeCommands = actionCommands.Where(x => !x.ignore).Select(x => x.command).ToList();
             foreach (var command in activeCommands)
             {
-                command.SetContext(this);
+                command.SetContext(transform);
                 command.RegistAsOperate(EventTransfer.OnUserError);
                 command.RegistComplete(EventTransfer.OnStepComplete);
                 command.RegistCommandChanged(EventTransfer.OnCommandExectute);

@@ -10,10 +10,10 @@ namespace InteractSystem.Graph
 {
     public abstract class ActionNode : Node
     {
-        public ActionCommand Context { get; private set; }
+        public ActionCommand Command { get; private set; }
         public virtual void SetContext(ActionCommand command)
         {
-            Context = command;
+            Command = command;
         }
         protected virtual void OnEnable() { }
         protected virtual void OnDestroy() { }

@@ -50,7 +50,7 @@ namespace InteractSystem.Structure
         public static ExecuteUnit MakeCopy(ExecuteUnit original, List<ExecuteUnit> enviroment)
         {
             var node = ScriptableObject.Instantiate(original.node) as Graph.ActionNode;
-            (node as Graph.ActionNode).SetContext(original.node.Context);//设置上下文
+            (node as Graph.ActionNode).SetContext(original.node.Command);//设置上下文
             var unit = CreateOringalUnit(node, enviroment);
             if(log) Debug.Log("MakeCopy:"+ unit);
 

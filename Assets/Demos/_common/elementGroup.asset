@@ -11,7 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f04d4cafc71ff5c44a996c76f0fd89d8, type: 3}
   m_Name: elementGroup
   m_EditorClassIdentifier: 
-  runTimeElements: []
+  runTimeElements:
+  - instanceID: 0
+    prefab: {fileID: 1028561524074816, guid: 02735f0022b4f1d429b1db8e197768f2, type: 2}
   autoElements:
   - instanceID: 0
     coordinate:
