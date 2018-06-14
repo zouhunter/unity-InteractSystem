@@ -15,7 +15,17 @@ namespace InteractSystem.Common.Actions
     public class RopeCtrl : OperateController
     {
         public override ControllerType CtrlType { get { return ControllerType.Rope; } }
-        private RopeItem ropeTarget { get { if (ropeSelected == null) return null; return ropeSelected.BindingTarget; } }
+        private RopeItem ropeTarget
+        {
+            get
+            {
+                if(ropeSelected == null)
+                {
+                    return null;
+                }
+                return ropeSelected.BindingTarget;
+            }
+        }
         private RopeElement ropeSelected;
         private Collider pickUpedRopeNode;
         private bool pickDownAble;
@@ -43,12 +53,12 @@ namespace InteractSystem.Common.Actions
 
         private void OnPickTwince(PickUpAbleItem arg0)
         {
-           
+
         }
 
         private void OnPickStay(PickUpAbleItem arg0)
         {
-           if(ropeSelected != null && ropeSelected.BindingTarget != null)
+            if (ropeSelected != null && ropeSelected.BindingTarget != null)
             {
                 ropeSelected.BindingTarget.TryPlaceRope(ropeSelected);
             }
@@ -61,7 +71,7 @@ namespace InteractSystem.Common.Actions
         private void OnPickUp(PickUpAbleItem arg0)
         {
             var ropeElement = arg0.GetComponentInParent<RopeElement>();
-            if(ropeElement)
+            if (ropeElement)
             {
                 ropeSelected = ropeElement;
             }
@@ -75,7 +85,7 @@ namespace InteractSystem.Common.Actions
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                   TrySelectNode();
+                    TrySelectNode();
                 }
             }
             else

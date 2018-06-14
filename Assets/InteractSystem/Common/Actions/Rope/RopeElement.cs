@@ -7,35 +7,32 @@ using System;
 
 namespace InteractSystem.Common.Actions
 {
-    public class RopeElement : PickUpAbleElement
+    public class RopeElement : ActionItem
     {
-        public bool completeHide;
         [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();
-   
-        private List<Collider> ropeList = new List<Collider>();
         [SerializeField]
         private UltimateRope rope;
-        public bool Used { get; set; }
-        private List<float> lengthList = new List<float>();
-        public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
-        public RopeItem BindingTarget { get; internal set; }
+        //[SerializeField,Attributes.DefultCollider]
+        //protected Collider m_collider;
 
-        protected override string LayerName
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        private List<Collider> ropeList = new List<Collider>();
+        private List<float> lengthList = new List<float>();
+        private PickUpAbleFeature pickUpFeature;
+        [SerializeField]
+        private ClickAbleFeature clickAbleFeature;
 
         public override bool OperateAble
         {
             get
             {
-                throw new NotImplementedException();
+                return BindingTarget == null;
             }
         }
+        public bool Used { get; set; }
+        public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
+        public RopeItem BindingTarget { get; internal set; }
+        public bool completeHide { get; set; }
 
         protected override void Awake()
         {
@@ -45,14 +42,24 @@ namespace InteractSystem.Common.Actions
             ElementController.Instence.RegistElement(this);
         }
 
-        protected virtual void Destroy()
-        {
-            ElementController.Instence.RemoveElement(this);
-        }
         protected override void OnEnable()
         {
             base.OnEnable();
             rope.Regenerate(true);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            ElementController.Instence.RemoveElement(this);
+        }
+
+        protected override List<ActionItemFeature> RegistFeatures()
+        {
+            clickAbleFeature.LayerName = Layers.pickUpElementLayer;
+            pickUpFeature = new PickUpAbleFeature(clickAbleFeature.Collider);
+            pickUpFeature.target = this;
+            return new List<ActionItemFeature>() { pickUpFeature, clickAbleFeature };
         }
 
         private void RegistNodes()
@@ -72,7 +79,7 @@ namespace InteractSystem.Common.Actions
                 lengthList.Add(rope.RopeNodes[i].fLength);
             }
         }
-        protected override void OnSetPosition(Vector3 pos)
+        protected void OnSetPosition(Vector3 pos)
         {
             transform.position = pos;
         }
@@ -114,7 +121,7 @@ namespace InteractSystem.Common.Actions
 
         internal void OnPlace(bool startState = false)
         {
-            GetComponent<Collider>().enabled = startState;
+            clickAbleFeature.Collider.enabled = startState;
             foreach (var item in ropeNodeFrom)
             {
                 item.enabled = !startState;
@@ -155,11 +162,6 @@ namespace InteractSystem.Common.Actions
         public override void SetVisible(bool visible)
         {
             gameObject.SetActive(visible);
-        }
-
-        public override void AutoExecute()
-        {
-            throw new NotImplementedException();
         }
     }
 

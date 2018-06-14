@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace InteractSystem.Common.Actions
 {
-    public class RopeItem : CompleteAbleActionItem
+    public class RopeItem : ActionItem
     {
         public bool Connected { get { return connected.Count == 2 * ropeNodeTo.Count; } }
 
@@ -16,7 +16,7 @@ namespace InteractSystem.Common.Actions
         {
             get
             {
-                throw new NotImplementedException();
+                return targets.Count == 0;
             }
         }
 
@@ -26,14 +26,16 @@ namespace InteractSystem.Common.Actions
         private Transform bestRopePos;
         [SerializeField]
         private float triggerDistence;
-
+        [SerializeField]
+        private ClickAbleFeature clickAbleFeature;
 
         private List<Collider> connected = new List<Collider>();
         private Transform angleTemp;
         private Coroutine antoCoroutine;
         private Vector3[] ropeNodeStartPos;
         private RopeElement ropeItem;
-
+        private CompleteAbleItemFeature completeFeature;
+       
         #region UnityAPI 
         protected  override void Awake()
         {
@@ -153,6 +155,14 @@ namespace InteractSystem.Common.Actions
         #endregion
 
         #region Override
+        protected override List<ActionItemFeature> RegistFeatures()
+        {
+            completeFeature = new RopeAutoFeature();
+            completeFeature.target = this;
+            clickAbleFeature.LayerName = Layers.pickUpElementLayer;
+            clickAbleFeature.target = this;
+            return new List<ActionItemFeature>() { completeFeature, clickAbleFeature };
+        }
         /// <summary>
         /// 试图绑定绳子
         /// </summary>
@@ -209,7 +219,7 @@ namespace InteractSystem.Common.Actions
 
         //    connected.Clear();
         //    anglePos = angleTemp;
-            
+
         //}
 
         //protected override void OnBeforeEnd(bool force)
@@ -221,7 +231,7 @@ namespace InteractSystem.Common.Actions
 
         //    QuickInstallRopeNodes(ropeItem.RopeNodeFrom);
 
-            
+
         //}
         #endregion
 
@@ -261,7 +271,7 @@ namespace InteractSystem.Common.Actions
         /// 自动进行连接
         /// </summary>
         /// <returns></returns>
-        private IEnumerator AutoConnectRopeNodes()
+        public IEnumerator AutoConnectRopeNodes(UnityAction onComplete)
         {
             Collider current;
             Collider currentTarget;
@@ -279,7 +289,7 @@ namespace InteractSystem.Common.Actions
                 connected.Add(current);
             }
 
-            OnComplete();
+            onComplete();
         }
         
         /// <summary>
@@ -289,7 +299,8 @@ namespace InteractSystem.Common.Actions
         {
             if (Connected)
             {
-                OnComplete();
+                completeFeature.OnComplete();
+                //OnComplete();
             }
             else
             {
@@ -338,11 +349,6 @@ namespace InteractSystem.Common.Actions
             }
             target = null;
             return null;
-        }
-
-        public override void AutoExecute()
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

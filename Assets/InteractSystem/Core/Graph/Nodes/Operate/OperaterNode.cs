@@ -9,7 +9,7 @@ using System;
 
 namespace InteractSystem.Graph
 {
-    public class OperaterNode : ActionNode
+    public abstract class OperaterNode : ActionNode
     {
         public string Name
         {
@@ -52,13 +52,18 @@ namespace InteractSystem.Graph
         private Binding.OperaterBinding[] bindings;
         [SerializeField]
         private Enviroment.EnviromentInfo[] environments;
-        protected virtual void Awake() { }
+        protected List<OperateNodeFeature> operateFeatures;
+        public List<OperaterNode> StartedList { get { return startedList; } }
+
+
         protected override void OnEnable()
         {
             base.OnEnable();
             statu = ExecuteStatu.UnStarted;
             InitHookCtrl();
             InitBindingCtrl();
+            operateFeatures = RegistFeatures();
+            TryExecuteFeatures(feature => { feature.OnEnable(); });
         }
         public override void SetContext(ActionCommand command)
         {
@@ -109,6 +114,7 @@ namespace InteractSystem.Graph
             {
                 Debug.LogError("already started");
             }
+            TryExecuteFeatures(feature => { feature.OnStartExecute(auto); });
         }
         public virtual void OnEndExecute(bool force)
         {
@@ -143,6 +149,7 @@ namespace InteractSystem.Graph
                     }
                 }
             }
+            TryExecuteFeatures(feature => { feature.OnEndExecute(force); });
 
         }
         private void OnCompleteHooksEnd()
@@ -185,7 +192,7 @@ namespace InteractSystem.Graph
             {
                 Debug.LogError(this + "allready undo");
             }
-
+            TryExecuteFeatures(feature => { feature.OnUnDoExecute(); });
         }
         protected virtual void OnStartExecuteInternal()
         {
@@ -204,6 +211,7 @@ namespace InteractSystem.Graph
             {
                 startedList.Remove(this);
             }
+            TryExecuteFeatures(feature => { feature.OnBeforeEnd(force); });
         }
         protected virtual void OnUnDoExecuteInternal()
         {
@@ -212,6 +220,22 @@ namespace InteractSystem.Graph
             if (startedList.Contains(this))
             {
                 startedList.Remove(this);
+            }
+        }
+        protected virtual List<OperateNodeFeature> RegistFeatures() { return null; }
+        public T RetriveFeature<T>() where T : OperateNodeFeature
+        {
+            if (operateFeatures == null) return default(T);
+            else return operateFeatures.Find(x => x is T) as T;
+        }
+        protected void TryExecuteFeatures(UnityAction<OperateNodeFeature> featureAction)
+        {
+            if(operateFeatures != null && featureAction != null)
+            {
+                operateFeatures.ForEach(feature =>
+                {
+                    featureAction.Invoke(feature);
+                });
             }
         }
     }
