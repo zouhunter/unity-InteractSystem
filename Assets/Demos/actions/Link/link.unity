@@ -712,7 +712,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 
   startactive: 1
-  endactive: 1
+  endactive: 0
   bindings: []
   onActive:
     m_PersistentCalls:
@@ -857,7 +857,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
-  startactive: 1
+  startactive: 0
   endactive: 1
   bindings: []
   onActive:

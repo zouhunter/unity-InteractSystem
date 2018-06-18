@@ -12,6 +12,7 @@ namespace InteractSystem.Common.Actions
     {
         private static PreviewController previewCtrl { get { return PreviewController.Instence; } }
         private static AngleCtroller angleCtrl { get { return AngleCtroller.Instence; } }
+        private static MatchType matchType { get { return Config.linkMatchType; } }
 
         public static void UpdateBrotherPos(LinkItem target, List<LinkItem> context)
         {
@@ -188,28 +189,111 @@ namespace InteractSystem.Common.Actions
                 node = item.ConnectedNode;
                 return false;
             }
+            switch (matchType)
+            {
+                case MatchType.ColliderRange:
+                    return FindInstallableNode_ColliderRange(item, out node);
+                case MatchType.WindowPosition:
+                default:
+                    return FindInstallableNode_WindowPosition(item, out node);
 
+            }
+        }
+
+        /// <summary>
+        /// 按屏幕坐标查找匹配点
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool FindInstallableNode_WindowPosition(LinkPort item, out LinkPort node)
+        {
+            var linkPosts = SelectPorts(CameraController.Instence.currentCamera.transform.position, item.Pos, item.Range);
+            if (linkPosts == null || linkPosts.Length == 0)
+            {
+                node = null;
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < linkPosts.Length; i++)
+                {
+                    LinkPort tempNode = linkPosts[i];
+                    if (JudgeLinkPort(item, tempNode))
+                    {
+                        node = tempNode;
+                        return true;
+                    }
+                }
+                node = null;
+                return false;
+            }
+        }
+        private static LinkPort[] SelectPorts(Vector3 cameraPos, Vector3 worldCenter, float range)
+        {
+            var dir = worldCenter - cameraPos;
+            var quaternion = Quaternion.FromToRotation(Vector3.forward, dir.normalized);
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.position = worldCenter;
+                cube.transform.rotation = quaternion;
+                var bs = new Vector3(range, range, 100);
+                cube.transform.localScale = bs;
+            }
+
+            var boxSize = new Vector3(range, range, 100);
+            var hits = Physics.BoxCastAll(worldCenter, boxSize * 0.5f, dir, quaternion, 0.01f, LayerMask.GetMask(Layers.linknodeLayer));
+
+            var items = from hit in hits
+                        let port = hit.collider.gameObject.GetComponentInParent<LinkPort>()
+                        where port != null
+                        select port;
+            return items.ToArray();
+        }
+        /// <summary>
+        /// 按空间坐标的方式查找匹配点
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool FindInstallableNode_ColliderRange(LinkPort item, out LinkPort node)
+        {
             Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask(Layers.linknodeLayer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)
                 {
                     LinkPort tempNode = collider.GetComponentInParent<LinkPort>();
-                    if (tempNode == null || tempNode == item || tempNode.Body == item.Body || tempNode.ConnectedNode != null)
+                    if (JudgeLinkPort(item, tempNode))
                     {
-                        continue;
-                    }
-                    //主被动动连接点，非自身点，相同名，没有建立连接
-                    var linkInfo = item.connectAble.Find((x) => x.itemName == tempNode.Body.Name && x.nodeId == tempNode.NodeID);
-                    if (linkInfo != null)
-                    {
-                        //同属于一个源
                         node = tempNode;
                         return true;
                     }
                 }
             }
             node = null;
+            return false;
+        }
+        /// <summary>
+        /// 判断两个点能否连接
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="tempNode"></param>
+        /// <returns></returns>
+        private static bool JudgeLinkPort(LinkPort item, LinkPort tempNode)
+        {
+            if (tempNode == null || tempNode == item || tempNode.Body == item.Body || tempNode.ConnectedNode != null)
+            {
+                return false;
+            }
+            //主被动动连接点，非自身点，相同名，没有建立连接
+            var linkInfo = item.connectAble.Find((x) => x.itemName == tempNode.Body.Name && x.nodeId == tempNode.NodeID);
+            if (linkInfo != null)
+            {
+                return true;
+            }
             return false;
         }
 

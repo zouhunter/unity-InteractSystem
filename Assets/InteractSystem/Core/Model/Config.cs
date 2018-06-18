@@ -45,6 +45,7 @@ namespace InteractSystem
         private List<Binding.OperaterBinding> _operateBindings = new List<Binding.OperaterBinding>();
         private List<Binding.ActionItemBinding> _actionItemBindings = new List<Binding.ActionItemBinding>();
         private List<Binding.CommandBinding> _commandBindings = new List<Binding.CommandBinding>();
+        private MatchType _linkMatchType = MatchType.WindowPosition;
 
         public static void SetConfig(Config config = null)
         {
@@ -104,6 +105,8 @@ namespace InteractSystem
                 return Global._operateBindings;
             }
         }
+
+        public static MatchType linkMatchType { get { return Global._linkMatchType; } set { Global._linkMatchType = value; } }
     }
 }
 
