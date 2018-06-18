@@ -16,6 +16,9 @@ namespace InteractSystem
         protected bool startactive = true;
         [SerializeField]
         protected bool endactive = true;
+        [SerializeField]
+        private List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();
+
         public string Name
         {
             get
@@ -49,18 +52,22 @@ namespace InteractSystem
 #if ActionSystem_G
         [HideInInspector]
 #endif
-        public UnityEvent onActive,onInActive;
+        public UnityEvent onActive, onInActive;
         public static bool log = false;
 
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
             actionItemFeatures = RegistFeatures();
             TryExecuteFeatures((feature) => { feature.Awake(); });
         }
+
+     
         protected virtual void Start()
         {
             ElementController.Instence.RegistElement(this);
             InitBindingScripts();
             TryExecuteFeatures((feature) => { feature.Start(); });
+            TryExecuteBindings((binding) => binding.Start());
         }
         protected virtual void OnEnable()
         {
@@ -73,10 +80,13 @@ namespace InteractSystem
             ElementController.Instence.RemoveElement(this);
             TryExecuteFeatures((feature) => { feature.OnDestroy(); });
         }
-        protected virtual void Update() {
+        protected virtual void Update()
+        {
             TryExecuteFeatures((feature) => { feature.Update(); });
+            TryExecuteBindings((binding) => binding.Update());
         }
-        protected virtual void OnDisable() {
+        protected virtual void OnDisable()
+        {
             TryExecuteFeatures((feature) => { feature.OnDisable(); });
         }
 
@@ -104,6 +114,7 @@ namespace InteractSystem
             Active = true;
             onActive.Invoke();
             TryExecuteFeatures((feature) => { feature.StepActive(); });
+            TryExecuteBindings((binding) => binding.OnActive(this));
         }
         public virtual void StepComplete()
         {
@@ -111,31 +122,31 @@ namespace InteractSystem
             onInActive.Invoke();
             ElementController.Instence.SetPriority(subActions);
             TryExecuteFeatures((feature) => { feature.StepComplete(); });
+            TryExecuteBindings((binding) => binding.OnInActive(this));
         }
         public virtual void StepUnDo()
         {
             Active = false;
             onInActive.Invoke();
             TryExecuteFeatures((feature) => { feature.StepUnDo(); });
+            TryExecuteBindings((binding) => binding.OnInActive(this));
         }
 
-        private void InitBindingScripts()
+        protected virtual void InitBindingScripts()
         {
             if (Config.actionItemBindings != null)
             {
                 foreach (var item in Config.actionItemBindings)
                 {
-                    if (item.IsSubclassOf(typeof(Binding.ActionItemBinding)))
-                    {
-                        gameObject.AddComponent(item);
-                    }
+                    var instence = Instantiate(item);
+                    bindings.Add(instence);
                 }
             }
         }
 
         public T RetriveFeature<T>() where T : ActionItemFeature
         {
-            if(actionItemFeatures == null)
+            if (actionItemFeatures == null)
             {
                 return null;
             }
@@ -149,11 +160,21 @@ namespace InteractSystem
 
         protected void TryExecuteFeatures(UnityAction<ActionItemFeature> featureAction)
         {
-            if(actionItemFeatures != null && featureAction != null)
+            if (actionItemFeatures != null && featureAction != null)
             {
                 actionItemFeatures.ForEach(feature =>
                 {
                     featureAction(feature);
+                });
+            }
+        }
+        protected void TryExecuteBindings(UnityAction<Binding.ActionItemBinding> bindingAction)
+        {
+            if (bindings != null && bindingAction != null)
+            {
+                bindings.ForEach(binding =>
+                {
+                    bindingAction(binding);
                 });
             }
         }

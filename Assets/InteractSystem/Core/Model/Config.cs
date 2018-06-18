@@ -10,13 +10,13 @@ namespace InteractSystem
     public class Config
     {
         private static Config _defult;
-        public static Config Global
+        private static Config Global
         {
             get
             {
                 if (_defult == null)
                 {
-                    _defult = new Config();
+                    SetConfig();
                 }
                 return _defult;
             }
@@ -26,28 +26,42 @@ namespace InteractSystem
             }
         }
 
-        public int _autoExecuteTime = 3;
-        public int _hitDistence = 100;
-        public int _elementFoward = 1;
-        public bool _highLightNotice = true;//高亮提示
-        public bool _useOperateCamera = true;//使用专用相机
-        public bool _angleNotice = true;//箭头提示
-        public bool _previewNotice = true;//实例提示
-        public bool _quickMoveElement = false;//元素快速移动
-        public bool _ignoreController = false;//忽略控制器
-        public Material _lineMaterial = null;
-        public float _lineWidth = 0.2f;
-        public Color _highLightColor = Color.green;
-        public GameObject _angleObj = null;
-        public GameObject[] _angleObjs = null;
-        public Material _previewMat;//预览材质
-        public  float _previewAlpha = 0.5f;
-        public List<Type> _actionItemBindings = new List<Type>();
+        private int _autoExecuteTime = 3;
+        private int _hitDistence = 100;
+        private int _elementFoward = 1;
+        private bool _highLightNotice = true;//高亮提示
+        private bool _useOperateCamera = true;//使用专用相机
+        private bool _angleNotice = true;//箭头提示
+        private bool _previewNotice = true;//实例提示
+        private bool _quickMoveElement = false;//元素快速移动
+        private bool _ignoreController = false;//忽略控制器
+        private Material _lineMaterial = null;
+        private float _lineWidth = 0.2f;
+        private Color _highLightColor = Color.green;
+        private GameObject _angleObj = null;
+        private GameObject[] _angleObjs = null;
+        private Material _previewMat;//预览材质
+        private  float _previewAlpha = 0.5f;
+        private List<Binding.OperaterBinding> _operateBindings = new List<Binding.OperaterBinding>();
+        private List<Binding.ActionItemBinding> _actionItemBindings = new List<Binding.ActionItemBinding>();
+        private List<Binding.CommandBinding> _commandBindings = new List<Binding.CommandBinding>();
+
+        public static void SetConfig(Config config = null)
+        {
+            if (config == null)
+            {
+                _defult = new Config();
+            }
+            else
+            {
+                _defult = config;
+            }
+        }
 
         public static int autoExecuteTime { get { return Global._autoExecuteTime; } }
         public static int hitDistence { get { return Global._hitDistence; } }
         public static int elementFoward { get { return Global._elementFoward; } }
-        public static bool highLightNotice { get { return Global._highLightNotice; } }
+        public static bool highLightNotice { get { return Global._highLightNotice; }set { Global._highLightNotice = value; } }
         public static bool useOperateCamera { get { return Global._useOperateCamera; } }
         public static bool angleNotice { get { return Global._angleNotice; } }
         public static bool previewNotice { get { return Global._previewNotice; } }
@@ -69,11 +83,25 @@ namespace InteractSystem
         {
             get { return Global._previewAlpha; }
         }
-        public static List<Type> actionItemBindings
+        public static List< Binding.ActionItemBinding> actionItemBindings
         {
             get
             {
                 return Global._actionItemBindings;
+            }
+        }
+        public static List<Binding.CommandBinding> commandBindings
+        {
+            get
+            {
+                return Global._commandBindings;
+            }
+        }
+        public static List<Binding.OperaterBinding> operateBindings
+        {
+            get
+            {
+                return Global._operateBindings;
             }
         }
     }

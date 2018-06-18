@@ -9,34 +9,34 @@ namespace InteractSystem.Binding
     {
         [SerializeField]
         private Color highLightColor = Color.green;
-
-        protected GameObject viewObj { get { return actionItem.Body; } }
-        protected IHighLightItems highLighter;
+        protected IHighLightItems highLighter = new ShaderHighLight();
         protected bool notice { get { return Config.highLightNotice; } }
         protected bool actived;
+        protected List<GameObject> viewObjects = new List<GameObject>();
 
-        protected override void Awake()
+        public override void Update()
         {
-            base.Awake();
-            highLighter = new ShaderHighLight();
-        }
-        protected void Update()
-        {
-            if (!notice) return;
-
-            if (actionItem.Active)
+            base.Update();
+            foreach (var item in viewObjects)
             {
-                highLighter.HighLightTarget(viewObj, highLightColor);
+                highLighter.HighLightTarget(item, highLightColor);
             }
         }
-        protected override void OnActive()
+
+        public override void OnActive(ActionItem viewObj)
         {
-            base.OnActive();
+            if (viewObj != null && !viewObjects.Contains(viewObj.gameObject))
+            {
+                viewObjects.Add(viewObj.gameObject);
+            }
         }
-        protected override void OnInActive()
+        public override void OnInActive(ActionItem viewObj)
         {
-            base.OnInActive();
-            highLighter.UnHighLightTarget(viewObj);
+            if (viewObj != null && viewObjects.Contains(viewObj.gameObject))
+            {
+                viewObjects.Remove(viewObj.gameObject);
+                highLighter.UnHighLightTarget(viewObj.gameObject);
+            }
         }
     }
 

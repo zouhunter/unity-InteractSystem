@@ -146,13 +146,13 @@ namespace InteractSystem
                 statu = ExecuteStatu.Completed;
 
                 if(startHookCtrl.Statu != ExecuteStatu.Completed){
-                    startHookCtrl.OnEndExecute();
+                    startHookCtrl.CoreEndExecute();
                 }
 
                 CoreEndExecute();
 
                 if (completeHookCtrl.Statu != ExecuteStatu.Completed) {
-                    completeHookCtrl.OnEndExecute();
+                    completeHookCtrl.CoreEndExecute();
                 }
             }
             else

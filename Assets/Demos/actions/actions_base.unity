@@ -363,3 +363,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 837d3762d8b9f0441a4bbe80ca402c9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionItemHighLighter: {fileID: 11400000, guid: 23811f190041b9542b3e479c49f52635,
+    type: 2}

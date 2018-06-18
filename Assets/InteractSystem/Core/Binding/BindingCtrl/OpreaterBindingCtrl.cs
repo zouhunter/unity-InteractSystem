@@ -13,10 +13,29 @@ namespace InteractSystem.Binding
 
         public OpreaterBindingCtrl(OperaterBinding[] bindings)
         {
+            var allBindings = new List<Binding.OperaterBinding>();
             if (bindings != null && bindings.Length > 0)
             {
-                this.bindings = CreateInstenceBindings(bindings);
+                foreach (var item in bindings)
+                {
+                    if (item != null && !allBindings.Contains(item))
+                    {
+                        allBindings.Add(item);
+                    }
+                }
             }
+
+            if (Config.operateBindings != null && Config.operateBindings.Count > 0)
+            {
+                foreach (var item in Config.operateBindings)
+                {
+                    if (item != null && !allBindings.Contains(item))
+                    {
+                        allBindings.Add(item);
+                    }
+                }
+            }
+            this.bindings = CreateInstenceBindings(allBindings.ToArray());
         }
 
         private static OperaterBinding[] CreateInstenceBindings(OperaterBinding[] bindings)

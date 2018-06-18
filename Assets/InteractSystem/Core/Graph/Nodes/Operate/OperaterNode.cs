@@ -127,7 +127,7 @@ namespace InteractSystem.Graph
                     statu = ExecuteStatu.Completed;
                     if (completeHookCtrl.Statu != ExecuteStatu.Completed)
                     {
-                        completeHookCtrl.OnEndExecute();
+                        completeHookCtrl.CoreEndExecute();
                     }
                     CoreEndExecute();
                 }

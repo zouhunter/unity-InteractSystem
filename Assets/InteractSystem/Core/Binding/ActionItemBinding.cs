@@ -3,28 +3,15 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace InteractSystem.Binding
 {
-    public class ActionItemBinding : MonoBehaviour
+    public class ActionItemBinding : ScriptableObject
     {
-        protected ActionItem actionItem;
-
-        protected virtual void Awake()
-        {
-            actionItem = gameObject.GetComponent<ActionItem>();
-            actionItem.onActive.AddListener(OnActive);
-            actionItem.onInActive.AddListener(OnInActive);
-        }
-        protected virtual void OnDestroy()
-        {
-            if (actionItem)
-            {
-                actionItem.onActive.RemoveListener(OnActive);
-                actionItem.onInActive.RemoveListener(OnInActive);
-            }
-        }
-        protected virtual void OnActive() { }
-        protected virtual void OnInActive() { }
+        public virtual void Start() { }
+        public virtual void Update() { }
+        public virtual void OnActive(ActionItem target) { }
+        public virtual void OnInActive(ActionItem target) { }
     }
 }

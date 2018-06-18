@@ -13,10 +13,30 @@ namespace InteractSystem.Binding
 
         public CommandBingCtrl(CommandBinding[] bindings)
         {
-            if(bindings != null && bindings.Length > 0)
+            var allBindings = new List<CommandBinding>();
+            if (bindings != null && bindings.Length > 0)
             {
-                this.bindings = CreateInstenceBindings(bindings);
+                foreach (var item in bindings)
+                {
+                    if (item != null && !allBindings.Contains(item))
+                    {
+                        allBindings.Add(item);
+                    }
+                }
             }
+
+            if(Config.commandBindings != null && Config.commandBindings.Count > 0)
+            {
+                foreach (var item in Config.commandBindings)
+                {
+                    if (item != null && !allBindings.Contains(item))
+                    {
+                        allBindings.Add(item);
+                    }
+                }
+            }
+
+            this.bindings = CreateInstenceBindings(allBindings.ToArray());
         }
 
         private static CommandBinding[] CreateInstenceBindings(CommandBinding[] bindings)

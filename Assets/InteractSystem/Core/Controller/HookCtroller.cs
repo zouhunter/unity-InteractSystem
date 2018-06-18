@@ -68,7 +68,7 @@ namespace InteractSystem.Hooks
             queueID.Sort();
         }
 
-        public virtual void OnEndExecute()
+        public virtual void CoreEndExecute()
         {
             if (!active) return;
 
@@ -115,7 +115,8 @@ namespace InteractSystem.Hooks
                 {
                     if (!ExecuteAStep(isForceAuto))
                     {
-                        OnEndExecute();
+                        CoreEndExecute();
+
                         if(onEndExecute != null)
                         {
                             onEndExecute.Invoke();

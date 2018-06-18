@@ -63,7 +63,7 @@ namespace InteractSystem
         /// </summary>
         void Awake()
         {
-            Config.Global = config;
+            Config.SetConfig(config);
             accept.onClick.AddListener(OnAcceptButtonCilcked);
             start.onClick.AddListener(OnToStartButtonClicked);
             backAstep.onClick.AddListener(OnBackAStapButtonClicked);
@@ -204,7 +204,7 @@ namespace InteractSystem
         }
         void OnNoticeStateChanged(bool isOn)
         {
-            Config.Global._highLightNotice = isOn;
+            Config.highLightNotice = isOn;
         }
         public Text textShow;
     }

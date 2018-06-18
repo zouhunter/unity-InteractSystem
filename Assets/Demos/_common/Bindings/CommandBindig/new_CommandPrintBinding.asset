@@ -8,6 +8,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057a7ca3c6079c419771bc7502570f0, type: 3}
-  m_Name: CommandBinding
+  m_Script: {fileID: 11500000, guid: c39f7553b15ba8f46947b82dc0d80411, type: 3}
+  m_Name: new_CommandPrintBinding
   m_EditorClassIdentifier: 
+  a: 
+  b: 0
+  c: 0
+  d: []
