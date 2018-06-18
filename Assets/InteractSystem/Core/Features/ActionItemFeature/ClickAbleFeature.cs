@@ -32,7 +32,8 @@ namespace InteractSystem
 
         private void InitLayer()
         {
-            if (_collider == null) Collider = target.GetComponentInChildren<Collider>();
+            if (_collider == null)
+                Collider = target.GetComponentInChildren<Collider>();
             Collider.gameObject.layer = LayerMask.NameToLayer(LayerName);
             Collider.enabled = false;
         }

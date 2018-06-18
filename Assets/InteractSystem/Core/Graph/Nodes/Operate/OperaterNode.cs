@@ -149,7 +149,7 @@ namespace InteractSystem.Graph
                     }
                 }
             }
-            TryExecuteFeatures(feature => { feature.OnEndExecute(force); });
+            TryExecuteFeatures(feature => { feature.CoreEndExecute(); });
 
         }
         private void OnCompleteHooksEnd()

@@ -21,6 +21,7 @@ namespace InteractSystem
         public virtual void OnBeforeEnd(bool force) { }
         public virtual void OnUnDoExecute() { }
         public virtual void OnEndExecute(bool force) { }
+        public virtual void CoreEndExecute() { }
     }
 
     public abstract class ActionItemFeature : Feature

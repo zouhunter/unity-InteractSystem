@@ -28,16 +28,18 @@ namespace InteractSystem.Common.Actions
         private float triggerDistence;
         [SerializeField]
         private ClickAbleFeature clickAbleFeature;
+        [SerializeField]
+        private ContentActionItemFeature contentFeature;
 
         private List<Collider> connected = new List<Collider>();
         private Transform angleTemp;
         private Coroutine antoCoroutine;
         private Vector3[] ropeNodeStartPos;
-        private RopeElement ropeItem;
+        private RopeElement ropeElement;
         private CompleteAbleItemFeature completeFeature;
-       
+        private ElementController elementCtrl { get { return ElementController.Instence; } }
         #region UnityAPI 
-        protected  override void Awake()
+        protected override void Awake()
         {
             base.Awake();
             RegistNodes();
@@ -47,6 +49,8 @@ namespace InteractSystem.Common.Actions
         {
             base.Start();
             //angleTemp = anglePos;
+            elementCtrl.onRegistElememt += OnRegistElement;
+            //elementCtrl.onRemoveElememt += OnRemoveElement;
         }
         #endregion
 
@@ -55,7 +59,7 @@ namespace InteractSystem.Common.Actions
 
         public void PickupCollider(Collider collider)
         {
-            if (!ropeItem) return;
+            if (!ropeElement) return;
 
             if (connected.Contains(collider))
             {
@@ -75,9 +79,9 @@ namespace InteractSystem.Common.Actions
         public bool CanInstallCollider(Collider collider)
         {
             bool havePos = false;
-            for (int i = 0; i < ropeItem.RopeNodeFrom.Count; i++)
+            for (int i = 0; i < ropeElement.RopeNodeFrom.Count; i++)
             {
-                if (ropeItem.RopeNodeFrom[i].name == collider.name && !connected.Contains(ropeItem.RopeNodeFrom[i]))
+                if (ropeElement.RopeNodeFrom[i].name == collider.name && !connected.Contains(ropeElement.RopeNodeFrom[i]))
                 {
                     havePos = true;
                 }
@@ -87,7 +91,7 @@ namespace InteractSystem.Common.Actions
 
         internal void QuickInstallRopeItem(Collider clid)
         {
-            if (!ropeItem) return;
+            if (!ropeElement) return;
 
             var nodeTo = ropeNodeTo.Find(x => x.name == clid.name && !connected.Contains(x));
             if (nodeTo)
@@ -102,27 +106,27 @@ namespace InteractSystem.Common.Actions
         public void PickDownCollider(Collider collider)
         {
             Debug.Assert(collider != null);
-            var id = ropeItem.RopeNodeFrom.IndexOf(collider);
+            var id = ropeElement.RopeNodeFrom.IndexOf(collider);
             collider.transform.position = ropeNodeStartPos[id];
             NoticeOnePickupAbleNode();
         }
 
         public void PickDownAllCollider()
         {
-            for (int i = 0; i < ropeItem.RopeNodeFrom.Count; i++)
+            for (int i = 0; i < ropeElement.RopeNodeFrom.Count; i++)
             {
-                ropeItem.RopeNodeFrom[i].transform.position = ropeNodeStartPos[i];
+                ropeElement.RopeNodeFrom[i].transform.position = ropeNodeStartPos[i];
             }
         }
 
         internal void QuickInstallRopeNodes(List<Collider> ropeNodeFrom)
         {
-            if (ropeItem == null) return;
+            if (ropeElement == null) return;
 
             for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
                 var from = ropeNodeFrom[i];
-                var obj = ropeItem.RopeNodeFrom.Find(x => x.name == from.name && !connected.Contains(x));
+                var obj = ropeElement.RopeNodeFrom.Find(x => x.name == from.name && !connected.Contains(x));
 
                 if (obj != null)
                 {
@@ -143,7 +147,7 @@ namespace InteractSystem.Common.Actions
         /// <param name="ropeSelected"></param>
         public void TryPlaceRope(RopeElement ropeSelected)
         {
-            if (ropeSelected != ropeItem) return;
+            if (ropeSelected != ropeElement) return;
             var distence = Vector3.Distance(ropeSelected.transform.position, transform.position);
             if (distence < triggerDistence)
             {
@@ -157,28 +161,37 @@ namespace InteractSystem.Common.Actions
         #region Override
         protected override List<ActionItemFeature> RegistFeatures()
         {
-            completeFeature = new RopeAutoFeature();
+            //可结束
+            completeFeature = new CompleteAbleItemFeature();
             completeFeature.target = this;
+            completeFeature.onAutoExecute = () =>{
+                StartCoroutine(AutoConnectRopeNodes(completeFeature.OnComplete));
+            };
+            //可点击
             clickAbleFeature.LayerName = Layers.pickUpElementLayer;
             clickAbleFeature.target = this;
-            return new List<ActionItemFeature>() { completeFeature, clickAbleFeature };
+
+            //子元素
+            contentFeature.target = this;
+            contentFeature.type = typeof(RopeElement);
+            return new List<ActionItemFeature>() { completeFeature, clickAbleFeature, contentFeature };
         }
         /// <summary>
         /// 试图绑定绳子
         /// </summary>
         /// <param name="arg0"></param>
-        //protected override void OnRegistElement(ISupportElement arg0)
-        //{
-        //    if(ropeItem == null && arg0 is RopeElement)
-        //    {
-        //        ropeItem = arg0 as RopeElement;
-        //        if (Started && ropeItem.BindingTarget == null)
-        //        {
-        //            ropeItem.StepActive();
-        //            ropeItem.BindingTarget = this;
-        //        }
-        //    }
-        //}
+        protected void OnRegistElement(ISupportElement arg0)
+        {
+            if (ropeElement == null && arg0 is RopeElement)
+            {
+                ropeElement = arg0 as RopeElement;
+                if (Active && ropeElement.OperateAble)
+                {
+                    ropeElement.StepActive();
+                    ropeElement.RegistOnPlace(TryPlaceRope);
+                }
+            }
+        }
 
         /// <summary>
         /// 试图解除绑定
@@ -244,13 +257,13 @@ namespace InteractSystem.Common.Actions
             var ropes = ElementController.Instence.GetElements<RopeElement>(Name,true);
             if (ropes != null)
             {
-                ropeItem = ropes.Find(x => x.BindingTarget == this || x.BindingTarget == null);
+                ropeElement = ropes.Find(x => x.bindingTarget == this || x.bindingTarget == null);
             }
 
-            if (ropeItem != null)
+            if (ropeElement != null)
             {
-                ropeItem.BindingTarget = this;
-                ropeItem.StepActive();
+                ropeElement.bindingTarget = this;
+                ropeElement.StepActive();
             }
         }
         /// <summary>
@@ -304,13 +317,13 @@ namespace InteractSystem.Common.Actions
             }
             else
             {
-                if (ropeItem == null) return;
+                if (ropeElement == null) return;
 
-                for (int i = 0; i < ropeItem.RopeNodeFrom.Count; i++)
+                for (int i = 0; i < ropeElement.RopeNodeFrom.Count; i++)
                 {
-                    if (connected.Contains(ropeItem.RopeNodeFrom[i])) continue;
+                    if (connected.Contains(ropeElement.RopeNodeFrom[i])) continue;
 
-                    var ropeTo = ropeItem.RopeNodeFrom.Find(x => x.name == ropeItem.RopeNodeFrom[i].name && !connected.Contains(x));
+                    var ropeTo = ropeElement.RopeNodeFrom.Find(x => x.name == ropeElement.RopeNodeFrom[i].name && !connected.Contains(x));
                     if (ropeTo != null)
                     {
                         //angleCtrl.UnNotice(anglePos);
@@ -330,9 +343,9 @@ namespace InteractSystem.Common.Actions
         /// <returns></returns>
         private Collider SelectOneRopeNode(out Collider target)
         {
-            if (!Connected && ropeItem)
+            if (!Connected && ropeElement)
             {
-                var ropeNodeFrom = ropeItem.RopeNodeFrom;
+                var ropeNodeFrom = ropeElement.RopeNodeFrom;
 
                 for (int i = 0; i < ropeNodeFrom.Count; i++)
                 {

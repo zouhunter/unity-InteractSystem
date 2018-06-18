@@ -11,6 +11,11 @@ namespace InteractSystem
     {
         private PickUpAbleItem pickUpAbleItem;
         public PickUpAbleItem PickUpItem { get { return pickUpAbleItem; } }
+
+        //public PickUpAbleFeature pickUpableFeature;//可拿起
+        //public ClickAbleFeature clickAbleFeature;//可点击 
+        //public CompleteAbleItemFeature completeAbleFeature;//可结束
+
         protected override void Awake()
         {
             base.Awake();

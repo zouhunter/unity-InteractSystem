@@ -13,26 +13,25 @@ namespace InteractSystem.Common.Actions
         private List<Collider> ropeNodeFrom = new List<Collider>();
         [SerializeField]
         private UltimateRope rope;
-        //[SerializeField,Attributes.DefultCollider]
-        //protected Collider m_collider;
+
+        [SerializeField]
+        private ClickAbleFeature clickAbleFeature;
 
         private List<Collider> ropeList = new List<Collider>();
         private List<float> lengthList = new List<float>();
         private PickUpAbleFeature pickUpFeature;
-        [SerializeField]
-        private ClickAbleFeature clickAbleFeature;
-
+        public RopeItem bindingTarget;
         public override bool OperateAble
         {
             get
             {
-                return BindingTarget == null;
+                return bindingTarget == null;
             }
         }
         public bool Used { get; set; }
         public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
-        public RopeItem BindingTarget { get; internal set; }
         public bool completeHide { get; set; }
+        public List<UnityAction<RopeElement>> onPlaceActions = new List<UnityAction<RopeElement>>();
 
         protected override void Awake()
         {
@@ -59,7 +58,19 @@ namespace InteractSystem.Common.Actions
             clickAbleFeature.LayerName = Layers.pickUpElementLayer;
             pickUpFeature = new PickUpAbleFeature(clickAbleFeature.Collider);
             pickUpFeature.target = this;
+            pickUpFeature.RegistOnPickStay(OnPickStay);
             return new List<ActionItemFeature>() { pickUpFeature, clickAbleFeature };
+        }
+
+        private void OnPickStay()
+        {
+            if (onPlaceActions.Count > 0)
+            {
+                foreach (var action in onPlaceActions)
+                {
+                    action.Invoke(this);
+                }
+            }
         }
 
         private void RegistNodes()
@@ -162,6 +173,14 @@ namespace InteractSystem.Common.Actions
         public override void SetVisible(bool visible)
         {
             gameObject.SetActive(visible);
+        }
+
+        public void RegistOnPlace(UnityAction<RopeElement> action)
+        {
+            if (onPlaceActions.Contains(action))
+            {
+                onPlaceActions.Add(action);
+            }
         }
     }
 

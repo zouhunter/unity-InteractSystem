@@ -20,8 +20,8 @@ namespace InteractSystem.Common.Actions
         public CompleteAbleCollectNodeFeature completeFeature = new CompleteAbleCollectNodeFeature(typeof(RopeItem));
         protected override List<OperateNodeFeature> RegistFeatures()
         {
-            //completeFeature = new CompleteAbleNodeFeature<RopeItem>();
             completeFeature.target = this;
+            completeFeature.onComplete = () => { OnEndExecute(false); };
             return new List<OperateNodeFeature>() { completeFeature};
         }
 

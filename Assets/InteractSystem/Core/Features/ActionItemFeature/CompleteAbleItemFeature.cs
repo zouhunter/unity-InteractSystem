@@ -6,9 +6,11 @@ using System.Collections.Generic;
 namespace InteractSystem
 {
 
-    public abstract class CompleteAbleItemFeature : ActionItemFeature
+    public sealed class CompleteAbleItemFeature : ActionItemFeature
     {
         private List<UnityAction<CompleteAbleItemFeature>> onCompleteActions = new List<UnityAction<CompleteAbleItemFeature>>();
+
+        public UnityAction onAutoExecute { get; set; }
 
         public void RegistOnCompleteSafety(UnityAction<CompleteAbleItemFeature> onClicked)
         {
@@ -38,7 +40,18 @@ namespace InteractSystem
             }
         }
 
-        public abstract void AutoExecute();
+        public void AutoExecute()
+        {
+            if (onAutoExecute != null)
+            {
+                onAutoExecute.Invoke();
+
+            }
+            else
+            {
+                Debug.Log("请编写自动步骤进行代码");
+            }
+        }
     }
 
 }

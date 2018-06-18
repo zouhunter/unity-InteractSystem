@@ -19,7 +19,6 @@ namespace InteractSystem
         protected List<ActionItem> currents = new List<ActionItem>();
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public static bool log = false;
-
         public CollectNodeFeature(Type type)
         {
             this.type = type;
@@ -36,7 +35,7 @@ namespace InteractSystem
         }
         protected virtual void OnRemovedFromPool(ActionItem arg0)
         {
-
+           
         }
 
         protected virtual void OnAddedToPool(ActionItem arg0)
@@ -59,10 +58,7 @@ namespace InteractSystem
         {
             CompleteElements(false);
         }
-        public override void OnEndExecute(bool force)
-        {
-            //throw new NotImplementedException();
-        }
+  
         /// <summary>
         /// 从场景中找到已经存在的元素
         /// </summary>

@@ -26,9 +26,15 @@ namespace InteractSystem.Common.Actions
             {
                 TrySelectRotateObj();
             }
+
             if (selectedObj != null)
             {
                 TransformSelected();
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                selectedObj = null;
             }
         }
         private void TrySelectRotateObj()

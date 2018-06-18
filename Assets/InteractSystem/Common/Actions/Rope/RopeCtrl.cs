@@ -15,17 +15,7 @@ namespace InteractSystem.Common.Actions
     public class RopeCtrl : OperateController
     {
         public override ControllerType CtrlType { get { return ControllerType.Rope; } }
-        private RopeItem ropeTarget
-        {
-            get
-            {
-                if(ropeSelected == null)
-                {
-                    return null;
-                }
-                return ropeSelected.BindingTarget;
-            }
-        }
+        private RopeItem ropeTarget;
         private RopeElement ropeSelected;
         private Collider pickUpedRopeNode;
         private bool pickDownAble;
@@ -46,26 +36,6 @@ namespace InteractSystem.Common.Actions
         public RopeCtrl()
         {
             pickCtrl.onPickup += (OnPickUp);
-            pickCtrl.onPickdown += (OnPickDown);
-            pickCtrl.onPickStay += (OnPickStay);
-            pickCtrl.onPickTwinceLeft += (OnPickTwince);
-        }
-
-        private void OnPickTwince(PickUpAbleItem arg0)
-        {
-
-        }
-
-        private void OnPickStay(PickUpAbleItem arg0)
-        {
-            if (ropeSelected != null && ropeSelected.BindingTarget != null)
-            {
-                ropeSelected.BindingTarget.TryPlaceRope(ropeSelected);
-            }
-        }
-
-        private void OnPickDown(PickUpAbleItem arg0)
-        {
         }
 
         private void OnPickUp(PickUpAbleItem arg0)
@@ -100,9 +70,9 @@ namespace InteractSystem.Common.Actions
             if (Physics.Raycast(ray, out hit, hitDistence, ropeNodeLayerMask))
             {
                 var obj = hit.collider.GetComponentInParent<RopeElement>();
-                if (obj != null && obj.Active && obj.BindingTarget != null)//正在进行操作
+                if (obj != null && obj.Active)//正在进行操作
                 {
-                    obj.BindingTarget.PickupCollider(hit.collider);
+                    //obj.BindingTarget.PickupCollider(hit.collider);
                     ropeSelected = obj;
                     pickUpedRopeNode = hit.collider;
                     Debug.Log("Select: " + pickUpedRopeNode);
@@ -189,11 +159,12 @@ namespace InteractSystem.Common.Actions
         private static bool CanPlaceNode(RopeItem ropeTarget, RopeElement ropeSelected, Collider collider, out string resonwhy)
         {
             resonwhy = null;
-            if (ropeSelected.BindingTarget != ropeTarget)
-            {
-                resonwhy = "对象不匹配";
-            }
-            else if (ropeTarget == null)
+            //if (ropeSelected.BindingTarget != ropeTarget)
+            //{
+            //    resonwhy = "对象不匹配";
+            //}
+            //else 
+            if (ropeTarget == null)
             {
                 resonwhy = "目标点父级没有挂RopeObj脚本";
             }

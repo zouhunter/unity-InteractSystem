@@ -9,7 +9,7 @@ using UnityEngine.Assertions.Comparers;
 namespace InteractSystem.Common.Actions
 {
     [AddComponentMenu(MenuName.RotObj)]
-    public class RotateItem : CompleteAbleActionItem
+    public class RotateItem : ActionItem
     {
         public float minAngle = -30;
         public float maxAngle = 30;
@@ -22,14 +22,12 @@ namespace InteractSystem.Common.Actions
         [SerializeField]
         private Transform _operater;
         public Transform Operater { get { if (_operater == null) _operater = transform; return _operater; } }
-
         public Vector3 Direction { get; private set; }
-
         public override bool OperateAble
         {
             get
             {
-                throw new NotImplementedException();
+                return targets.Count == 0;
             }
         }
 
@@ -37,18 +35,36 @@ namespace InteractSystem.Common.Actions
         private Quaternion startRot;
         private FloatComparer comparer;
         protected const float deviation = 1f;
+        protected CompleteAbleItemFeature completeFeature;
+        protected ClickAbleFeature clickAbleFeature;
 
         protected override void Start()
         {
             base.Start();
-            InitLayer();
             InitDirection();
             comparer = new FloatComparer(deviation);
         }
-
-        private void InitLayer()
+        protected override List<ActionItemFeature> RegistFeatures()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer( Layers.rotateItemLayer);
+            completeFeature = new CompleteAbleItemFeature();
+            completeFeature.target = this;
+            completeFeature.onAutoExecute = ()=>StartCoroutine(AutoRotateTo());
+
+            clickAbleFeature = new ClickAbleFeature();
+            clickAbleFeature.LayerName = Layers.rotateItemLayer;
+            clickAbleFeature.target = this;
+            return new List<ActionItemFeature>() { completeFeature, clickAbleFeature };
+        }
+        private IEnumerator AutoRotateTo()
+        {
+            var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
+            var start = Operater.rotation;
+            for (float timer = 0; timer < autoCompleteTime; timer += Time.deltaTime)
+            {
+                yield return null;
+                Operater.rotation = Quaternion.Lerp(start, target, timer / autoCompleteTime);
+            }
+            completeFeature.OnComplete();
         }
         private void InitDirection()
         {
@@ -62,17 +78,7 @@ namespace InteractSystem.Common.Actions
             Operater.rotation = startRot;
         }
 
-        private IEnumerator AutoRotateTo()
-        {
-            var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
-            var start = Operater.rotation;
-            for (float timer = 0; timer < autoCompleteTime; timer += Time.deltaTime)
-            {
-                yield return null;
-                Operater.rotation = Quaternion.Lerp(start, target, timer/autoCompleteTime);
-            }
-            OnComplete();
-        }
+     
         public override void StepComplete()
         {
             base.StepComplete();
@@ -98,7 +104,7 @@ namespace InteractSystem.Common.Actions
             if (gameObject.activeInHierarchy)
                 StartCoroutine(Clamp(() => {
                     if (TryMarchRot()){
-                        OnComplete();
+                        completeFeature.OnComplete();
                     }
                 }));
         }
@@ -131,11 +137,6 @@ namespace InteractSystem.Common.Actions
                 }
             }
             Operater.Rotate(Direction, amount, Space.World);
-        }
-
-        public override void AutoExecute()
-        {
-            throw new NotImplementedException();
         }
     }
 }

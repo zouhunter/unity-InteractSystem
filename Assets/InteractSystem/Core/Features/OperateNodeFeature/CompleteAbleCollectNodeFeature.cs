@@ -9,6 +9,8 @@ namespace InteractSystem
     [System.Serializable]
     public class CompleteAbleCollectNodeFeature: CollectNodeFeature
     {
+        public UnityAction onComplete { get; set; }
+
         public CompleteAbleCollectNodeFeature(System.Type type) : base(type) { }
 
         public override void OnEnable()
@@ -51,6 +53,13 @@ namespace InteractSystem
                     Debug.LogError("have no active useful element Name:" + key);
                 }
             }
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+
+            if (onComplete != null)
+                onComplete.Invoke();
         }
 
         private void OnAutoComplete(CompleteAbleItemFeature arg0)
@@ -102,10 +111,14 @@ namespace InteractSystem
             if (itemList.Count > currents.Count)
             {
                 var key = itemList[currents.Count];
-                foreach (var item in elementPool)
+                if (log)
                 {
-                    Debug.Log(item.Name + ":" + item.OperateAble);
+                    foreach (var item in elementPool)
+                    {
+                        Debug.Log(item.Name + ":" + item.OperateAble);
+                    }
                 }
+                
                 var elements = elementPool.FindAll(x => x.Name == key && x.OperateAble);
                 elements.ForEach(element =>
                 {
