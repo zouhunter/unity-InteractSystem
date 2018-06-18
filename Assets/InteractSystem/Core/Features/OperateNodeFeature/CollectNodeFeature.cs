@@ -11,7 +11,7 @@ namespace InteractSystem
     [System.Serializable]
     public class CollectNodeFeature : OperateNodeFeature
     {
-        [SerializeField]
+        [SerializeField,HideInInspector]
         protected List<string> itemList = new List<string>();
         public Type type { get; private set; }
         protected ElementPool<ActionItem> elementPool = new ElementPool<ActionItem>();
@@ -86,8 +86,7 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRegistElement(ISupportElement arg0)
         {
-            //LinkObj
-            if (arg0.GetType().IsSubclassOf(type)&& arg0 is ActionItem && itemList.Contains(arg0.Name))
+            if (arg0.GetType() == type && arg0 is ActionItem && itemList.Contains(arg0.Name))
             {
                 var element = arg0 as ActionItem;
                 if (!elementPool.Contains(element))
@@ -103,7 +102,7 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRemoveElement(ISupportElement arg0)
         {
-            if (arg0.GetType().IsSubclassOf(type) && itemList.Contains(arg0.Name))
+            if (arg0.GetType() == type && itemList.Contains(arg0.Name))
             {
                 var element = arg0 as ActionItem;
                 if (elementPool.Contains(element))

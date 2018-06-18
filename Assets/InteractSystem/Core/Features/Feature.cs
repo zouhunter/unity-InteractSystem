@@ -16,6 +16,7 @@ namespace InteractSystem
 
     public abstract class OperateNodeFeature : Feature
     {
+        public static bool log = true;
         public Graph.OperaterNode target { get; set; }
         public virtual void OnStartExecute(bool auto) { }
         public virtual void OnBeforeEnd(bool force) { }

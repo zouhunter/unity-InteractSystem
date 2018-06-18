@@ -17,6 +17,7 @@ namespace InteractSystem.Common.Actions
         public bool clampHard;
         public bool completeMoveBack;
         public float autoCompleteTime = 2f;
+
         [SerializeField]
         private Transform _directionHolder;
         [SerializeField]
@@ -48,13 +49,14 @@ namespace InteractSystem.Common.Actions
         {
             completeFeature = new CompleteAbleItemFeature();
             completeFeature.target = this;
-            completeFeature.onAutoExecute = ()=>StartCoroutine(AutoRotateTo());
+            completeFeature.onAutoExecute = (graph) => StartCoroutine(AutoRotateTo());
 
             clickAbleFeature = new ClickAbleFeature();
             clickAbleFeature.LayerName = Layers.rotateItemLayer;
             clickAbleFeature.target = this;
             return new List<ActionItemFeature>() { completeFeature, clickAbleFeature };
         }
+
         private IEnumerator AutoRotateTo()
         {
             var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
@@ -66,6 +68,7 @@ namespace InteractSystem.Common.Actions
             }
             completeFeature.OnComplete();
         }
+
         private void InitDirection()
         {
             Direction = (_directionHolder.localPosition).normalized;//右手坐标系?

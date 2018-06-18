@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2328181f7fd604448c574c185c02c1c, type: 3}
   m_Name: ActionItemHighlighter
   m_EditorClassIdentifier: 
-  highLightColor: {r: 0, g: 1, b: 0, a: 1}
+  highLightColor: {r: 0, g: 1, b: 0.08965516, a: 1}

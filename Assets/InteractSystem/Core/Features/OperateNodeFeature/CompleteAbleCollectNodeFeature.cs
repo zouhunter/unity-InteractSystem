@@ -45,7 +45,7 @@ namespace InteractSystem
                     if(completeFeature != null)
                     {
                         completeFeature.RegistOnCompleteSafety(OnAutoComplete);
-                        completeFeature.AutoExecute();
+                        completeFeature.AutoExecute(target);
                     }
                 }
                 else

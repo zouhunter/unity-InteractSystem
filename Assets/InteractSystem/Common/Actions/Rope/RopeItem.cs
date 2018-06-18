@@ -164,7 +164,7 @@ namespace InteractSystem.Common.Actions
             //可结束
             completeFeature = new CompleteAbleItemFeature();
             completeFeature.target = this;
-            completeFeature.onAutoExecute = () =>{
+            completeFeature.onAutoExecute = (graph) =>{
                 StartCoroutine(AutoConnectRopeNodes(completeFeature.OnComplete));
             };
             //可点击

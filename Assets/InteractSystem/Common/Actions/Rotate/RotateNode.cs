@@ -17,13 +17,13 @@ namespace InteractSystem.Common.Actions
             }
         }
         [SerializeField]
-        protected CompleteAbleCollectNodeFeature collectNodeFeature = new CompleteAbleCollectNodeFeature(typeof(RotateItem));
+        protected CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(RotateItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
-            collectNodeFeature.target = this;
-            collectNodeFeature.onComplete = ()=> OnEndExecute(false);
-            return new List<OperateNodeFeature>() { collectNodeFeature };
+            completeableFeature.target = this;
+            completeableFeature.onComplete = ()=> OnEndExecute(false);
+            return new List<OperateNodeFeature>() { completeableFeature };
         }
     }
 }

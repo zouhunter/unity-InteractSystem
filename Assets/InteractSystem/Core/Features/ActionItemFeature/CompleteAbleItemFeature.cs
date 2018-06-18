@@ -10,7 +10,7 @@ namespace InteractSystem
     {
         private List<UnityAction<CompleteAbleItemFeature>> onCompleteActions = new List<UnityAction<CompleteAbleItemFeature>>();
 
-        public UnityAction onAutoExecute { get; set; }
+        public UnityAction<Graph.OperaterNode> onAutoExecute { get; set; }
 
         public void RegistOnCompleteSafety(UnityAction<CompleteAbleItemFeature> onClicked)
         {
@@ -40,12 +40,11 @@ namespace InteractSystem
             }
         }
 
-        public void AutoExecute()
+        public void AutoExecute(Graph.OperaterNode operateNode)
         {
             if (onAutoExecute != null)
             {
-                onAutoExecute.Invoke();
-
+                onAutoExecute.Invoke(operateNode);
             }
             else
             {
