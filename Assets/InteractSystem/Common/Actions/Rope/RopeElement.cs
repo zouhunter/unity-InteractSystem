@@ -56,8 +56,8 @@ namespace InteractSystem.Common.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             clickAbleFeature.LayerName = Layers.pickUpElementLayer;
-            pickUpFeature = new PickUpAbleFeature(clickAbleFeature.Collider);
             pickUpFeature.target = this;
+            pickUpFeature.collider = clickAbleFeature.collider;
             pickUpFeature.RegistOnPickStay(OnPickStay);
             return new List<ActionItemFeature>() { pickUpFeature, clickAbleFeature };
         }
@@ -132,7 +132,7 @@ namespace InteractSystem.Common.Actions
 
         internal void OnPlace(bool startState = false)
         {
-            clickAbleFeature.Collider.enabled = startState;
+            clickAbleFeature.collider.enabled = startState;
             foreach (var item in ropeNodeFrom)
             {
                 item.enabled = !startState;

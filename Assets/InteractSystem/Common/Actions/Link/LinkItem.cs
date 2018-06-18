@@ -55,12 +55,10 @@ namespace InteractSystem.Common.Actions
         {
             get
             {
-                throw new NotImplementedException();
+                return true;
             }
         }
-        public Collider Collider { get; private set; }
         private event UnityAction onConnected;
-        public PickUpAbleItem PickUpItem { get; private set; }
         [SerializeField]
         private Renderer m_render;//可选择提示
         [SerializeField]
@@ -75,24 +73,26 @@ namespace InteractSystem.Common.Actions
         private float posHoldTime = 3f;
         private float posHoldTimer;
 
+        [SerializeField]
+        private ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        [SerializeField]
+        private PickUpAbleFeature pickUpableFeature = new PickUpAbleFeature();
         protected override void Awake()
         {
             base.Awake();
-            InitLayer();
-            InitPickUpAble();
             InitPorts();
             InitHighLighter();
         }
-
-        private void InitPickUpAble()
+        protected override List<ActionItemFeature> RegistFeatures()
         {
-            PickUpItem = gameObject.GetComponentInChildren<PickUpAbleItem>();
-            if (PickUpItem == null)
-            {
-                PickUpItem = Collider.gameObject.AddComponent<PickUpAbleItem>();
-                PickUpItem.onSetPosition += OnSetPosition;
-                PickUpItem.onSetViewForward += OnSetViewForward;
-            }
+            clickAbleFeature.target = this;
+            clickAbleFeature.LayerName = Layers.pickUpElementLayer;
+            pickUpableFeature.target = this;
+            pickUpableFeature.collider = clickAbleFeature.collider;
+            pickUpableFeature.RegistOnSetPosition(OnSetPosition);
+            pickUpableFeature.RegistOnSetViweForward(OnSetViewForward);
+
+            return new List<ActionItemFeature>() { clickAbleFeature,pickUpableFeature};
         }
 
         protected override void Start()
@@ -137,6 +137,9 @@ namespace InteractSystem.Common.Actions
 
         private void InitPorts()
         {
+#if UNITY_EDITOR
+            _childNodes.Clear();
+#endif
             if (_childNodes == null || _childNodes.Count == 0)
             {
                 var nodeItems = GetComponentsInChildren<LinkPort>(true);
@@ -169,15 +172,6 @@ namespace InteractSystem.Common.Actions
                     RetiveNodes(context, item.ConnectedNode.Body);
                 }
             }
-        }
-        //protected override void OnPickStay()
-        //{
-        //    lastForward = Vector3.zero;
-        //} 
-      
-        private void InitLayer()
-        {
-            Collider.gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
         }
 
         private int CalcuteConnected()
@@ -269,21 +263,18 @@ namespace InteractSystem.Common.Actions
         {
             base.StepActive();
             Active = true;
-            Collider.enabled = true;
         }
 
         public override void StepComplete()
         {
-            PickUpItem.PickUpAble = false;
+            base.StepComplete();
             Active = false;
-            Collider.enabled = false;
         }
 
         public override void StepUnDo()
         {
-            PickUpItem.PickUpAble = false;
+            base.StepUnDo();
             Active = false;
-            Collider.enabled = true;
             transform.position = startPos;
             transform.rotation = startRot;
         }

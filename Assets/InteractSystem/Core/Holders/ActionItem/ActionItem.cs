@@ -68,6 +68,7 @@ namespace InteractSystem
             InitBindingScripts();
             TryExecuteFeatures((feature) => { feature.Start(); });
             TryExecuteBindings((binding) => binding.Start());
+            gameObject.SetActive(startactive);
         }
         protected virtual void OnEnable()
         {
@@ -111,6 +112,7 @@ namespace InteractSystem
 
         public virtual void StepActive()
         {
+            gameObject.SetActive(true);
             Active = true;
             onActive.Invoke();
             TryExecuteFeatures((feature) => { feature.StepActive(); });
@@ -123,6 +125,7 @@ namespace InteractSystem
             ElementController.Instence.SetPriority(subActions);
             TryExecuteFeatures((feature) => { feature.StepComplete(); });
             TryExecuteBindings((binding) => binding.OnInActive(this));
+            gameObject.SetActive(endactive);
         }
         public virtual void StepUnDo()
         {
@@ -130,6 +133,7 @@ namespace InteractSystem
             onInActive.Invoke();
             TryExecuteFeatures((feature) => { feature.StepUnDo(); });
             TryExecuteBindings((binding) => binding.OnInActive(this));
+            gameObject.SetActive(startactive);
         }
 
         protected virtual void InitBindingScripts()

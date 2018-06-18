@@ -12,10 +12,12 @@ namespace InteractSystem
         [SerializeField, Attributes.DefultCollider]
         protected Collider _collider;
 
-        public Collider Collider
+        public Collider collider
         {
             get
             {
+                if (_collider == null)
+                    collider = target.GetComponentInChildren<Collider>();
                 return _collider;
             }
             protected set
@@ -32,10 +34,8 @@ namespace InteractSystem
 
         private void InitLayer()
         {
-            if (_collider == null)
-                Collider = target.GetComponentInChildren<Collider>();
-            Collider.gameObject.layer = LayerMask.NameToLayer(LayerName);
-            Collider.enabled = false;
+            collider.gameObject.layer = LayerMask.NameToLayer(LayerName);
+            collider.enabled = false;
         }
 
         public string LayerName { get; set; }
@@ -44,17 +44,17 @@ namespace InteractSystem
         public override void StepActive()
         {
             base.StepActive();
-            Collider.enabled = true;
+            collider.enabled = true;
         }
         public override void StepUnDo()
         {
             base.StepUnDo();
-            Collider.enabled = false;
+            collider.enabled = false;
         }
         public override void StepComplete()
         {
             base.StepComplete();
-            Collider.enabled = false;
+            collider.enabled = false;
         }
     }
 }

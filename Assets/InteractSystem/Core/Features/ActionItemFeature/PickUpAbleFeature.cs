@@ -8,9 +8,11 @@ using System;
 namespace InteractSystem
 {
     public class PickUpAbleFeature:ActionItemFeature{
-        //private Collider collider;
+        protected Collider _collider;
         private PickUpAbleItem pickUpAbleItem;
-        public PickUpAbleFeature(Collider collider)
+
+        public Collider collider { get { return _collider; } set { InitColider(value);_collider = value; } }
+        private void InitColider(Collider collider)
         {
             //this.collider = collider;
             pickUpAbleItem = collider.GetComponent<PickUpAbleItem>();

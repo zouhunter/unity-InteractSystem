@@ -49,11 +49,20 @@ namespace InteractSystem.Common.Actions
 
         private void OnGUI()
         {
-            reorderList.DoLayoutList();
+            Debug.Log(reorderList);
+
+            if (reorderList != null)
+                reorderList.DoLayoutList();
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Link"))
             {
-
+                for (int i = 0; i < otherPorts.Length; i++)
+                {
+                    if(selection[i])
+                    {
+                        TryRecordConnect(port, otherPorts[i]);
+                    }
+                }
             }
         }
 

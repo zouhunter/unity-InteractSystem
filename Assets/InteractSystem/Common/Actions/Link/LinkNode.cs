@@ -40,11 +40,18 @@ namespace InteractSystem.Common.Actions
         {
             base.OnStartExecute(auto);
             OnStepActive();
+            if (auto)
+            {
+                CoroutineController.Instence.StartCoroutine(AutoLinkItems());
+            }
         }
 
         protected override void OnBeforeEnd(bool force)
         {
             base.OnBeforeEnd(force);
+
+            CoroutineController.Instence.StopCoroutine(AutoLinkItems());
+
             CompleteElements(false);
 
             if (finalGroup == null)
@@ -56,6 +63,8 @@ namespace InteractSystem.Common.Actions
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
+
+            CoroutineController.Instence.StopCoroutine(AutoLinkItems());
 
             if (finalGroup != null)
             {
