@@ -26,11 +26,11 @@ namespace InteractSystem
     public class PreviewController
     {
         private static ActionSystem actionSystem;
-        protected Material previewmaterial { get { return Config.previewMat; } }
+        protected Material previewmaterial { get { return Config.Instence.previewMat; } }
         private Dictionary<GameObject, List<GameObject>> actived = new Dictionary<GameObject, List<GameObject>>();
         private Dictionary<GameObject, Queue<GameObject>> pool = new Dictionary<GameObject, Queue<GameObject>>();
-        private bool Active { get { return Config.previewNotice; } }
-        private static float alpha { get { return Config.previewAlpha; } }
+        private bool Active { get { return Config.Instence.previewNotice; } }
+        private static float alpha { get { return Config.Instence.previewAlpha; } }
         private static PreviewController _instence;
         public static PreviewController Instence
         {

@@ -39,17 +39,7 @@ namespace InteractSystem.Drawer
 
         protected void OnAddBindingItem()
         {
-            var options = bindingTypes.ConvertAll(x => new GUIContent(x.FullName)).ToArray();
-            Debug.Log(options.Length);
-            EditorUtility.DisplayCustomMenu(new Rect(Event.current.mousePosition, Vector2.zero), options, -1, (data, ops, s) =>
-            {
-                if (s >= 0)
-                {
-                    var type = bindingTypes[s];
-                    var asset = ScriptableObject.CreateInstance(type);
-                    ProjectWindowUtil.CreateAsset(asset, "new_" + type.Name + ".asset");
-                }
-            }, null);
+           ActionGUIUtil.DrawScriptablesMenu(bindingTypes);
         }
     }
 }

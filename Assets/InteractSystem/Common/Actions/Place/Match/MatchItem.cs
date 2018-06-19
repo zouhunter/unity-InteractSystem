@@ -32,12 +32,12 @@ namespace InteractSystem.Common.Actions
                 matchAble = false;
                 why = "操作顺序错误";
             }
-            else if (this.element != null)
+            else if (contentFeature.Element != null)
             {
                 matchAble = false;
                 why = "已经触发结束";
             }
-            else if (this.elementName != element.Name)
+            else if (contentFeature.ElementName != element.Name)
             {
                 matchAble = false;
                 why = "零件不匹配";
@@ -50,14 +50,14 @@ namespace InteractSystem.Common.Actions
             return matchAble;
         }
         
-        public bool Matched { get { return element != null; } }
+        public bool Matched { get { return contentFeature.Element != null; } }
 
         public override void StepComplete()
         {
             base.StepComplete();
             if (Matched && completeMoveBack)
             {
-                element.QuickUnInstall();
+                (contentFeature.Element as PlaceElement).QuickUnInstall();
             }
         }
 
@@ -76,15 +76,15 @@ namespace InteractSystem.Common.Actions
         {
             if (Active)
             {
-                OnComplete();
+                completeFeature. OnComplete();
             }
         }
 
-        public override void AutoExecute()
+        public override void AutoExecute(Graph.OperaterNode operateNode)
         {
-            var obj = GetUnInstalledObj(elementName);
+            var obj = GetUnInstalledObj(contentFeature.ElementName);
             Attach(obj);
-            if (Config.quickMoveElement && !ignorePass)
+            if (Config.Instence.quickMoveElement && !ignorePass)
             {
                 if (!completeMoveBack)
                 {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace InteractSystem.Common.Actions
 {
-    public class LinkItem : ActionItem
+    public class LinkItem : PickUpAbleItem
     {
         private List<LinkPort> _childNodes = new List<LinkPort>();
         public Transform Trans
@@ -48,7 +48,7 @@ namespace InteractSystem.Common.Actions
         public bool isMatching { get; internal set; }
         public bool Visiable
         {
-            get { return m_render.gameObject.activeSelf && m_render.gameObject.activeInHierarchy && m_render.enabled; }
+            get { return m_viewObj.gameObject.activeSelf && m_viewObj.gameObject.activeInHierarchy; }
         }
 
         public override bool OperateAble
@@ -59,12 +59,8 @@ namespace InteractSystem.Common.Actions
             }
         }
         private event UnityAction onConnected;
-        [SerializeField]
-        private Renderer m_render;//可选择提示
-        [SerializeField]
-        private Color highLightColor = Color.green;
-
-        private IHighLightItems highLighter;
+        [SerializeField, Attributes.DefultGameObject]
+        private GameObject m_viewObj;//可选择提示
         private Vector3 startPos;
         private Quaternion startRot;
         private Vector3 lastForward = Vector3.forward;
@@ -73,26 +69,10 @@ namespace InteractSystem.Common.Actions
         private float posHoldTime = 3f;
         private float posHoldTimer;
 
-        [SerializeField]
-        private ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
-        [SerializeField]
-        private PickUpAbleFeature pickUpableFeature = new PickUpAbleFeature();
         protected override void Awake()
         {
             base.Awake();
             InitPorts();
-            InitHighLighter();
-        }
-        protected override List<ActionItemFeature> RegistFeatures()
-        {
-            clickAbleFeature.target = this;
-            clickAbleFeature.LayerName = Layers.pickUpElementLayer;
-            pickUpableFeature.target = this;
-            pickUpableFeature.collider = clickAbleFeature.collider;
-            pickUpableFeature.RegistOnSetPosition(OnSetPosition);
-            pickUpableFeature.RegistOnSetViweForward(OnSetViewForward);
-
-            return new List<ActionItemFeature>() { clickAbleFeature,pickUpableFeature};
         }
 
         protected override void Start()
@@ -105,19 +85,7 @@ namespace InteractSystem.Common.Actions
         protected override void Update()
         {
             base.Update();
-
             UpdateMatchTime();
-
-            if (m_render == null) return;
-
-            if (Active)
-            {
-                highLighter.HighLightTarget(m_render, highLightColor);
-            }
-            else
-            {
-                highLighter.UnHighLightTarget(m_render);
-            }
         }
 
         public void RegistOnConnected(UnityAction onConnected)
@@ -127,12 +95,6 @@ namespace InteractSystem.Common.Actions
         public void RemoveOnConnected(UnityAction onConnected)
         {
             this.onConnected -= onConnected;
-        }
-
-        private void InitHighLighter()
-        {
-            if (m_render == null) m_render = GetComponentInChildren<Renderer>();
-            highLighter = new ShaderHighLight();
         }
 
         private void InitPorts()
@@ -186,6 +148,11 @@ namespace InteractSystem.Common.Actions
             }
             return count;
         }
+        protected override void RegistPickupableEvents()
+        {
+            pickUpableFeature.RegistOnSetViweForward(OnSetViewForward);
+            pickUpableFeature.RegistOnSetPosition(OnSetPosition);
+        }
 
 
         protected void OnSetPosition(Vector3 pos)
@@ -213,15 +180,16 @@ namespace InteractSystem.Common.Actions
                 }
             }
         }
-       
+
         protected void OnSetViewForward(Vector3 forward)
         {
-            if(!isMatching)
+            if (!isMatching)
             {
-                if(lastForward == Vector3.zero){
+                if (lastForward == Vector3.zero)
+                {
                     lastForward = forward;
                 }
-                else if(lastForward != forward)
+                else if (lastForward != forward)
                 {
                     transform.localRotation = Quaternion.FromToRotation(lastForward, forward) * transform.localRotation;
                     linkLock.Clear();
@@ -277,6 +245,11 @@ namespace InteractSystem.Common.Actions
             Active = false;
             transform.position = startPos;
             transform.rotation = startRot;
+
+            foreach (var item in ChildNodes)
+            {
+                LinkUtil.DetachNodes(item, item.ConnectedNode);
+            }
         }
 
         public override void SetVisible(bool visible)

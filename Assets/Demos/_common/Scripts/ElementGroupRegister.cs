@@ -8,7 +8,7 @@ using InteractSystem;
 public class ElementGroupRegister : MonoBehaviour {
     public ElementGroup group;
 
-    private void Start()
+    private void Awake()
     {
         if (group != null)
         {

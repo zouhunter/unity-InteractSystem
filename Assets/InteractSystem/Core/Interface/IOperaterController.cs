@@ -9,6 +9,7 @@ namespace InteractSystem
     {
         ControllerType CtrlType { get; }
         UnityAction<string> userErr { get; set; }
+        bool Active { get; set; }
         void Update();
     }
 

@@ -56,8 +56,7 @@ namespace InteractSystem.Drawer
 
         protected override List<Type> LoadBindingTypes()
         {
-            return typeof(ActionGroup).Assembly.GetTypes().
-                       Where(x => x.IsSubclassOf(typeof(Binding.OperaterBinding))).ToList();
+           return Utility.GetSubInstenceTypes(typeof(Binding.OperaterBinding));
         }
     }
 }

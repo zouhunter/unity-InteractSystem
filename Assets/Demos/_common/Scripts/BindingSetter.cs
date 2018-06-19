@@ -8,6 +8,6 @@ public class BindingSetter : MonoBehaviour {
     public InteractSystem.Binding.ActionItemHighlighter actionItemHighLighter;
     private void Awake()
     {
-        Config.actionItemBindings.Add(actionItemHighLighter);
+        Config.Instence.actionItemBindings.Add(actionItemHighLighter);
     }
 }

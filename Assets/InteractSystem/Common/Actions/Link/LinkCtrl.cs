@@ -45,6 +45,8 @@ namespace InteractSystem.Common.Actions
 
         void OnMatch(LinkPort itemA, LinkPort itemB)
         {
+            if (!Active) return;
+
             highter.HighLightTarget(itemA.gameObject, Color.green);
             var linkInfo = itemA.connectAble.Find(x => x.itemName == itemB.Body.Name && x.nodeId == itemB.NodeID);
             LinkUtil.ResetTargetTranform(itemA.Body, itemB.Body, linkInfo.relativePos, linkInfo.relativeDir);
@@ -54,13 +56,17 @@ namespace InteractSystem.Common.Actions
         }
         void OnDisMath(LinkPort itemA, LinkPort itemB)
         {
+            if (!Active) return;
+
             highter.UnHighLightTarget(itemA.gameObject);
             highter.UnHighLightTarget(itemB.gameObject);
             if (linkItem) linkItem.isMatching = false;
         }
 
-        void OnPickUp(PickUpAbleItem obj)
+        void OnPickUp(PickUpAbleComponent obj)
         {
+            if (!Active) return;
+
             var linkItem = obj.GetComponentInParent<LinkItem>();
             if (linkItem)
             {
@@ -78,8 +84,10 @@ namespace InteractSystem.Common.Actions
         /// 解除连接
         /// </summary>
         /// <param name="obj"></param>
-        void OnPickTwinceLeft(PickUpAbleItem obj)
+        void OnPickTwinceLeft(PickUpAbleComponent obj)
         {
+            if (!Active) return;
+
             var linkItem = obj.GetComponentInParent<LinkItem>();
 
             if (linkItem)
@@ -92,8 +100,10 @@ namespace InteractSystem.Common.Actions
             }
         }
 
-        private void OnPickTwinceRight(PickUpAbleItem obj)
+        private void OnPickTwinceRight(PickUpAbleComponent obj)
         {
+            if (!Active) return;
+
             var linkItem = obj.GetComponentInParent<LinkItem>();
 
             if (linkItem)
@@ -106,8 +116,10 @@ namespace InteractSystem.Common.Actions
         /// 放下
         /// </summary>
         /// <param name="obj"></param>
-        void OnPickDown(PickUpAbleItem obj)
+        void OnPickDown(PickUpAbleComponent obj)
         {
+            if (!Active) return;
+
             var linkItem = obj.GetComponentInParent<LinkItem>();
 
             if (linkItem)
@@ -121,8 +133,10 @@ namespace InteractSystem.Common.Actions
             }
         }
 
-        void OnPickStay(PickUpAbleItem obj)
+        void OnPickStay(PickUpAbleComponent obj)
         {
+            if (!Active) return;
+
             var linkItem = obj.GetComponentInParent<LinkItem>();
 
             if (linkItem)
@@ -135,6 +149,8 @@ namespace InteractSystem.Common.Actions
 
         void OnConnected(LinkPort[] nodes)
         {
+            if (!Active) return;
+
             foreach (var item in nodes)
             {
                 item.Body.OnConnected();
@@ -145,7 +161,7 @@ namespace InteractSystem.Common.Actions
                 }
             }
 
-            Debug.Log("Connected");
+          if(log)  Debug.Log("Connected");
         }
 
     }

@@ -22,7 +22,7 @@ namespace InteractSystem.Common.Actions
         private RaycastHit hit;
         private Vector3 previousMousePosition;
         private Vector3 direction;
-        private float distence { get { return Config.hitDistence; } }
+        private float distence { get { return Config.Instence.hitDistence; } }
         private float elementDistence;
         public override void Update()
         {

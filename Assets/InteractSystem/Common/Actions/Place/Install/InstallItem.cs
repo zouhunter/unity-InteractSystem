@@ -12,7 +12,7 @@ namespace InteractSystem.Common.Actions
         {
             Attach(pickup);
             pickup.QuickInstall(this, true);
-            pickup.pickUpAbleItem.PickUpAble = false;
+            pickup.PickUpAble = false;
         }
 
         public override bool CanPlace(PlaceElement element, out string why)
@@ -24,13 +24,13 @@ namespace InteractSystem.Common.Actions
                 canplace = false;
                 why = "操作顺序错误";
             }
-            else if (this.element != null)
+            else if (contentFeature.Element != null)
             {
                 canplace = false;
                 why = "已经安装";
             }
 
-            else if (elementName != element.Name)
+            else if (contentFeature.ElementName != element.Name)
             {
                 canplace = false;
                 why = "零件不匹配";
@@ -49,18 +49,18 @@ namespace InteractSystem.Common.Actions
                 if (AlreadyPlaced)
                 {
                     var obj = Detach();
-                    obj.pickUpAbleItem.PickUpAble = true;
+                    obj.PickUpAble = true;
                 }
-                this.element = null;
+                contentFeature.Element = null;
             }
         }
 
-        public override void AutoExecute()
+        public override void AutoExecute(Graph.OperaterNode node)
         {
-            PlaceElement obj = GetUnInstalledObj(elementName);
+            PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
             Attach(obj);
             obj.StepActive();
-            if (Config.quickMoveElement && !ignorePass)
+            if (Config.Instence.quickMoveElement && !ignorePass)
             {
                 obj.QuickInstall(this, true);
             }
@@ -74,7 +74,7 @@ namespace InteractSystem.Common.Actions
         {
             if (Active)
             {
-                OnComplete();
+               completeFeature.OnComplete();
             }
         }
     }

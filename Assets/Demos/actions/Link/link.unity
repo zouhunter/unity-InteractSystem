@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -144,12 +144,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 201679638}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06ae01118a2a5e24695a49f99c58f640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _nodeId: 0
+  m_collider: {fileID: 808672835}
   _range: 0.5
   _connectAble:
   - itemName: LinkItem
@@ -274,12 +275,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 238908431}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06ae01118a2a5e24695a49f99c58f640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _nodeId: 1
+  m_collider: {fileID: 228165675}
   _range: 0.5
   _connectAble: []
 --- !u!1 &381367220
@@ -318,12 +320,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 381367220}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06ae01118a2a5e24695a49f99c58f640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _nodeId: 1
+  m_collider: {fileID: 1419773241}
   _range: 0.5
   _connectAble:
   - itemName: LinkItem
@@ -366,12 +369,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 779463246}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06ae01118a2a5e24695a49f99c58f640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _nodeId: 0
+  m_collider: {fileID: 2002380585}
   _range: 1.16
   _connectAble: []
 --- !u!1 &808672832
@@ -724,10 +728,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  m_render: {fileID: 0}
-  highLightColor: {r: 0, g: 1, b: 0, a: 1}
-  clickAbleFeature:
-    _collider: {fileID: 901855588}
+  pickUpableFeature:
+    _collider: {fileID: 0}
+    pickUpAble: 1
+  m_viewObj: {fileID: 0}
 --- !u!1 &2002380582
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,10 +874,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  m_render: {fileID: 0}
-  highLightColor: {r: 0, g: 1, b: 0, a: 1}
-  clickAbleFeature:
+  pickUpableFeature:
     _collider: {fileID: 2105839144}
+    pickUpAble: 1
+  m_viewObj: {fileID: 2049479427}
 --- !u!1 &2105839141
 GameObject:
   m_ObjectHideFlags: 0

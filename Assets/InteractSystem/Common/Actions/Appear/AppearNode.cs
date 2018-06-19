@@ -10,7 +10,7 @@ namespace InteractSystem.Common.Actions
     /// 创建出指定的元素
     /// </summary>
     [NodeGraph.CustomNode("Operate/Appear", 14, "InteratSystem")]
-    public class AppearNode : RuntimeCollectNode<ISupportElement>
+    public class AppearNode : Graph.OperaterNode
     {
         [SerializeField]
         private bool forceAuto;
@@ -19,6 +19,18 @@ namespace InteractSystem.Common.Actions
         [SerializeField]
         private AutoAppearRule autoRule;
         protected CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
+        protected ElementController elementCtrl { get { return ElementController.Instence; } }
+        protected CollectNodeFeature collectNodeFeature = new CollectNodeFeature(typeof(ISupportElement));
+
+        protected override List<OperateNodeFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            collectNodeFeature.target = this;
+            collectNodeFeature.onAddToPool = OnAddedToPool;
+            features.Add(collectNodeFeature);
+            return features;
+        }
+
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
@@ -38,12 +50,11 @@ namespace InteractSystem.Common.Actions
         {
             base.OnUnDoExecute();
             coroutineCtrl.StopCoroutine(AutoAppear());
-            elementPool.ForEach(ele =>
-            {
+            collectNodeFeature.elementPool.ForEach(ele =>{
                 elementCtrl.UnLockElement(ele, this);
             });
 
-            finalGroup = null;
+            collectNodeFeature.finalGroup = null;
             elementCtrl.ClearExtraCreated();
         }
 
@@ -55,9 +66,9 @@ namespace InteractSystem.Common.Actions
             LockElements();
             elementCtrl.ClearExtraCreated();
         }
-        protected override void OnAddedToPool(ISupportElement arg0)
+
+        protected void OnAddedToPool(ISupportElement arg0)
         {
-            base.OnAddedToPool(arg0);
             if(statu == ExecuteStatu.Executing)
             {
                 TryComplete();
@@ -69,14 +80,15 @@ namespace InteractSystem.Common.Actions
         /// </summary>
         private void LockElements()
         {
-            if (finalGroup == null) finalGroup = new ISupportElement[itemList.Count];
+            if (collectNodeFeature. finalGroup == null)
+                collectNodeFeature. finalGroup = new ActionItem[collectNodeFeature.itemList.Count];
 
-            for (int i = 0; i < finalGroup.Length; i++)
+            for (int i = 0; i < collectNodeFeature.finalGroup.Length; i++)
             {
-                var ele = finalGroup[i];
+                var ele = collectNodeFeature.finalGroup[i];
                 if (ele == null || elementCtrl.IsLocked(ele))
                 {
-                    ele = finalGroup[i] = CreateElement(itemList[i]);
+                    ele = collectNodeFeature.finalGroup[i] = CreateElement(collectNodeFeature.itemList[i]);
                     #region 由于注册需要在Start之后，怕来不及
                     var eles = ele.Body.GetComponentsInChildren<ISupportElement>();
                     Debug.Log("Create:" + ele);
@@ -117,13 +129,13 @@ namespace InteractSystem.Common.Actions
             var keys = new List<ISupportElement>();
             bool allComplete = true;
 
-            if (finalGroup == null)
+            if (collectNodeFeature. finalGroup == null)
             {
-                finalGroup = new ISupportElement[itemList.Count];
+                collectNodeFeature.finalGroup = new ISupportElement[collectNodeFeature.itemList.Count];
             }
             else
             {
-                foreach (var item in finalGroup)
+                foreach (var item in collectNodeFeature.finalGroup)
                 {
                     if (item != null)
                     {
@@ -132,14 +144,14 @@ namespace InteractSystem.Common.Actions
                 }
             }
 
-            for (int i = 0; i < finalGroup.Length; i++)
+            for (int i = 0; i < collectNodeFeature.finalGroup.Length; i++)
             {
-                if (finalGroup[i] == null)
+                if (collectNodeFeature.finalGroup[i] == null)
                 {
-                    finalGroup[i] = elementPool.Find(x => x.Name == itemList[i] && !keys.Contains(x) && !elementCtrl.IsLocked(x));
-                    if (finalGroup[i] != null)
+                    collectNodeFeature.finalGroup[i] = collectNodeFeature.elementPool.Find(x => x.Name == collectNodeFeature.itemList[i] && !keys.Contains(x) && !elementCtrl.IsLocked(x));
+                    if (collectNodeFeature.finalGroup[i] != null)
                     {
-                        keys.Add(finalGroup[i]);
+                        keys.Add(collectNodeFeature.finalGroup[i]);
                     }
                     else
                     {
@@ -158,14 +170,14 @@ namespace InteractSystem.Common.Actions
         private IEnumerator AutoAppear()
         {
             var mark = new List<ISupportElement>();
-            if(finalGroup == null) finalGroup = new ActionItem[itemList.Count];
-            for (int i = 0; i < itemList.Count; i++)
+            if(collectNodeFeature.finalGroup == null) collectNodeFeature.finalGroup = new ActionItem[collectNodeFeature.itemList.Count];
+            for (int i = 0; i < collectNodeFeature.itemList.Count; i++)
             {
                 yield return new WaitForSeconds(spanTime);
-                if(finalGroup[i] == null)
+                if(collectNodeFeature.finalGroup[i] == null)
                 {
-                    finalGroup[i] = CreateElement(itemList[i]);
-                    mark.Add(finalGroup[i]);
+                    collectNodeFeature.finalGroup[i] = CreateElement(collectNodeFeature.itemList[i]);
+                    mark.Add(collectNodeFeature.finalGroup[i]);
                 }
             }
         }

@@ -55,6 +55,25 @@ namespace InteractSystem.Drawer
             return editorDic[objectReferenceValue];
         }
 
+        internal static void DrawScriptablesMenu(List<Type> bindingTypes,UnityAction<ScriptableObject> onCreate = null)
+        {
+            var options = bindingTypes.ConvertAll(x => new GUIContent(x.FullName)).ToArray();
+            Debug.Log(options.Length);
+            EditorUtility.DisplayCustomMenu(new Rect(Event.current.mousePosition, Vector2.zero), options, -1, (data, ops, s) =>
+            {
+                if (s >= 0)
+                {
+                    var type = bindingTypes[s];
+                    var asset = ScriptableObject.CreateInstance(type);
+                    if(onCreate != null){
+                        onCreate.Invoke(asset);
+                    }
+                    ProjectWindowUtil.CreateAsset(asset, "new_" + type.Name + ".asset");
+                }
+            }, null);
+
+        }
+
         public static SerializedObject CreateCachedSerializedObject(UnityEngine.Object objectReferenceValue)
         {
             if (!serializedDic.ContainsKey(objectReferenceValue) || serializedDic[objectReferenceValue] == null)

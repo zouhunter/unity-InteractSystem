@@ -138,14 +138,20 @@ namespace InteractSystem
 
         protected virtual void InitBindingScripts()
         {
-            if (Config.actionItemBindings != null)
+            var clampedBindings = new List<Binding.ActionItemBinding>();
+            foreach (var item in bindings)
             {
-                foreach (var item in Config.actionItemBindings)
+                clampedBindings.Add(Instantiate(item));
+            }
+            if (Config.Instence.actionItemBindings != null)
+            {
+                foreach (var item in Config.Instence.actionItemBindings)
                 {
                     var instence = Instantiate(item);
-                    bindings.Add(instence);
+                    clampedBindings.Add(instence);
                 }
             }
+            bindings = clampedBindings;
         }
 
         public T RetriveFeature<T>() where T : ActionItemFeature
@@ -160,7 +166,7 @@ namespace InteractSystem
             }
         }
 
-        protected virtual List<ActionItemFeature> RegistFeatures() { return null; }
+        protected virtual List<ActionItemFeature> RegistFeatures() { return Config.Instence.actionItemFeatures; }
 
         protected void TryExecuteFeatures(UnityAction<ActionItemFeature> featureAction)
         {

@@ -65,6 +65,7 @@ namespace InteractSystem.Drawer
         {
             ActionGUIUtil.DrawDisableProperty(script_prop);
             serializedObject.Update();
+            EditorGUILayout.PropertyField(_name_prop,new GUIContent("Name"));
             DrawSwitch();
             serializedObject.ApplyModifiedProperties();
         }
@@ -125,7 +126,6 @@ namespace InteractSystem.Drawer
         }
         protected virtual void OnDrawDefult()
         {
-            EditorGUILayout.PropertyField(_name_prop);
             var iterator = serializedObject.GetIterator();
             var enterChildern = true;
             while (iterator.NextVisible(enterChildern))

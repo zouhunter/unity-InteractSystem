@@ -11,8 +11,7 @@ namespace InteractSystem.Common.Actions
     /// <summary>
     /// 可操作对象具体行为实现
     /// </summary>
-    [RequireComponent(typeof(PickUpAbleItem))]
-    public class PlaceElement : PickUpAbleElement, ISupportElement
+    public class PlaceElement : PickUpAbleItem, ISupportElement
     {
         public class Tweener
         {
@@ -70,7 +69,7 @@ namespace InteractSystem.Common.Actions
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
-        public int animTime { get { return Config.autoExecuteTime; } }
+        public int animTime { get { return Config.Instence.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public bool HaveBinding { get { return target != null; } }
         public override bool OperateAble
@@ -81,33 +80,29 @@ namespace InteractSystem.Common.Actions
             }
         }
 
-        public Renderer Render { get { return m_render; } }
+        public GameObject ViewObj {
+            get {
+                if (m_viewObj == null)
+                    return gameObject;
+                return m_viewObj;
+            }
+        }
 
         public event UnityAction onInstallOkEvent;
         public event UnityAction onUnInstallOkEvent;
 
         [HideInInspector]
         public UnityEvent onStepActive, onStepComplete, onStepUnDo;
+        [SerializeField,Attributes.DefultGameObject]
+        private GameObject m_viewObj;
         [SerializeField]
-        private Renderer m_render;
-        [SerializeField]
-        protected Color highLightColor = Color.green;
         protected Vector3 startRotation;
         protected Vector3 startPos;
         protected Tweener move;
         protected int smooth = 50;
-        protected IHighLightItems highLighter;
         protected bool actived;
         protected PlaceItem target;
         public PlaceItem BindingObj { get { return target; } }
-        public PickUpAbleItem pickUpAbleItem { get;private set; }
-        protected override string LayerName
-        {
-            get
-            {
-                return Layers.pickUpElementLayer;
-            }
-        }
 
         protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
         protected bool StraightMove { get { return target ? target.straightMove : false; } }
@@ -120,8 +115,6 @@ namespace InteractSystem.Common.Actions
         {
             base.Awake();
             move = new Tweener(this);
-            pickUpAbleItem = GetComponent<PickUpAbleItem>();
-            pickUpAbleItem.PickUpAble = false;
         }
         protected override void Start()
         {
@@ -132,22 +125,6 @@ namespace InteractSystem.Common.Actions
             gameObject.SetActive(startActive);
             elementCtrl.RegistElement(this);
         }
-        protected override void Update()
-        {
-            base.Update();
-
-            if (!Config.highLightNotice) return;
-            if (m_render == null) return;
-            if (actived)
-            {
-                highLighter.HighLightTarget(m_render, highLightColor);
-            }
-            else
-            {
-                highLighter.UnHighLightTarget(m_render);
-            }
-        }
-
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -157,9 +134,8 @@ namespace InteractSystem.Common.Actions
         
         protected virtual void InitRender()
         {
-            if (m_render == null)
-                m_render = gameObject.GetComponentInChildren<Renderer>();
-            highLighter = new ShaderHighLight();
+            if (m_viewObj == null)
+                m_viewObj = gameObject;
         }
 
         protected virtual void CreatePosList(Vector3 end, Vector3 endRot, out List<Vector3> posList, out List<Vector3> rotList)
@@ -175,7 +151,7 @@ namespace InteractSystem.Common.Actions
             else
             {
                 var player = FindObjectOfType<Camera>().transform;
-                midPos = player.transform.position + player.transform.forward * Config.elementFoward;
+                midPos = player.transform.position + player.transform.forward * Config.Instence.elementFoward;
             }
 
             var midRot = (endRot + transform.eulerAngles * 3) * 0.25f;
@@ -273,10 +249,6 @@ namespace InteractSystem.Common.Actions
                 Debug.LogError(this + "HaveBinding:" + BindingObj);
             }
         }
-        protected override void OnPickStay()
-        {
-            //throw new NotImplementedException();
-        }
         /// <summary>
         /// 卸载
         /// </summary>
@@ -318,28 +290,24 @@ namespace InteractSystem.Common.Actions
             OnUnInstallComplete();
 #endif
         }
-
+        protected override void RegistPickupableEvents()
+        {
+            pickUpableFeature.RegistOnPickUp(OnPickUp);
+            pickUpableFeature.RegistOnPickDown(OnPickDownOrStay);
+            pickUpableFeature.RegistOnPickStay(OnPickDownOrStay);
+        }
         /// <summary>
         /// 拿起事件
         /// </summary>
-        protected override void OnPickUp()
-        {
-            StopTween();
-
-        }
-
-        protected override void OnPickDown()
+        protected void OnPickUp()
         {
             StopTween();
         }
-        //protected override void SetPosition(Vector3 pos)
-        //{
-        //    if (lastPos != pos)
-        //    {
-        //        lastPos = pos;
-        //        transform.position = pos;
-        //    }
-        //}
+
+        protected void OnPickDownOrStay()
+        {
+            StopTween();
+        }
 
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
@@ -350,7 +318,6 @@ namespace InteractSystem.Common.Actions
             if (log)
                 Debug.Log("StepActive:" + Name, gameObject);
             actived = true;
-            pickUpAbleItem.PickUpAble = true;
             onStepActive.Invoke();
             gameObject.SetActive(true);
         }
@@ -363,7 +330,6 @@ namespace InteractSystem.Common.Actions
             if (log)
                 Debug.Log("StepComplete:" + Name, gameObject);
             actived = false;
-            pickUpAbleItem.PickUpAble = false;
             onStepComplete.Invoke();
             if (tweening)
             {
@@ -381,7 +347,6 @@ namespace InteractSystem.Common.Actions
             if (log)
                 Debug.Log("StepUnDo:" + Name, gameObject);
             actived = false;
-            pickUpAbleItem.PickUpAble = false;
             onStepUnDo.Invoke();
             gameObject.SetActive(startActive);
         }
@@ -423,11 +388,6 @@ namespace InteractSystem.Common.Actions
         public override void SetVisible(bool visible)
         {
             gameObject.SetActive(visible);
-        }
-
-        public override void AutoExecute()
-        {
-            throw new NotImplementedException();
         }
     }
 

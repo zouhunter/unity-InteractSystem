@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace InteractSystem.Common.Actions
 {
-    public abstract class PlaceItem : CompleteAbleContentActionItem<PlaceElement>
+    public abstract class PlaceItem : ActionItem
     {
         public bool autoInstall;//自动安装
         public bool ignorePass;//反忽略
@@ -13,14 +13,16 @@ namespace InteractSystem.Common.Actions
         public bool ignoreMiddle;//忽略中间点
         public bool hideOnInstall;//安装完后隐藏
 
-        public virtual bool AlreadyPlaced { get { return element != null; } }
-        protected override string LayerName
-        {
-            get
-            {
-                return Layers.placePosLayer;
-            }
-        }
+        [SerializeField]
+        protected ContentActionItemFeature contentFeature = new ContentActionItemFeature(typeof(PlaceElement));
+        [SerializeField]
+        protected CompleteAbleItemFeature completeFeature = new CompleteAbleItemFeature();
+        [SerializeField]
+        protected ClickAbleFeature clickAbleFeature = new ClickAbleFeature();//可点击 
+
+        protected ElementController elementCtrl { get { return ElementController.Instence; } }
+        public virtual bool AlreadyPlaced { get { return contentFeature.Element != null; } }
+
         public override bool OperateAble
         {
             get
@@ -28,8 +30,26 @@ namespace InteractSystem.Common.Actions
                 return targets == null || targets.Count == 0;
             }
         }
+
+        protected override List<ActionItemFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            contentFeature.target = this;
+            completeFeature.target = this;
+            clickAbleFeature.target = this;
+            clickAbleFeature.LayerName = Layers.placePosLayer;
+            completeFeature.onAutoExecute = AutoExecute;
+            features.Add(contentFeature);
+            features.Add(completeFeature);
+            features.Add(clickAbleFeature);
+            return features;
+        }
+        public abstract void AutoExecute(Graph.OperaterNode node);
+
         public abstract bool CanPlace(PlaceElement element, out string why);
+
         public abstract void PlaceObject(PlaceElement pickup);
+
         public override void StepUnDo()
         {
             base.StepUnDo();
@@ -45,7 +65,7 @@ namespace InteractSystem.Common.Actions
             base.StepComplete();
             if (!AlreadyPlaced)
             {
-                PlaceElement obj = GetUnInstalledObj(elementName);
+                PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
                 Attach(obj);
                 obj.QuickInstall(this, true);
                 obj.StepComplete();
@@ -79,22 +99,22 @@ namespace InteractSystem.Common.Actions
 
         public virtual void Attach(PlaceElement obj)
         {
-            if (this.element != null)
+            if (contentFeature.Element != null)
             {
                 Debug.LogError(this + "allready attached");
             }
 
-            this.element = obj;
+            contentFeature.Element = obj;
             obj.onInstallOkEvent += OnInstallComplete;
             obj.onUnInstallOkEvent += OnUnInstallComplete;
         }
 
         public virtual PlaceElement Detach()
         {
-            PlaceElement old = element;
+            PlaceElement old = contentFeature.Element as PlaceElement;
             old.onInstallOkEvent -= OnInstallComplete;
             old.onUnInstallOkEvent -= OnUnInstallComplete;
-            element = default(PlaceElement);
+            contentFeature.Element = default(PlaceElement);
             return old;
         }
     }

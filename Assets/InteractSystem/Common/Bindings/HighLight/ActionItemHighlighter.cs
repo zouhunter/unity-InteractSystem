@@ -10,7 +10,7 @@ namespace InteractSystem.Binding
         [SerializeField]
         private Color highLightColor = Color.green;
         protected IHighLightItems highLighter = new ShaderHighLight();
-        protected bool notice { get { return Config.highLightNotice; } }
+        protected bool notice { get { return Config.Instence.highLightNotice; } }
         protected bool actived;
         protected List<GameObject> viewObjects = new List<GameObject>();
 

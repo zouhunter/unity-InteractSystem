@@ -11,8 +11,9 @@ namespace InteractSystem
     {
         [SerializeField, Attributes.DefultCollider]
         protected Collider _collider;
+        protected string _layerName;
 
-        public Collider collider
+        public virtual Collider collider
         {
             get
             {
@@ -38,7 +39,11 @@ namespace InteractSystem
             collider.enabled = false;
         }
 
-        public string LayerName { get; set; }
+        public virtual string LayerName
+        {
+            get { return _layerName; }
+            set { _layerName = value; }
+        }
 
 
         public override void StepActive()

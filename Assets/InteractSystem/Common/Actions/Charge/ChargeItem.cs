@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Common.Actions
 {
-    public class ChargeItem : ClickAbleCompleteAbleActionItem
+    public class ChargeItem : ActionItem
     {
         public override bool OperateAble
         {
@@ -28,16 +28,23 @@ namespace InteractSystem.Common.Actions
         private List<ChargeData> _currentList = new List<ChargeData>();
         public ChargeEvent onCharge { get; set; }
         public List<ChargeData> currentList { get { return _currentList; } }
-        protected override string LayerName
-        {
-            get
-            {
-                return Layers.chargeObjLayer;
-            }
-        }
         private int index;
         private ElementController elementCtrl { get { return ElementController.Instence; } }
         private static List<ChargeItem> activeChargeItems = new List<ChargeItem>();
+
+        public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
+
+        protected override List<ActionItemFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            clickAbleFeature.target = this;
+            clickAbleFeature.LayerName = Layers.chargeObjLayer;
+            features.Add(clickAbleFeature);
+            completeAbleFeature.target = this;
+            completeAbleFeature.onAutoExecute = AutoExecute;
+            return features;
+        }
 
         protected override void Start()
         {
@@ -168,11 +175,10 @@ namespace InteractSystem.Common.Actions
                     return;
                 }
             }
-
-            OnComplete();
+            completeAbleFeature.OnComplete();
         }
 
-        public override void AutoExecute()
+        public void AutoExecute(Graph.OperaterNode node)
         {
             index = 0;
             AutoCompleteInternal();
@@ -187,7 +193,7 @@ namespace InteractSystem.Common.Actions
             }
             else
             {
-                OnComplete();
+                completeAbleFeature.OnComplete();
             }
         }
         private void CompleteOneElement(ChargeData complete, UnityAction onComplete)
@@ -231,9 +237,9 @@ namespace InteractSystem.Common.Actions
             var chargeResource = resources.Find(x => tool.CanLoad(x.type) && x.Active);
             var value = Mathf.Min(tool.capacity, chargeResource.current);
             var type = chargeResource.type;
-            tool.PickUpItem.PickUpAble = false;
+            tool.PickUpAble = false;
             tool.LoadData(chargeResource.transform.position, new ChargeData(type, value), () => {
-                tool.PickUpItem.PickUpAble = true;
+                tool.PickUpAble = true;
             });
             chargeResource.Subtruct(value, () => { onComplete.Invoke(); });
         }
@@ -244,8 +250,8 @@ namespace InteractSystem.Common.Actions
             ChargeData worpData = JudgeLeft(data);
             if (!string.IsNullOrEmpty(worpData.type))
             {
-                tool.PickUpItem.PickUpAble = false;
-                tool.OnCharge(transform.position, worpData.value, () => { tool.PickUpItem.PickUpAble = true; });
+                tool.PickUpAble = false;
+                tool.OnCharge(transform.position, worpData.value, () => { tool.PickUpAble = true; });
                 Charge(worpData, () => {
                     onComplete();
                 });

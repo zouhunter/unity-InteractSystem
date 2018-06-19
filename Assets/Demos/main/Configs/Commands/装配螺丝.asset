@@ -1,0 +1,200 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
+  m_Name: "\u88C5\u914D\u87BA\u4E1D"
+  m_EditorClassIdentifier: 
+  m_allNodes:
+  - m_name: Start
+    m_id: e6907a53-bae7-4fbc-95db-d5330abc4504
+    m_x: 80
+    m_y: 50
+    m_node: {fileID: 114308434188825626}
+    m_inputPoints: []
+    m_outputPoints:
+    - id: 0c539ddf-3023-4cc9-a121-b7a15dd686f5
+      label: 0
+      parentId: e6907a53-bae7-4fbc-95db-d5330abc4504
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: "\u5C06\u87BA\u4E1D\u5200\u548C\u87BA\u4E1D\u5173\u8054"
+    m_id: f1034e23-917d-4c32-85a6-b3ca48983e62
+    m_x: 410
+    m_y: 90
+    m_node: {fileID: 114869897488668682}
+    m_inputPoints:
+    - id: ac961e59-b416-42ea-adb4-d5dea893ade6
+      label: 
+      parentId: f1034e23-917d-4c32-85a6-b3ca48983e62
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 5bd2944f-b0c6-4b1b-a7d6-460802fa6a79
+      label: 0
+      parentId: f1034e23-917d-4c32-85a6-b3ca48983e62
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 142
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: "\u653E\u7F6E\u87BA\u4E1D\u5200"
+    m_id: 84aa1f05-724c-4ddd-a37e-57ca6a54404f
+    m_x: 240
+    m_y: 90
+    m_node: {fileID: 114416634627237776}
+    m_inputPoints:
+    - id: 21d396a5-5aaf-4d5e-a7c6-8a76973391cb
+      label: 
+      parentId: 84aa1f05-724c-4ddd-a37e-57ca6a54404f
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: df984402-1bfd-4862-9b0f-608eff18d891
+      label: 0
+      parentId: 84aa1f05-724c-4ddd-a37e-57ca6a54404f
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  m_allConnections:
+  - m_id: 48ec4459-efe3-4d63-893c-715254e7543d
+    m_fromNodeId: e6907a53-bae7-4fbc-95db-d5330abc4504
+    m_fromNodeConnectionPointId: 0c539ddf-3023-4cc9-a121-b7a15dd686f5
+    m_toNodeId: f1034e23-917d-4c32-85a6-b3ca48983e62
+    m_toNodeConnectionPoiontId: ac961e59-b416-42ea-adb4-d5dea893ade6
+    m_type: actionconnect
+    m_connection: {fileID: 114533336407549400}
+  m_lastModified: 131739006504091431
+  m_graphDescription: 
+  m_controllerType: InteractSystem.Graph.AcionGraphCtrl
+  _stepName: "\u88C5\u914D\u87BA\u4E1D"
+  commandBindings: []
+  environments: []
+  startHooks: []
+  completeHooks: []
+--- !u!114 &114308434188825626
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: WorldActionSystem.Graph.StartNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114416634627237776
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0e9389a85beafd4aaa3aec8b9fe2060, type: 3}
+  m_Name: InteractSystem.Common.Actions.PlaceNode
+  m_EditorClassIdentifier: 
+  _name: "\u653E\u7F6E\u87BA\u4E1D\u5200"
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+--- !u!114 &114533336407549400
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0
+--- !u!114 &114777399708963148
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eea71440ecb02d14d824289410356475, type: 3}
+  m_Name: InteractSystem.Common.Actions.InstallNode
+  m_EditorClassIdentifier: 
+  <Command>k__BackingField: {fileID: 11400000}
+  statu: 2
+  _name: e694bee7bdaee89ebae4b89d
+  auto: 0
+  _system: {fileID: 0}
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  itemList:
+  - e5ae89e8a385e782b941
+  <finalGroup>k__BackingField:
+  - {fileID: 0}
+  currents:
+  - {fileID: 0}
+--- !u!114 &114869897488668682
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd8515d6c82ae6e4483f37911eb02cf0, type: 3}
+  m_Name: InteractSystem.Common.Actions.LinkNode
+  m_EditorClassIdentifier: 
+  _name: "\u5C06\u87BA\u4E1D\u5200\u548C\u87BA\u4E1D\u5173\u8054"
+  startHooks: []
+  completeHooks:
+  - {fileID: 11400000, guid: 2e1b6151c4befb44da30bfd35b71c400, type: 2}
+  bindings: []
+  environments: []
+  quickLink: 0
+  autoLinkTime: 1
+  defultLink:
+  - ItemA: 0
+    portA: 0
+    ItemB: 1
+    portB: 0

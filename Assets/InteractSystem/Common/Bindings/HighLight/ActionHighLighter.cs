@@ -14,7 +14,7 @@ namespace InteractSystem.Binding
         [SerializeField]
         protected GameObject viewObj;
         protected Highlighter highLighter;
-        protected bool noticeAuto { get { return Config.highLightNotice; } }
+        protected bool noticeAuto { get { return Config.Instence.highLightNotice; } }
       
         public void HighLight()
         {

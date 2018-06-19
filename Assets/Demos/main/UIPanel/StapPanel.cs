@@ -7,12 +7,58 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem
 {
-    public partial class StapPanel
+    public class StapPanel:MonoBehaviour
     {
-        int backNumInput = 0;
-        string jumpStapInput;
-        int forwardNumInput = 0;
+        private int backNumInput = 0;
+        private string jumpStapInput;
+        private int forwardNumInput = 0;
         public Config config;
+        public GameObject panel;
+        public ActionGroup group;
+
+        public Button accept;
+        public Button start;
+        public Button backAstep;
+        public Button backASmallstep;
+        public Button backMutiStap;
+        public Button toTargetStap;
+        public Button skipAStap;
+        public Button skipASmallStap;
+        public Button skipMutiStap;
+        public Button toEnd;
+
+        public Toggle notice;
+        public Toggle autoNext;
+        public Toggle autoPlay;
+
+        public InputField nameField;
+        public Button create;
+
+        ICommandController remoteController { get { return group.RemoteController; } }
+
+        public List<Binding.ActionItemBinding> actionItemBindings;
+        /// <summary>
+        /// 注册按扭事件
+        /// </summary>
+        void Awake()
+        {
+            Config.SetConfig(config);
+            Config.Instence.actionItemBindings.AddRange(actionItemBindings);
+            RegistEvents();
+        }
+
+        private void Start()
+        {
+            panel.SetActive(false);
+            group.LunchActionSystem();
+            group.EventTransfer.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
+            panel.SetActive(true);
+        }
+        private void OnDestroy()
+        {
+            if (group) Destroy(group);
+        }
+
         public void OnbackNumInputEndEdit(string value)
         {
             if (!string.IsNullOrEmpty(value))
@@ -40,30 +86,10 @@ namespace InteractSystem
             }
         }
 
-        public Button accept;
-        public Button start;
-        public Button backAstep;
-        public Button backASmallstep;
-        public Button backMutiStap;
-        public Button toTargetStap;
-        public Button skipAStap;
-        public Button skipASmallStap;
-        public Button skipMutiStap;
-        public Button toEnd;
-
-        public Toggle notice;
-        public Toggle autoNext;
-        public Toggle autoPlay;
-
-        public InputField nameField;
-        public Button create;
-
-        /// <summary>
-        /// 注册按扭事件
-        /// </summary>
-        void Awake()
+     
+       
+        private void RegistEvents()
         {
-            Config.SetConfig(config);
             accept.onClick.AddListener(OnAcceptButtonCilcked);
             start.onClick.AddListener(OnToStartButtonClicked);
             backAstep.onClick.AddListener(OnBackAStapButtonClicked);
@@ -204,31 +230,8 @@ namespace InteractSystem
         }
         void OnNoticeStateChanged(bool isOn)
         {
-            Config.highLightNotice = isOn;
+            Config.Instence.highLightNotice = isOn;
         }
         public Text textShow;
     }
-    public partial class StapPanel : MonoBehaviour
-    {
-        public GameObject panel;
-        public ActionGroup groupPrefab;
-        private ActionGroup group;
-        ICommandController remoteController { get { return group.RemoteController; } }
-        public string[] steps;
-
-        void Start()
-        {
-            panel.SetActive(false);
-            group = Instantiate(groupPrefab);
-            group.LunchActionSystem(steps, out steps);
-            group.EventTransfer.onUserError += (x, y) => { Debug.Log(string.Format("{0}：{1}", x, y)); };
-            panel.SetActive(true);
-        }
-        private void OnDestroy()
-        {
-            if (group) Destroy(group);
-        }
-    }
-
-
 }

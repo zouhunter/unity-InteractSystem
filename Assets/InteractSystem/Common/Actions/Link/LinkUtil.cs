@@ -10,9 +10,10 @@ namespace InteractSystem.Common.Actions
 {
     public static class LinkUtil
     {
+        public static bool log = false;
         private static PreviewController previewCtrl { get { return PreviewController.Instence; } }
         private static AngleCtroller angleCtrl { get { return AngleCtroller.Instence; } }
-        private static MatchType matchType { get { return Config.linkMatchType; } }
+        private static MatchType matchType { get { return Config.Instence.linkMatchType; } }
 
         public static void UpdateBrotherPos(LinkItem target, List<LinkItem> context)
         {
@@ -79,8 +80,8 @@ namespace InteractSystem.Common.Actions
 
         public static void DetachNodes(LinkPort moveAblePort, LinkPort staticPort)
         {
-            moveAblePort.ConnectedNode = null;
-            staticPort.ConnectedNode = null;
+            if (moveAblePort != null) moveAblePort.ConnectedNode = null;
+            if (staticPort != null) staticPort.ConnectedNode = null;
         }
 
         public static void ClampRotation(Transform target)
@@ -324,7 +325,7 @@ namespace InteractSystem.Common.Actions
                             var otherNode = otheritem.ChildNodes[info.nodeId];
                             if (otherNode != null && otherNode.ConnectedNode == null)
                             {
-                                Debug.Log("在" + otheritem + "的" + info.nodeId + "端口上显示出 + " + pickedUp);
+                                if (log) Debug.Log("在" + otheritem + "的" + info.nodeId + "端口上显示出 + " + pickedUp);
                                 var set = new PreviewSet();
                                 LinkUtil.GetWorldPosFromTarget(otheritem, info.relativePos, info.relativeDir, out set.position, out set.eulerAngle);
                                 linkPorts.Add(set);
@@ -342,7 +343,7 @@ namespace InteractSystem.Common.Actions
         /// <param name="linkItem"></param>
         public static void ClearActivedLinkPort(LinkItem linkItem)
         {
-            Debug.Log("清除所有" + linkItem + "的拷贝");
+            if (log) Debug.Log("清除所有" + linkItem + "的拷贝");
             previewCtrl.UnNotice(linkItem.Body);
         }
     }

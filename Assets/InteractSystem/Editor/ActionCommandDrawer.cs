@@ -60,6 +60,7 @@ namespace InteractSystem.Drawer
         {
             ActionGUIUtil.DrawDisableProperty(script_prop);
             serializedObject.Update();
+            EditorGUILayout.PropertyField(_stepName_prop, new GUIContent("步骤名"));
             DrawSwitchToolBar();
             serializedObject.ApplyModifiedProperties();
         }

@@ -20,7 +20,7 @@ namespace InteractSystem.Drawer
         {
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
             var prop = property.GetArrayElementAtIndex(index);
-            var content = prop.objectReferenceValue == null ? new GUIContent("Null") : new GUIContent(prop.objectReferenceValue.GetType().Name);
+            var content = prop.objectReferenceValue == null ? new GUIContent("Null") : new GUIContent(prop.objectReferenceValue.name);
 
             var btnRect = new Rect(rect.x, rect.y, rect.width - ActionGUIUtil.middleButtonWidth, EditorGUIUtility.singleLineHeight);
             var objRect = new Rect(rect.x + rect.width - ActionGUIUtil.middleButtonWidth, rect.y, ActionGUIUtil.middleButtonWidth, EditorGUIUtility.singleLineHeight);
@@ -81,7 +81,9 @@ namespace InteractSystem.Drawer
             {
                 serializedObj = ActionGUIUtil.CreateCachedSerializedObject(obj);
                 rect.y += EditorGUIUtility.singleLineHeight + 5;
+                serializedObj.Update();
                 ActionGUIUtil.DrawChildInContent(serializedObj.GetIterator(), rect, ignoreProps, null, 1);
+                serializedObj.ApplyModifiedProperties();
             }
         }
 

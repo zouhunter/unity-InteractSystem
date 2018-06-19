@@ -5,7 +5,7 @@ using UnityEngine;
 namespace InteractSystem.Common.Actions
 {
 
-    public class DragItem : ClickAbleCompleteAbleActionItem
+    public class DragItem : ActionItem
     {
         public override bool OperateAble
         {
@@ -14,13 +14,7 @@ namespace InteractSystem.Common.Actions
                 return targets == null || targets.Count == 0;
             }
         }
-        protected override string LayerName
-        {
-            get
-            {
-                return Layers.dragItemLayer;
-            }
-        }
+
         public Vector3 targetPos { get; private set; }
         public Vector3 startPos { get; private set; }
 
@@ -30,20 +24,34 @@ namespace InteractSystem.Common.Actions
         private float clampTime = 0.2f;
         [SerializeField]
         private bool clampHard;
-        private float autoDragTime { get { return Config.autoExecuteTime; } }
+        private float autoDragTime { get { return Config.Instence.autoExecuteTime; } }
         private bool auto;
         private CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
+        public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
+
         protected override void Awake()
         {
             base.Awake();
             auto = false;
+        }
+
+        protected override List<ActionItemFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            clickAbleFeature.target = this;
+            clickAbleFeature.LayerName = Layers.dragItemLayer;
+            features.Add(clickAbleFeature);
+            completeAbleFeature.target = this;
+            completeAbleFeature.onAutoExecute = AutoExecute;
+            return features;
         }
         protected override void Start()
         {
             base.Start();
             InitPositions();
         }
-        public override void AutoExecute()
+        public  void AutoExecute(Graph.OperaterNode node)
         {
             coroutineCtrl.StartCoroutine (AutoDrag());
         }
@@ -56,7 +64,7 @@ namespace InteractSystem.Common.Actions
                 transform.localPosition = Vector3.Lerp(startPos, targetPos, i / autoDragTime);
                 yield return null;
             }
-            OnComplete();
+           completeAbleFeature. OnComplete();
         }
         public override void StepComplete()
         {
@@ -108,7 +116,7 @@ namespace InteractSystem.Common.Actions
         {
             if (Vector3.Distance(transform.localPosition, targetPos) < 0.2f)
             {
-                OnComplete();
+               completeAbleFeature. OnComplete();
             }
         }
 

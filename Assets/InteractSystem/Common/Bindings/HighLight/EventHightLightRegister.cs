@@ -16,7 +16,7 @@
 //        private string highLight { get { return "HighLightObjects"; } }
 //        private string unhighLight { get { return "UnHighLightObjects"; } }
 
-//        private bool activeHighLight { get { return Config.highLightNotice; } }
+//        private bool activeHighLight { get { return Config.Instence.highLightNotice; } }
 //        private List<Highlighter> highlighters = new List<Highlighter>();
 
 //        private void Start()

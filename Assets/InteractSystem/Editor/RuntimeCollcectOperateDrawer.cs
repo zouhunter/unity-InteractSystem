@@ -7,51 +7,51 @@ using System;
 
 namespace InteractSystem.Drawer
 {
-    public abstract class RuntimeCollcectOperateDrawer : OperateNodeDrawer
-    {
-        protected override void OnDrawDefult()
-        {
-            base.OnDrawDefult();
-            DrawItemList();
-        }
-        private SerializedProperty itemList_prop;
-        private ReorderableList reorderList;
+    //public abstract class RuntimeCollcectOperateDrawer : OperateNodeDrawer
+    //{
+    //    protected override void OnDrawDefult()
+    //    {
+    //        base.OnDrawDefult();
+    //        DrawItemList();
+    //    }
+    //    private SerializedProperty itemList_prop;
+    //    private ReorderableList reorderList;
 
-        protected override void InitPropertys()
-        {
-            base.InitPropertys();
-            itemList_prop = serializedObject.FindProperty("itemList");
-        }
-        protected override void InitDrawers()
-        {
-            base.InitDrawers();
-            reorderList = new ReorderableList(serializedObject, itemList_prop);
-            reorderList.drawHeaderCallback = DrawHead;
-            reorderList.drawElementCallback = DrawElement;
-            reorderList.elementHeight = EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.padding;
-        }
+    //    protected override void InitPropertys()
+    //    {
+    //        base.InitPropertys();
+    //        itemList_prop = serializedObject.FindProperty("itemList");
+    //    }
+    //    protected override void InitDrawers()
+    //    {
+    //        base.InitDrawers();
+    //        reorderList = new ReorderableList(serializedObject, itemList_prop);
+    //        reorderList.drawHeaderCallback = DrawHead;
+    //        reorderList.drawElementCallback = DrawElement;
+    //        reorderList.elementHeight = EditorGUIUtility.singleLineHeight + 2 * ActionGUIUtil.padding;
+    //    }
 
-        private void DrawElement(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
-            var prop = itemList_prop.GetArrayElementAtIndex(index);
-            prop.stringValue = EditorGUI.TextField(rect, prop.stringValue);
-        }
+    //    private void DrawElement(Rect rect, int index, bool isActive, bool isFocused)
+    //    {
+    //        rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
+    //        var prop = itemList_prop.GetArrayElementAtIndex(index);
+    //        prop.stringValue = EditorGUI.TextField(rect, prop.stringValue);
+    //    }
 
-        protected abstract void DrawHead(Rect rect);
+    //    protected abstract void DrawHead(Rect rect);
 
-        protected  void DrawItemList()
-        {
-            reorderList.DoLayoutList();
-        }
-    }
+    //    protected  void DrawItemList()
+    //    {
+    //        reorderList.DoLayoutList();
+    //    }
+    //}
 
-    [CustomEditor(typeof(RuntimeCollectNode<>), true)]
-    public class RuntimeOrderCollectNodeDrawer : RuntimeCollcectOperateDrawer
-    {
-        protected override void DrawHead(Rect rect)
-        {
-            EditorGUI.LabelField(rect, "操作列表");
-        }
-    }
+    //[CustomEditor(typeof(RuntimeCollectNode<>), true)]
+    //public class RuntimeOrderCollectNodeDrawer : RuntimeCollcectOperateDrawer
+    //{
+    //    protected override void DrawHead(Rect rect)
+    //    {
+    //        EditorGUI.LabelField(rect, "操作列表");
+    //    }
+    //}
 }

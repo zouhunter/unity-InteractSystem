@@ -8,8 +8,8 @@ namespace InteractSystem {
 
     public class AngleCtroller
     {
-        protected GameObject viewObj { get { return Config.angleObj; } }
-        protected Color highLightColor { get { return Config.highLightColor; } }
+        protected GameObject viewObj { get { return Config.Instence.angleObj; } }
+        protected Color highLightColor { get { return Config.Instence.highLightColor; } }
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
         //private Dictionary<string, Queue<GameObject>> objectDicQueue = new Dictionary<string, Queue<GameObject>>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
@@ -34,8 +34,8 @@ namespace InteractSystem {
 
         public void UnNotice(Transform target)
         {
-            if (!Config.highLightNotice) return;
-            if (!Config.angleObj) return;
+            if (!Config.Instence.highLightNotice) return;
+            if (!Config.Instence.angleObj) return;
 
             if (actived.ContainsKey(target))
             {
@@ -46,8 +46,8 @@ namespace InteractSystem {
 
         public void Notice(Transform target,bool update = false,string angleName = null)
         {
-            if (!Config.highLightNotice) return;
-            if (!Config.angleObj) return;
+            if (!Config.Instence.highLightNotice) return;
+            if (!Config.Instence.angleObj) return;
 
             if (!actived.ContainsKey(target))
             {

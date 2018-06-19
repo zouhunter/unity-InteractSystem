@@ -10,7 +10,7 @@ namespace InteractSystem.Common.Actions
     /// <summary>
     /// 用于原料的吸取和填入
     /// </summary>
-    public class ChargeTool : PickUpAbleElement
+    public class ChargeTool : PickUpAbleItem
     {
         [SerializeField]
         private ChargeData startData;
@@ -32,14 +32,6 @@ namespace InteractSystem.Common.Actions
 
         public float Range { get { return triggerRange; } }
 
-        protected override string LayerName
-        {
-            get
-            {
-                return Layers.pickUpElementLayer;
-            }
-        }
-
         public override bool OperateAble
         {
             get
@@ -49,6 +41,7 @@ namespace InteractSystem.Common.Actions
         }
 
         private ElementController elementCtrl;
+
 
         protected override void Awake()
         {
@@ -68,19 +61,20 @@ namespace InteractSystem.Common.Actions
             if (elementCtrl != null)
                 elementCtrl.RemoveElement(this);
         }
-        protected override void OnPickDown()
+
+        protected override void RegistPickupableEvents()
+        {
+            pickUpableFeature.RegistOnPickDown(OnPickDown);
+            pickUpableFeature.RegistOnSetPosition(OnSetPosition);
+        }
+
+        protected void OnPickDown()
         {
             transform.localPosition = startPos;
         }
-        protected override void OnPickUp()
+       
+        protected void OnSetPosition(Vector3 arg0)
         {
-        }
-        protected override void OnPickStay()
-        {
-        }
-        protected override void OnSetPosition(Vector3 arg0)
-        {
-            base.OnSetPosition(arg0);
             transform.position = arg0;
         }
         internal bool CanLoad(string type)
@@ -126,21 +120,18 @@ namespace InteractSystem.Common.Actions
         public override void StepActive()
         {
             base.StepActive();
-            PickUpItem.PickUpAble = true;
             Active = true;
         }
 
         public override void StepComplete()
         {
             base.StepComplete();
-            PickUpItem.PickUpAble = false;
             Active = true;
         }
 
         public override void StepUnDo()
         {
             base.StepUnDo();
-            PickUpItem.PickUpAble = false;
             if(!string.IsNullOrEmpty(chargeData.type)) OnCharge(transform.position, chargeData.value, null);
             LoadData(transform.position, startData, null);
             Active = false;
@@ -148,11 +139,6 @@ namespace InteractSystem.Common.Actions
         public override void SetVisible(bool visible)
         {
             gameObject.SetActive(visible);
-        }
-
-        public override void AutoExecute()
-        {
-            throw new NotImplementedException();
         }
     }
 }

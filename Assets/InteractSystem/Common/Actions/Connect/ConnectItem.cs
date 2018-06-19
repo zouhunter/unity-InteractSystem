@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Common.Actions
 {
-    public class ConnectItem : CompleteAbleActionItem
+    public class ConnectItem : ActionItem
     {
         public override bool OperateAble
         {
@@ -19,7 +19,7 @@ namespace InteractSystem.Common.Actions
         public float lineWight = 0.1f;
         public Material lineMaterial;
 
-        private float autoTime { get { return Config.autoExecuteTime; } }
+        private float autoTime { get { return Config.Instence.autoExecuteTime; } }
         [System.Serializable]
         public class PointGroup
         {
@@ -33,7 +33,15 @@ namespace InteractSystem.Common.Actions
 
         private Dictionary<int, LineRenderer> lineRenders = new Dictionary<int, LineRenderer>();
         private Dictionary<int, Vector3[]> positionDic = new Dictionary<int, Vector3[]>();
+        public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
 
+        protected override List<ActionItemFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            completeAbleFeature.target = this;
+            completeAbleFeature.onAutoExecute = AutoExecute;
+            return features;
+        }
         protected override void Start()
         {
             base.Start();
@@ -58,7 +66,7 @@ namespace InteractSystem.Common.Actions
             positionDic.Clear();
             ResetLinRenders();
         }
-        public override void AutoExecute()
+        public void AutoExecute(Graph.OperaterNode node)
         {
             StartCoroutine(AutoConnect());
         }
@@ -191,7 +199,7 @@ namespace InteractSystem.Common.Actions
             }
             if (allConnected)
             {
-                OnComplete();
+               completeAbleFeature. OnComplete();
             }
         }
 

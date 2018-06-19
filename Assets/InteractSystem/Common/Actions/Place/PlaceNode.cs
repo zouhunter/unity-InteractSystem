@@ -5,8 +5,23 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem.Common.Actions
 {
-    public abstract class PlaceNode : ClickAbleCollectNode<PlaceItem>
+    [NodeGraph.CustomNode("Operate/Place", 10, "InteratSystem")]
+    public class PlaceNode : Graph.OperaterNode,IRuntimeCtrl
     {
-
+        [SerializeField]
+        protected CompleteAbleCollectNodeFeature completeAbleNodeFeature = new CompleteAbleCollectNodeFeature(typeof(PlaceItem));
+        public ControllerType CtrlType
+        {
+            get
+            {
+                return ControllerType.Place;
+            }
+        }
+        protected override List<OperateNodeFeature> RegistFeatures()
+        {
+            completeAbleNodeFeature.target = this;
+            completeAbleNodeFeature.onComplete = ()=>OnEndExecute(false);
+            return new List<OperateNodeFeature>() { completeAbleNodeFeature };
+        }
     }
 }

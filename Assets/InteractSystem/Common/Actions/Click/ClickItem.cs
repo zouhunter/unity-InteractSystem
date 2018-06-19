@@ -8,29 +8,36 @@ using System;
 namespace InteractSystem.Common.Actions
 {
   
-    public class ClickItem : ClickAbleCompleteAbleActionItem
+    public class ClickItem : ActionItem
     {
         [SerializeField]
         protected int clickableCount = 1;
         [SerializeField]
         protected float autoCompleteTime = 2;
-        protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
 
+        public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
+
+
+        protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
         public override bool OperateAble
         {
             get { return clickableCount > targets.Count; }
         }
 
-        protected override string LayerName
+        protected override List<ActionItemFeature> RegistFeatures()
         {
-            get
-            {
-                return Layers.clickItemLayer;
-            }
+            var features = base.RegistFeatures();
+            clickAbleFeature.target = this;
+            clickAbleFeature.LayerName = Layers.clickItemLayer;
+            features.Add(clickAbleFeature);
+            completeAbleFeature.target = this;
+            completeAbleFeature.onAutoExecute = AutoExecute;
+            return features;
         }
-        public override void AutoExecute()
+        public void AutoExecute(Graph.OperaterNode node)
         {
-            coroutineCtrl.DelyExecute(OnComplete, autoCompleteTime);
+            coroutineCtrl.DelyExecute(completeAbleFeature. OnComplete, autoCompleteTime);
         }
     }
 }

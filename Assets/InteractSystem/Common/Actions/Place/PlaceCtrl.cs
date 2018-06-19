@@ -15,17 +15,25 @@ namespace InteractSystem.Common.Actions
         {
             get
             {
-                return pickCtrl.pickedUpObj.GetComponent<PlaceElement>();
+                return pickCtrl.pickedUpObj.GetComponentInParent<PlaceElement>();
             }
         }
         public PlaceItem installPos;
         public bool installAble;
         public string resonwhy;
-        public bool activeNotice { get { return Config.highLightNotice; } }
-        public float hitDistence { get { return Config.hitDistence; } }
+        public bool activeNotice { get { return Config.Instence.highLightNotice; } }
+        public float hitDistence { get { return Config.Instence.hitDistence; } }
 
         private int _placePosLayerMask = 0;
-        public int PlacePoslayerMask { get { if (_placePosLayerMask == 0) _placePosLayerMask = LayerMask.GetMask(Layers.placePosLayer); return _placePosLayerMask; } }
+        public int PlacePoslayerMask
+        {
+            get
+            {
+                if (_placePosLayerMask == 0)
+                    _placePosLayerMask = LayerMask.GetMask(Layers.placePosLayer);
+                return _placePosLayerMask;
+            }
+        }
 
         public override ControllerType CtrlType
         {
@@ -46,9 +54,11 @@ namespace InteractSystem.Common.Actions
             pickCtrl.onPickStay += OnPickStay;
         }
 
-        private void OnPickStay(PickUpAbleItem arg0)
+        private void OnPickStay(PickUpAbleComponent arg0)
         {
-            var placeElement = arg0.GetComponent<PlaceElement>();
+            if (!Active) return;
+
+            var placeElement = arg0.GetComponentInParent<PlaceElement>();
             if (placeElement)
             {
                 TryPlaceObject(placeElement);
@@ -77,9 +87,9 @@ namespace InteractSystem.Common.Actions
             {
                 ray = viewCamera.ScreenPointToRay(Input.mousePosition);
                 hits = Physics.RaycastAll(ray, hitDistence, PlacePoslayerMask);
+                var hitedObj = false;
                 if (hits != null || hits.Length > 0)
                 {
-                    var hitedObj = false;
                     for (int i = 0; i < hits.Length; i++)
                     {
                         installPos = hits[i].collider.GetComponentInParent<PlaceItem>();
@@ -93,23 +103,23 @@ namespace InteractSystem.Common.Actions
                             }
                         }
                     }
-                    if (!hitedObj)
-                    {
-                        installAble = false;
-                        resonwhy = "零件放置位置不正确";
-                    }
+                }
+                if (!hitedObj)
+                {
+                    installAble = false;
+                    resonwhy = "零件放置位置不正确";
                 }
             }
 
             if (installAble)
             {
                 //可安装显示绿色
-                if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.green);
+                if (activeNotice) highLight.HighLightTarget(pickedUpObj.ViewObj, Color.green);
             }
             else
             {
                 //不可安装红色
-                if (activeNotice) highLight.HighLightTarget(pickedUpObj.Render, Color.red);
+                if (activeNotice) highLight.HighLightTarget(pickedUpObj.ViewObj, Color.red);
             }
         }
         /// <summary>
@@ -132,7 +142,7 @@ namespace InteractSystem.Common.Actions
 
             if (activeNotice)
             {
-                highLight.UnHighLightTarget(pickedObj.Render);
+                highLight.UnHighLightTarget(pickedObj.ViewObj);
             }
         }
 
@@ -159,8 +169,7 @@ namespace InteractSystem.Common.Actions
         {
             if (pickup)
             {
-                var plickupItem = pickup.GetComponent<PickUpAbleItem>();
-                plickupItem.OnPickDown();
+                pickup.RetriveFeature<PickUpAbleFeature>().OnPickDown();
             }
         }
         #endregion

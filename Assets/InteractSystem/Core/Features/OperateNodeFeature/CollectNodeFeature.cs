@@ -12,13 +12,14 @@ namespace InteractSystem
     public class CollectNodeFeature : OperateNodeFeature
     {
         [SerializeField,HideInInspector]
-        protected List<string> itemList = new List<string>();
+        public readonly List<string> itemList = new List<string>();
         public Type type { get; private set; }
-        protected ElementPool<ActionItem> elementPool = new ElementPool<ActionItem>();
-        protected ActionItem[] finalGroup { get; set; }
-        protected List<ActionItem> currents = new List<ActionItem>();
+        public readonly ElementPool<ISupportElement> elementPool = new ElementPool<ISupportElement>();
+        public ISupportElement[] finalGroup { get; set; }
+        protected List<ISupportElement> currents = new List<ISupportElement>();
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
-        public static bool log = false;
+        public UnityAction<ISupportElement> onAddToPool { get; set; }
+        public UnityAction<ISupportElement> onRemoveFromPool { get; set; }
         public CollectNodeFeature(Type type)
         {
             this.type = type;
@@ -33,17 +34,22 @@ namespace InteractSystem
             elementCtrl.onRegistElememt += OnRegistElement;
             elementCtrl.onRemoveElememt += OnRemoveElement;
         }
-        protected virtual void OnRemovedFromPool(ActionItem arg0)
+        protected virtual void OnRemovedFromPool(ISupportElement arg0)
         {
-           
+            if (onRemoveFromPool != null)
+            {
+                onRemoveFromPool.Invoke(arg0);
+            }
         }
 
-        protected virtual void OnAddedToPool(ActionItem arg0)
+        protected virtual void OnAddedToPool(ISupportElement arg0)
         {
             if (target.Statu == ExecuteStatu.Executing)
             {
                 arg0.StepActive();
             }
+            if (onAddToPool != null)
+                onAddToPool.Invoke(arg0);
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -86,7 +92,7 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRegistElement(ISupportElement arg0)
         {
-            if (arg0.GetType() == type && arg0 is ActionItem && itemList.Contains(arg0.Name))
+            if (SupportType(arg0.GetType()) || type.IsAssignableFrom(arg0.GetType()) && arg0 is ActionItem && itemList.Contains(arg0.Name))
             {
                 var element = arg0 as ActionItem;
                 if (!elementPool.Contains(element))
@@ -102,7 +108,7 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRemoveElement(ISupportElement arg0)
         {
-            if (arg0.GetType() == type && itemList.Contains(arg0.Name))
+            if (SupportType(arg0.GetType())&& itemList.Contains(arg0.Name))
             {
                 var element = arg0 as ActionItem;
                 if (elementPool.Contains(element))
@@ -110,6 +116,11 @@ namespace InteractSystem
                     elementPool.ScureRemove(element);
                 }
             }
+        }
+
+        protected bool SupportType(Type targetType)
+        {
+            return this.type == null || type.IsAssignableFrom(targetType) || targetType.IsSubclassOf(type) || type == targetType;
         }
 
         /// <summary>

@@ -20,17 +20,17 @@ namespace InteractSystem
             finalGroup = null;
         }
 
-        protected override void OnAddedToPool(ActionItem arg0)
+        protected override void OnAddedToPool(ISupportElement arg0)
         {
             base.OnAddedToPool(arg0);
             RegistComplete(arg0);
         }
 
 
-        protected override void OnRemovedFromPool(ActionItem arg0)
+        protected override void OnRemovedFromPool(ISupportElement arg0)
         {
             base.OnRemovedFromPool(arg0);
-            RemoveComplete(arg0);
+            RemoveComplete(arg0 as ActionItem);
         }
 
         protected void TryAutoComplete(int index)
@@ -38,7 +38,7 @@ namespace InteractSystem
             if (index < itemList.Count)
             {
                 var key = itemList[index];
-                var item = elementPool.Find(x => x.Name == key && x.Active && x.OperateAble && x is ActionItem) as ActionItem;
+                var item = elementPool.Find(x => x.Name == key && x.Active  && x is ActionItem && (x as ActionItem).OperateAble) as ActionItem;
                 if (item != null)
                 {
                     var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
@@ -115,15 +115,15 @@ namespace InteractSystem
                 {
                     foreach (var item in elementPool)
                     {
-                        Debug.Log(item.Name + ":" + item.OperateAble);
+                        Debug.Log(item.Name + ":" + (item as ActionItem).OperateAble);
                     }
                 }
                 
-                var elements = elementPool.FindAll(x => x.Name == key && x.OperateAble);
+                var elements = elementPool.FindAll(x => x.Name == key && (x as ActionItem).OperateAble);
                 elements.ForEach(element =>
                 {
                     element.StepActive();
-                    var feature = element.RetriveFeature<CompleteAbleItemFeature>();
+                    var feature = (element as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
                     if(feature!= null)
                     {
                         feature.RegistOnCompleteSafety(TryComplete);
@@ -152,7 +152,7 @@ namespace InteractSystem
                 foreach (var item in currents)
                 {
                     item.StepUnDo();
-                    item.RemovePlayer(target);
+                    (item as ActionItem).RemovePlayer(target);
                 }
                 currents.Clear();
             }
@@ -162,10 +162,10 @@ namespace InteractSystem
                 {
                     if (currents.Count <= i)
                     {
-                        var element = elementPool.Find(x => x.Name == itemList[i] && x.OperateAble);
+                        var element = elementPool.Find(x => x.Name == itemList[i] && (x as ActionItem).OperateAble);
                         if (element != null)
                         {
-                            element.RecordPlayer(target);
+                            (element as ActionItem).RecordPlayer(target);
                             element.StepComplete();
                             currents.Add(element);
                         }
@@ -181,7 +181,7 @@ namespace InteractSystem
                         {
                             currents[i].StepComplete();
                         }
-                        currents[i].RecordPlayer(target);
+                       (currents[i] as ActionItem).RecordPlayer(target);
                     }
                 }
             }
@@ -190,14 +190,14 @@ namespace InteractSystem
         /// 注册结束事件（仅元素在本步骤开始后创建时执行注册）
         /// </summary>
         /// <param name="arg0"></param>
-        protected void RegistComplete(ActionItem arg0)
+        protected void RegistComplete(ISupportElement arg0)
         {
             if (target. Statu == ExecuteStatu.Executing)
             {
                 if (arg0 is ActionItem)
                 {
                     // 注册元素结束事件
-                    var feature = arg0.RetriveFeature<CompleteAbleItemFeature>();
+                    var feature = (arg0 as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
                     feature.RegistOnCompleteSafety(TryComplete);
                 }
             }

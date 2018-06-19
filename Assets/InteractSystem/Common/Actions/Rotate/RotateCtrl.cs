@@ -18,7 +18,7 @@ namespace InteractSystem.Common.Actions
         private Vector3 axis;
         private Vector3 previousMousePosition;
         private int rotateItemLayerMask { get { return LayerMask.GetMask(Layers.rotateItemLayer); } }
-        private float distence { get { return Config.hitDistence; } }
+        private float distence { get { return Config.Instence.hitDistence; } }
 
         public override void Update()
         {

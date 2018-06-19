@@ -25,13 +25,13 @@ namespace InteractSystem.Common.Actions
             pickCtrl.onPickup += OnPickUpElement;
         }
 
-        private void OnPickStayElement(PickUpAbleItem arg0)
+        private void OnPickStayElement(PickUpAbleComponent arg0)
         {
             var detachItem = arg0.GetComponentInParent<DetachItem>();
             DetachTargetItem(detachItem);
         }
 
-        private void OnPickDownElement(PickUpAbleItem arg0)
+        private void OnPickDownElement(PickUpAbleComponent arg0)
         {
             var detachItem = arg0.GetComponentInParent<DetachItem>();
             DetachTargetItem(detachItem);
@@ -43,7 +43,7 @@ namespace InteractSystem.Common.Actions
                 detachItem.OnDetach();
             }
         }
-        private void OnPickUpElement(PickUpAbleItem arg0)
+        private void OnPickUpElement(PickUpAbleComponent arg0)
         {
             var detachItem = arg0.GetComponentInParent<DetachItem>();
             if (detachItem)

@@ -10,7 +10,7 @@ namespace InteractSystem.Common.Actions
     /// 按指定的方式完成连接
     /// </summary>
     [NodeGraph.CustomNode("Operate/Link", 17, "InteratSystem")]
-    public class LinkNode : RuntimeCollectNode<LinkItem>,IRuntimeCtrl
+    public class LinkNode : Graph.OperaterNode,IRuntimeCtrl
     {
         public ControllerType CtrlType
         {
@@ -25,17 +25,27 @@ namespace InteractSystem.Common.Actions
         private float autoLinkTime = 1f;
         [SerializeField]
         public List<LinkGroup> defultLink;
+        protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
-        protected override void OnAddedToPool(LinkItem arg0)
+        protected CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(LinkItem));
+
+        protected override List<OperateNodeFeature> RegistFeatures()
         {
-            base.OnAddedToPool(arg0);
-            arg0.RegistOnConnected(TryComplete);
+            var features = base.RegistFeatures();
+            completeableFeature.target = this;
+            completeableFeature.onAddToPool = OnAddedToPool;
+            completeableFeature.onRemoveFromPool = OnRemovedFromPool;
+            return features;
         }
-        protected override void OnRemovedFromPool(LinkItem arg0)
+        protected void OnAddedToPool(ISupportElement arg0)
         {
-            base.OnRemovedFromPool(arg0);
-            arg0.RemoveOnConnected(TryComplete);
+            (arg0 as LinkItem).RegistOnConnected(TryComplete);
         }
+        protected void OnRemovedFromPool(ISupportElement arg0)
+        {
+            (arg0 as LinkItem).RemoveOnConnected(TryComplete);
+        }
+
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
@@ -52,9 +62,7 @@ namespace InteractSystem.Common.Actions
 
             CoroutineController.Instence.StopCoroutine(AutoLinkItems());
 
-            CompleteElements(false);
-
-            if (finalGroup == null)
+            if (completeableFeature.finalGroup == null)
             {
                 QuickLinkItems();
             }
@@ -66,17 +74,16 @@ namespace InteractSystem.Common.Actions
 
             CoroutineController.Instence.StopCoroutine(AutoLinkItems());
 
-            if (finalGroup != null)
+            if (completeableFeature.finalGroup != null)
             {
-                Array.ForEach(finalGroup, linkItem =>
+                Array.ForEach(completeableFeature.finalGroup, linkItem =>
                 {
                     //解除本脚本对linkItem的锁定
                     elementCtrl.UnLockElement(linkItem, this);
                 });
-                finalGroup = null;
+                completeableFeature.finalGroup = null;
             }
 
-            CompleteElements(true);
         }
         /// <summary>
         /// 提示连接元素
@@ -86,16 +93,15 @@ namespace InteractSystem.Common.Actions
             //安装操作时动态提示
         }
 
-
         /// <summary>
         /// 获取需要数量的linkItem
         /// </summary>
         private void OnStepActive()
         {
-            elementPool.ForEach(linkItem =>
+            completeableFeature. elementPool.ForEach(linkItem =>
             {
                 linkItem.StepActive();
-                linkItem.RegistOnConnected(TryComplete);
+               ( linkItem as LinkItem).RegistOnConnected(TryComplete);
             });
         }
 
@@ -105,10 +111,10 @@ namespace InteractSystem.Common.Actions
         /// </summary>
         private void TryComplete()
         {
-            Debug.Log("TryComplete");
+            if(log) Debug.Log("TryComplete");
             //所有可能的元素组合
             var combinations = CreateCombinations();
-            var count = itemList.Count - 1;//连接数
+            var count = completeableFeature. itemList.Count - 1;//连接数
             //对每一个组合进行判断
             foreach (var combination in combinations)
             {
@@ -152,7 +158,7 @@ namespace InteractSystem.Common.Actions
         private void OnCombinationOK(List<LinkItem> combination)
         {
             //Debug.Log("OnCombinationOK");
-            finalGroup = combination.ToArray();
+            completeableFeature. finalGroup = combination.ToArray();
             foreach (var item in combination)
             {
                 elementCtrl.LockElement(item, this);
@@ -166,17 +172,17 @@ namespace InteractSystem.Common.Actions
         {
             var result = new List<List<LinkItem>>();
             var dic = new Dictionary<int, List<LinkItem>>();
-            for (int i = 0; i < itemList.Count; i++)
+            for (int i = 0; i < completeableFeature. itemList.Count; i++)
             {
                 var id = i;
-                var items = elementPool.FindAll(x => x.Name == itemList[i]);
+                var items = completeableFeature.elementPool.FindAll(x => x.Name == completeableFeature.itemList[i]).Select(x=>x as LinkItem).ToList();
                 if (items != null)
                 {
                     dic.Add(id, items);
                 }
                 else
                 {
-                    Debug.LogError("缺少：" + itemList[i]);
+                    Debug.LogError("缺少：" + completeableFeature.itemList[i]);
                     return null;
                 }
             }
@@ -213,7 +219,7 @@ namespace InteractSystem.Common.Actions
                     }
                 }
             }
-            result.RemoveAll(x => x.Count < itemList.Count);
+            result.RemoveAll(x => x.Count < completeableFeature.itemList.Count);
             return result;
         }
 
@@ -277,11 +283,11 @@ namespace InteractSystem.Common.Actions
         private LinkItem[] SurchLinkItems()
         {
             List<LinkItem> linkItemGroup = new List<LinkItem>();
-            foreach (var itemName in itemList)
+            foreach (var itemName in completeableFeature.itemList)
             {
-                var item = elementPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x) && x.CanUse);
+                var item = completeableFeature.elementPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x as LinkItem) && (x as LinkItem).CanUse);
                 Debug.Assert(item != null, "缺少：" + itemName);
-                linkItemGroup.Add(item);
+                linkItemGroup.Add(item as LinkItem);
             }
             return linkItemGroup.ToArray();
         }

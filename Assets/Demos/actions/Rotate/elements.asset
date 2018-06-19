@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f04d4cafc71ff5c44a996c76f0fd89d8, type: 3}
+  m_Name: elements
+  m_EditorClassIdentifier: 
+  runTimeElements: []
+  autoElements: []
+  enviroments:
+  - instanceID: 0
+    _name: rotateItem1
+    prefab: {fileID: 1527511462898862, guid: 9a675aa9d0b23a54493a97b1239c67dc, type: 2}
+  - instanceID: 0
+    _name: rotateItem2
+    prefab: {fileID: 1865578243445332, guid: 804d89a7a65486147b6fb3244c3070ea, type: 2}
+  - instanceID: 0
+    _name: rotateItem3
+    prefab: {fileID: 1779495566963186, guid: 75b264f9be5a10c428ebcf81f1580cc3, type: 2}

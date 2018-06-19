@@ -10,6 +10,7 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.Assertions.Comparers;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 namespace InteractSystem
 {
     public static class Utility
@@ -25,7 +26,7 @@ namespace InteractSystem
             }
         }
 
-        public static void RetiveBehaiver<T>(Transform trans, UnityAction<T> onRetive) where T:MonoBehaviour
+        public static void RetiveBehaiver<T>(Transform trans, UnityAction<T> onRetive) where T : MonoBehaviour
         {
             if (!trans.gameObject.activeSelf) return;
             var com = trans.GetComponent<T>();
@@ -44,29 +45,12 @@ namespace InteractSystem
 
         }
 
-        //public static void CreateRunTimeObjects(Transform transform, List<EnviromentPrefabItem> prefabList)
-        //{
-           
-            //foreach (var item in prefabList)
-            //{
-            //    if (item.ignore) continue;
-
-            //    var parent = GetParent(transform, item.containsCommand, item.containsPickup);
-
-            //    var created = CreateRunTimeObject(item.prefab, parent);
-
-            //    if (item.rematrix)
-            //    {
-            //        TransUtil.LoadmatrixInfo(item.matrix, created.transform);
-            //    }
-            //}
-        //}
         public static Transform GetParent(Transform transform, bool containsCommand, bool containsPickup)
         {
             Transform parent = transform;
             if (containsCommand)
             {
-                var commandParent = transform == null ?null: transform.Find(commandParentName);
+                var commandParent = transform == null ? null : transform.Find(commandParentName);
                 if (commandParent == null)
                 {
                     commandParent = new GameObject(commandParentName).transform;
@@ -86,7 +70,16 @@ namespace InteractSystem
             }
             return parent;
         }
-        public static GameObject CreateRunTimeObject(GameObject prefab,Transform parent)
+
+        public static List<System.Type> GetSubInstenceTypes(System.Type baseType)
+        {
+            return (from type in typeof(ActionGroup).Assembly.GetTypes()
+                    where type.IsSubclassOf(baseType)
+                    where !type.IsAbstract
+                    select type).ToList();
+        }
+
+        public static GameObject CreateRunTimeObject(GameObject prefab, Transform parent)
         {
             prefab.gameObject.SetActive(true);
             var created = Object.Instantiate(prefab);
@@ -94,6 +87,6 @@ namespace InteractSystem
             created.transform.SetParent(parent, false);
             return created;
         }
-       
+
     }
 }

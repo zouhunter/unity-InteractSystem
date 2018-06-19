@@ -7,24 +7,56 @@ using System;
 
 namespace InteractSystem
 {
-    public class PickUpAbleFeature:ActionItemFeature{
-        protected Collider _collider;
-        private PickUpAbleItem pickUpAbleItem;
-
-        public Collider collider { get { return _collider; } set { InitColider(value);_collider = value; } }
-        private void InitColider(Collider collider)
+    [Serializable]
+    public class PickUpAbleFeature: ClickAbleFeature{
+        private PickUpAbleComponent _pickUpAbleItem;
+      
+        [SerializeField]
+        private bool pickUpAble = true;
+        private PickUpAbleComponent pickUpAbleItem
         {
-            //this.collider = collider;
-            pickUpAbleItem = collider.GetComponent<PickUpAbleItem>();
-
-            if (pickUpAbleItem == null)
+            get
             {
-                pickUpAbleItem = collider.gameObject.AddComponent<PickUpAbleItem>();
-                pickUpAbleItem.onPickUp = new UnityEvent();
-                pickUpAbleItem.onPickDown = new UnityEvent();
-                pickUpAbleItem.onPickStay = new UnityEvent();
+                if (_pickUpAbleItem == null)
+                {
+                    _pickUpAbleItem = collider.gameObject.GetComponent<PickUpAbleComponent>();
+                    if (_pickUpAbleItem == null)
+                    {
+                        _pickUpAbleItem = collider.gameObject.AddComponent<PickUpAbleComponent>();
+                        _pickUpAbleItem.onPickUp = new UnityEvent();
+                        _pickUpAbleItem.onPickDown = new UnityEvent();
+                        _pickUpAbleItem.onPickStay = new UnityEvent();
+                    }
+                }
+                return _pickUpAbleItem;
             }
         }
+        public override string LayerName
+        {
+            get
+            {
+                _layerName = Layers.pickUpElementLayer;
+                return _layerName;
+            }
+
+            set
+            {
+                _layerName = value;
+            }
+        }
+        public void OnPickDown()
+        {
+            pickUpAbleItem.OnPickDown();
+        }
+        public void OnPickUp()
+        {
+            pickUpAbleItem.OnPickUp();
+        }
+        public void OnPickStay()
+        {
+            pickUpAbleItem.OnPickStay();
+        }
+
         public void RegistOnPickDown(UnityAction onPickDown)
         {
             pickUpAbleItem.onPickDown.AddListener(onPickDown);
@@ -69,24 +101,33 @@ namespace InteractSystem
 
         public override void StepActive()
         {
-            PickUpAble = true;
+            base.StepActive();
+            if (pickUpAble)
+            {
+                PickUpAble = true;
+            }
         }
 
         public override void StepComplete()
         {
-            PickUpAble = false;
+            base.StepComplete();
+            if (pickUpAble)
+            {
+                PickUpAble = false;
+            }
         }
 
         public override void StepUnDo()
         {
-            PickUpAble = true;
+            base.StepUnDo();
+            if (pickUpAble)
+                PickUpAble = true;
         }
-
         public bool PickUpAble
         {
             get
             {
-                return pickUpAbleItem.PickUpAble;
+                return pickUpAble && pickUpAbleItem.PickUpAble;
             }
             set
             {

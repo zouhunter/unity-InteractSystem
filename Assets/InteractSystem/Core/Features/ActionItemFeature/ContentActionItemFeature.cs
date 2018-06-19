@@ -19,6 +19,14 @@ namespace InteractSystem
         public System.Type type { get; set; }
         public static bool log = false;
 
+        public ActionItem Element { get { return element; }set { element = value; } }
+        public string ElementName { get { return elementName; } }
+
+        public ContentActionItemFeature(System.Type type)
+        {
+            this.type = type;
+        }
+
         public override void OnEnable()
         {
             base.OnEnable();
@@ -129,8 +137,7 @@ namespace InteractSystem
         public override void StepActive()
         {
             base.StepActive();
-            if (!startedList.Contains(this.target))
-            {
+            if (!startedList.Contains(this.target)){
                 startedList.Add(this.target);
             }
             UpdateElementPool();

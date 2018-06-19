@@ -21,7 +21,7 @@ namespace InteractSystem.Common.Actions
         private Ray ray;
         private ClickItem hitObj;
         private Vector3 screenPoint;
-        private float distence { get { return Config.hitDistence; } }
+        private float distence { get { return Config.Instence.hitDistence; } }
       
         private GameObject lastSelected;
 
@@ -33,7 +33,7 @@ namespace InteractSystem.Common.Actions
             }
             else
             {
-                obj.OnComplete();
+                obj.completeAbleFeature.OnComplete();
             }
         }
 

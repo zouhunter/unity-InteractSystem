@@ -8,10 +8,10 @@ using System;
 
 namespace InteractSystem.Drawer
 {
-    [CustomEditor(typeof(ClickNode))]
-    public class ClickNodeDrawer : RuntimeOrderCollectNodeDrawer
-    {
+    //[CustomEditor(typeof(ClickNode))]
+    //public class ClickNodeDrawer : RuntimeOrderCollectNodeDrawer
+    //{
       
-    }
+    //}
 
 }

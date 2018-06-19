@@ -24,11 +24,11 @@ namespace InteractSystem.Common.Actions
         private ConnectItem connectObj;
         private Collider firstCollider;
         private LineRenderer line;
-        private Material lineMaterial { get { return Config.lineMaterial; } }
-        private float lineWight { get { return Config.lineWidth; } }
+        private Material lineMaterial { get { return Config.Instence.lineMaterial; } }
+        private float lineWight { get { return Config.Instence.lineWidth; } }
 
         private GameObject lineHolder;
-        private float hitDistence { get { return Config.hitDistence; } }
+        private float hitDistence { get { return Config.Instence.hitDistence; } }
 
         public ConnectCtrl()
         {

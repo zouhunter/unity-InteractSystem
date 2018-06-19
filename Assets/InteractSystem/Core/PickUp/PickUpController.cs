@@ -9,18 +9,18 @@ namespace InteractSystem
 {
     public class PickUpController
     {
-        internal PickUpAbleItem pickedUpObj { get;private set; }
+        internal PickUpAbleComponent pickedUpObj { get;private set; }
         public bool PickedUp { get { return pickedUpObj != null; } }
         private Ray ray;
         private RaycastHit hit;
-        private float hitDistence { get { return Config.hitDistence; } }
+        private float hitDistence { get { return Config.Instence.hitDistence; } }
         private Ray disRay;
         private RaycastHit disHit;
         public static bool log = false;
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
         private int pickUpElementLayerMask { get { return LayerMask.GetMask(Layers.pickUpElementLayer); } }
-        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer, Layers.pickUpElementLayer); } }
+        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer); } }
         protected Camera viewCamera
         {
             get
@@ -29,11 +29,11 @@ namespace InteractSystem
             }
         }
 
-        public event UnityAction<PickUpAbleItem> onPickup;
-        public event UnityAction<PickUpAbleItem> onPickdown;
-        public event UnityAction<PickUpAbleItem> onPickStay;
-        public event UnityAction<PickUpAbleItem> onPickTwinceLeft;
-        public event UnityAction<PickUpAbleItem> onPickTwinceRight;
+        public event UnityAction<PickUpAbleComponent> onPickup;
+        public event UnityAction<PickUpAbleComponent> onPickdown;
+        public event UnityAction<PickUpAbleComponent> onPickStay;
+        public event UnityAction<PickUpAbleComponent> onPickTwinceLeft;
+        public event UnityAction<PickUpAbleComponent> onPickTwinceRight;
         private float timer = 0f;
         private static PickUpController _instence;
         public static PickUpController Instence
@@ -105,7 +105,7 @@ namespace InteractSystem
             }
         }
 
-        internal void PickUp(PickUpAbleItem pickedUpObj)
+        internal void PickUp(PickUpAbleComponent pickedUpObj)
         {
             if (pickedUpObj != null)
             {
@@ -217,7 +217,7 @@ namespace InteractSystem
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, hitDistence, pickUpElementLayerMask))
             {
-                var pickedUpObj = hit.collider.gameObject.GetComponentInParent<PickUpAbleItem>();
+                var pickedUpObj = hit.collider.gameObject.GetComponentInParent<PickUpAbleComponent>();
                 if (pickedUpObj != null)
                 {
                     if (pickedUpObj.PickUpAble)

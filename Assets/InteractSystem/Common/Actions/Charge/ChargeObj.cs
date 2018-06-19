@@ -9,7 +9,7 @@ namespace InteractSystem.Common.Actions
     /// <summary>
     /// (暂时没有考虑不足和溢出的问题)
     /// </summary>
-    public class ChargeObj : CompleteAbleCollectNode<ChargeItem>, IRuntimeCtrl
+    public class ChargeObj : Graph.OperaterNode, IRuntimeCtrl
     {
         public ControllerType CtrlType
         {
@@ -18,5 +18,14 @@ namespace InteractSystem.Common.Actions
                 return ControllerType.Charge;
             }
         }
+        public CompleteAbleCollectNodeFeature completeAbleFeature = new CompleteAbleCollectNodeFeature(typeof(ChargeItem));
+
+        protected override List<OperateNodeFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            completeAbleFeature.target = this;
+            return features;
+        }
     }
+
 }

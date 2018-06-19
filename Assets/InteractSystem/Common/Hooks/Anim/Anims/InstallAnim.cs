@@ -19,6 +19,11 @@ namespace InteractSystem.Hooks
         protected Vector3 targetPosition;
         protected Quaternion targetRotation;
 
+        protected Vector3 currentTargetPos;
+        protected Quaternion currentTargetRot;
+        protected Vector3 currentPos;
+        protected Quaternion currentRot;
+
         protected override void InitState()
         {
             startPosition = bodyTrans.localPosition;
@@ -34,13 +39,13 @@ namespace InteractSystem.Hooks
 
             if (reverse)
             {
-                bodyTrans.localPosition = startPosition;
-                bodyTrans.localRotation = startRotation;
+                bodyTrans.localPosition = currentPos;
+                bodyTrans.localRotation = currentRot;
             }
             else
             {
-                bodyTrans.localPosition = targetPosition;
-                bodyTrans.localRotation = targetRotation;
+                bodyTrans.localPosition = currentTargetPos;
+                bodyTrans.localRotation = currentTargetRot;
             }
         }
 
@@ -54,15 +59,20 @@ namespace InteractSystem.Hooks
 
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
-            var startPos = reverse ? targetPosition : startPosition;
-            var targetPos = reverse ? startPosition : targetPosition;
-            var targetRot = reverse ? startRotation : targetRotation;
+            currentPos = bodyTrans.localPosition;
+            currentRot = bodyTrans.localRotation;
+            currentTargetPos = targetPosition - startPosition + bodyTrans.localPosition;
+            currentTargetRot = targetRotation * Quaternion.Inverse(startRotation) * bodyTrans.localRotation;
+
+            var startPos = reverse ? currentTargetPos : currentPos;
+            var targetPos = reverse ? currentPos : currentTargetPos;
+            var targetRot = reverse ? currentRot : currentTargetRot;
 
             var dir = reverse ? startPosition - targetPosition : targetPosition - startPosition;
             var rot = Quaternion.AngleAxis(rotateSpeed, dir);
             for (float i = 0; i < time; i += Time.deltaTime)
             {
-                bodyTrans.localPosition = Vector3.Lerp(startPos, targetPos,GetAnimValue( i / time));
+                bodyTrans.localPosition = Vector3.Lerp(startPos, targetPos, GetAnimValue(i / time));
                 bodyTrans.localRotation = rot * bodyTrans.localRotation;
                 yield return null;
             }

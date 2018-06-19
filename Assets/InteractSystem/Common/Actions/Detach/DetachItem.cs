@@ -11,7 +11,7 @@ namespace InteractSystem.Common.Actions
     /// 移除一定的范围并添加刚体组件
     /// </summary>
 
-    public class DetachItem : ClickAbleCompleteAbleActionItem
+    public class DetachItem : ActionItem
     {
         private Rigidbody m_rigidbody;
         public override bool OperateAble
@@ -21,34 +21,28 @@ namespace InteractSystem.Common.Actions
                 return targets.Count == 0;
             }
         }
-        protected override string LayerName
-        {
-            get
-            {
-                return Layers.detachItemLayer;
-            }
-        }
+
         private Vector3 startPos;
         private Quaternion startRot;
-        public PickUpAbleItem PickUpItem { get; private set; }
-
+        public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         protected override void Start()
         {
             base.Start();
             startPos = transform.localPosition;
             startRot = transform.localRotation;
-
-            PickUpItem = GetComponent<PickUpAbleItem>();
-            if (PickUpItem == null)
-            {
-                PickUpItem = Collider.gameObject.AddComponent<PickUpAbleItem>();
-                PickUpItem.onPickUp = new UnityEvent();
-                PickUpItem.onPickDown = new UnityEvent();
-                PickUpItem.onPickStay = new UnityEvent();
-            }
         }
-
-        public override void AutoExecute()
+        protected override List<ActionItemFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            clickAbleFeature.target = this;
+            clickAbleFeature.LayerName = Layers.detachItemLayer;
+            features.Add(clickAbleFeature);
+            completeAbleFeature.target = this;
+            completeAbleFeature.onAutoExecute = AutoExecute;
+            return features;
+        }
+        public void AutoExecute(Graph.OperaterNode node)
         {
             OnDetach();
         }
@@ -72,7 +66,7 @@ namespace InteractSystem.Common.Actions
         internal void OnDetach()
         {
             AddRigibody();
-            OnComplete();
+            completeAbleFeature. OnComplete();
         }
 
         private void AddRigibody()

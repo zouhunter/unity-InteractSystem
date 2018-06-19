@@ -30,7 +30,7 @@ namespace InteractSystem.Common.Actions
         private int ropePosLayerMask { get { return LayerMask.GetMask(Layers.ropePosLayer); } }
         private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer); } }
         private int ropeNodeLayerMask { get { return LayerMask.GetMask(Layers.ropeNodeLayer); } }
-        private float hitDistence { get { return Config.hitDistence; } }
+        private float hitDistence { get { return Config.Instence.hitDistence; } }
         private PickUpController pickCtrl { get { return PickUpController.Instence; ; } }
 
         public RopeCtrl()
@@ -38,7 +38,7 @@ namespace InteractSystem.Common.Actions
             pickCtrl.onPickup += (OnPickUp);
         }
 
-        private void OnPickUp(PickUpAbleItem arg0)
+        private void OnPickUp(PickUpAbleComponent arg0)
         {
             var ropeElement = arg0.GetComponentInParent<RopeElement>();
             if (ropeElement)

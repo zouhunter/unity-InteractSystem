@@ -25,9 +25,9 @@ namespace InteractSystem.Binding
                 }
             }
 
-            if (Config.operateBindings != null && Config.operateBindings.Count > 0)
+            if (Config.Instence.operateBindings != null && Config.Instence.operateBindings.Count > 0)
             {
-                foreach (var item in Config.operateBindings)
+                foreach (var item in Config.Instence.operateBindings)
                 {
                     if (item != null && !allBindings.Contains(item))
                     {

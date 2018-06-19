@@ -22,9 +22,10 @@ namespace InteractSystem.Common.Actions
             this.port = port;
             this.otherPorts = otherPorts;
             selection = new bool[otherPorts.Length];
+            InitReorderList();
         }
 
-        private void OnEnable()
+        private void InitReorderList()
         {
             reorderList = new ReorderableList(otherPorts, typeof(LinkPort));
             reorderList.drawHeaderCallback += (rect) =>
@@ -49,9 +50,7 @@ namespace InteractSystem.Common.Actions
 
         private void OnGUI()
         {
-            Debug.Log(reorderList);
-
-            if (reorderList != null)
+            if (reorderList != null && otherPorts != null)
                 reorderList.DoLayoutList();
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Link"))

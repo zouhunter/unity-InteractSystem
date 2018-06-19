@@ -16,8 +16,8 @@ namespace InteractSystem.Drawer
         private List<Binding.CommandBinding> dragBindings = new List<Binding.CommandBinding>();
         protected override List<Type> LoadBindingTypes()
         {
-            return typeof(ActionGroup).Assembly.GetTypes().
-                       Where(x => x.IsSubclassOf(typeof(Binding.CommandBinding))).ToList();
+            return Utility.GetSubInstenceTypes(typeof(Binding.CommandBinding));
+
         }
         protected override void DrawDragField(Rect rect)
         {

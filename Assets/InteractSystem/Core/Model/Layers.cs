@@ -18,19 +18,19 @@ namespace InteractSystem
     /// </summary>
     public class Layers
     {
-        public const string pickUpElementLayer = "w:pickupelement";
-        public const string rotateItemLayer = "w:rotateitem";
-        public const string clickItemLayer = "w:clickitem";
-        public const string connectItemLayer = "w:connectitem";
-        public const string obstacleLayer = "w:obstacle";
-        public const string ropePosLayer = "w:ropepos";
-        public const string ropeNodeLayer = "w:ropenode";
-        public const string chargeResourceLayer = "w:chargeresource";
-        public const string chargeObjLayer = "w:chargeobj";
-        public const string placePosLayer = "w:placepos";
-        public const string dragItemLayer = "w:dragitem";
-        public const string linknodeLayer = "w:linknode";
-        public const string detachItemLayer = "w:detachitem";
+        public const string pickUpElementLayer = "i:pickupelement";
+        public const string rotateItemLayer = "i:rotateitem";
+        public const string clickItemLayer = "i:clickitem";
+        public const string connectItemLayer = "i:connectitem";
+        public const string obstacleLayer = "i:obstacle";
+        public const string ropePosLayer = "i:ropepos";
+        public const string ropeNodeLayer = "i:ropenode";
+        public const string chargeResourceLayer = "i:chargeresource";
+        public const string chargeObjLayer = "i:chargeobj";
+        public const string placePosLayer = "i:placepos";
+        public const string dragItemLayer = "i:dragitem";
+        public const string linknodeLayer = "i:linknode";
+        public const string detachItemLayer = "i:detachitem";
     }
 
 }

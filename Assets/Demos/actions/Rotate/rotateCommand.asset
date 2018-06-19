@@ -106,7 +106,40 @@ MonoBehaviour:
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: installcommand
   commandBindings: []
-  environments: []
+  environments:
+  - instenceID: 0
+    guid: 9a675aa9d0b23a54493a97b1239c67dc
+    enviromentName: rotateItem1
+    originalState: 1
+    startState: 1
+    completeState: 0
+    coordinate:
+      localPosition: {x: -2.75, y: 0.2, z: 0.85}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 1, y: 1, z: 1}
+    ignore: 0
+  - instenceID: 0
+    guid: 804d89a7a65486147b6fb3244c3070ea
+    enviromentName: rotateItem2
+    originalState: 1
+    startState: 1
+    completeState: 0
+    coordinate:
+      localPosition: {x: -0.87, y: 0.2, z: 0.85}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 1, y: 1, z: 1}
+    ignore: 0
+  - instenceID: 0
+    guid: 75b264f9be5a10c428ebcf81f1580cc3
+    enviromentName: rotateItem3
+    originalState: 1
+    startState: 1
+    completeState: 0
+    coordinate:
+      localPosition: {x: 1.63, y: 0.2, z: 0.85}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 1, y: 1, z: 1}
+    ignore: 0
   startHooks: []
   completeHooks: []
 --- !u!114 &114130520005618254

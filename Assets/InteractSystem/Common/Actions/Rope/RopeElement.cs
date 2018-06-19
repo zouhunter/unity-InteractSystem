@@ -7,19 +7,14 @@ using System;
 
 namespace InteractSystem.Common.Actions
 {
-    public class RopeElement : ActionItem
+    public class RopeElement : PickUpAbleItem
     {
         [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();
         [SerializeField]
         private UltimateRope rope;
-
-        [SerializeField]
-        private ClickAbleFeature clickAbleFeature;
-
         private List<Collider> ropeList = new List<Collider>();
         private List<float> lengthList = new List<float>();
-        private PickUpAbleFeature pickUpFeature;
         public RopeItem bindingTarget;
         public override bool OperateAble
         {
@@ -52,17 +47,12 @@ namespace InteractSystem.Common.Actions
             base.OnDestroy();
             ElementController.Instence.RemoveElement(this);
         }
-
-        protected override List<ActionItemFeature> RegistFeatures()
+        protected override void RegistPickupableEvents()
         {
-            clickAbleFeature.LayerName = Layers.pickUpElementLayer;
-            pickUpFeature.target = this;
-            pickUpFeature.collider = clickAbleFeature.collider;
-            pickUpFeature.RegistOnPickStay(OnPickStay);
-            return new List<ActionItemFeature>() { pickUpFeature, clickAbleFeature };
+            pickUpableFeature.RegistOnPickStay(OnPickStay);
+            pickUpableFeature.RegistOnSetPosition(OnSetPosition);
         }
-
-        private void OnPickStay()
+        protected void OnPickStay()
         {
             if (onPlaceActions.Count > 0)
             {
@@ -132,7 +122,7 @@ namespace InteractSystem.Common.Actions
 
         internal void OnPlace(bool startState = false)
         {
-            clickAbleFeature.collider.enabled = startState;
+            pickUpableFeature.collider.enabled = startState;
             foreach (var item in ropeNodeFrom)
             {
                 item.enabled = !startState;

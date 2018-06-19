@@ -9,7 +9,7 @@
 //{
 //    public class EventHightSender : ActionObjEventSender
 //    {
-//        private bool noticeAuto { get { return Config.highLightNotice; } }
+//        private bool noticeAuto { get { return Config.Instence.highLightNotice; } }
 //        private string highLight { get { return "HighLightObjects"; } }
 //        private string unhighLight { get { return "UnHighLightObjects"; } }
 //        protected override void Awake()

@@ -91,11 +91,17 @@ namespace InteractSystem.Structure
             {
                 foreach (var item in list)
                 {
-                    if (statusDic[item].statu != ExecuteStatu.UnStarted)
+                    if(statusDic.ContainsKey(item))
                     {
+                        if (statusDic[item].statu != ExecuteStatu.UnStarted) {
+                            stateMechine.UnDo(item);
+                        }
                         stateMechine.UnDo(item);
                     }
-                    stateMechine.UnDo(item);
+                   else
+                    {
+                       if(log) Debug.Log("ignore:" + item.node);
+                    }
                 }
             }
         }

@@ -318,6 +318,19 @@ namespace InteractSystem
             }
             return false;
         }
+        public static bool HaveElement(this SerializedProperty arryProp, string path, string value)
+        {
+            for (int i = 0; i < arryProp.arraySize; i++)
+            {
+                var prop = arryProp.GetArrayElementAtIndex(i);
+                var prefab_prop = prop.FindPropertyRelative(path);
+                if (prefab_prop.stringValue == value)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         private static void ResetChildPropertyValues(SerializedProperty element)
         {
             if (!element.hasChildren)

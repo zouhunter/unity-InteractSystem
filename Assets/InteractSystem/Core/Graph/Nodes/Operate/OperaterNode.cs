@@ -145,7 +145,7 @@ namespace InteractSystem.Graph
                     }
                     else
                     {
-                        Debug.Log("wait:" + Name);
+                        if(log) Debug.Log("wait:" + Name);
                     }
                 }
             }
@@ -222,7 +222,11 @@ namespace InteractSystem.Graph
                 startedList.Remove(this);
             }
         }
-        protected virtual List<OperateNodeFeature> RegistFeatures() { return null; }
+        protected virtual List<OperateNodeFeature> RegistFeatures()
+        {
+            return Config.Instence.operateNodeFeatures;
+        }
+
         public T RetriveFeature<T>() where T : OperateNodeFeature
         {
             if (operateFeatures == null) return default(T);

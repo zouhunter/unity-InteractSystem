@@ -162,7 +162,7 @@ namespace InteractSystem
         }
         public virtual void OnEndExecute()
         {
-            Debug.Log("OnEndExecute", this);
+            if(log) Debug.Log("OnEndExecute", this);
             if (statu != ExecuteStatu.Completed)
             {
                 if (completeHookCtrl.Statu == ExecuteStatu.Completed)
@@ -189,6 +189,7 @@ namespace InteractSystem
         public void CoreEndExecute()
         {
             OnBeforeActionsPlayEnd();
+            actionCtrl.SetContext(this);
             actionCtrl.OnEndExecute();
         }
 
@@ -208,6 +209,7 @@ namespace InteractSystem
             }
 
             OnBeforeActionsUnDo();
+            actionCtrl.SetContext(this);
             actionCtrl.OnUnDoExecute();
 
             if(startHookCtrl.Statu != ExecuteStatu.UnStarted)

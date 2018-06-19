@@ -87,7 +87,7 @@ namespace InteractSystem.Common.Actions
             }
         }
 
-        private void OnPickStay(PickUpAbleItem item)
+        private void OnPickStay(PickUpAbleComponent item)
         {
             var chargeTool = item.GetComponentInParent<ChargeTool>();
             if (chargeTool)
@@ -97,10 +97,10 @@ namespace InteractSystem.Common.Actions
                 {
                     var value = Mathf.Min(currTool.capacity, chargeResource.current);
                     var type = chargeResource.type;
-                    currTool.PickUpItem.PickUpAble = false;
+                    currTool.RetriveFeature<PickUpAbleFeature>().PickUpAble = false;
                     currTool.LoadData(chargeResource.transform.position, new ChargeData(type, value), () =>
                     {
-                        currTool.PickUpItem.PickUpAble = true;
+                        currTool.RetriveFeature<PickUpAbleFeature>().PickUpAble = true;
                     });
                     chargeResource.Subtruct(value, () => { });
 
@@ -113,8 +113,8 @@ namespace InteractSystem.Common.Actions
                     ChargeData worpData = chargeObj.JudgeLeft(data);
                     if (!string.IsNullOrEmpty(worpData.type))
                     {
-                        currTool.PickUpItem.PickUpAble = false;
-                        currTool.OnCharge(chargeObj.transform.position, worpData.value, () => { currTool.PickUpItem.PickUpAble = true; });
+                        currTool.RetriveFeature<PickUpAbleFeature>().PickUpAble = false;
+                        currTool.OnCharge(chargeObj.transform.position, worpData.value, () => { currTool.RetriveFeature<PickUpAbleFeature>().PickUpAble = true; });
                         chargeObj.Charge(worpData, () => { chargeObj.JudgeComplete(); });
                     }
                     highter.UnHighLightTarget(chargeObj.gameObject);

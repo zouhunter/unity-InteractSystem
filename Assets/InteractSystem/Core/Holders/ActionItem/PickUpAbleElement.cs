@@ -4,64 +4,33 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using InteractSystem.Graph;
 
 namespace InteractSystem
 {
-    public abstract class PickUpAbleElement : ClickAbleCompleteAbleActionItem
+    public abstract class PickUpAbleItem : ActionItem
     {
-        private PickUpAbleItem pickUpAbleItem;
-        public PickUpAbleItem PickUpItem { get { return pickUpAbleItem; } }
-
-        //public PickUpAbleFeature pickUpableFeature;//可拿起
-        //public ClickAbleFeature clickAbleFeature;//可点击 
-        //public CompleteAbleItemFeature completeAbleFeature;//可结束
-
-        protected override void Awake()
+        [SerializeField]
+        protected PickUpAbleFeature pickUpableFeature = new PickUpAbleFeature();//可拿起
+        public bool PickUpAble
         {
-            base.Awake();
-            InitPickupAbleComponent();
-        }
-
-        protected virtual void InitPickupAbleComponent()
-        {
-            pickUpAbleItem = GetComponent<PickUpAbleItem>();
-            if (pickUpAbleItem == null){
-                pickUpAbleItem = Collider.gameObject.AddComponent<PickUpAbleItem>();
-                pickUpAbleItem.onPickUp = new UnityEvent();
-                pickUpAbleItem.onPickDown = new UnityEvent();
-                pickUpAbleItem.onPickStay = new UnityEvent();
+            get
+            {
+                return pickUpableFeature.PickUpAble;
             }
-            pickUpAbleItem.onPickDown.AddListener(OnPickDown);
-            pickUpAbleItem.onPickUp.AddListener(OnPickUp);
-            pickUpAbleItem.onPickStay.AddListener(OnPickStay);
-            pickUpAbleItem.onSetPosition += OnSetPosition;
-            pickUpAbleItem.onSetViewForward += OnSetViewForward;
+            set
+            {
+                pickUpableFeature.PickUpAble = value;
+            }
         }
-        protected virtual void OnSetPosition(Vector3 arg0)
+
+        protected override List<ActionItemFeature> RegistFeatures()
         {
-            transform.position = arg0;
+            pickUpableFeature.target = this;
+            RegistPickupableEvents();
+            return new List<ActionItemFeature>() { pickUpableFeature };
         }
-        protected virtual void OnSetViewForward(Vector3 arg0)
-        {
-            transform.forward = arg0;
-        }
-        public override void StepActive()
-        {
-            base.StepActive();
-            PickUpItem.PickUpAble = true;
-        }
-        public override void StepComplete()
-        {
-            base.StepComplete();
-            PickUpItem.PickUpAble = false;
-        }
-        public override void StepUnDo()
-        {
-            base.StepUnDo();
-            PickUpItem.PickUpAble = false;
-        }
-        protected virtual void OnPickUp() { }
-        protected virtual void OnPickStay() { }
-        protected virtual void OnPickDown() { }
+
+        protected abstract void RegistPickupableEvents();
     }
 }

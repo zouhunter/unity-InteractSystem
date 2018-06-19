@@ -54,7 +54,12 @@ namespace InteractSystem
                 {
                     if (activeTypes.ContainsKey(ctrl.CtrlType) && activeTypes[ctrl.CtrlType] > 0)
                     {
+                        ctrl.Active = true;
                         ctrl.Update();
+                    }
+                    else
+                    {
+                        ctrl.Active = false;
                     }
                 }
             }
@@ -93,7 +98,7 @@ namespace InteractSystem
         /// 激活首要对象
         /// </summary>
         /// <param name="obj"></param>
-        internal void OnPickUpObj(PickUpAbleItem obj)
+        internal void OnPickUpObj(PickUpAbleComponent obj)
         {
             var actionItems = obj.GetComponentsInChildren<ActionItem>();
             if (actionItems != null && actionItems.Length > 0)
@@ -128,7 +133,7 @@ namespace InteractSystem
         {
             if (activeTypes.ContainsKey(ctrlType))
             {
-                activeTypes[ctrlType]++;
+                activeTypes[ctrlType]--;
                 if (activeTypes[ctrlType] < 0)
                 {
                     activeTypes[ctrlType] = 0;

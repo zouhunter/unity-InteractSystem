@@ -31,8 +31,6 @@ namespace InteractSystem
     
         private void OnEnable()
         {
-            Debug.Log("OnEnable");
-            Debug.Log(elementGroup);
             elementGroup.SetActive(transform);
             InitActionCommands();
             ActionSystem.RegistGroup(this);

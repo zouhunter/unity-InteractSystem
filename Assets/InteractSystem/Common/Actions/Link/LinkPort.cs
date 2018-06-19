@@ -7,11 +7,9 @@ using System.Collections.Generic;
 
 namespace InteractSystem.Common.Actions
 {
-    [ExecuteInEditMode]
     public class LinkPort : MonoBehaviour
     {
         #region Propertys
-        private LinkItem _body;
         public LinkItem Body { get { if (_body == null) _body = GetComponentInParent<LinkItem>();return _body; } }
         public LinkPort ConnectedNode { get; set; }
         public Vector3 Pos
@@ -32,30 +30,33 @@ namespace InteractSystem.Common.Actions
 
         public float Range { get { return _range; } set { _range = value; } }
         #endregion
+
+        private LinkItem _body;
         [SerializeField]
         private int _nodeId;
+        [SerializeField, Attributes.DefultCollider]
+        private Collider m_collider;
         [SerializeField,Range(0.1f,2)]
         private float _range = 0.5f;
         public List<LinkInfo> _connectAble = new List<LinkInfo>();
 
-        private void OnEnable()
+        private void Awake()
         {
             InitLayer();
         }
         private void InitLayer()
         {
-            gameObject.GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer( Layers.linknodeLayer);
-
+            m_collider.gameObject.layer = LayerMask.NameToLayer(Layers.linknodeLayer);
         }
 
-        public bool Attach(LinkPort item)
-        {
-            item.ConnectedNode = this;
-            ConnectedNode = item;
-            item.ResetTransform();
-            item.Body.transform.SetParent(Body.transform);
-            return true;
-        }
+        //public bool Attach(LinkPort item)
+        //{
+        //    item.ConnectedNode = this;
+        //    ConnectedNode = item;
+        //    item.ResetTransform();
+        //    item.Body.transform.SetParent(Body.transform);
+        //    return true;
+        //}
 
         public void ResetTransform()
         {
@@ -68,17 +69,17 @@ namespace InteractSystem.Common.Actions
                 }
             }
         }
-        public LinkPort Detach(Transform parent)
-        {
-            LinkPort outItem = ConnectedNode;
-            if (ConnectedNode != null)
-            {
-                ConnectedNode.ConnectedNode = null;
-                ConnectedNode = null;
-            }
-            outItem.transform.SetParent(parent);
-            return outItem;
-        }
+        //public LinkPort Detach(Transform parent)
+        //{
+        //    LinkPort outItem = ConnectedNode;
+        //    if (ConnectedNode != null)
+        //    {
+        //        ConnectedNode.ConnectedNode = null;
+        //        ConnectedNode = null;
+        //    }
+        //    outItem.transform.SetParent(parent);
+        //    return outItem;
+        //}
     }
 
 }
