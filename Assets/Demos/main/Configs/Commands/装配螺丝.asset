@@ -34,7 +34,7 @@ MonoBehaviour:
   - m_name: "\u5C06\u87BA\u4E1D\u5200\u548C\u87BA\u4E1D\u5173\u8054"
     m_id: f1034e23-917d-4c32-85a6-b3ca48983e62
     m_x: 410
-    m_y: 90
+    m_y: 110
     m_node: {fileID: 114869897488668682}
     m_inputPoints:
     - id: ac961e59-b416-42ea-adb4-d5dea893ade6
@@ -65,7 +65,7 @@ MonoBehaviour:
   - m_name: "\u653E\u7F6E\u87BA\u4E1D\u5200"
     m_id: 84aa1f05-724c-4ddd-a37e-57ca6a54404f
     m_x: 240
-    m_y: 90
+    m_y: 180
     m_node: {fileID: 114416634627237776}
     m_inputPoints:
     - id: 21d396a5-5aaf-4d5e-a7c6-8a76973391cb
@@ -94,14 +94,21 @@ MonoBehaviour:
       max: 100
       type: actionconnect
   m_allConnections:
-  - m_id: 48ec4459-efe3-4d63-893c-715254e7543d
+  - m_id: 263200f9-1f51-4adf-8f93-f5e88fd9e141
     m_fromNodeId: e6907a53-bae7-4fbc-95db-d5330abc4504
     m_fromNodeConnectionPointId: 0c539ddf-3023-4cc9-a121-b7a15dd686f5
+    m_toNodeId: 84aa1f05-724c-4ddd-a37e-57ca6a54404f
+    m_toNodeConnectionPoiontId: 21d396a5-5aaf-4d5e-a7c6-8a76973391cb
+    m_type: actionconnect
+    m_connection: {fileID: 114695882254002982}
+  - m_id: fe85ec21-e79b-437a-8cbb-bd1b08b2bfb6
+    m_fromNodeId: 84aa1f05-724c-4ddd-a37e-57ca6a54404f
+    m_fromNodeConnectionPointId: df984402-1bfd-4862-9b0f-608eff18d891
     m_toNodeId: f1034e23-917d-4c32-85a6-b3ca48983e62
     m_toNodeConnectionPoiontId: ac961e59-b416-42ea-adb4-d5dea893ade6
     m_type: actionconnect
-    m_connection: {fileID: 114533336407549400}
-  m_lastModified: 131739006504091431
+    m_connection: {fileID: 114260521623915886}
+  m_lastModified: 131739054056501273
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: "\u88C5\u914D\u87BA\u4E1D"
@@ -109,6 +116,18 @@ MonoBehaviour:
   environments: []
   startHooks: []
   completeHooks: []
+--- !u!114 &114260521623915886
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0
 --- !u!114 &114308434188825626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -136,7 +155,10 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
---- !u!114 &114533336407549400
+  completeAbleNodeFeature:
+    itemList:
+    - "\u5B89\u88C5\u70B9A"
+--- !u!114 &114695882254002982
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -198,3 +220,7 @@ MonoBehaviour:
     portA: 0
     ItemB: 1
     portB: 0
+  completeableFeature:
+    itemList:
+    - "\u87BA\u4E1D\u5200"
+    - "\u87BA\u4E1D"

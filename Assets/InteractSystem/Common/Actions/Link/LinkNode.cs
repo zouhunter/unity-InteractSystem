@@ -10,7 +10,7 @@ namespace InteractSystem.Common.Actions
     /// 按指定的方式完成连接
     /// </summary>
     [NodeGraph.CustomNode("Operate/Link", 17, "InteratSystem")]
-    public class LinkNode : Graph.OperaterNode,IRuntimeCtrl
+    public class LinkNode : Graph.OperaterNode, IRuntimeCtrl
     {
         public ControllerType CtrlType
         {
@@ -27,7 +27,8 @@ namespace InteractSystem.Common.Actions
         public List<LinkGroup> defultLink;
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
-        protected CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(LinkItem));
+        [SerializeField]
+        protected CollectNodeFeature completeableFeature = new CollectNodeFeature(typeof(LinkItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
@@ -35,10 +36,12 @@ namespace InteractSystem.Common.Actions
             completeableFeature.target = this;
             completeableFeature.onAddToPool = OnAddedToPool;
             completeableFeature.onRemoveFromPool = OnRemovedFromPool;
+            features.Add(completeableFeature);
             return features;
         }
         protected void OnAddedToPool(ISupportElement arg0)
         {
+            Debug.Log(arg0);
             (arg0 as LinkItem).RegistOnConnected(TryComplete);
         }
         protected void OnRemovedFromPool(ISupportElement arg0)
@@ -98,10 +101,10 @@ namespace InteractSystem.Common.Actions
         /// </summary>
         private void OnStepActive()
         {
-            completeableFeature. elementPool.ForEach(linkItem =>
+            completeableFeature.elementPool.ForEach(linkItem =>
             {
                 linkItem.StepActive();
-               ( linkItem as LinkItem).RegistOnConnected(TryComplete);
+                (linkItem as LinkItem).RegistOnConnected(TryComplete);
             });
         }
 
@@ -111,10 +114,10 @@ namespace InteractSystem.Common.Actions
         /// </summary>
         private void TryComplete()
         {
-            if(log) Debug.Log("TryComplete");
+            if (log) Debug.Log("TryComplete");
             //所有可能的元素组合
             var combinations = CreateCombinations();
-            var count = completeableFeature. itemList.Count - 1;//连接数
+            var count = completeableFeature.itemList.Count - 1;//连接数
             //对每一个组合进行判断
             foreach (var combination in combinations)
             {
@@ -158,7 +161,7 @@ namespace InteractSystem.Common.Actions
         private void OnCombinationOK(List<LinkItem> combination)
         {
             //Debug.Log("OnCombinationOK");
-            completeableFeature. finalGroup = combination.ToArray();
+            completeableFeature.finalGroup = combination.ToArray();
             foreach (var item in combination)
             {
                 elementCtrl.LockElement(item, this);
@@ -172,10 +175,10 @@ namespace InteractSystem.Common.Actions
         {
             var result = new List<List<LinkItem>>();
             var dic = new Dictionary<int, List<LinkItem>>();
-            for (int i = 0; i < completeableFeature. itemList.Count; i++)
+            for (int i = 0; i < completeableFeature.itemList.Count; i++)
             {
                 var id = i;
-                var items = completeableFeature.elementPool.FindAll(x => x.Name == completeableFeature.itemList[i]).Select(x=>x as LinkItem).ToList();
+                var items = completeableFeature.elementPool.FindAll(x => x.Name == completeableFeature.itemList[i]).Select(x => x as LinkItem).ToList();
                 if (items != null)
                 {
                     dic.Add(id, items);

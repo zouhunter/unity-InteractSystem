@@ -12,7 +12,7 @@ namespace InteractSystem
     public class CollectNodeFeature : OperateNodeFeature
     {
         [SerializeField,HideInInspector]
-        public readonly List<string> itemList = new List<string>();
+        public List<string> itemList = new List<string>();
         public Type type { get; private set; }
         public readonly ElementPool<ISupportElement> elementPool = new ElementPool<ISupportElement>();
         public ISupportElement[] finalGroup { get; set; }
@@ -36,7 +36,7 @@ namespace InteractSystem
         }
         protected virtual void OnRemovedFromPool(ISupportElement arg0)
         {
-            if (onRemoveFromPool != null)
+            if (onRemoveFromPool != null && SupportType(arg0.GetType()))
             {
                 onRemoveFromPool.Invoke(arg0);
             }
@@ -49,7 +49,9 @@ namespace InteractSystem
                 arg0.StepActive();
             }
             if (onAddToPool != null)
+            {
                 onAddToPool.Invoke(arg0);
+            }
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -77,10 +79,10 @@ namespace InteractSystem
                 if (!elementKeys.Contains(elementName))
                 {
                     elementKeys.Add(elementName);
-                    var elements = elementCtrl.GetElements<ActionItem>(elementName, false);
+                    var elements = elementCtrl.GetElements<ISupportElement>(elementName, false).Where(x=>SupportType(x.GetType())).ToArray();
                     if (elements != null)
                     {
-                        elementPool.ScureAdd(elements.ToArray());
+                        elementPool.ScureAdd(elements);
                     }
                 }
             }
@@ -92,12 +94,11 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRegistElement(ISupportElement arg0)
         {
-            if (SupportType(arg0.GetType()) || type.IsAssignableFrom(arg0.GetType()) && arg0 is ActionItem && itemList.Contains(arg0.Name))
+            if (SupportType(arg0.GetType()) && itemList.Contains(arg0.Name))
             {
-                var element = arg0 as ActionItem;
-                if (!elementPool.Contains(element))
+                if (!elementPool.Contains(arg0))
                 {
-                    elementPool.ScureAdd(element);
+                    elementPool.ScureAdd(arg0);
                 }
             }
         }
@@ -108,19 +109,21 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRemoveElement(ISupportElement arg0)
         {
-            if (SupportType(arg0.GetType())&& itemList.Contains(arg0.Name))
+            if (SupportType(arg0.GetType()) && itemList.Contains(arg0.Name))
             {
-                var element = arg0 as ActionItem;
-                if (elementPool.Contains(element))
+                if (elementPool.Contains(arg0))
                 {
-                    elementPool.ScureRemove(element);
+                    elementPool.ScureRemove(arg0);
                 }
             }
         }
 
         protected bool SupportType(Type targetType)
         {
-            return this.type == null || type.IsAssignableFrom(targetType) || targetType.IsSubclassOf(type) || type == targetType;
+            return this.type == null || 
+                type.IsAssignableFrom(targetType) || 
+                targetType.IsSubclassOf(type) || 
+                type == targetType;
         }
 
         /// <summary>

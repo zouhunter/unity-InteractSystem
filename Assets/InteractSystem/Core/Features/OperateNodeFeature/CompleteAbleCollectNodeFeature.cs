@@ -23,6 +23,7 @@ namespace InteractSystem
         protected override void OnAddedToPool(ISupportElement arg0)
         {
             base.OnAddedToPool(arg0);
+            if (!SupportType(arg0.GetType())) return;
             RegistComplete(arg0);
         }
 
@@ -30,6 +31,7 @@ namespace InteractSystem
         protected override void OnRemovedFromPool(ISupportElement arg0)
         {
             base.OnRemovedFromPool(arg0);
+            if (!SupportType(arg0.GetType())) return;
             RemoveComplete(arg0 as ActionItem);
         }
 
@@ -211,7 +213,14 @@ namespace InteractSystem
             if (arg0 is ActionItem)
             {
                 var feature = arg0.RetriveFeature<CompleteAbleItemFeature>();
-                feature.RemoveOnComplete(TryComplete);
+                if(feature == null)
+                {
+                    Debug.Log(arg0 + "中没有:CompleteAbleItemFeature");
+                }
+                else
+                {
+                    feature.RemoveOnComplete(TryComplete);
+                }
             }
         }
 
