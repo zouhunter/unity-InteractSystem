@@ -234,6 +234,7 @@ MonoBehaviour:
   _name: 
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -244,9 +245,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 696410462}
   clickableCount: 1
   autoCompleteTime: 2
+  clickAbleFeature:
+    _collider: {fileID: 696410462}
 --- !u!1 &696410459
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,6 +457,7 @@ MonoBehaviour:
   _name: 
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -465,9 +468,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 1569458286}
   clickableCount: 1
   autoCompleteTime: 2
+  clickAbleFeature:
+    _collider: {fileID: 0}
 --- !u!1 &1506231950
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,6 +516,7 @@ MonoBehaviour:
   _name: 
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -522,9 +527,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 840703242}
   clickableCount: 1
   autoCompleteTime: 2
+  clickAbleFeature:
+    _collider: {fileID: 0}
 --- !u!1 &1569458283
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,6 +657,7 @@ MonoBehaviour:
   _name: 
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -661,9 +668,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 78569558}
   clickableCount: 1
   autoCompleteTime: 2
+  clickAbleFeature:
+    _collider: {fileID: 0}
 --- !u!1 &1588537162
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,6 +716,7 @@ MonoBehaviour:
   _name: 
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -718,9 +727,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 2018114706}
   clickableCount: 1
   autoCompleteTime: 2
+  clickAbleFeature:
+    _collider: {fileID: 2018114706}
 --- !u!1 &1675707224
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,7 +17,7 @@ namespace InteractSystem
     public abstract class OperateNodeFeature : Feature
     {
         public static bool log = false;
-        public Graph.OperaterNode target { get; set; }
+        public Graph.OperaterNode target { get;protected set; }
         public virtual void OnStartExecute(bool auto) { }
         public virtual void OnBeforeEnd(bool force) { }
         public virtual void OnUnDoExecute() { }
@@ -27,7 +27,7 @@ namespace InteractSystem
 
     public abstract class ActionItemFeature : Feature
     {
-        public ActionItem target { get; set; }
+        public ActionItem target { get; protected set; }
         public virtual void Awake() { }
         public virtual void Start() { }
         public virtual void Update() { }

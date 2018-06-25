@@ -316,6 +316,7 @@ MonoBehaviour:
   _name: detachItem01
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -326,7 +327,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 71588755}
+  pickupableFeature:
+    _collider: {fileID: 0}
+    pickUpAble: 1
 --- !u!1 &356563622
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,6 +374,7 @@ MonoBehaviour:
   _name: detachItem01
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -381,7 +385,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 1745483089}
+  pickupableFeature:
+    _collider: {fileID: 0}
+    pickUpAble: 1
 --- !u!1 &1053876064
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,6 +478,7 @@ MonoBehaviour:
   _name: detachItem01
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -482,7 +489,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 175374840}
+  pickupableFeature:
+    _collider: {fileID: 0}
+    pickUpAble: 1
 --- !u!1 &1745483086
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,6 +618,7 @@ MonoBehaviour:
   _name: detachItem01
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -619,7 +629,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _collider: {fileID: 2147207750}
+  pickupableFeature:
+    _collider: {fileID: 0}
+    pickUpAble: 1
 --- !u!1 &2147207747
 GameObject:
   m_ObjectHideFlags: 0

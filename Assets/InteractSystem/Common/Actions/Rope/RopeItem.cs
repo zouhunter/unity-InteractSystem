@@ -27,16 +27,14 @@ namespace InteractSystem.Common.Actions
         [SerializeField]
         private float triggerDistence;
         [SerializeField]
-        private ClickAbleFeature clickAbleFeature;
+        private ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
         [SerializeField]
-        private ContentActionItemFeature contentFeature;
+        private ContentActionItemFeature contentFeature = new ContentActionItemFeature(typeof(RopeElement));
+        private CompleteAbleItemFeature completeFeature = new CompleteAbleItemFeature();
 
         private List<Collider> connected = new List<Collider>();
-        private Transform angleTemp;
-        private Coroutine antoCoroutine;
         private Vector3[] ropeNodeStartPos;
-        private RopeElement ropeElement;
-        private CompleteAbleItemFeature completeFeature;
+        private RopeElement ropeElement { get { return contentFeature.Element as RopeElement; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
         #region UnityAPI 
         protected override void Awake()
@@ -48,9 +46,7 @@ namespace InteractSystem.Common.Actions
         protected override void Start()
         {
             base.Start();
-            //angleTemp = anglePos;
             elementCtrl.onRegistElememt += OnRegistElement;
-            //elementCtrl.onRemoveElememt += OnRemoveElement;
         }
         #endregion
 
@@ -147,10 +143,16 @@ namespace InteractSystem.Common.Actions
         /// <param name="ropeSelected"></param>
         public void TryPlaceRope(RopeElement ropeSelected)
         {
-            if (ropeSelected != ropeElement) return;
+            if (ropeSelected == null) return;
+            if (ropeElement != null) return;
+            if (!ropeSelected.OperateAble) return;
+
             var distence = Vector3.Distance(ropeSelected.transform.position, transform.position);
             if (distence < triggerDistence)
             {
+                ropeSelected.bindingTarget = this;
+                contentFeature.Element = ropeSelected;
+
                 ropeSelected.transform.position = bestRopePos.transform.position;
                 ropeSelected.transform.rotation = bestRopePos.transform.rotation;
                 ropeSelected.OnPlace();
@@ -161,21 +163,25 @@ namespace InteractSystem.Common.Actions
         #region Override
         protected override List<ActionItemFeature> RegistFeatures()
         {
+            var features = base.RegistFeatures();
             //可结束
-            completeFeature = new CompleteAbleItemFeature();
-            completeFeature.target = this;
-            completeFeature.onAutoExecute = (graph) =>{
+            completeFeature.Init(this, (graph) =>
+            {
                 StartCoroutine(AutoConnectRopeNodes(completeFeature.OnComplete));
-            };
+            });
+            features.Add(completeFeature);
+
             //可点击
-            clickAbleFeature.LayerName = Layers.pickUpElementLayer;
-            clickAbleFeature.target = this;
+            clickAbleFeature.Init(this,Layers.pickUpElementLayer);
+            features.Add(clickAbleFeature);
 
             //子元素
-            contentFeature.target = this;
-            contentFeature.type = typeof(RopeElement);
-            return new List<ActionItemFeature>() { completeFeature, clickAbleFeature, contentFeature };
+            contentFeature.Init(this);
+            features.Add(contentFeature);
+
+            return features;
         }
+
         /// <summary>
         /// 试图绑定绳子
         /// </summary>
@@ -184,87 +190,55 @@ namespace InteractSystem.Common.Actions
         {
             if (ropeElement == null && arg0 is RopeElement)
             {
-                ropeElement = arg0 as RopeElement;
-                if (Active && ropeElement.OperateAble)
+                var element = arg0 as RopeElement;
+                if (Active && element.OperateAble)
                 {
-                    ropeElement.StepActive();
-                    ropeElement.RegistOnPlace(TryPlaceRope);
+                    element.StepActive();
+                    element.RegistOnPlace(TryPlaceRope);
                 }
             }
         }
 
-        /// <summary>
-        /// 试图解除绑定
-        /// </summary>
-        /// <param name="arg0"></param>
-        //protected override void OnRemoveElement(ISupportElement arg0)
-        //{
-        //    if(ropeItem)
-        //    {
-        //        ropeItem.BindingTarget = null;
-        //        ropeItem = null;
-        //    }
-        //}
+        public override void StepActive()
+        {
+            base.StepActive();
+            TryFindAnRopeItems();
+        }
 
-        //public override void OnStartExecute(bool auto = false)
-        //{
-        //    base.OnStartExecute(auto);
-        //    TryFindAnRopeItem();
-
-        //    if (auto)
-        //    {
-        //        antoCoroutine = StartCoroutine(AutoConnectRopeNodes());
-        //    }
-        //    else
-        //    {
-        //        NoticeOnePickupAbleNode();
-        //    }
-        //}
-
-        //public override void OnUnDoExecute()
-        //{
-        //    base.OnUnDoExecute();
-
-        //    if (antoCoroutine != null)
-        //        StopCoroutine(antoCoroutine);
-
-        //    PickDownAllCollider();
-
-        //    connected.Clear();
-        //    anglePos = angleTemp;
-
-        //}
-
-        //protected override void OnBeforeEnd(bool force)
-        //{
-        //    base.OnBeforeEnd(force);
-
-        //    if (antoCoroutine != null)
-        //        StopCoroutine(antoCoroutine);
-
-        //    QuickInstallRopeNodes(ropeItem.RopeNodeFrom);
-
-
-        //}
+        public override void StepUnDo()
+        {
+            base.StepUnDo();
+            PickDownAllCollider();
+            connected.Clear();
+        }
+        public override void StepComplete()
+        {
+            base.StepComplete();
+            QuickInstallRopeNodes(ropeElement.RopeNodeFrom);
+        }
         #endregion
 
         #region Private
         /// <summary>
         /// 找到或创建绳索
         /// </summary>
-        private void TryFindAnRopeItem()
+        private void TryFindAnRopeItems()
         {
-            var ropes = ElementController.Instence.GetElements<RopeElement>(Name,true);
+            var ropes = ElementController.Instence.GetElements<RopeElement>(contentFeature.ElementName,true);
             if (ropes != null)
             {
-                ropeElement = ropes.Find(x => x.bindingTarget == this || x.bindingTarget == null);
+                var ropeElements = ropes.FindAll(x => x.bindingTarget == this || x.bindingTarget == null);
+                foreach (var ropeElement in ropeElements)
+                {
+                    if (ropeElement != null)
+                    {
+                        ropeElement.StepActive();
+                        ropeElement.RegistOnPlace(TryPlaceRope);
+                    }
+                }
             }
 
-            if (ropeElement != null)
-            {
-                ropeElement.bindingTarget = this;
-                ropeElement.StepActive();
-            }
+           
         }
         /// <summary>
         /// 注册所有安装点的layer
@@ -286,9 +260,10 @@ namespace InteractSystem.Common.Actions
         /// <returns></returns>
         public IEnumerator AutoConnectRopeNodes(UnityAction onComplete)
         {
-            Collider current;
             Collider currentTarget;
-            while ((current = SelectOneRopeNode(out currentTarget)) != null)
+            Collider current = SelectOneRopeNode(out currentTarget);
+
+            while (current != null)
             {
                 var startPos = current.transform.position;
 
@@ -300,6 +275,8 @@ namespace InteractSystem.Common.Actions
 
                 connected.Add(currentTarget);
                 connected.Add(current);
+
+                current = SelectOneRopeNode(out currentTarget);
             }
 
             onComplete();

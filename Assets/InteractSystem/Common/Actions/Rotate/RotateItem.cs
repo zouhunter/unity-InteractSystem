@@ -36,8 +36,9 @@ namespace InteractSystem.Common.Actions
         private Quaternion startRot;
         private FloatComparer comparer;
         protected const float deviation = 1f;
-        protected CompleteAbleItemFeature completeFeature;
-        protected ClickAbleFeature clickAbleFeature;
+        protected CompleteAbleItemFeature completeFeature = new CompleteAbleItemFeature();
+        [SerializeField]
+        protected ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
 
         protected override void Start()
         {
@@ -47,14 +48,15 @@ namespace InteractSystem.Common.Actions
         }
         protected override List<ActionItemFeature> RegistFeatures()
         {
-            completeFeature = new CompleteAbleItemFeature();
-            completeFeature.target = this;
-            completeFeature.onAutoExecute = (graph) => StartCoroutine(AutoRotateTo());
+            var features = base.RegistFeatures();
 
-            clickAbleFeature = new ClickAbleFeature();
-            clickAbleFeature.LayerName = Layers.rotateItemLayer;
-            clickAbleFeature.target = this;
-            return new List<ActionItemFeature>() { completeFeature, clickAbleFeature };
+            completeFeature.Init(this, (graph) => StartCoroutine(AutoRotateTo()));
+            features.Add(completeFeature);
+
+            clickAbleFeature.Init(this, Layers.rotateItemLayer);
+            features.Add(clickAbleFeature);
+
+            return features;
         }
 
         private IEnumerator AutoRotateTo()

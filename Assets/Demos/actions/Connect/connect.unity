@@ -235,6 +235,7 @@ MonoBehaviour:
   _name: connectItem01
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -363,7 +364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   command: {fileID: 11400000, guid: a8dd742ccb2704c4ea19083acb8f7e83, type: 2}
-  autoExecute: 1
+  autoExecute: 0
 --- !u!4 &426922526
 Transform:
   m_ObjectHideFlags: 0
@@ -588,6 +589,7 @@ MonoBehaviour:
   _name: 
   startactive: 1
   endactive: 1
+  bindings: []
   onActive:
     m_PersistentCalls:
       m_Calls: []

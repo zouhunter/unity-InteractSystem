@@ -53,6 +53,7 @@ namespace InteractSystem
                     {
                         onRegistElememt.Invoke(item);
                     }
+                   if(log)  Debug.Log("regist:" + item.Name);
                 }
             }
         }

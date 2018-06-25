@@ -24,7 +24,7 @@ namespace InteractSystem.Common.Actions
 
         private Vector3 startPos;
         private Quaternion startRot;
-        public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        public PickUpAbleFeature pickupableFeature = new PickUpAbleFeature();
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         protected override void Start()
         {
@@ -35,11 +35,13 @@ namespace InteractSystem.Common.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            clickAbleFeature.target = this;
-            clickAbleFeature.LayerName = Layers.detachItemLayer;
-            features.Add(clickAbleFeature);
-            completeAbleFeature.target = this;
-            completeAbleFeature.onAutoExecute = AutoExecute;
+
+            pickupableFeature.Init(this, Layers.detachItemLayer);
+            features.Add(pickupableFeature);
+
+            completeAbleFeature.Init(this, AutoExecute);
+            features.Add(completeAbleFeature);
+
             return features;
         }
         public void AutoExecute(Graph.OperaterNode node)
@@ -66,7 +68,7 @@ namespace InteractSystem.Common.Actions
         internal void OnDetach()
         {
             AddRigibody();
-            completeAbleFeature. OnComplete();
+            completeAbleFeature.OnComplete();
         }
 
         private void AddRigibody()

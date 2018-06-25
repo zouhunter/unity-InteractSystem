@@ -33,9 +33,11 @@ namespace InteractSystem.Common.Actions
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            completeableFeature.target = this;
+
+            completeableFeature.SetTarget(this);
             completeableFeature.onAddToPool = OnAddedToPool;
             completeableFeature.onRemoveFromPool = OnRemovedFromPool;
+
             features.Add(completeableFeature);
             return features;
         }

@@ -73,7 +73,7 @@ MonoBehaviour:
   m_lastModified: 131733706219687915
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
-  _stepName: dragcommand
+  _stepName: 
   commandBindings: []
   environments: []
   startHooks: []
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 1
+  copyCount: 3
 --- !u!114 &114401601842333208
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -117,6 +117,6 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
-  itemList:
-  - detachItem01
-  - detachItem01
+  completeableFeature:
+    itemList:
+    - detachItem01

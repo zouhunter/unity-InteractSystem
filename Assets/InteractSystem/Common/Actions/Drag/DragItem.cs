@@ -39,11 +39,13 @@ namespace InteractSystem.Common.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            clickAbleFeature.target = this;
-            clickAbleFeature.LayerName = Layers.dragItemLayer;
+
+            clickAbleFeature.Init(this, Layers.detachItemLayer);
             features.Add(clickAbleFeature);
-            completeAbleFeature.target = this;
-            completeAbleFeature.onAutoExecute = AutoExecute;
+
+            completeAbleFeature.Init(this, AutoExecute);
+            features.Add(completeAbleFeature);
+
             return features;
         }
         protected override void Start()

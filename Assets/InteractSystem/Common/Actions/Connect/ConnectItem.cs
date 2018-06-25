@@ -38,8 +38,10 @@ namespace InteractSystem.Common.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            completeAbleFeature.target = this;
-            completeAbleFeature.onAutoExecute = AutoExecute;
+
+            completeAbleFeature.Init(this, AutoExecute);
+            features.Add(completeAbleFeature);
+
             return features;
         }
         protected override void Start()

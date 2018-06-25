@@ -44,6 +44,7 @@ namespace InteractSystem.Common.Actions
 
         protected override void OnUnInstallComplete()
         {
+            base.OnUnInstallComplete();
             if (Active)
             {
                 if (AlreadyPlaced)
@@ -72,9 +73,14 @@ namespace InteractSystem.Common.Actions
 
         protected override void OnInstallComplete()
         {
+            base.OnInstallComplete();
             if (Active)
             {
                completeFeature.OnComplete();
+            }
+            else
+            {
+                Debug.Log(this + " in active!");
             }
         }
     }

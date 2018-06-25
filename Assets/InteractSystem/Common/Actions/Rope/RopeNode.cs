@@ -17,12 +17,15 @@ namespace InteractSystem.Common.Actions
                 return ControllerType.Rope;
             }
         }
+
         public CompleteAbleCollectNodeFeature completeFeature = new CompleteAbleCollectNodeFeature(typeof(RopeItem));
+
         protected override List<OperateNodeFeature> RegistFeatures()
         {
-            completeFeature.target = this;
-            completeFeature.onComplete = () => { OnEndExecute(false); };
-            return new List<OperateNodeFeature>() { completeFeature};
+            var features = base.RegistFeatures();
+            completeFeature.SetTarget(this);
+            features.Add(completeFeature);
+            return features;
         }
 
     }

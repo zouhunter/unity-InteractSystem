@@ -26,9 +26,11 @@ namespace InteractSystem
 
         protected override List<ActionItemFeature> RegistFeatures()
         {
-            pickUpableFeature.target = this;
+            var features =base.RegistFeatures();
+            pickUpableFeature.Init(this);
             RegistPickupableEvents();
-            return new List<ActionItemFeature>() { pickUpableFeature };
+            features.Add(pickUpableFeature);
+            return features;
         }
 
         protected abstract void RegistPickupableEvents();

@@ -33,7 +33,7 @@ namespace InteractSystem.Common.Actions
             }
             else
             {
-                obj.completeAbleFeature.OnComplete();
+                obj.SetClickComplete();
             }
         }
 

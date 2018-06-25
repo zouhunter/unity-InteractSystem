@@ -295,6 +295,8 @@ namespace InteractSystem.Common.Actions
             pickUpableFeature.RegistOnPickUp(OnPickUp);
             pickUpableFeature.RegistOnPickDown(OnPickDownOrStay);
             pickUpableFeature.RegistOnPickStay(OnPickDownOrStay);
+            pickUpableFeature.RegistOnSetPosition((pos) => { transform.position = pos; });
+            pickUpableFeature.RegistOnSetViweForward((forward) => { transform.forward = forward; });
         }
         /// <summary>
         /// 拿起事件
@@ -327,8 +329,9 @@ namespace InteractSystem.Common.Actions
         public override void StepComplete()
         {
             base.StepComplete();
-            if (log)
+            if (log){
                 Debug.Log("StepComplete:" + Name, gameObject);
+            }
             actived = false;
             onStepComplete.Invoke();
             if (tweening)

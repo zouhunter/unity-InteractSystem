@@ -3,14 +3,15 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using InteractSystem.Common.Actions;
+using System;
 
 namespace InteractSystem
 {
     [System.Serializable]
     public class CompleteAbleCollectNodeFeature: CollectNodeFeature
     {
-        public UnityAction onComplete { get; set; }
-
+        public UnityAction onComplete { get;private set; }
         public CompleteAbleCollectNodeFeature(System.Type type) : base(type) { }
 
         public override void OnEnable()
@@ -27,6 +28,11 @@ namespace InteractSystem
             RegistComplete(arg0);
         }
 
+        public override void SetTarget(Graph.OperaterNode node)
+        {
+            base.SetTarget(node);
+            onComplete = () => { node.OnEndExecute(false); };
+        }
 
         protected override void OnRemovedFromPool(ISupportElement arg0)
         {
@@ -61,7 +67,13 @@ namespace InteractSystem
             base.OnEndExecute(force);
 
             if (onComplete != null)
+            {
                 onComplete.Invoke();
+            }
+            else
+            {
+                Debug.LogError("onComplete not registed:" + target);
+            }
         }
 
         private void OnAutoComplete(CompleteAbleItemFeature arg0)
@@ -122,6 +134,7 @@ namespace InteractSystem
                 }
                 
                 var elements = elementPool.FindAll(x => x.Name == key && (x as ActionItem).OperateAble);
+
                 elements.ForEach(element =>
                 {
                     element.StepActive();
@@ -129,6 +142,10 @@ namespace InteractSystem
                     if(feature!= null)
                     {
                         feature.RegistOnCompleteSafety(TryComplete);
+                    }
+                    else
+                    {
+                        Debug.LogError("element have no completeAble feature:", element as ActionItem);
                     }
                 });
             }

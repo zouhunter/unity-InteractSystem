@@ -73,7 +73,7 @@ MonoBehaviour:
   m_lastModified: 131733598208640036
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
-  _stepName: dragcommand
+  _stepName: appearCommand
   commandBindings: []
   environments: []
   startHooks: []
@@ -94,15 +94,12 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
-  itemList:
-  - appearItem
-  - appearItem
-  - appearItem
-  - appearItem
-  - appearItem
   forceAuto: 0
   spanTime: 1
   autoRule: {fileID: 11400000, guid: d78d31ce657ebc54cbc19aa12667889d, type: 2}
+  collectNodeFeature:
+    itemList:
+    - appear_Cube
 --- !u!114 &114089515807617530
 MonoBehaviour:
   m_ObjectHideFlags: 1

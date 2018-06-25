@@ -55,11 +55,19 @@ namespace InteractSystem
             {
                 onSetPosition.Invoke(pos);
             }
+            else
+            {
+                transform.position = pos;
+            }
         }
         public void SetViewForward(Vector3 forward) {
             if(onSetViewForward != null)
             {
                 onSetViewForward.Invoke(forward);
+            }
+            else
+            {
+                transform.forward = forward;
             }
         }
 

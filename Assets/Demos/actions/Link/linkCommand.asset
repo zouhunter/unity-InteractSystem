@@ -117,9 +117,6 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
-  itemList:
-  - LinkItem
-  - LinkItem
   quickLink: 0
   autoLinkTime: 1
   defultLink:
@@ -127,3 +124,7 @@ MonoBehaviour:
     portA: 1
     ItemB: 1
     portB: 0
+  completeableFeature:
+    itemList:
+    - LinkItem
+    - LinkItem

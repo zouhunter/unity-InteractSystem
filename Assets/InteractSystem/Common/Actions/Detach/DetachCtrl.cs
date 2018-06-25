@@ -22,7 +22,6 @@ namespace InteractSystem.Common.Actions
             pickCtrl.onPickup += OnPickUpElement;
             pickCtrl.onPickStay += OnPickStayElement;
             pickCtrl.onPickdown += OnPickDownElement;
-            pickCtrl.onPickup += OnPickUpElement;
         }
 
         private void OnPickStayElement(PickUpAbleComponent arg0)

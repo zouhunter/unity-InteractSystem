@@ -731,7 +731,7 @@ MonoBehaviour:
   pickUpableFeature:
     _collider: {fileID: 0}
     pickUpAble: 1
-  m_viewObj: {fileID: 0}
+  m_viewObj: {fileID: 1461097286}
 --- !u!1 &2002380582
 GameObject:
   m_ObjectHideFlags: 0

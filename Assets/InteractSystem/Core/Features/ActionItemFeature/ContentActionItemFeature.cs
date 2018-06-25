@@ -4,6 +4,8 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using InteractSystem.Common.Actions;
+using System;
 
 namespace InteractSystem
 {
@@ -16,7 +18,7 @@ namespace InteractSystem
         protected static List<ActionItem> startedList = new List<ActionItem>();
         protected ActionItem element;
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
-        public System.Type type { get; set; }
+        public System.Type type { get; private set; }
         public static bool log = false;
 
         public ActionItem Element { get { return element; }set { element = value; } }
@@ -35,6 +37,12 @@ namespace InteractSystem
             elementCtrl.onRegistElememt += OnRegistElement;
             elementCtrl.onRemoveElememt += OnRemoveElement;
         }
+
+        public void Init(ActionItem actionItem)
+        {
+            target = actionItem;
+        }
+
         /// <summary>
         /// 注册可点击元素
         /// </summary>
@@ -145,8 +153,7 @@ namespace InteractSystem
         public override void StepComplete()
         {
             base.StepComplete();
-            if (startedList.Contains(this.target))
-            {
+            if (startedList.Contains(this.target)){
                 startedList.Remove(this.target);
             }
             CompleteElements(false);

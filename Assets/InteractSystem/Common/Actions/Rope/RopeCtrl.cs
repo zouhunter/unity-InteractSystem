@@ -15,7 +15,7 @@ namespace InteractSystem.Common.Actions
     public class RopeCtrl : OperateController
     {
         public override ControllerType CtrlType { get { return ControllerType.Rope; } }
-        private RopeItem ropeTarget;
+        private RopeItem ropeTarget { get { return ropeSelected == null ? null :  ropeSelected.bindingTarget; } }
         private RopeElement ropeSelected;
         private Collider pickUpedRopeNode;
         private bool pickDownAble;

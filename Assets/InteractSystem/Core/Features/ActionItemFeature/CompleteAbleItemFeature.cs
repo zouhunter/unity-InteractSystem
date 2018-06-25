@@ -3,14 +3,16 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using InteractSystem.Common.Actions;
+using System;
+
 namespace InteractSystem
 {
 
     public sealed class CompleteAbleItemFeature : ActionItemFeature
     {
         private List<UnityAction<CompleteAbleItemFeature>> onCompleteActions = new List<UnityAction<CompleteAbleItemFeature>>();
-
-        public UnityAction<Graph.OperaterNode> onAutoExecute { get; set; }
+        public UnityAction<Graph.OperaterNode> onAutoExecute { get;private set; }
 
         public void RegistOnCompleteSafety(UnityAction<CompleteAbleItemFeature> onClicked)
         {
@@ -25,10 +27,14 @@ namespace InteractSystem
             if (onCompleteActions.Count > 0)
             {
                 var actions = onCompleteActions.ToArray();
-                foreach (var onClicked in actions)
+                foreach (var action in actions)
                 {
-                    onClicked.Invoke(this);
+                    action.Invoke(this);
                 }
+            }
+            else
+            {
+                Debug.LogError("have no on Complete action!");
             }
         }
 
@@ -38,6 +44,12 @@ namespace InteractSystem
             {
                 onCompleteActions.Remove(onClicked);
             }
+        }
+
+        internal void Init(ActionItem actionItem,UnityAction<Graph.OperaterNode> onAutoExecute)
+        {
+            target = actionItem;
+            this.onAutoExecute = onAutoExecute;
         }
 
         public void AutoExecute(Graph.OperaterNode operateNode)

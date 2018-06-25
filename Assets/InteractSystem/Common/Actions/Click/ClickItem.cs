@@ -15,11 +15,12 @@ namespace InteractSystem.Common.Actions
         [SerializeField]
         protected float autoCompleteTime = 2;
 
-        public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
-        public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
-
-
+        [SerializeField]
+        private ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        [SerializeField]
+        private CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
+
         public override bool OperateAble
         {
             get { return clickableCount > targets.Count; }
@@ -28,13 +29,21 @@ namespace InteractSystem.Common.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            clickAbleFeature.target = this;
-            clickAbleFeature.LayerName = Layers.clickItemLayer;
+         
+            clickAbleFeature.Init(this, Layers.clickItemLayer);
             features.Add(clickAbleFeature);
-            completeAbleFeature.target = this;
-            completeAbleFeature.onAutoExecute = AutoExecute;
+
+            completeAbleFeature.Init(this, AutoExecute);
+            features.Add(completeAbleFeature);
+
             return features;
         }
+
+        public void SetClickComplete()
+        {
+            completeAbleFeature.OnComplete();
+        }
+
         public void AutoExecute(Graph.OperaterNode node)
         {
             coroutineCtrl.DelyExecute(completeAbleFeature. OnComplete, autoCompleteTime);

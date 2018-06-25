@@ -19,8 +19,7 @@ namespace InteractSystem.Common.Actions
         }
         protected override List<OperateNodeFeature> RegistFeatures()
         {
-            completeAbleNodeFeature.target = this;
-            completeAbleNodeFeature.onComplete = ()=>OnEndExecute(false);
+            completeAbleNodeFeature.SetTarget(this);
             return new List<OperateNodeFeature>() { completeAbleNodeFeature };
         }
     }

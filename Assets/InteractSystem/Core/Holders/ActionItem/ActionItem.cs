@@ -166,7 +166,9 @@ namespace InteractSystem
             }
         }
 
-        protected virtual List<ActionItemFeature> RegistFeatures() { return Config.Instence.actionItemFeatures; }
+        protected virtual List<ActionItemFeature> RegistFeatures() {
+            return new List<ActionItemFeature>( Config.Instence.actionItemFeatures);
+        }
 
         protected void TryExecuteFeatures(UnityAction<ActionItemFeature> featureAction)
         {

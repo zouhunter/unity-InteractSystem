@@ -33,8 +33,8 @@ MonoBehaviour:
       type: actionconnect
   - m_name: "\u5C06\u87BA\u4E1D\u5200\u548C\u87BA\u4E1D\u5173\u8054"
     m_id: f1034e23-917d-4c32-85a6-b3ca48983e62
-    m_x: 410
-    m_y: 110
+    m_x: 400
+    m_y: 90
     m_node: {fileID: 114869897488668682}
     m_inputPoints:
     - id: ac961e59-b416-42ea-adb4-d5dea893ade6
@@ -65,7 +65,7 @@ MonoBehaviour:
   - m_name: "\u653E\u7F6E\u87BA\u4E1D\u5200"
     m_id: 84aa1f05-724c-4ddd-a37e-57ca6a54404f
     m_x: 240
-    m_y: 180
+    m_y: 90
     m_node: {fileID: 114416634627237776}
     m_inputPoints:
     - id: 21d396a5-5aaf-4d5e-a7c6-8a76973391cb

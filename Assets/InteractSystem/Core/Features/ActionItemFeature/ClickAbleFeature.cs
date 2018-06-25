@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using InteractSystem.Common.Actions;
+using System;
 
 namespace InteractSystem
 {
@@ -37,6 +39,12 @@ namespace InteractSystem
         {
             collider.gameObject.layer = LayerMask.NameToLayer(LayerName);
             collider.enabled = false;
+        }
+
+        internal void Init(ActionItem actionItem, string itemLayer)
+        {
+           target = actionItem;
+           LayerName = itemLayer;
         }
 
         public virtual string LayerName

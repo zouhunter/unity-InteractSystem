@@ -74,6 +74,7 @@ namespace InteractSystem.Common.Actions
 
         protected override void OnInstallComplete()
         {
+            base.OnInstallComplete();
             if (Active)
             {
                 completeFeature. OnComplete();

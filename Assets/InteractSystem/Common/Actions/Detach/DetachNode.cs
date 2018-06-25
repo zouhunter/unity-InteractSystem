@@ -15,12 +15,12 @@ namespace InteractSystem.Common.Actions
                 return ControllerType.Detach;
             }
         }
-        public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(ClickItem));
+        public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(DetachItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            completeableFeature.target = this;
+            completeableFeature.SetTarget(this);
             features.Add(completeableFeature);
             return features;
         }

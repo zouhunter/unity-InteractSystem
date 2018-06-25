@@ -34,14 +34,16 @@ namespace InteractSystem.Common.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            contentFeature.target = this;
-            completeFeature.target = this;
-            clickAbleFeature.target = this;
-            clickAbleFeature.LayerName = Layers.placePosLayer;
-            completeFeature.onAutoExecute = AutoExecute;
+
+            contentFeature.Init(this);
             features.Add(contentFeature);
+
+            completeFeature.Init(this,AutoExecute);
             features.Add(completeFeature);
+
+            clickAbleFeature.Init(this, Layers.placePosLayer);
             features.Add(clickAbleFeature);
+
             return features;
         }
         public abstract void AutoExecute(Graph.OperaterNode node);
@@ -60,6 +62,7 @@ namespace InteractSystem.Common.Actions
                 detachedObj.StepUnDo();
             }
         }
+
         public override void StepComplete()
         {
             base.StepComplete();
@@ -93,9 +96,13 @@ namespace InteractSystem.Common.Actions
             throw new Exception("配制错误,缺少" + elementName);
         }
 
-        protected virtual void OnInstallComplete() { }
+        protected virtual void OnInstallComplete() {
+            contentFeature.Element.StepComplete();
+        }
 
-        protected virtual void OnUnInstallComplete() { }
+        protected virtual void OnUnInstallComplete() {
+            contentFeature.Element.StepUnDo();
+        }
 
         public virtual void Attach(PlaceElement obj)
         {

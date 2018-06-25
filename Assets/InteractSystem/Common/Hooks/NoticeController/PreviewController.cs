@@ -26,7 +26,21 @@ namespace InteractSystem
     public class PreviewController
     {
         private static ActionSystem actionSystem;
-        protected Material previewmaterial { get { return Config.Instence.previewMat; } }
+        private Material _previewMaterail;
+        protected Material previewmaterial {
+            get
+            {
+                if(_previewMaterail == null)
+                {
+                    _previewMaterail = Config.Instence.previewMat;
+                }
+                if(_previewMaterail == null)
+                {
+                    _previewMaterail = new Material(Shader.Find("Standard"));
+                }
+                return _previewMaterail;
+            }
+        }
         private Dictionary<GameObject, List<GameObject>> actived = new Dictionary<GameObject, List<GameObject>>();
         private Dictionary<GameObject, Queue<GameObject>> pool = new Dictionary<GameObject, Queue<GameObject>>();
         private bool Active { get { return Config.Instence.previewNotice; } }

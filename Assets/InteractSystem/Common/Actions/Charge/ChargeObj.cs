@@ -23,7 +23,8 @@ namespace InteractSystem.Common.Actions
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            completeAbleFeature.target = this;
+            completeAbleFeature.SetTarget(this);
+            features.Add(completeAbleFeature);
             return features;
         }
     }

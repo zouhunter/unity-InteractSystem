@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using InteractSystem.Common.Actions;
 
 namespace InteractSystem
 {
@@ -23,6 +24,11 @@ namespace InteractSystem
         public CollectNodeFeature(Type type)
         {
             this.type = type;
+        }
+
+        public virtual void SetTarget(Graph.OperaterNode node)
+        {
+            target = node;
         }
 
         public override void OnEnable()
@@ -79,11 +85,20 @@ namespace InteractSystem
                 if (!elementKeys.Contains(elementName))
                 {
                     elementKeys.Add(elementName);
-                    var elements = elementCtrl.GetElements<ISupportElement>(elementName, false).Where(x=>SupportType(x.GetType())).ToArray();
-                    if (elements != null)
+                    var elements = elementCtrl.GetElements<ISupportElement>(elementName, false);
+                    if(elements != null)
                     {
-                        elementPool.ScureAdd(elements);
+                        elements = elements.Where((x => SupportType(x.GetType()))).ToList();
+                        if (elements != null)
+                        {
+                            elementPool.ScureAdd(elements.ToArray());
+                        }
                     }
+                    else
+                    {
+                        Debug.Log("have no element name:" + elementName);
+                    }
+                   
                 }
             }
         }

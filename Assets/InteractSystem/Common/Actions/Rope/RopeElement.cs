@@ -15,7 +15,7 @@ namespace InteractSystem.Common.Actions
         private UltimateRope rope;
         private List<Collider> ropeList = new List<Collider>();
         private List<float> lengthList = new List<float>();
-        public RopeItem bindingTarget;
+        public RopeItem bindingTarget { get; set; }
         public override bool OperateAble
         {
             get
@@ -26,7 +26,7 @@ namespace InteractSystem.Common.Actions
         public bool Used { get; set; }
         public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
         public bool completeHide { get; set; }
-        public List<UnityAction<RopeElement>> onPlaceActions = new List<UnityAction<RopeElement>>();
+        private List<UnityAction<RopeElement>> onPlaceActions = new List<UnityAction<RopeElement>>();
 
         protected override void Awake()
         {
@@ -60,6 +60,10 @@ namespace InteractSystem.Common.Actions
                 {
                     action.Invoke(this);
                 }
+            }
+            else
+            {
+                Debug.LogError("have no onPlace Action!",this);
             }
         }
 
@@ -167,7 +171,7 @@ namespace InteractSystem.Common.Actions
 
         public void RegistOnPlace(UnityAction<RopeElement> action)
         {
-            if (onPlaceActions.Contains(action))
+            if (!onPlaceActions.Contains(action))
             {
                 onPlaceActions.Add(action);
             }

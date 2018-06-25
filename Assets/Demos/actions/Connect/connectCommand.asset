@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  copyCount: 1
 --- !u!114 &114996539430454806
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -117,6 +117,6 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
-  itemList:
-  - connectItem01
-  - connectItem01
+  completeableFeature:
+    itemList:
+    - connectItem01

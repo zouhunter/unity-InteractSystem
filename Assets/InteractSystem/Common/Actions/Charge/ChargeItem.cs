@@ -38,11 +38,12 @@ namespace InteractSystem.Common.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            clickAbleFeature.target = this;
-            clickAbleFeature.LayerName = Layers.chargeObjLayer;
+            clickAbleFeature.Init(this, Layers.chargeObjLayer);
             features.Add(clickAbleFeature);
-            completeAbleFeature.target = this;
-            completeAbleFeature.onAutoExecute = AutoExecute;
+           
+            completeAbleFeature.Init(this, AutoExecute);
+            features.Add(completeAbleFeature);
+
             return features;
         }
 

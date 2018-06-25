@@ -20,12 +20,14 @@ namespace InteractSystem.Common.Actions
         private AutoAppearRule autoRule;
         protected CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
+
+        [SerializeField]
         protected CollectNodeFeature collectNodeFeature = new CollectNodeFeature(typeof(ISupportElement));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            collectNodeFeature.target = this;
+            collectNodeFeature.SetTarget(this);
             collectNodeFeature.onAddToPool = OnAddedToPool;
             features.Add(collectNodeFeature);
             return features;

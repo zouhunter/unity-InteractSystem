@@ -37,6 +37,10 @@ namespace InteractSystem.Binding
                 viewObjects.Remove(viewObj.gameObject);
                 highLighter.UnHighLightTarget(viewObj.gameObject);
             }
+            else
+            {
+                Debug.LogError("viewObj:" + viewObj + "can not inactive!");
+            }
         }
     }
 

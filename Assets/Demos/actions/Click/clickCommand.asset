@@ -31,10 +31,10 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
-  - m_name: "\u4ECE\u53F3\u5411\u5DE6"
+  - m_name: "\u4ECE\u5DE6\u5411\u53F3"
     m_id: 50051b55-d15b-48a3-ab55-ea84c8d85c41
-    m_x: 270
-    m_y: 190
+    m_x: 230
+    m_y: 200
     m_node: {fileID: 114560266495022216}
     m_inputPoints:
     - id: 6f2a4385-e094-4108-b5f5-19ccc149524e
@@ -100,17 +100,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad4f0f3ab2171b349969860a8194d74e, type: 3}
   m_Name: InteractSystem.Common.Actions.ClickNode
   m_EditorClassIdentifier: 
-  _name: "\u4ECE\u53F3\u5411\u5DE6"
+  _name: "\u4ECE\u5DE6\u5411\u53F3"
   startHooks: []
   completeHooks: []
   bindings: []
   environments: []
-  itemList:
-  - click05
-  - click04
-  - click03
-  - click02
-  - click01
+  completeableFeature:
+    itemList:
+    - click01
+    - click02
+    - click03
+    - click04
+    - click05
 --- !u!114 &114846031508400278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -122,4 +123,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 1
+  copyCount: 0

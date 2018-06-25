@@ -29,7 +29,7 @@ namespace InteractSystem.Graph
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
         public UnityAction onEndExecute { get; set; }
-        public static bool log = false;
+        public static bool log = true;
 
         [SerializeField]
         protected string _name;
@@ -224,7 +224,7 @@ namespace InteractSystem.Graph
         }
         protected virtual List<OperateNodeFeature> RegistFeatures()
         {
-            return Config.Instence.operateNodeFeatures;
+            return new List<OperateNodeFeature>( Config.Instence.operateNodeFeatures);
         }
 
         public T RetriveFeature<T>() where T : OperateNodeFeature

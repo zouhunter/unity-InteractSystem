@@ -31,6 +31,12 @@ namespace InteractSystem
                 return _pickUpAbleItem;
             }
         }
+
+        public void Init(ActionItem actionItem)
+        {
+            this.target = actionItem;
+        }
+
         public override string LayerName
         {
             get
