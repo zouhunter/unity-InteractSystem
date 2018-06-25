@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using InteractSystem.Common.Actions;
+using InteractSystem.Actions;
 using System;
 
 namespace InteractSystem

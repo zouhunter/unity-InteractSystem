@@ -3,10 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
 
-    [NodeGraph.CustomNode("Operate/Rotate", 18, "InteratSystem")]
+    [NodeGraph.CustomNode("Operate/Rotate", 18, "InteractSystem")]
     public class RotateNode : Graph.OperaterNode, IRuntimeCtrl
     {
         public ControllerType CtrlType

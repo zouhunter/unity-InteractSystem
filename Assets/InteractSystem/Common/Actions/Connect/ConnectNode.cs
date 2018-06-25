@@ -5,9 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
-    [NodeGraph.CustomNode("Operate/Connect", 10, "InteratSystem")]
+    [NodeGraph.CustomNode("Operate/Connect", 10, "InteractSystem")]
     public class ConnectNode : Graph.OperaterNode,IRuntimeCtrl
     {
         public ControllerType CtrlType

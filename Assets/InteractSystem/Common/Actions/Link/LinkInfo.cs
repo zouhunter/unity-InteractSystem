@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     [System.Serializable]
     public class LinkInfo:IComparable<LinkInfo>

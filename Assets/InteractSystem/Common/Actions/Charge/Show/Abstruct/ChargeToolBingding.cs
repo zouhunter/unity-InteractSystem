@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     [RequireComponent(typeof(ChargeTool))]
     public abstract class ChargeToolBingding : ChargeBinding

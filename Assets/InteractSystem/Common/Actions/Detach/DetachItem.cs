@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     /// <summary>
     /// 移除一定的范围并添加刚体组件

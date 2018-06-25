@@ -3,13 +3,13 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     /// <summary>
     /// 指定个数的元素
     /// 按指定的方式完成连接
     /// </summary>
-    [NodeGraph.CustomNode("Operate/Link", 17, "InteratSystem")]
+    [NodeGraph.CustomNode("Operate/Link", 17, "InteractSystem")]
     public class LinkNode : Graph.OperaterNode, IRuntimeCtrl
     {
         public ControllerType CtrlType

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public abstract class PlaceItem : ActionItem
     {

@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Assertions.Comparers;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     [AddComponentMenu(MenuName.RotObj)]
     public class RotateItem : ActionItem

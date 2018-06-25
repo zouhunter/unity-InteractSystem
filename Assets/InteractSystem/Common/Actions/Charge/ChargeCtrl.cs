@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public class ChargeCtrl : OperateController
     {

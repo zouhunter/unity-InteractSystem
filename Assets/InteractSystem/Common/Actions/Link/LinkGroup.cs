@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     [System.Serializable]
     public class LinkGroup

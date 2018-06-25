@@ -5,9 +5,9 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using NodeGraph;
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
-    [CustomNode("Operate/Click", 12, "InteratSystem")]
+    [CustomNode("Operate/Click", 12, "InteractSystem")]
     public class ClickNode : Graph.OperaterNode,IRuntimeCtrl
     {
         public ControllerType CtrlType

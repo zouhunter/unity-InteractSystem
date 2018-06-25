@@ -4,12 +4,12 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     /// <summary>
     /// 创建出指定的元素
     /// </summary>
-    [NodeGraph.CustomNode("Operate/Appear", 14, "InteratSystem")]
+    [NodeGraph.CustomNode("Operate/Appear", 14, "InteractSystem")]
     public class AppearNode : Graph.OperaterNode
     {
         [SerializeField]

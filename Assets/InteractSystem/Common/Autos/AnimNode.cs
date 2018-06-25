@@ -6,21 +6,21 @@ using System;
 using System.Collections;
 using NodeGraph;
 
-namespace InteractSystem.Hooks
+namespace InteractSystem.Auto
 {
-    //[CustomNode("Auto/Anim", 0, "InteractSystem")]
-    [AddComponentMenu(MenuName.AnimHook)]
-    public class AnimHook : ActionHook
+    [CustomNode("Auto/Anim", 0, "InteractSystem")]
+    public class AnimNode : Graph.OperaterNode
     {
         [SerializeField]
         private float delyTime = 0f;
-        [SerializeField, Attributes.Range(0.1f, 10f)]
+        [SerializeField,Attributes.Range(0.1f, 10f)]
         private float speed = 1;
         [SerializeField]
         private bool reverse;
         [SerializeField]
         private string animName;
         private AnimPlayer animPlayer;
+        private CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
 
         /// <summary>
@@ -35,40 +35,44 @@ namespace InteractSystem.Hooks
         private void DelyPlay()
         {
             FindAnimCore(true);
-            Debug.Assert(animPlayer != null, "no enough animplayer named:" + this);
-            animPlayer.duration = speed;
-            animPlayer.reverse = reverse;
-            animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
-            animPlayer.SetVisible(true);
-            animPlayer.StepActive();
+            Debug.Assert(animPlayer != null, "no enough animplayer named:" + Name);
+            if (animPlayer != null)
+            {
+                animPlayer.duration = speed;
+                animPlayer.reverse = reverse;
+                animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
+                animPlayer.SetVisible(true);
+                animPlayer.StepActive();
+            }
         }
         private void OnAnimPlayCallBack()
         {
             OnEndExecute(false);
         }
-        public override void OnEndExecute(bool force)
+
+        protected override void OnBeforeEnd(bool force)
         {
-            base.OnEndExecute(force);
-            coroutineCtrl.Cansalce(DelyPlay);
-            if (animPlayer == null) {
-                FindAnimCore(true);
+            base.OnBeforeEnd(force);
+            if (animPlayer != null)
+            {
+                animPlayer.StepComplete();
             }
-            animPlayer.StepComplete();
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            coroutineCtrl.Cansalce(DelyPlay);
-            animPlayer.StepUnDo();
-            animPlayer.RemovePlayer(this);
-            animPlayer = null;
+            if (animPlayer != null)
+            {
+                animPlayer.StepUnDo();
+                animPlayer.RemovePlayer(this);
+            }
         }
 
         private void FindAnimCore(bool record)
         {
             if (animPlayer == null)
             {
-                var elements = elementCtrl.GetElements<AnimPlayer>(animName, true);
+                var elements = elementCtrl.GetElements<AnimPlayer>(animName,true);
                 if (elements != null && elements.Count > 0)
                 {
                     animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];

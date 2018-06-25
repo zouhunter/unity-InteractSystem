@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using InteractSystem;
-using InteractSystem.Common.Actions;
+using InteractSystem.Actions;
 
 public class singleObj : MonoBehaviour {
     //public DragObj obj;

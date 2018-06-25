@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public class TranformTest
     {

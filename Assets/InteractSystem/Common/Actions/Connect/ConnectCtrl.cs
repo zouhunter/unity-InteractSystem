@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public class ConnectCtrl : OperateController
     {

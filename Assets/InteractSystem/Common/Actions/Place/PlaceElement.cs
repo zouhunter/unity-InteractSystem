@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     /// <summary>
     /// 可操作对象具体行为实现

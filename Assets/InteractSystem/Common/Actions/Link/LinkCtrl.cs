@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public class LinkCtrl : OperateController
     {

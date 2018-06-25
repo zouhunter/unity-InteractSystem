@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public static class LinkUtil
     {

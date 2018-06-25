@@ -9,7 +9,7 @@ using System;
 
 namespace InteractSystem.Graph
 {
-    [CustomNode("State/Start", 0, "InteratSystem")]
+    [CustomNode("State/Start", 0, "InteractSystem")]
     public class StartNode : ActionNode
     {
         public override void Initialize(NodeData data)

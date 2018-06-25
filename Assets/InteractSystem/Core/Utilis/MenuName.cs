@@ -11,7 +11,7 @@ namespace InteractSystem
         public const string HookBaseName = BaseName + "Actions/";
         public const string PickUpBaseName = BaseName + "PickUpAble";
 
-        public const string ActionSystem = BaseName + "InteratSystem";
+        public const string ActionSystem = BaseName + "InteractSystem";
         public const string ActionCommand = BaseName + "ActionCommand";
         public const string ActionGroup = BaseName + "ActionGroup";
         

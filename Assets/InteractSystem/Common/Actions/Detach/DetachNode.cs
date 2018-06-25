@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
-    [NodeGraph.CustomNode("Operate/Detach", 16, "InteratSystem")]
+    [NodeGraph.CustomNode("Operate/Detach", 16, "InteractSystem")]
     public class DetachNode :Graph.OperaterNode,IRuntimeCtrl
     {
         public ControllerType CtrlType

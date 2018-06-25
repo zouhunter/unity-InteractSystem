@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     /// <summary>
     /// 用于原料的吸取和填入

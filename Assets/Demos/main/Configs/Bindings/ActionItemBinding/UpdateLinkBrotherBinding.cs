@@ -5,8 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using InteractSystem.Binding;
 using InteractSystem;
-using InteractSystem.Common;
-using InteractSystem.Common.Actions;
+using InteractSystem.Actions;
 
 public class UpdateLinkBrotherBinding : ActionItemBinding
 {

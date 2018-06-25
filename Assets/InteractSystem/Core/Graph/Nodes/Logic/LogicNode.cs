@@ -8,7 +8,7 @@ using NodeGraph.DataModel;
 
 namespace InteractSystem.Graph
 {
-    [CustomNode("Logic", 0, "InteratSystem")]
+    [CustomNode("Logic", 0, "InteractSystem")]
     public class LogicNode : ActionNode
     {
         public LogicType logicType;

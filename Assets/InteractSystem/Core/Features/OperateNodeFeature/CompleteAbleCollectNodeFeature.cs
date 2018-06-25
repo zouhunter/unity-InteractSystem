@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-using InteractSystem.Common.Actions;
+using InteractSystem.Actions;
 using System;
 
 namespace InteractSystem

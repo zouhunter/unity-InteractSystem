@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public class ClickCtrl : OperateController
     {

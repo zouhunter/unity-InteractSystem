@@ -6,7 +6,7 @@ using System;
 using UnityEngine.Events;
 using UnityEngine.Assertions.Comparers;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     public class ScaleChargeCtrl
     {

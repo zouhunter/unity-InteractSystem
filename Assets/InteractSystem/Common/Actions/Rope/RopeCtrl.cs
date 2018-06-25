@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 {
     /// <summary>
     /// 将ropeItem安装到指定RopeObj上

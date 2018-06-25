@@ -5,9 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace InteractSystem.Common.Actions
+namespace InteractSystem.Actions
 { 
-    [NodeGraph.CustomNode("Operate/Drag", 13, "InteratSystem")]
+    [NodeGraph.CustomNode("Operate/Drag", 13, "InteractSystem")]
     public class DragNode :Graph.OperaterNode,IRuntimeCtrl
     {
         public ControllerType CtrlType

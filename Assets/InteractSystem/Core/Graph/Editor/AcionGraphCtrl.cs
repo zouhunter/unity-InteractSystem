@@ -14,7 +14,7 @@ namespace InteractSystem.Graph
         {
             get
             {
-                return "InteratSystem";
+                return "InteractSystem";
             }
         }
 
