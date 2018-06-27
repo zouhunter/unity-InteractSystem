@@ -32,7 +32,7 @@ namespace InteractSystem.Drawer
         {
             base.DoLayoutList();
             var rect = ActionGUIUtil.GetDragRect();
-            if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.DragUpdated && rect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects(".prefab", dragedGameObject);
             }

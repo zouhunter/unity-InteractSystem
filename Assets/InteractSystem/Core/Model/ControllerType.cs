@@ -14,5 +14,7 @@ namespace InteractSystem
         Charge,//填充
         Erasing,//擦试
         Detach,//拔除
+		
+		VR_Hit,//射线点击
     }
 }

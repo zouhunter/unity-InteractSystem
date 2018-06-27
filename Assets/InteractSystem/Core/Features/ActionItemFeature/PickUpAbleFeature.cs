@@ -32,11 +32,7 @@ namespace InteractSystem
             }
         }
 
-        public void Init(ActionItem actionItem)
-        {
-            this.target = actionItem;
-        }
-
+ 
         public override string LayerName
         {
             get
@@ -50,6 +46,7 @@ namespace InteractSystem
                 _layerName = value;
             }
         }
+		
         public void OnPickDown()
         {
             pickUpAbleItem.OnPickDown();
@@ -129,6 +126,7 @@ namespace InteractSystem
             if (pickUpAble)
                 PickUpAble = true;
         }
+		
         public bool PickUpAble
         {
             get

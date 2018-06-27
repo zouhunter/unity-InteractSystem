@@ -21,11 +21,11 @@ namespace InteractSystem.Drawer
         }
         protected override void DrawDragField(Rect rect)
         {
-            if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.DragUpdated && rect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects(".asset", dragBindings);
             }
-            else if (Event.current.type == EventType.dragPerform && rect.Contains(Event.current.mousePosition))
+            else if (Event.current.type == EventType.DragPerform && rect.Contains(Event.current.mousePosition))
             {
                 foreach (var item in dragBindings)
                 {
@@ -37,7 +37,7 @@ namespace InteractSystem.Drawer
         }
         protected override void DrawDragField(Rect objRect, SerializedProperty prop)
         {
-            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.DragUpdated && objRect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects(".asset", dragBindings);
             }

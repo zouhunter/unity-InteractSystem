@@ -49,9 +49,8 @@ namespace InteractSystem
         //子类actionItem(用于优先执行)
         protected ActionItem[] subActions;
         protected List<ActionItemFeature> actionItemFeatures;
-#if ActionSystem_G
+
         [HideInInspector]
-#endif
         public UnityEvent onActive, onInActive;
         public static bool log = false;
 

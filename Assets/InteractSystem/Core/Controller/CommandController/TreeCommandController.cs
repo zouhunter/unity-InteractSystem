@@ -20,10 +20,12 @@ namespace InteractSystem
         Stack<ActionCommand> backupCommands = new Stack<ActionCommand>();//回退时记录
         List<ActionCommand> activeCommands = new List<ActionCommand>();
         public ActionCommand CurrCommand { get; private set; }
+		private List<ActionCommand> commandList;
 
         public TreeCommandController(Dictionary<string, string[]> rule, List<ActionCommand> commandList)
         {
             this.commandDic = new Dictionary<ActionCommand, List<ActionCommand>>();
+			this.commandList = new List<ActionCommand>(commandList);
             //this.parentDic = new Dictionary<IActionCommand, IActionCommand>();
             foreach (var item in rule)
             {
@@ -95,7 +97,9 @@ namespace InteractSystem
                 return false;
             }
         }
-
+		public bool HaveCommand(string stepName){
+			return commandList.Find(x=>x.StepName == stepName) != null;
+		}
 
         /// <summary>
         /// 结束已经开始的命令

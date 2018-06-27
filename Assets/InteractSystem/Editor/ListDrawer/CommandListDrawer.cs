@@ -69,7 +69,7 @@ namespace InteractSystem.Drawer
                     EditorGUIUtility.PingObject(commandProp.objectReferenceInstanceIDValue);
                 }
 
-                if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
+                if (Event.current.type == EventType.DragUpdated && objRect.Contains(Event.current.mousePosition))
                 {
                     ActionGUIUtil.UpdateDragedObjects(".asset", dragedCommands);
                 }
@@ -154,7 +154,7 @@ namespace InteractSystem.Drawer
         {
             base.DoLayoutList();
             var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight);
-            if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.DragUpdated && rect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects(".asset", dragedCommands);
             }

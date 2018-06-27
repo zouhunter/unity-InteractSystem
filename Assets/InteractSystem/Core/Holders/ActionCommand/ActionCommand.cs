@@ -11,7 +11,7 @@ namespace InteractSystem
     {
         //步骤名
         [SerializeField, Attributes.DefultName]
-        private string _stepName;
+        public string _stepName;
         [SerializeField]//功能绑定
         protected Binding.CommandBinding[] commandBindings;
         [SerializeField]//环境对象
@@ -165,6 +165,7 @@ namespace InteractSystem
             if(log) Debug.Log("OnEndExecute", this);
             if (statu != ExecuteStatu.Completed)
             {
+                Debug.Log(completeHookCtrl.Statu);
                 if (completeHookCtrl.Statu == ExecuteStatu.Completed)
                 {
                     statu = ExecuteStatu.Completed;

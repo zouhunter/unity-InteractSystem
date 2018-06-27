@@ -32,7 +32,7 @@ namespace InteractSystem.Drawer
 
         protected override void DrawDragField(Rect objRect, SerializedProperty prop)
         {
-            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.DragUpdated && objRect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects<ActionHook>(".asset", dragHooks);
             }
@@ -55,6 +55,7 @@ namespace InteractSystem.Drawer
             var rect1 = new Rect(rect.x + rect.width - ActionGUIUtil.bigButtonWidth, rect.y, ActionGUIUtil.middleButtonWidth, EditorGUIUtility.singleLineHeight);
             if (GUI.Button(rect1, "new"))
             {
+
                 ActionGUIUtil.DrawScriptablesMenu(hookTypes, (hook) =>
                 {
                     EditorApplication.CallbackFunction action = () =>
@@ -76,7 +77,7 @@ namespace InteractSystem.Drawer
         protected override void DrawDragField(Rect rect)
         {
 
-            if (Event.current.type == EventType.dragUpdated && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.DragUpdated && rect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects<ActionHook>(".asset", dragHooks);
             }

@@ -23,6 +23,10 @@ namespace InteractSystem
         {
             this.commandList = new List<ActionCommand>(commandList);
         }
+		
+		public bool HaveCommand(string stepName){
+			return commandList.Find(x=>x.StepName == stepName) != null;
+		}
 
 
         bool HaveCommand(int id)
@@ -244,6 +248,11 @@ namespace InteractSystem
                 int indexofCmd = commandList.IndexOf(cmd);
                 haveNext &= ExecuteMutliCommand(indexofCmd - index);
             }
+            else
+            {
+                Debug.LogError("stepName:" + stepName +"not exist in commandList!");
+            }
+
             return haveNext;
         }
     }
