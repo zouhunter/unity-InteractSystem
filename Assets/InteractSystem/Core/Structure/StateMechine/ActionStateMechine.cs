@@ -73,20 +73,26 @@ namespace InteractSystem.Structure
 
         public void Execute(ExecuteUnit unit)
         {
-            SwitchState(unit);
-            currentState.Execute(unit);
+			if(unit != null){
+				SwitchState(unit);
+				currentState.Execute(unit);
+			}
         }
 
         public void Complete(ExecuteUnit unit)
-        {
-            SwitchState(unit);
-            currentState.Complete(unit);
+        {	
+			if(unit != null){
+				SwitchState(unit);
+				currentState.Complete(unit);
+			}
         }
 
         public void UnDo(ExecuteUnit unit)
         {
-            SwitchState(unit);
-            currentState.UnDo(unit);
+			if(unit != null){
+				SwitchState(unit);
+				currentState.UnDo(unit);
+			}
         }
 
         public void SwitchState(ExecuteUnit unit)
@@ -122,7 +128,12 @@ namespace InteractSystem.Structure
         public virtual void OnStartExecute(bool forceAuto)
         {
             this.IsAuto = forceAuto;
-            Execute(root);
+			if(root == null){
+				CoroutineController.Instence.DelyExecute(Complete,1);
+			}
+			else{
+				Execute(root);
+			}
         }
 
         public virtual void OnEndExecute(bool all)
@@ -227,10 +238,10 @@ namespace InteractSystem.Structure
 
         private void StopUpdateAction(bool force)
         {
-            if (cameraCtrl != null)
-            {
-                cameraCtrl.StopStarted(force);
-            }
+            //if (cameraCtrl != null)
+            //{
+                //cameraCtrl.StopStarted(force);
+            //}
         }
     }
 }

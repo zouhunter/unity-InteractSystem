@@ -76,7 +76,7 @@ namespace InteractSystem.Drawer
                     EditorGUIUtility.PingObject(prefab);
                 }
 
-                if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
+                if (Event.current.type == EventType.DragUpdated && objRect.Contains(Event.current.mousePosition))
                 {
                     ActionGUIUtil.UpdateDragedObjects<GameObject>(".prefab", dragedGameObjs);
                 }

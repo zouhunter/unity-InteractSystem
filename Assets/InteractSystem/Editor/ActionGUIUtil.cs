@@ -151,7 +151,7 @@ namespace InteractSystem.Drawer
                 EditorGUIUtility.PingObject(elementGroup_prop.objectReferenceInstanceIDValue);
             }
             UnityEngine.Object obj = null;
-            if (Event.current.type == EventType.dragUpdated && objRect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.DragUpdated && objRect.Contains(Event.current.mousePosition))
             {
                 foreach (var item in DragAndDrop.objectReferences)
                 {

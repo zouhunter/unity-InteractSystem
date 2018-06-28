@@ -108,6 +108,7 @@ namespace InteractSystem.Hooks
 
         private void OnCommandObjComplete(ActionHook obj)
         {
+			Debug.Log(obj);
             if(statu != ExecuteStatu.Completed)
             {
                 var notComplete = Array.FindAll<ActionHook>(hooks, x => (x as ActionHook).QueueID == obj.QueueID && x.Statu != ExecuteStatu.Completed);
@@ -129,6 +130,7 @@ namespace InteractSystem.Hooks
 
         protected bool ExecuteAStep(bool auto)
         {
+			Debug.Log(queueID.Count);
             if (queueID.Count > 0)
             {
                 var id = queueID[0];
@@ -139,6 +141,7 @@ namespace InteractSystem.Hooks
                     foreach (ActionHook item in neetActive)
                     {
                         var obj = item;
+						Debug.Log(item.Statu);
                         if (obj.Statu == ExecuteStatu.UnStarted)
                         {
                             obj.onEndExecute = () => OnCommandObjComplete(obj);

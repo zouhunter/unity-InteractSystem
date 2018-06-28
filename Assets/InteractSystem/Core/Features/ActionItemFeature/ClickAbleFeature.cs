@@ -41,7 +41,7 @@ namespace InteractSystem
             collider.enabled = false;
         }
 
-        internal void Init(ActionItem actionItem, string itemLayer)
+        public virtual void Init(ActionItem actionItem, string itemLayer)
         {
            target = actionItem;
            LayerName = itemLayer;

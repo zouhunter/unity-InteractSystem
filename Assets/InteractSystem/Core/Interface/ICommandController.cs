@@ -7,6 +7,7 @@ namespace InteractSystem
     public interface ICommandController
     {
         ActionCommand CurrCommand { get; }
+		bool HaveCommand(string stepName);
         bool StartExecuteCommand(UnityAction<bool> onEndExecute,bool forceAuto);//返回操作成功与否
         bool EndExecuteCommand();
         void OnEndExecuteCommand(string step);//外部触发结束
