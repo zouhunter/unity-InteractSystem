@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem.Actions
 {
-    public class ConnectCtrl : PCOperateCtrl<ConnectCtrl,ConnectItem>,IUpdateAble
+    public class ConnectCtrl : PCOperateCtrl<ConnectCtrl>,IUpdateAble
     {
         public UnityAction<string> onError;
         public UnityAction<Collider> onSelectItem;

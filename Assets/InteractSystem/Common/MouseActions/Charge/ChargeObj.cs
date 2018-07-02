@@ -20,6 +20,21 @@ namespace InteractSystem.Actions
             features.Add(completeAbleFeature);
             return features;
         }
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            ChargeCtrl.Instence.RegistLock(this);
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            ChargeCtrl.Instence.RemoveLock(this);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            ChargeCtrl.Instence.RemoveLock(this);
+        }
     }
 
 }

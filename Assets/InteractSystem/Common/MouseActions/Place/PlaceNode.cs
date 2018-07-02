@@ -15,5 +15,20 @@ namespace InteractSystem.Actions
             completeAbleNodeFeature.SetTarget(this);
             return new List<OperateNodeFeature>() { completeAbleNodeFeature };
         }
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            PlaceCtrl.Instence.RegistLock(this);
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            PlaceCtrl.Instence.RemoveLock(this);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            PlaceCtrl.Instence.RemoveLock(this);
+        }
     }
 }

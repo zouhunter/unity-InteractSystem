@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace InteractSystem.Actions
 {
-    public class DetachCtrl:PCOperateCtrl<DetachCtrl,DetachItem>
+    public class DetachCtrl:PCOperateCtrl<DetachCtrl>
     {
         protected PickUpController pickCtrl { get { return PickUpController.Instence; } }
         private DetachItem detachItem;

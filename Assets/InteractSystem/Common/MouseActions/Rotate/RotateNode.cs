@@ -19,5 +19,20 @@ namespace InteractSystem.Actions
             features.Add(completeableFeature);
             return features; 
         }
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            RotateCtrl.Instence.RegistLock(this);
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            RotateCtrl.Instence.RemoveLock(this);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            RotateCtrl.Instence.RemoveLock(this);
+        }
     }
 }

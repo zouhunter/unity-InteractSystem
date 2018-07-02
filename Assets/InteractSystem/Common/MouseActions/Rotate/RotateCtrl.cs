@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace InteractSystem.Actions
 {
 
-    public class RotateCtrl : PCOperateCtrl<RotateCtrl,RotateItem>,IUpdateAble
+    public class RotateCtrl : PCOperateCtrl<RotateCtrl>,IUpdateAble
     {
         private RotateItem selectedObj;
         private RaycastHit hit;

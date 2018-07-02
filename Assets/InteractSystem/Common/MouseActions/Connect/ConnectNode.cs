@@ -21,5 +21,21 @@ namespace InteractSystem.Actions
 
             return features;
         }
+
+        public override void OnStartExecute(bool auto = false)
+        {
+            base.OnStartExecute(auto);
+            ConnectCtrl.Instence.RegistLock(this);
+        }
+        public override void OnUnDoExecute()
+        {
+            base.OnUnDoExecute();
+            ConnectCtrl.Instence.RemoveLock(this);
+        }
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            ConnectCtrl.Instence.RemoveLock(this);
+        }
     }
 }

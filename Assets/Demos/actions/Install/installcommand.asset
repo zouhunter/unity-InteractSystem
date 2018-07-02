@@ -101,7 +101,14 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 53e907e8-d2b4-4da6-8820-5632d4fea30b
     m_type: actionconnect
     m_connection: {fileID: 114775099110036266}
-  m_lastModified: 131743966842763043
+  - m_id: bd7a2276-f843-415a-a918-c72752a53e21
+    m_fromNodeId: 626f9095-a1f1-483a-9c55-f375724f05a4
+    m_fromNodeConnectionPointId: 84cf2e74-be90-4868-bc3a-e5117d7b0bfa
+    m_toNodeId: 61f1eadf-13d0-421b-bc91-097d79ca78f0
+    m_toNodeConnectionPoiontId: 99986efd-e59c-40b2-a00e-048cf0786522
+    m_type: actionconnect
+    m_connection: {fileID: 114239367847509912}
+  m_lastModified: 131750462092766188
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: installcommand
@@ -138,6 +145,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
   m_Name: InteractSystem.Graph.StartNode
   m_EditorClassIdentifier: 
+--- !u!114 &114239367847509912
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0
 --- !u!114 &114368801863493294
 MonoBehaviour:
   m_ObjectHideFlags: 1

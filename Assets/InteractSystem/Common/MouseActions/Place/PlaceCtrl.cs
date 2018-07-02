@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Actions
 {
-    public sealed class PlaceCtrl : PCOperateCtrl<PlaceCtrl,PlaceItem>,IUpdateAble
+    public sealed class PlaceCtrl : PCOperateCtrl<PlaceCtrl>,IUpdateAble
     {
         public IHighLightItems highLight;
         private PickUpController pickCtrl { get { return PickUpController.Instence; } }

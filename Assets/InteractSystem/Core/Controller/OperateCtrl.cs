@@ -5,28 +5,28 @@ using UnityEngine;
 namespace InteractSystem
 {
 
-    public abstract class OperateCtrl<T,A> where T :OperateCtrl<T,A> where A:ActionItem
+    public abstract class OperateCtrl<T> where T :OperateCtrl<T> 
     {
         public static bool log = false;
-        public List<A> itemList = new List<A>();
-        public bool Active { get { return itemList.Count > 0; } }
-        public virtual void RegistItem(A item)
+        public List<Graph.OperaterNode> lockList = new List<Graph.OperaterNode>();
+        public bool Active { get { return lockList.Count > 0; } }
+        public virtual void RegistLock(Graph.OperaterNode item)
         {
-            if (!itemList.Contains(item))
+            if (!lockList.Contains(item))
             {
-                itemList.Add(item);
+                lockList.Add(item);
             }
         }
-        public virtual void RemoveItem(A item)
+        public virtual void RemoveLock(Graph.OperaterNode item)
         {
-            if (itemList.Contains(item))
+            if (lockList.Contains(item))
             {
-                itemList.Remove(item);
+                lockList.Remove(item);
             }
         }
         protected virtual void SetUserErr(string error)
         {
-            Debug.Log(error);
+            Debug.LogError(error);
         }
     }
 }

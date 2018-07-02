@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace InteractSystem.Actions
 {
-    public class ClickCtrl : PCOperateCtrl<ClickCtrl,ClickItem>,IUpdateAble
+    public class ClickCtrl : PCOperateCtrl<ClickCtrl>,IUpdateAble
     {
         private RaycastHit hit;
         private Ray ray;

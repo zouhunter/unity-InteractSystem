@@ -53,12 +53,6 @@ namespace InteractSystem.Actions
 
         public abstract void PlaceObject(PlaceElement pickup);
 
-        public override void StepActive()
-        {
-            base.StepActive();
-            PlaceCtrl.Instence.RegistItem(this);
-        }
-
         public override void StepUnDo()
         {
             base.StepUnDo();

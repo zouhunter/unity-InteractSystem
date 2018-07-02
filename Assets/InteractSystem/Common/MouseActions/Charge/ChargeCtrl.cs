@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace InteractSystem.Actions
 {
-    public class ChargeCtrl : PCOperateCtrl<ChargeCtrl, ChargeItem>,IUpdateAble
+    public class ChargeCtrl : PCOperateCtrl<ChargeCtrl>,IUpdateAble
     {
         private PickUpController pickCtrl;
         private ChargeTool chargeTool

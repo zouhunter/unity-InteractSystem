@@ -5,7 +5,7 @@ using UnityEngine;
 namespace InteractSystem.Actions
 {
 
-    public abstract class PCOperateCtrl<T, A> : OperateCtrl<T, A> where T : PCOperateCtrl<T, A>, new() where A : ActionItem
+    public abstract class PCOperateCtrl<T> : OperateCtrl<T> where T : PCOperateCtrl<T>, new() 
     {
         protected static T _instence;
         public static T Instence
@@ -36,18 +36,18 @@ namespace InteractSystem.Actions
 
         public bool needUpdate { get { return Instence is IUpdateAble; } }
         protected CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
-        public override void RegistItem(A item)
+        public override void RegistLock(Graph.OperaterNode item)
         {
-            base.RegistItem(item);
+            base.RegistLock(item);
             if (needUpdate)
             {
                 coroutineCtrl.RegistFrameAction((Instence as IUpdateAble).Update);
             }
         }
-        public override void RemoveItem(A item)
+        public override void RemoveLock(Graph.OperaterNode item)
         {
-            base.RemoveItem(item);
-            if (itemList.Count == 0 && needUpdate)
+            base.RemoveLock(item);
+            if (lockList.Count == 0 && needUpdate)
             {
                 coroutineCtrl.RemoveFrameAction((Instence as IUpdateAble).Update);
             }

@@ -12,7 +12,7 @@ namespace InteractSystem.Actions
     /// 将ropeItem安装到指定RopeObj上
     /// 然后安装内部的点到对就的RopeObj上
     /// </summary>
-    public class RopeCtrl : PCOperateCtrl<RopeCtrl,RopeItem>,IUpdateAble
+    public class RopeCtrl : PCOperateCtrl<RopeCtrl>,IUpdateAble
     {
         private RopeItem ropeTarget { get { return ropeSelected == null ? null :  ropeSelected.bindingTarget; } }
         private RopeElement ropeSelected;

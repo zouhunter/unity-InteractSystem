@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Actions
 { 
-    public class DragCtrl : PCOperateCtrl<DragCtrl,DragItem>,IUpdateAble
+    public class DragCtrl : PCOperateCtrl<DragCtrl>,IUpdateAble
     {
         private DragItem selectedObj;
         private Ray ray;

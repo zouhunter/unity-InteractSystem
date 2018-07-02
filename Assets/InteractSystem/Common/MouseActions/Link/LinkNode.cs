@@ -52,6 +52,7 @@ namespace InteractSystem.Actions
             {
                 CoroutineController.Instence.StartCoroutine(AutoLinkItems());
             }
+            LinkCtrl.Instence.RegistLock(this);
         }
 
         protected override void OnBeforeEnd(bool force)
@@ -64,6 +65,7 @@ namespace InteractSystem.Actions
             {
                 QuickLinkItems();
             }
+            LinkCtrl.Instence.RemoveLock(this);
         }
 
         public override void OnUnDoExecute()
@@ -81,7 +83,7 @@ namespace InteractSystem.Actions
                 });
                 completeableFeature.finalGroup = null;
             }
-
+            LinkCtrl.Instence.RemoveLock(this);
         }
         /// <summary>
         /// 提示连接元素

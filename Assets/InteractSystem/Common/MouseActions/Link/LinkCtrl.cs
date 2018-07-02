@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace InteractSystem.Actions
 {
-    public class LinkCtrl : PCOperateCtrl<LinkCtrl,LinkItem>,IUpdateAble
+    public class LinkCtrl : PCOperateCtrl<LinkCtrl>,IUpdateAble
     {
         private IHighLightItems highter;
         private LinkConnectController linkConnectCtrl;
