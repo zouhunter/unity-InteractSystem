@@ -39,6 +39,7 @@ namespace InteractSystem.Actions
         [SerializeField,Range(0.1f,2)]
         private float _range = 0.5f;
         public List<LinkInfo> _connectAble = new List<LinkInfo>();
+        public const string layer = "i:linknode";
 
         private void Awake()
         {
@@ -46,7 +47,7 @@ namespace InteractSystem.Actions
         }
         private void InitLayer()
         {
-            m_collider.gameObject.layer = LayerMask.NameToLayer(Layers.linknodeLayer);
+            m_collider.gameObject.layer = LayerMask.NameToLayer(layer);
         }
 
         //public bool Attach(LinkPort item)

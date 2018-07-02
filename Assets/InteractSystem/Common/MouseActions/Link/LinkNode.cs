@@ -10,15 +10,8 @@ namespace InteractSystem.Actions
     /// 按指定的方式完成连接
     /// </summary>
     [NodeGraph.CustomNode("Operate/Link", 17, "InteractSystem")]
-    public class LinkNode : Graph.OperaterNode, IRuntimeCtrl
+    public class LinkNode : Graph.OperaterNode
     {
-        public ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Link;
-            }
-        }
         [SerializeField]
         private bool quickLink;
         [SerializeField]

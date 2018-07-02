@@ -8,19 +8,17 @@ using System.Collections.Generic;
 namespace InteractSystem.Actions
 {
 
-    public class RotateCtrl : OperateController
+    public class RotateCtrl : PCOperateCtrl<RotateCtrl,RotateItem>,IUpdateAble
     {
-        public override ControllerType CtrlType { get { return ControllerType.Rotate; } }
-
         private RotateItem selectedObj;
         private RaycastHit hit;
         private Ray ray;
         private Vector3 axis;
         private Vector3 previousMousePosition;
-        private int rotateItemLayerMask { get { return LayerMask.GetMask(Layers.rotateItemLayer); } }
+        private int rotateItemLayerMask { get { return LayerMask.GetMask(RotateItem.layer); } }
         private float distence { get { return Config.Instence.hitDistence; } }
 
-        public override void Update()
+        public void Update()
         {
             if(Input.GetMouseButtonDown(0) && selectedObj == null)
             {

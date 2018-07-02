@@ -6,17 +6,10 @@ using System.Collections.Generic;
 namespace InteractSystem.Actions
 {
     [NodeGraph.CustomNode("Operate/Place", 10, "InteractSystem")]
-    public class PlaceNode : Graph.OperaterNode,IRuntimeCtrl
+    public class PlaceNode : Graph.OperaterNode
     {
         [SerializeField]
         protected CompleteAbleCollectNodeFeature completeAbleNodeFeature = new CompleteAbleCollectNodeFeature(typeof(PlaceItem));
-        public ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Place;
-            }
-        }
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             completeAbleNodeFeature.SetTarget(this);

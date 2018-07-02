@@ -5,15 +5,8 @@ using UnityEngine;
 
 namespace InteractSystem.Actions
 {
-    public class DetachCtrl : OperateController
+    public class DetachCtrl:PCOperateCtrl<DetachCtrl,DetachItem>
     {
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Detach;
-            }
-        }
         protected PickUpController pickCtrl { get { return PickUpController.Instence; } }
         private DetachItem detachItem;
 
@@ -50,11 +43,5 @@ namespace InteractSystem.Actions
                 Debug.Log("PickUp:" + arg0);
             }
         }
-
-        public override void Update()
-        {
-
-        }
-
     }
 }

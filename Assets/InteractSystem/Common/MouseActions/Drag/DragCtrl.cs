@@ -7,16 +7,8 @@ using System;
 
 namespace InteractSystem.Actions
 { 
-    public class DragCtrl : OperateController
+    public class DragCtrl : PCOperateCtrl<DragCtrl,DragItem>,IUpdateAble
     {
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Drag;
-            }
-        }
-
         private DragItem selectedObj;
         private Ray ray;
         private RaycastHit hit;
@@ -24,7 +16,8 @@ namespace InteractSystem.Actions
         private Vector3 direction;
         private float distence { get { return Config.Instence.hitDistence; } }
         private float elementDistence;
-        public override void Update()
+      
+        public void Update()
         {
             if(Input.GetMouseButtonDown(0)) {
                 TrySelectObj();
@@ -39,7 +32,7 @@ namespace InteractSystem.Actions
 
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, distence, LayerMask.GetMask( Layers.dragItemLayer)))
+            if (Physics.Raycast(ray, out hit, distence, LayerMask.GetMask(DragItem.layerName)))
             {
                 var obj = hit.collider.GetComponentInParent<DragItem>();
                 if (obj.Active)

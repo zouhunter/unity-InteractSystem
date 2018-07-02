@@ -29,6 +29,7 @@ namespace InteractSystem.Actions
         private CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
+        public const string layerName = "i:dragitem";
 
         protected override void Awake()
         {
@@ -40,7 +41,7 @@ namespace InteractSystem.Actions
         {
             var features = base.RegistFeatures();
 
-            clickAbleFeature.Init(this, Layers.detachItemLayer);
+            clickAbleFeature.Init(this, layerName);
             features.Add(clickAbleFeature);
 
             completeAbleFeature.Init(this, AutoExecute);

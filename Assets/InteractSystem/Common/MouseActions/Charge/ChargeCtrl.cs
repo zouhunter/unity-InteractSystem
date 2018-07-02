@@ -5,16 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace InteractSystem.Actions
 {
-    public class ChargeCtrl : OperateController
+    public class ChargeCtrl : PCOperateCtrl<ChargeCtrl, ChargeItem>,IUpdateAble
     {
         private PickUpController pickCtrl;
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Charge;
-            }
-        }
         private ChargeTool chargeTool
         {
             get
@@ -34,7 +27,7 @@ namespace InteractSystem.Actions
             pickCtrl = PickUpController.Instence;
             pickCtrl.onPickStay += OnPickStay;
         }
-        public override void Update()
+        public void Update()
         {
             if (chargeTool != null)
             {

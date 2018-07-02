@@ -13,19 +13,19 @@ TagManager:
   - UI
   - 
   - 
-  - i:pickupelement
-  - i:rotateitem
-  - i:clickitem
-  - i:connectitem
-  - i:obstacle
-  - i:ropepos
-  - i:ropenode
-  - i:chargeresource
-  - i:chargeobj
-  - i:placepos
-  - i:dragitem
-  - i:linknode
-  - i:detachitem
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

@@ -16,7 +16,7 @@ namespace InteractSystem.Actions
         /// <returns></returns>
         public static bool FindResource(ChargeTool item, out ChargeResource resourceItem)
         {
-            Collider[] colliders = Physics.OverlapSphere(item.transform.position, item.Range, LayerMask.GetMask(Layers.chargeResourceLayer));
+            Collider[] colliders = Physics.OverlapSphere(item.transform.position, item.Range, LayerMask.GetMask(ChargeResource.layer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)
@@ -35,7 +35,7 @@ namespace InteractSystem.Actions
 
         internal static bool FindChargeObj(ChargeTool item, out ChargeItem chargeObj)
         {
-            Collider[] colliders = Physics.OverlapSphere(item.transform.position, item.Range, LayerMask.GetMask(Layers.chargeObjLayer));
+            Collider[] colliders = Physics.OverlapSphere(item.transform.position, item.Range, LayerMask.GetMask(ChargeItem.layer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)

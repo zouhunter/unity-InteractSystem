@@ -8,15 +8,8 @@ using UnityEngine.EventSystems;
 
 namespace InteractSystem.Actions
 {
-    public class ClickCtrl : OperateController
+    public class ClickCtrl : PCOperateCtrl<ClickCtrl,ClickItem>,IUpdateAble
     {
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Click;
-            }
-        }
         private RaycastHit hit;
         private Ray ray;
         private ClickItem hitObj;
@@ -57,7 +50,7 @@ namespace InteractSystem.Actions
 
         private bool TryHitClickObj(out ClickItem obj)
         {
-            if (Physics.Raycast(ray, out hit, distence,LayerMask.GetMask(Layers.clickItemLayer)))
+            if (Physics.Raycast(ray, out hit, distence,LayerMask.GetMask(ClickItem.layer)))
             {
                 obj = hit.collider.GetComponentInParent<ClickItem>();
                 return true;
@@ -66,7 +59,7 @@ namespace InteractSystem.Actions
             return false;
         }
 
-        public override void Update()
+        public void Update()
         {
             screenPoint = new Vector3();
 

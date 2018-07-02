@@ -231,12 +231,14 @@ namespace InteractSystem.Actions
         {
             base.StepActive();
             Active = true;
+            LinkCtrl.Instence.RegistItem(this);
         }
 
         public override void StepComplete()
         {
             base.StepComplete();
             Active = false;
+            LinkCtrl.Instence.RemoveItem(this);
         }
 
         public override void StepUnDo()
@@ -250,6 +252,7 @@ namespace InteractSystem.Actions
             {
                 LinkUtil.DetachNodes(item, item.ConnectedNode);
             }
+            LinkCtrl.Instence.RemoveItem(this);
         }
 
         public override void SetVisible(bool visible)

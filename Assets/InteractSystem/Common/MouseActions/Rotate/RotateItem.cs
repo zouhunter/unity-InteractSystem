@@ -39,6 +39,7 @@ namespace InteractSystem.Actions
         protected CompleteAbleItemFeature completeFeature = new CompleteAbleItemFeature();
         [SerializeField]
         protected ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+        public const string layer = "i:rotateitem";
 
         protected override void Start()
         {
@@ -53,7 +54,7 @@ namespace InteractSystem.Actions
             completeFeature.Init(this, (graph) => StartCoroutine(AutoRotateTo()));
             features.Add(completeFeature);
 
-            clickAbleFeature.Init(this, Layers.rotateItemLayer);
+            clickAbleFeature.Init(this, layer);
             features.Add(clickAbleFeature);
 
             return features;

@@ -12,9 +12,8 @@ namespace InteractSystem.Actions
     /// 将ropeItem安装到指定RopeObj上
     /// 然后安装内部的点到对就的RopeObj上
     /// </summary>
-    public class RopeCtrl : OperateController
+    public class RopeCtrl : PCOperateCtrl<RopeCtrl,RopeItem>,IUpdateAble
     {
-        public override ControllerType CtrlType { get { return ControllerType.Rope; } }
         private RopeItem ropeTarget { get { return ropeSelected == null ? null :  ropeSelected.bindingTarget; } }
         private RopeElement ropeSelected;
         private Collider pickUpedRopeNode;
@@ -27,9 +26,9 @@ namespace InteractSystem.Actions
         private RaycastHit disHit;
         private RaycastHit[] hits;
         private string resonwhy;
-        private int ropePosLayerMask { get { return LayerMask.GetMask(Layers.ropePosLayer); } }
+        private int ropePosLayerMask { get { return LayerMask.GetMask(RopeItem.layer); } }
         private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer); } }
-        private int ropeNodeLayerMask { get { return LayerMask.GetMask(Layers.ropeNodeLayer); } }
+        private int ropeNodeLayerMask { get { return LayerMask.GetMask(RopeElement.layer); } }
         private float hitDistence { get { return Config.Instence.hitDistence; } }
         private PickUpController pickCtrl { get { return PickUpController.Instence; ; } }
 
@@ -47,7 +46,7 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void Update()
+        public void Update()
         {
             if (ropeSelected == null) return;
 
@@ -149,7 +148,7 @@ namespace InteractSystem.Actions
             else
             {
                 PlaceNodeWrong(ropeTarget, pickUpedRopeNode);
-                userErr(resonwhy);
+                SetUserErr(resonwhy);
             }
             pickUpedRopeNode = null;
             //ropeSelected = null;

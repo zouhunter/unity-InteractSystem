@@ -153,7 +153,7 @@ namespace InteractSystem.Actions
         public static bool FindTriggerNodes(LinkPort item, out List<LinkPort> nodes)
         {
             nodes = null;
-            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask(Layers.linknodeLayer));
+            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask(LinkPort.layer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)
@@ -245,7 +245,7 @@ namespace InteractSystem.Actions
             }
 
             var boxSize = new Vector3(range, range, 100);
-            var hits = Physics.BoxCastAll(worldCenter, boxSize * 0.5f, dir, quaternion, 0.01f, LayerMask.GetMask(Layers.linknodeLayer));
+            var hits = Physics.BoxCastAll(worldCenter, boxSize * 0.5f, dir, quaternion, 0.01f, LayerMask.GetMask(LinkPort.layer));
 
             var items = from hit in hits
                         let port = hit.collider.gameObject.GetComponentInParent<LinkPort>()
@@ -261,7 +261,7 @@ namespace InteractSystem.Actions
         /// <returns></returns>
         public static bool FindInstallableNode_ColliderRange(LinkPort item, out LinkPort node)
         {
-            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask(Layers.linknodeLayer));
+            Collider[] colliders = Physics.OverlapSphere(item.Pos, item.Range, LayerMask.GetMask(LinkPort.layer));
             if (colliders != null && colliders.Length > 0)
             {
                 foreach (var collider in colliders)

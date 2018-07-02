@@ -8,16 +8,8 @@ using NodeGraph;
 namespace InteractSystem.Actions
 {
     [CustomNode("Operate/Click", 12, "InteractSystem")]
-    public class ClickNode : Graph.OperaterNode,IRuntimeCtrl
+    public class ClickNode : Graph.OperaterNode
     {
-        public ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Click;
-            }
-        }
-
         public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(ClickItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()

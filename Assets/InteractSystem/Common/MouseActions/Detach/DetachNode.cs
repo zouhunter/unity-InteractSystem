@@ -6,15 +6,8 @@ using UnityEngine;
 namespace InteractSystem.Actions
 {
     [NodeGraph.CustomNode("Operate/Detach", 16, "InteractSystem")]
-    public class DetachNode :Graph.OperaterNode,IRuntimeCtrl
+    public class DetachNode :Graph.OperaterNode
     {
-        public ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Detach;
-            }
-        }
         public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(DetachItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()

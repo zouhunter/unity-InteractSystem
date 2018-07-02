@@ -34,6 +34,7 @@ namespace InteractSystem.Actions
         private Dictionary<int, LineRenderer> lineRenders = new Dictionary<int, LineRenderer>();
         private Dictionary<int, Vector3[]> positionDic = new Dictionary<int, Vector3[]>();
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
+        public const string layer = "i:connectitem";
 
         protected override List<ActionItemFeature> RegistFeatures()
         {
@@ -100,7 +101,7 @@ namespace InteractSystem.Actions
                 var collider = child.GetComponent<Collider>();
                 if (collider != null)
                 {
-                    collider.gameObject.layer = LayerMask.NameToLayer(Layers.connectItemLayer);
+                    collider.gameObject.layer = LayerMask.NameToLayer(layer);
                     nodes.Add(collider);
                 }
             }

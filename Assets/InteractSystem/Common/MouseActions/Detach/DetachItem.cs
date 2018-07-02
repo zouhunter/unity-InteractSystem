@@ -26,6 +26,8 @@ namespace InteractSystem.Actions
         private Quaternion startRot;
         public PickUpAbleFeature pickupableFeature = new PickUpAbleFeature();
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
+        public const string layer = "i:detachitem";
+
         protected override void Start()
         {
             base.Start();
@@ -36,7 +38,7 @@ namespace InteractSystem.Actions
         {
             var features = base.RegistFeatures();
 
-            pickupableFeature.Init(this, Layers.detachItemLayer);
+            pickupableFeature.Init(this, layer);
             features.Add(pickupableFeature);
 
             completeAbleFeature.Init(this, AutoExecute);

@@ -26,6 +26,12 @@ namespace InteractSystem.Actions
     [CustomEditor(typeof(LinkItem))]
     public class LinkItemDrawer : Editor
     {
+        [InitializeOnLoadMethod]
+        static void ImportLayer()
+        {
+            LayerTool.ImportLayers(LinkPort.layer);
+        }
+
         private LinkItem targetItem;
         private LinkPort[] linkPorts;
         private ReorderableList[] portLists;

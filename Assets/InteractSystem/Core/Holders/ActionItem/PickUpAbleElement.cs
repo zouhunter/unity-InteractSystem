@@ -23,11 +23,13 @@ namespace InteractSystem
                 pickUpableFeature.PickUpAble = value;
             }
         }
+        public const string layer = "i:pickupable";
+
 
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features =base.RegistFeatures();
-            pickUpableFeature.Init(this,Layers.pickUpElementLayer);
+            pickUpableFeature.Init(this, layer);
             RegistPickupableEvents();
             features.Add(pickUpableFeature);
             return features;

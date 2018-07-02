@@ -70,6 +70,7 @@ namespace InteractSystem.Actions
         #endregion
 
         private ElementController elementCtrl;
+        public const string layer = "i:chargeresource";
 
         protected void Awake()
         {
@@ -112,7 +113,7 @@ namespace InteractSystem.Actions
 
         private void InitLayer()
         {
-            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(Layers.chargeResourceLayer);
+            GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(layer);
         }
 
         public void SetVisible(bool visible)

@@ -8,15 +8,8 @@ using System;
 namespace InteractSystem.Actions
 { 
     [NodeGraph.CustomNode("Operate/Drag", 13, "InteractSystem")]
-    public class DragNode :Graph.OperaterNode,IRuntimeCtrl
+    public class DragNode :Graph.OperaterNode
     {
-        public ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Drag;
-            }
-        }
 
         public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(ClickItem));
 

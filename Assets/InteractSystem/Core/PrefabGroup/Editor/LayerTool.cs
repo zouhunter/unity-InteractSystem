@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 using System;
+using System.Linq;
 namespace InteractSystem
 {
     public class LayerTool
@@ -12,13 +13,16 @@ namespace InteractSystem
         static void AutoAddLayers()
         {
             var fields = typeof(Layers).GetFields(System.Reflection.BindingFlags.GetField|System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.Public);
-            foreach (var item in fields)
-            {
-                var layer = item.GetValue(null) as string;
+            var layerNames = fields.Select(x => x.GetValue(null) as string).ToArray();
+            ImportLayers(layerNames);
+        }
 
-                if(Array.Find(InternalEditorUtility.layers,x=>x == layer) == null)
+        public static void ImportLayers(params string[] layers)
+        {
+            foreach (var layerName in layers)
+            {
+                if (Array.Find(InternalEditorUtility.layers, x => x == layerName) == null)
                 {
-                    Debug.Log("Add Layer:" + layer);
                     SerializedObject tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
                     SerializedProperty it = tagManager.GetIterator();
                     while (it.NextVisible(true))
@@ -31,7 +35,7 @@ namespace InteractSystem
                                 SerializedProperty dataPoint = it.GetArrayElementAtIndex(i);
                                 if (string.IsNullOrEmpty(dataPoint.stringValue))
                                 {
-                                    dataPoint.stringValue = layer;
+                                    dataPoint.stringValue = layerName;
                                     tagManager.ApplyModifiedProperties();
                                     break;
                                 }
@@ -40,8 +44,7 @@ namespace InteractSystem
                     }
                 }
             }
-          
-        }
 
+        }
     }
 }

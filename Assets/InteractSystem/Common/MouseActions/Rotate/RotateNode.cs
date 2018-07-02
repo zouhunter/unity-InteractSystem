@@ -7,15 +7,8 @@ namespace InteractSystem.Actions
 {
 
     [NodeGraph.CustomNode("Operate/Rotate", 18, "InteractSystem")]
-    public class RotateNode : Graph.OperaterNode, IRuntimeCtrl
+    public class RotateNode : Graph.OperaterNode
     {
-        public ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Rotate;
-            }
-        }
         [SerializeField]
         protected CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(RotateItem));
 

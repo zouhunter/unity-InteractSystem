@@ -37,7 +37,7 @@ namespace InteractSystem
         {
             get
             {
-                _layerName = Layers.pickUpElementLayer;
+                _layerName = PickUpAbleItem.layer;
                 return _layerName;
             }
 

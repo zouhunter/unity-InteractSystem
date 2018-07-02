@@ -19,8 +19,8 @@ namespace InteractSystem
         public static bool log = false;
         public float elementDistence { get; private set; }
         private const float minDistence = 1f;
-        private int pickUpElementLayerMask { get { return LayerMask.GetMask(Layers.pickUpElementLayer); } }
-        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer, Layers.placePosLayer); } }
+        private int pickUpElementLayerMask { get { return LayerMask.GetMask(PickUpAbleItem.layer); } }
+        private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer); } }
         protected Camera viewCamera
         {
             get

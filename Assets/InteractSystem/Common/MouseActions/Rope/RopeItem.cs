@@ -36,6 +36,8 @@ namespace InteractSystem.Actions
         private Vector3[] ropeNodeStartPos;
         private RopeElement ropeElement { get { return contentFeature.Element as RopeElement; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
+        public const string layer = "i:ropepos";
+
         #region UnityAPI 
         protected override void Awake()
         {
@@ -172,7 +174,7 @@ namespace InteractSystem.Actions
             features.Add(completeFeature);
 
             //可点击
-            clickAbleFeature.Init(this,Layers.pickUpElementLayer);
+            clickAbleFeature.Init(this,PickUpAbleItem.layer);
             features.Add(clickAbleFeature);
 
             //子元素
@@ -251,7 +253,7 @@ namespace InteractSystem.Actions
             for (int i = 0; i < ropeNodeStartPos.Length; i++)
             {
                 ropeNodeStartPos[i] = ropeNodeTo[i].transform.position;
-                ropeNodeTo[i].gameObject.layer = LayerMask.NameToLayer(Layers.ropePosLayer);
+                ropeNodeTo[i].gameObject.layer = LayerMask.NameToLayer(layer);
             }
         }
         /// <summary>

@@ -27,6 +27,7 @@ namespace InteractSystem.Actions
         public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
         public bool completeHide { get; set; }
         private List<UnityAction<RopeElement>> onPlaceActions = new List<UnityAction<RopeElement>>();
+        public const string layer = "i:ropeItem";
 
         protected override void Awake()
         {
@@ -71,7 +72,7 @@ namespace InteractSystem.Actions
         {
             for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
-                ropeNodeFrom[i].gameObject.layer = LayerMask.NameToLayer(Layers.ropeNodeLayer);
+                ropeNodeFrom[i].gameObject.layer = LayerMask.NameToLayer(layer);
             }
         }
 

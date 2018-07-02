@@ -6,15 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem.Actions
 {
-    public class ConnectCtrl : OperateController
+    public class ConnectCtrl : PCOperateCtrl<ConnectCtrl,ConnectItem>,IUpdateAble
     {
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Connect;
-            }
-        }
         public UnityAction<string> onError;
         public UnityAction<Collider> onSelectItem;
         public UnityAction<Collider> onHoverItem;
@@ -52,7 +45,7 @@ namespace InteractSystem.Actions
             line.material = lineMaterial;
         }
 
-        public override void Update()
+        public void Update()
         {
             if (firstCollider != null)
             {
@@ -84,7 +77,7 @@ namespace InteractSystem.Actions
         private bool TryHitNode(out Collider collider)
         {
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, hitDistence, LayerMask.GetMask( Layers.connectItemLayer)))
+            if (Physics.Raycast(ray, out hit, hitDistence, LayerMask.GetMask( ConnectItem.layer)))
             {
                 if (onHoverItem != null) onHoverItem(hit.collider);
                 if (Input.GetMouseButtonDown(0))

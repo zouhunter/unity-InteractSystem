@@ -8,15 +8,8 @@ using System;
 namespace InteractSystem.Actions
 {
     [NodeGraph.CustomNode("Operate/Connect", 10, "InteractSystem")]
-    public class ConnectNode : Graph.OperaterNode,IRuntimeCtrl
+    public class ConnectNode : Graph.OperaterNode
     {
-        public ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Connect;
-            }
-        }
         public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(ConnectItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()

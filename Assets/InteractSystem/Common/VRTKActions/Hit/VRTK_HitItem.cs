@@ -17,6 +17,7 @@ public class VRTK_HitItem : ActionItem {
         [SerializeField]
         private CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
+        public const string layer = "i:clickitem";
 
         public override bool OperateAble
         {
@@ -27,7 +28,7 @@ public class VRTK_HitItem : ActionItem {
         {
             var features = base.RegistFeatures();
          
-            touchFeature.Init(this, Layers.clickItemLayer);
+            touchFeature.Init(this, layer);
 			touchFeature.RegistOnTouch(SetComplete);
             features.Add(touchFeature);
 

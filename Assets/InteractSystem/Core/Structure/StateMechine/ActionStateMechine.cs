@@ -19,8 +19,8 @@ namespace InteractSystem.Structure
         protected ActionGroup Context { get { return Cmd.Context.GetComponent<ActionGroup>(); } }
         public ActionCommand Cmd { get; private set; }
 
-        public UnityAction<ControllerType> onCtrlStart { get; set; }
-        public UnityAction<ControllerType> onCtrlStop { get; set; }
+        //public UnityAction<ControllerType> onCtrlStart { get; set; }
+        //public UnityAction<ControllerType> onCtrlStop { get; set; }
         private CameraController cameraCtrl
         {
             get
@@ -207,11 +207,11 @@ namespace InteractSystem.Structure
         public void OnStartAction(OperaterNode action)
         {
             startedActions.Add(action);
-            if(action is IRuntimeCtrl)
-            {
-                if (onCtrlStart != null)
-                    onCtrlStart.Invoke((action as IRuntimeCtrl).CtrlType);
-            }
+            //if(action is IRuntimeCtrl)
+            //{
+            //    if (onCtrlStart != null)
+            //        onCtrlStart.Invoke((action as IRuntimeCtrl).CtrlType);
+            //}
            
         }
 
@@ -222,18 +222,17 @@ namespace InteractSystem.Structure
         public void OnStopAction(OperaterNode action)
         {
             startedActions.Remove(action);
-            if (action is IRuntimeCtrl)
-            {
-                var otherAction = from node in startedActions
-                                  where node is IRuntimeCtrl
-                                  where (node as IRuntimeCtrl).CtrlType == (action as IRuntimeCtrl).CtrlType
-                                  select node;
-                if(otherAction.Count() == 0 && onCtrlStop != null)
-                {
-                    onCtrlStop.Invoke((action as IRuntimeCtrl).CtrlType);
-                }
-            }
-           
+            //if (action is IRuntimeCtrl)
+            //{
+            //    var otherAction = from node in startedActions
+            //                      where node is IRuntimeCtrl
+            //                      where (node as IRuntimeCtrl).CtrlType == (action as IRuntimeCtrl).CtrlType
+            //                      select node;
+            //    if(otherAction.Count() == 0 && onCtrlStop != null)
+            //    {
+            //        onCtrlStop.Invoke((action as IRuntimeCtrl).CtrlType);
+            //    }
+            //}
         }
 
         private void StopUpdateAction(bool force)

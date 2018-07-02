@@ -30,6 +30,7 @@ namespace InteractSystem.Actions
                 return targets == null || targets.Count == 0;
             }
         }
+        public const string placePosLayer = "i:placepos";
 
         protected override List<ActionItemFeature> RegistFeatures()
         {
@@ -41,7 +42,7 @@ namespace InteractSystem.Actions
             completeFeature.Init(this,AutoExecute);
             features.Add(completeFeature);
 
-            clickAbleFeature.Init(this, Layers.placePosLayer);
+            clickAbleFeature.Init(this, placePosLayer);
             features.Add(clickAbleFeature);
 
             return features;
@@ -51,6 +52,12 @@ namespace InteractSystem.Actions
         public abstract bool CanPlace(PlaceElement element, out string why);
 
         public abstract void PlaceObject(PlaceElement pickup);
+
+        public override void StepActive()
+        {
+            base.StepActive();
+            PlaceCtrl.Instence.RegistItem(this);
+        }
 
         public override void StepUnDo()
         {

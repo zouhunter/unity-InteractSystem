@@ -30,7 +30,7 @@ namespace InteractSystem
         {
             _collider = GetComponentInChildren<Collider>();
             if (_collider){
-                _collider.gameObject.layer = LayerMask.NameToLayer(Layers.pickUpElementLayer);
+                _collider.gameObject.layer = LayerMask.NameToLayer(PickUpAbleItem.layer);
             }
         }
 

@@ -8,17 +8,10 @@ using System.Linq;
 
 namespace InteractSystem.Actions
 {
-    public class LinkCtrl : OperateController
+    public class LinkCtrl : PCOperateCtrl<LinkCtrl,LinkItem>,IUpdateAble
     {
         private IHighLightItems highter;
         private LinkConnectController linkConnectCtrl;
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Link;
-            }
-        }
         private PickUpController pickCtrl { get { return PickUpController.Instence; } }
         private LinkItem linkItem;
 
@@ -37,7 +30,7 @@ namespace InteractSystem.Actions
             pickCtrl.onPickTwinceRight += OnPickTwinceRight;
         }
 
-        public override void Update()
+        public void Update()
         {
             if (linkConnectCtrl != null)
                 linkConnectCtrl.Update();

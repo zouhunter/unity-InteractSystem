@@ -8,11 +8,9 @@ using NodeGraph;
 using InteractSystem;
 namespace InteractSystem.VRTKActions
 {
-[CustomNode("VRTK/Hit", 12, "InteractSystem")]
-public class VRTK_HitNode : InteractSystem.Graph.OperaterNode,IRuntimeCtrl
-{
-        public ControllerType CtrlType { get{return ControllerType.VR_Hit;} }
-
+    [CustomNode("VRTK/Hit", 12, "InteractSystem")]
+    public class VRTK_HitNode : InteractSystem.Graph.OperaterNode
+    {
         public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(VRTK_HitItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
@@ -22,5 +20,5 @@ public class VRTK_HitNode : InteractSystem.Graph.OperaterNode,IRuntimeCtrl
             features.Add(completeableFeature);
             return features;
         }
-}
+    }
 }

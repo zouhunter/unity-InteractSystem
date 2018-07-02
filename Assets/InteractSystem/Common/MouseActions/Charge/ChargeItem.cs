@@ -9,6 +9,7 @@ namespace InteractSystem.Actions
 {
     public class ChargeItem : ActionItem
     {
+        public const string layer = "i:chargeItem";
         public override bool OperateAble
         {
             get
@@ -38,7 +39,7 @@ namespace InteractSystem.Actions
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-            clickAbleFeature.Init(this, Layers.chargeObjLayer);
+            clickAbleFeature.Init(this, layer);
             features.Add(clickAbleFeature);
            
             completeAbleFeature.Init(this, AutoExecute);

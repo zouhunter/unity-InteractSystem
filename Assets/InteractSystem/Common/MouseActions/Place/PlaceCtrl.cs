@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Actions
 {
-    public sealed class PlaceCtrl : OperateController
+    public sealed class PlaceCtrl : PCOperateCtrl<PlaceCtrl,PlaceItem>,IUpdateAble
     {
         public IHighLightItems highLight;
         private PickUpController pickCtrl { get { return PickUpController.Instence; } }
@@ -30,16 +30,8 @@ namespace InteractSystem.Actions
             get
             {
                 if (_placePosLayerMask == 0)
-                    _placePosLayerMask = LayerMask.GetMask(Layers.placePosLayer);
+                    _placePosLayerMask = LayerMask.GetMask(PlaceItem.placePosLayer);
                 return _placePosLayerMask;
-            }
-        }
-
-        public override ControllerType CtrlType
-        {
-            get
-            {
-                return ControllerType.Place;
             }
         }
 
@@ -66,7 +58,7 @@ namespace InteractSystem.Actions
         }
 
         #region 鼠标操作事件
-        public override void Update()
+        public void Update()
         {
             if (pickCtrl.PickedUp)
             {

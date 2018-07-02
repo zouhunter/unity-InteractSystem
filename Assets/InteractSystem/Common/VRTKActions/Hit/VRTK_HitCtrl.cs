@@ -4,14 +4,10 @@ using UnityEngine;
 using InteractSystem;
 namespace InteractSystem.VRTKActions
 {
-public class VRTK_HitCtrl :OperateController
-{
+    public class VRTK_HitCtrl : OperateCtrl<VRTK_HitCtrl,VRTK_HitItem>
+    {
         private VRTK_HitItem hitObj;
         private GameObject lastSelected;
-		public override ControllerType CtrlType { get{return ControllerType.VR_Hit;} }
-		
-		public override void Update(){
-			
-		}
-}    
+
+    }
 }

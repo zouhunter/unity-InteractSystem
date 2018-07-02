@@ -20,6 +20,7 @@ namespace InteractSystem.Actions
         [SerializeField]
         private CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
+        public const string layer = "i:clickitem";
 
         public override bool OperateAble
         {
@@ -30,7 +31,7 @@ namespace InteractSystem.Actions
         {
             var features = base.RegistFeatures();
          
-            clickAbleFeature.Init(this, Layers.clickItemLayer);
+            clickAbleFeature.Init(this, layer);
             features.Add(clickAbleFeature);
 
             completeAbleFeature.Init(this, AutoExecute);
