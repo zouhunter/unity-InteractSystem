@@ -43,9 +43,9 @@ namespace InteractSystem
 
         public static void RemoveGroup(ActionGroup group)
         {
-            if(!actionGroup.Contains(group))
+            if(actionGroup.Contains(group))
             {
-                actionGroup.Clear();
+                actionGroup.Remove(group);
             }
 
             if(actionGroup.Count == 0)

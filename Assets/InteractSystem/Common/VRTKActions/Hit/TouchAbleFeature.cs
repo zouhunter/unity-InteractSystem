@@ -43,7 +43,7 @@ namespace InteractSystem.VRTKActions
         public override void StepActive()
         {
             base.StepActive();
-            if (touchAble)
+            if (!touchAble)
             {
                 touchAble = true;
             }

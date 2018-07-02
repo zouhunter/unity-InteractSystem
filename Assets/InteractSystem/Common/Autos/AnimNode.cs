@@ -17,8 +17,19 @@ namespace InteractSystem.Auto
         private float speed = 1;
         [SerializeField]
         private bool reverse;
-        [SerializeField]
-        private string animName;
+        [SerializeField,Attributes.DefultName("_name")]
+        private string _animName;
+        private string animName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_animName))
+                {
+                    return Name;
+                }
+                return _animName;
+            }
+        }
         private AnimPlayer animPlayer;
         private CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }

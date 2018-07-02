@@ -33,6 +33,7 @@ namespace InteractSystem.Hooks
                 for (int i = 0; i < actionHooks.Length; i++)
                 {
                     hooks[i] = ScriptableObject.Instantiate(actionHooks[i]);
+                    hooks[i].name = actionHooks[i].name;
                 }
             }
             else

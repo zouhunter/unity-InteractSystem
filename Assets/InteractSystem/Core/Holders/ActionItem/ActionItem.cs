@@ -58,12 +58,12 @@ namespace InteractSystem
         {
             actionItemFeatures = RegistFeatures();
             TryExecuteFeatures((feature) => { feature.Awake(); });
+            ElementController.Instence.RegistElement(this);
         }
 
-     
+
         protected virtual void Start()
         {
-            ElementController.Instence.RegistElement(this);
             InitBindingScripts();
             TryExecuteFeatures((feature) => { feature.Start(); });
             TryExecuteBindings((binding) => binding.Start());

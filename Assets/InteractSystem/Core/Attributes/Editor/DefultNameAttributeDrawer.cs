@@ -22,7 +22,14 @@ namespace InteractSystem.Attributes
                 if (string.IsNullOrEmpty(property.stringValue))
                 {
                     GUI.contentColor = Color.gray;
-                    EditorGUI.LabelField(position, new GUIContent("    "),new GUIContent( property.serializedObject.targetObject.name));
+                    if (att.path == "name")
+                    {
+                        EditorGUI.LabelField(position, new GUIContent("    "), new GUIContent(property.serializedObject.targetObject.name));
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(position, new GUIContent("    "), new GUIContent(property.serializedObject.FindProperty(att.path).stringValue));
+                    }
                     GUI.contentColor = Color.white;
                 }
             }

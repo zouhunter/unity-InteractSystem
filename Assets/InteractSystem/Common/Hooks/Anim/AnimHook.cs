@@ -18,8 +18,19 @@ namespace InteractSystem.Hooks
         private float speed = 1;
         [SerializeField]
         private bool reverse;
-        [SerializeField]
-        private string animName;
+        [SerializeField, Attributes.DefultName]
+        private string _animName;
+        public string animName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_animName))
+                {
+                    return name;
+                }
+                return _animName;
+            }
+        }
         private AnimPlayer animPlayer;
         private ElementController elementCtrl { get { return ElementController.Instence; } }
 
@@ -46,15 +57,19 @@ namespace InteractSystem.Hooks
         {
             OnEndExecute(false);
         }
-        public override void OnEndExecute(bool force)
+
+        protected override void OnBeforeEndExecute()
         {
-            base.OnEndExecute(force);
+            base.OnBeforeEndExecute();
             coroutineCtrl.Cansalce(DelyPlay);
-            if (animPlayer == null) {
+            if (animPlayer == null){
                 FindAnimCore(true);
             }
+            Debug.Assert(animPlayer != null, "缺少：" + animName);
             animPlayer.StepComplete();
         }
+
+
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
@@ -77,7 +92,8 @@ namespace InteractSystem.Hooks
 
             if (animPlayer)
             {
-                if (record){
+                if (record)
+                {
                     animPlayer.RecordPlayer(this);
                 }
                 animPlayer.gameObject.SetActive(true);

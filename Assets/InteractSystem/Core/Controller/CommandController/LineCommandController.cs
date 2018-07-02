@@ -115,7 +115,7 @@ namespace InteractSystem
             }
             else
             {
-               if(CurrCommand!=null) Debug.LogError("StepNotEqual:" + stepName + ":" + CurrCommand.StepName);
+               if(CurrCommand!=null) Debug.LogWarning("StepNotEqual:" + stepName + ":" + CurrCommand.StepName);
             }
         }
 

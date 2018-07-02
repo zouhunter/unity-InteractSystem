@@ -48,11 +48,13 @@ namespace InteractSystem
             }
         }
         protected virtual void CoreStartExecute() { }
+
         public virtual void OnEndExecute(bool force)
         {
             if (status != ExecuteStatu.Completed)
             {
                 status = ExecuteStatu.Completed;
+                OnBeforeEndExecute();
                 CoreEndExecute(force);
             }
             else
@@ -60,16 +62,22 @@ namespace InteractSystem
                 Debug.LogError("already completed" + this);
             }
         }
+
+        protected virtual void OnBeforeEndExecute()
+        {
+
+        }
+
         public virtual void CoreEndExecute(bool force)
         {
-            if (log)
-                Debug.Log("onEnd Execute Hook :" + this + ":" + force);
+            if (log) Debug.Log("onEnd Execute Hook :" + this + ":" + force);
+
             onBeforeEndExecuted.Invoke(force);
-            if (onEndExecute != null)
+
+            if (!force && onEndExecute != null)
             {
                 onEndExecute.Invoke();
             }
-
         }
         public virtual void OnUnDoExecute()
         {

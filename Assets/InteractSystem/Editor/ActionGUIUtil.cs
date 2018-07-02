@@ -13,7 +13,7 @@ namespace InteractSystem.Drawer
         public const float smallButtonWidth = 20f;
         public const float middleButtonWidth = 45f;
         public const float bigButtonWidth = 60f;
-        public const float padding = 5;
+        public const float padding = 10;
         public static string searchWord;
         public static Dictionary<UnityEngine.Object, Editor> editorDic = new Dictionary<UnityEngine.Object, Editor>();
         public static Dictionary<UnityEngine.Object, SerializedObject> serializedDic = new Dictionary<UnityEngine.Object, SerializedObject>();

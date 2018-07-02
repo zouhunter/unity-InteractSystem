@@ -102,7 +102,6 @@ namespace InteractSystem
                 statu = ExecuteStatu.Executing;
                 if (startHookCtrl.Statu == ExecuteStatu.Completed)
                 {
-                    OnBeforeActionsStart();
                     StartExecuteInternal();
                 }
                 else
@@ -120,6 +119,7 @@ namespace InteractSystem
 
         private void StartExecuteInternal()
         {
+            OnBeforeActionsStart();
             actionCtrl.SetContext(this);
             actionCtrl.OnStartExecute(forceAuto);
         }
@@ -228,6 +228,7 @@ namespace InteractSystem
             if(enviromentCtrl != null){
                 enviromentCtrl.StartState(environments);
             }
+
             if (commandBindingCtrl != null)
                 commandBindingCtrl.OnBeforeActionsStart(this);
         }

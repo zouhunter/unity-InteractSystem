@@ -38,11 +38,17 @@ namespace InteractSystem.Structure
 
         public virtual void Complete(ExecuteUnit unit)
         {
-
+            if (!statusDic.ContainsKey(unit))
+            {
+                statusDic[unit] = new UnitStatus();
+            }
         }
         public virtual void UnDo(ExecuteUnit unit)
         {
-
+            if (!statusDic.ContainsKey(unit))
+            {
+                statusDic[unit] = new UnitStatus();
+            }
         }
 
         protected virtual void ExecuteOnCompleted(ExecuteUnit unit)
@@ -72,10 +78,18 @@ namespace InteractSystem.Structure
             {
                 foreach (var item in list)
                 {
-                    if(statusDic[item].statu != ExecuteStatu.Completed)
+                    if (statusDic.ContainsKey(item))
                     {
-                        stateMechine.Complete(item);
+                        if (statusDic[item].statu != ExecuteStatu.Completed)
+                        {
+                            stateMechine.Complete(item);
+                        }
                     }
+                    else
+                    {
+                        Debug.Log("ignore complete :" + unit.node.name);
+                    }
+                   
                 }
             }
         }
