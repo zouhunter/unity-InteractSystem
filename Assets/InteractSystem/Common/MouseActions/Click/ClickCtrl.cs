@@ -26,7 +26,7 @@ namespace InteractSystem.Actions
             }
             else
             {
-                obj.SetClickComplete();
+                obj.RetriveFeature<ClickAbleFeature>().Click() ; 
             }
         }
 

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Name: appera_point
   m_EditorClassIdentifier: 
   center: {x: 0, y: 0, z: 0}
-  range: 10
+  range: 2

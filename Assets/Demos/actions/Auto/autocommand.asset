@@ -147,7 +147,7 @@ MonoBehaviour:
   delyTime: 0
   speed: 1
   reverse: 0
-  animName: CubeAnim
+  _animName: CubeAnim
 --- !u!114 &114248825944278746
 MonoBehaviour:
   m_ObjectHideFlags: 1

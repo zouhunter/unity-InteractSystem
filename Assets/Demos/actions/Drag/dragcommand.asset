@@ -33,8 +33,8 @@ MonoBehaviour:
       type: actionconnect
   - m_name: "\u70B9\u51FB\u4E00\u4E9BCube"
     m_id: ef31d656-78bc-481c-be45-69f8f631d66f
-    m_x: 300
-    m_y: 220
+    m_x: 312
+    m_y: 144
     m_node: {fileID: 114957999608111852}
     m_inputPoints:
     - id: 2c4afbb0-485c-4166-acb4-fc59e144a1f5
@@ -117,6 +117,7 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
-  itemList:
-  - Cube
-  - Cube
+  completeableFeature:
+    itemList:
+    - Cube
+    - Cube

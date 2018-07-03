@@ -14,7 +14,6 @@ namespace InteractSystem
         [SerializeField, Attributes.DefultCollider]
         protected Collider _collider;
         protected string _layerName;
-
         public virtual Collider collider
         {
             get
@@ -28,11 +27,20 @@ namespace InteractSystem
                 _collider = value;
             }
         }
+        public UnityEvent onClick = new UnityEvent();
 
         public override void Awake()
         {
             base.Awake();
             InitLayer();
+        }
+
+        public void Click()
+        {
+            if(onClick != null)
+            {
+                onClick.Invoke();
+            }
         }
 
         private void InitLayer()
@@ -52,8 +60,6 @@ namespace InteractSystem
             get { return _layerName; }
             set { _layerName = value; }
         }
-
-
         public override void StepActive()
         {
             base.StepActive();

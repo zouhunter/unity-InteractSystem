@@ -32,6 +32,7 @@ namespace InteractSystem.Actions
             var features = base.RegistFeatures();
          
             clickAbleFeature.Init(this, layer);
+            clickAbleFeature.onClick.AddListener(completeAbleFeature.OnComplete);
             features.Add(clickAbleFeature);
 
             completeAbleFeature.Init(this, AutoExecute);
@@ -40,14 +41,9 @@ namespace InteractSystem.Actions
             return features;
         }
 
-        public void SetClickComplete()
-        {
-            completeAbleFeature.OnComplete();
-        }
-
         public void AutoExecute(Graph.OperaterNode node)
         {
-            coroutineCtrl.DelyExecute(completeAbleFeature. OnComplete, autoCompleteTime);
+            coroutineCtrl.DelyExecute(completeAbleFeature.OnComplete, autoCompleteTime);
         }
     }
 }
