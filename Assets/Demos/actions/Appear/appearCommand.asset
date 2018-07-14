@@ -34,7 +34,7 @@ MonoBehaviour:
   - m_name: "\u521B\u5EFA\u4E00\u7CFB\u5217\u5143\u7D20"
     m_id: df4f4674-cb4c-4aeb-80af-c0415ff825ae
     m_x: 270
-    m_y: 210
+    m_y: 160
     m_node: {fileID: 114059196056113168}
     m_inputPoints:
     - id: db096788-08f3-4882-83ab-18e41ec26618

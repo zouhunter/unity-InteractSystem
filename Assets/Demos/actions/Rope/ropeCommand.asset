@@ -33,7 +33,7 @@ MonoBehaviour:
       type: actionconnect
   - m_name: "\u8FDE\u63A5\u8BBE\u5907"
     m_id: 30044c51-485d-4843-b32f-8eb1ea89c3b8
-    m_x: 300
+    m_x: 280
     m_y: 120
     m_node: {fileID: 114797440903853700}
     m_inputPoints:

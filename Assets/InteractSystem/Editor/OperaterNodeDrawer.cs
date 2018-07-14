@@ -65,7 +65,7 @@ namespace InteractSystem.Drawer
         {
             ActionGUIUtil.DrawDisableProperty(script_prop);
             serializedObject.Update();
-            EditorGUILayout.PropertyField(_name_prop,new GUIContent("Name"));
+            EditorGUILayout.PropertyField(_name_prop, new GUIContent("Name"));
             DrawSwitch();
             serializedObject.ApplyModifiedProperties();
         }
@@ -131,11 +131,33 @@ namespace InteractSystem.Drawer
             while (iterator.NextVisible(enterChildern))
             {
                 if (!ignoredPaths.Contains(iterator.propertyPath)){
-                    EditorGUILayout.PropertyField(iterator,true);
+                    EditorGUILayout.PropertyField(iterator, true);
                 }
                 enterChildern = false;
             }
         }
+
+        public virtual float OnDrawDefult(float x,float y,float width, int level = 0)
+        {
+            var position = new Rect(x, y, width, 0);
+            var serializedProperty = serializedObject.GetIterator();
+            bool enterChildren = true;
+            while (serializedProperty.NextVisible(enterChildren))
+            {
+                if (!ignoredPaths.Contains(serializedProperty.propertyPath))
+                {
+                    EditorGUI.indentLevel = serializedProperty.depth + level;
+                    position.height = EditorGUI.GetPropertyHeight(serializedProperty, null, true);
+                    EditorGUI.PropertyField(position, serializedProperty, true);
+                    position.y += position.height + 2f;
+                }
+                enterChildren = false;
+            }
+            return position.y - y;
+        }
+
+
+
 
     }
 }
