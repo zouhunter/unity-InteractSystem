@@ -15,7 +15,7 @@ namespace InteractSystem.Drawer
     {
         private SerializedObject serializedObj;
         private List<string> ignoreProps = new List<string> { "m_Script" };
-
+        protected abstract List<Type> supportTypes { get; }
         protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
         {
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
@@ -54,7 +54,48 @@ namespace InteractSystem.Drawer
                 DrawObjectDetail(prop.objectReferenceValue, rect);
             }
         }
+        protected override void DrawHeaderCallBack(Rect rect)
+        {
+            base.DrawHeaderCallBack(rect);
+            //var labelRect = new Rect(rect.x, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
+            EditorGUI.LabelField(rect, title);
 
+            var rect1 = new Rect(rect.x + rect.width - ActionGUIUtil.bigButtonWidth, rect.y, ActionGUIUtil.middleButtonWidth, EditorGUIUtility.singleLineHeight);
+            if (GUI.Button(rect1, "new"))
+            {
+                var propertyPath = property.propertyPath;
+                var obj = property.serializedObject.targetObject;
+
+                ActionGUIUtil.DrawScriptablesMenu(supportTypes, (hook) =>
+                {
+                    EditorApplication.CallbackFunction action = () =>
+                    {
+                        var path = AssetDatabase.GetAssetPath(hook);
+                        if (!string.IsNullOrEmpty(path))
+                        {
+                            var item = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                            try
+                            {
+                                property = new SerializedObject(obj).FindProperty(propertyPath);
+                                var prop = property.AddItem();
+                                prop.objectReferenceValue = item;
+                                property.serializedObject.ApplyModifiedProperties();
+                            }
+                            catch (Exception e)
+                            {
+                                throw e;
+                            }
+                            finally
+                            {
+                                EditorApplication.update = null;
+                            }
+
+                        }
+                    };
+                    EditorApplication.update = action;
+                });
+            }
+        }
         protected abstract void DrawObjectField(Rect objRect, SerializedProperty prop);
         protected abstract void DrawDragField(Rect objRect, SerializedProperty prop);
         protected abstract void DrawDragField(Rect rect);

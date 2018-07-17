@@ -14,6 +14,17 @@ namespace InteractSystem.Drawer
     public class CommandBindingListDrawer : BindingListDrawer
     {
         private List<Binding.CommandBinding> dragBindings = new List<Binding.CommandBinding>();
+
+        public CommandBindingListDrawer(string title) {
+            this.title = title;
+        }
+
+        protected override void DrawHeaderCallBack(Rect rect)
+        {
+            base.DrawHeaderCallBack(rect);
+            EditorGUI.LabelField(rect, title);
+        }
+
         protected override List<Type> LoadBindingTypes()
         {
             return Utility.GetSubInstenceTypes(typeof(Binding.CommandBinding));

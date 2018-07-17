@@ -20,10 +20,10 @@ namespace InteractSystem.Drawer
         protected SerializedProperty startHooks_prop;
         protected SerializedProperty completeHooks_prop;
 
-        protected ReorderListDrawer bindingList = new OperaterBindingListDrawer();
-        protected ReorderListDrawer enviromentList = new EnviromentInfoListDrawer();
-        protected ReorderListDrawer startHooksList = new HookListDrawer("操作对象启动前");
-        protected ReorderListDrawer completeHooksList = new HookListDrawer("操作对象完成后");
+        protected ReorderListDrawer bindingList = new OperaterBindingListDrawer("1.功能绑定（继承OperateBinding）");
+        protected ReorderListDrawer enviromentList = new EnviromentInfoListDrawer("2.环境控制");
+        protected ReorderListDrawer startHooksList = new HookListDrawer("3.操作对象启动前");
+        protected ReorderListDrawer completeHooksList = new HookListDrawer("4.操作对象完成后");
 
         private GUIContent[] _options;
         protected GUIContent[] options
@@ -34,9 +34,7 @@ namespace InteractSystem.Drawer
                 {
                     _options = new GUIContent[] {
                         new GUIContent("详情配制"),
-                        new GUIContent("功能绑定"),
-                        new GUIContent("环境控制"),
-                        new GUIContent("前提支持")
+                        new GUIContent("绑定执行")
                     };
                 }
                 return _options;
@@ -112,17 +110,16 @@ namespace InteractSystem.Drawer
             }
             else if (selected == 1)
             {
-                bindingList.DoLayoutList();
+                OnDrawBindings();
             }
-            else if (selected == 2)
-            {
-                enviromentList.DoLayoutList();
-            }
-            else
-            {
-                startHooksList.DoLayoutList();
-                completeHooksList.DoLayoutList();
-            }
+        }
+
+        public void OnDrawBindings()
+        {
+            bindingList.DoLayoutList();
+            enviromentList.DoLayoutList();
+            startHooksList.DoLayoutList();
+            completeHooksList.DoLayoutList();
         }
         protected virtual void OnDrawDefult()
         {
@@ -153,7 +150,7 @@ namespace InteractSystem.Drawer
                 }
                 enterChildren = false;
             }
-            return position.y - y;
+            return position.y - y + 2 * EditorGUIUtility.singleLineHeight;
         }
 
 

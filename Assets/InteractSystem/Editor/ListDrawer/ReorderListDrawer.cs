@@ -16,6 +16,13 @@ namespace InteractSystem.Drawer
         protected SerializedProperty property;
         protected IList list;
         protected Type type;
+        protected string title;
+
+        public ReorderListDrawer(string title = null)
+        {
+            this.title = title;
+        }
+
         public ReorderableList.HeaderCallbackDelegate drawHeaderCallback { get; set; }
 
         public virtual void InitReorderList(SerializedProperty property)
@@ -45,6 +52,10 @@ namespace InteractSystem.Drawer
         {
             if (drawHeaderCallback != null)
                 drawHeaderCallback.Invoke(rect);
+            else
+            {
+                EditorGUI.LabelField(rect, title);
+            }
         }
         public virtual void DoLayoutList()
         {

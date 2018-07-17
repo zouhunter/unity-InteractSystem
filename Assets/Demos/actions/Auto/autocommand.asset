@@ -113,9 +113,21 @@ MonoBehaviour:
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: 
   commandBindings: []
-  environments: []
+  environments:
+  - instenceID: 0
+    guid: 05c0b84e02ebc5a41ac3846040f73acf
+    enviromentName: Cube
+    originalState: 0
+    startState: 0
+    completeState: 0
+    coordinate:
+      localPosition: {x: 2.51, y: 0.75, z: 0}
+      localEulerAngles: {x: 19.45, y: -0, z: -0}
+      localScale: {x: 1, y: 1, z: 1}
+    ignore: 1
   startHooks: []
-  completeHooks: []
+  completeHooks:
+  - {fileID: 11400000, guid: ba191e608a350c1438ad96cb66d3aee9, type: 2}
 --- !u!114 &114014516746001736
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -140,9 +152,11 @@ MonoBehaviour:
   m_Name: InteractSystem.Auto.AnimNode
   m_EditorClassIdentifier: 
   _name: "\u64AD\u653E\u52A8\u753B"
-  startHooks: []
+  startHooks:
+  - {fileID: 11400000, guid: 56238953ca307c14694663f5cf191d41, type: 2}
   completeHooks: []
-  bindings: []
+  bindings:
+  - {fileID: 11400000, guid: fd9d6262dfdcf804284709882ed072d7, type: 2}
   environments: []
   delyTime: 0
   speed: 1

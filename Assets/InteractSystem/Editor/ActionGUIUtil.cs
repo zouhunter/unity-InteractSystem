@@ -10,6 +10,7 @@ namespace InteractSystem.Drawer
 {
     public static class ActionGUIUtil
     {
+        public static float currentViewWidth { get { return EditorGUIUtility.currentViewWidth - 100; } }
         public const float smallButtonWidth = 20f;
         public const float middleButtonWidth = 45f;
         public const float bigButtonWidth = 60f;
@@ -229,7 +230,7 @@ namespace InteractSystem.Drawer
 
         public static Rect GetDragRect()
         {
-            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight);
+            var rect = GUILayoutUtility.GetRect(ActionGUIUtil.currentViewWidth, EditorGUIUtility.singleLineHeight);
             rect.y -= EditorGUIUtility.singleLineHeight;
             rect.height += EditorGUIUtility.singleLineHeight;
             return rect;

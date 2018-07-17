@@ -153,7 +153,7 @@ namespace InteractSystem.Drawer
         public override void DoLayoutList()
         {
             base.DoLayoutList();
-            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight);
+            var rect = GUILayoutUtility.GetRect(ActionGUIUtil.currentViewWidth, EditorGUIUtility.singleLineHeight);
             if (Event.current.type == EventType.DragUpdated && rect.Contains(Event.current.mousePosition))
             {
                 ActionGUIUtil.UpdateDragedObjects(".asset", dragedCommands);

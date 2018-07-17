@@ -69,7 +69,7 @@ namespace InteractSystem.Drawer
         }
         private void DrawSwitchOptions()
         {
-            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2f);
+            var rect = GUILayoutUtility.GetRect(ActionGUIUtil.currentViewWidth, EditorGUIUtility.singleLineHeight + ActionGUIUtil.padding * 2f);
             rect = ActionGUIUtil.DrawBoxRect(rect, "");
             var searchRect = new Rect(rect.x, rect.y, rect.width * 0.55f, rect.height);
             ActionGUIUtil.searchWord = EditorGUI.TextField(searchRect, ActionGUIUtil.searchWord);
@@ -105,7 +105,7 @@ namespace InteractSystem.Drawer
 
         private void DrawElementGroupHold()
         {
-            var rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, EditorGUIUtility.singleLineHeight +ActionGUIUtil.padding * 2);
+            var rect = GUILayoutUtility.GetRect(ActionGUIUtil.currentViewWidth, EditorGUIUtility.singleLineHeight +ActionGUIUtil.padding * 2);
             var innerRect = ActionGUIUtil.DrawBoxRect(rect, "");
             var btnRect = new Rect(innerRect.x, innerRect.y, innerRect.width - ActionGUIUtil.middleButtonWidth, innerRect.height);
             var style = elementGroupDrawer != null && elementGroupDrawer.showAll ? EditorStyles.toolbarPopup : EditorStyles.toolbarDropDown;

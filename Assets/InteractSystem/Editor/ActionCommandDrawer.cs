@@ -22,11 +22,11 @@ namespace InteractSystem.Drawer
         protected SerializedProperty startHooks_prop;
         protected SerializedProperty completeHooks_prop;
 
-        protected ReorderListDrawer nodeList = new NodeListDrawer();
-        protected ReorderListDrawer bindingList = new CommandBindingListDrawer();
-        protected ReorderListDrawer enviromentList = new EnviromentInfoListDrawer();
-        protected ReorderListDrawer startHooksList = new HookListDrawer("操作对象启动前");
-        protected ReorderListDrawer completeHooksList = new HookListDrawer("操作对象完成后");
+        protected ReorderListDrawer nodeList = new NodeListDrawer("节点序列（双击可快速配制）");
+        protected ReorderListDrawer bindingList = new CommandBindingListDrawer("1.功能绑定（继承于CommandBinding）");
+        protected ReorderListDrawer enviromentList = new EnviromentInfoListDrawer("2.环境控制(自定义物体出现隐藏)");
+        protected ReorderListDrawer startHooksList = new HookListDrawer("3.操作对象启动前（提示执行）");
+        protected ReorderListDrawer completeHooksList = new HookListDrawer("4.操作对象完成后（等待完成）");
 
         private GUIContent[] _options;
         protected GUIContent[] options
@@ -36,10 +36,8 @@ namespace InteractSystem.Drawer
                 if (_options == null)
                 {
                     _options = new GUIContent[] {
-                        new GUIContent("操作节点列表"),
-                        new GUIContent("功能绑定列表"),
-                        new GUIContent("环境控制列表"),
-                        new GUIContent("前提支持列表")
+                        new GUIContent("操作节点"),
+                        new GUIContent("绑定执行")
                     };
                 }
                 return _options;
@@ -105,13 +103,7 @@ namespace InteractSystem.Drawer
             else if (selected == 1)
             {
                 DrawBindigList();
-            }
-            else if (selected == 2)
-            {
                 DrawEnviromentList();
-            }
-            else
-            {
                 DrawHookLists();
             }
         }

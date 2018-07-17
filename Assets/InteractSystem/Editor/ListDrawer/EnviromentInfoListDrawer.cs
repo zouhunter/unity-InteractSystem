@@ -13,6 +13,8 @@ namespace InteractSystem.Drawer
     public class EnviromentInfoListDrawer : ReorderListDrawer
     {
         private List<GameObject> dragedObjects = new List<GameObject>();
+
+        public EnviromentInfoListDrawer(string title = null) : base(title) { }
         protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
         {
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());
@@ -23,11 +25,6 @@ namespace InteractSystem.Drawer
                 prop.isExpanded = true;
                 reorderList.ReleaseKeyboardFocus();
             }
-        }
-
-        protected override void DrawHeaderCallBack(Rect rect)
-        {
-
         }
 
         protected override float ElementHeightCallback(int index)
