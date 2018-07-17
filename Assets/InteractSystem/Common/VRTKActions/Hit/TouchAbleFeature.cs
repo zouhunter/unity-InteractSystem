@@ -33,6 +33,7 @@ namespace InteractSystem.VRTKActions
                 return _interactableObject;
             }
         }
+
 		protected virtual void OnInteractableObjectUsed(object sender, InteractableObjectEventArgs e){
 			Debug.Log("OnInteractableObjectUsed");
 			if(touchAble && onTouch != null){
