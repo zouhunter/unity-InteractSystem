@@ -12,12 +12,12 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Appear", 14, "InteractSystem")]
     public class AppearNode : Graph.OperaterNode
     {
-        [SerializeField]
-        private bool forceAuto;
-        [SerializeField]
-        private float spanTime = 1f;
-        [SerializeField]
-        private AutoAppearRule autoRule;
+        [SerializeField,Attributes.CustomField("全自动")]
+        protected bool forceAuto;
+        [SerializeField, Attributes.CustomField("时间间隔")]
+        protected float spanTime = 1f;
+        [SerializeField, Attributes.CustomField("生成规则")]
+        protected AutoAppearRule autoRule;
         protected CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 

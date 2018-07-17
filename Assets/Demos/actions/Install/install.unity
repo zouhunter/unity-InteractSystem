@@ -341,8 +341,8 @@ MonoBehaviour:
   autoInstall: 0
   ignorePass: 0
   passBy: {fileID: 0}
-  straightMove: 0
   ignoreMiddle: 0
+  straightMove: 0
   hideOnInstall: 0
   contentFeature:
     elementName: sphere
@@ -496,8 +496,8 @@ MonoBehaviour:
   autoInstall: 0
   ignorePass: 0
   passBy: {fileID: 0}
-  straightMove: 0
   ignoreMiddle: 0
+  straightMove: 0
   hideOnInstall: 0
   contentFeature:
     elementName: sphere
@@ -742,8 +742,8 @@ MonoBehaviour:
   autoInstall: 0
   ignorePass: 0
   passBy: {fileID: 0}
-  straightMove: 0
   ignoreMiddle: 0
+  straightMove: 0
   hideOnInstall: 0
   contentFeature:
     elementName: sphere
@@ -895,14 +895,13 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   pickUpableFeature:
-    _collider: {fileID: 0}
+    _collider: {fileID: 1963890474}
     onClick:
       m_PersistentCalls:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     pickUpAble: 1
-  startActive: 1
   onStepActive:
     m_PersistentCalls:
       m_Calls: []
@@ -919,7 +918,6 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_viewObj: {fileID: 1432569220}
-  startRotation: {x: 0, y: 0, z: 0}
 --- !u!1 &1695419014
 GameObject:
   m_ObjectHideFlags: 0
@@ -978,8 +976,8 @@ MonoBehaviour:
   autoInstall: 0
   ignorePass: 0
   passBy: {fileID: 0}
-  straightMove: 0
   ignoreMiddle: 0
+  straightMove: 0
   hideOnInstall: 0
   contentFeature:
     elementName: sphere
@@ -1139,7 +1137,6 @@ MonoBehaviour:
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     pickUpAble: 1
-  startActive: 1
   onStepActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1156,7 +1153,6 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_viewObj: {fileID: 1879158607}
-  startRotation: {x: 0, y: 0, z: 0}
 --- !u!1 &1963890471
 GameObject:
   m_ObjectHideFlags: 0
@@ -1305,7 +1301,6 @@ MonoBehaviour:
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     pickUpAble: 1
-  startActive: 1
   onStepActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1322,4 +1317,3 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_viewObj: {fileID: 2088078993}
-  startRotation: {x: 0, y: 0, z: 0}

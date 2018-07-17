@@ -9,16 +9,15 @@ namespace InteractSystem.Actions
 {
     public class ClickItem : ActionItem
     {
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("可点击次数")]
         protected int clickableCount = 1;
-        [SerializeField]
-        protected float autoCompleteTime = 2;
 
         [SerializeField]
         private ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
         [SerializeField]
         private CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
+        protected float autoCompleteTime { get { return Config.Instence.autoExecuteTime; } }
         public const string layer = "i:clickitem";
 
         public override bool OperateAble

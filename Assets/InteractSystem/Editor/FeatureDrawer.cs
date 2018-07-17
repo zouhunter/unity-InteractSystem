@@ -9,7 +9,6 @@ namespace InteractSystem.Drawer
     [CustomPropertyDrawer(typeof(Feature), true)]
     public class FeatureDrawer : PropertyDrawer
     {
-
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             property.isExpanded = true;
@@ -27,9 +26,8 @@ namespace InteractSystem.Drawer
         /// </summary>
         /// <param name="serializedProperty"></param>
         /// <param name="position"></param>
-        /// <param name="count"></param>
         /// <param name="level"></param>
-        public static void DrawChildInContent(SerializedProperty serializedProperty, Rect position, int deepth, int level = 0)
+        public virtual void DrawChildInContent(SerializedProperty serializedProperty, Rect position, int deepth, int level = 0)
         {
             bool enterChildren = true;
             while (serializedProperty.NextVisible(enterChildren))

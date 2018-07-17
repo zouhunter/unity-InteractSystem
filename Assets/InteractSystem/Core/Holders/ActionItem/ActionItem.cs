@@ -10,11 +10,11 @@ namespace InteractSystem
 {
     public abstract class ActionItem : MonoBehaviour, ISupportElement
     {
-        [SerializeField, Attributes.DefultName]
+        [SerializeField, Attributes.DefultName("关键字")]
         protected string _name;
-        [SerializeField]
+        [SerializeField] [Attributes.CustomField("执行前状态")]
         protected bool startactive = true;
-        [SerializeField]
+        [SerializeField] [Attributes.CustomField("执行后状态")]
         protected bool endactive = true;
         [SerializeField]
         protected List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();

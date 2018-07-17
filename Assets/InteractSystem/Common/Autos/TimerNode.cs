@@ -17,7 +17,7 @@ namespace InteractSystem.Auto
     [CustomNode("Auto/Timer", 1, "InteractSystem")]
     public class TimerNode : Graph.OperaterNode
     {
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("等待时间")]
         protected float autoTime = 2;
         private CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
 

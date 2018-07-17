@@ -11,7 +11,7 @@ namespace InteractSystem
     [System.Serializable]
     public class ClickAbleFeature : ActionItemFeature
     {
-        [SerializeField, Attributes.DefultCollider]
+        [SerializeField, Attributes.DefultCollider("碰 撞 体")]
         protected Collider _collider;
         protected string _layerName;
         public virtual Collider collider

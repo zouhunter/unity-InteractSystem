@@ -38,7 +38,7 @@ namespace InteractSystem.Drawer
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             Init(property);
-            defultHeight = EditorGUI.GetPropertyHeight(property, label, true);
+            defultHeight = EditorGUI.GetPropertyHeight(property, label, true) - EditorGUIUtility.singleLineHeight;
             return defultHeight + listDrawer.GetHeight();
         }
 
@@ -46,8 +46,35 @@ namespace InteractSystem.Drawer
         {
             var rect1 = new Rect(position.x, position.y, position.width, defultHeight);
             var rect2 = new Rect(position.x, position.y + defultHeight, position.width, position.height - defultHeight);
-            EditorGUI.PropertyField(rect1, property,null,true);
             listDrawer.DoList(rect2);
+
+            var oldLevel = EditorGUI.indentLevel;
+            DrawChildInContent(property, rect1, property.depth + 1,-1);
+            EditorGUI.indentLevel = oldLevel;
+        }
+
+        /// <summary>
+        /// 绘制指定个数据的property
+        /// </summary>
+        /// <param name="serializedProperty"></param>
+        /// <param name="position"></param>
+        /// <param name="level"></param>
+        public virtual void DrawChildInContent(SerializedProperty serializedProperty, Rect position, int deepth, int level = 0)
+        {
+            bool enterChildren = true;
+            while (serializedProperty.NextVisible(enterChildren))
+            {
+                if (serializedProperty.depth < deepth)
+                {
+                    break;
+                }
+
+                EditorGUI.indentLevel = serializedProperty.depth + level;
+                position.height = EditorGUI.GetPropertyHeight(serializedProperty, null, true);
+                EditorGUI.PropertyField(position, serializedProperty, true);
+                position.y += position.height + 2f;
+                enterChildren = false;
+            }
         }
     }
 

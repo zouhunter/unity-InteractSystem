@@ -355,9 +355,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1962dcb39315f954296298435eb4429d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionItem_log: 0
   nodeGraphObj_log: 0
+  operateNode_log: 0
+  actionItem_log: 0
   actionHook_log: 0
+  feature_log: 0
+  actionItemBinding_log: 0
 --- !u!4 &2027092914
 Transform:
   m_ObjectHideFlags: 0
