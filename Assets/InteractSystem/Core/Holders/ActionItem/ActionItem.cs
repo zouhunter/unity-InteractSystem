@@ -110,7 +110,7 @@ namespace InteractSystem
 
         public virtual void StepActive()
         {
-            Debug.Log("StepActive:" + gameObject);
+            if(log) Debug.Log("StepActive:" + gameObject);
             gameObject.SetActive(true);
             Active = true;
             onActive.Invoke();
@@ -119,6 +119,7 @@ namespace InteractSystem
         }
         public virtual void StepComplete()
         {
+            if (log) Debug.Log("StepComplete:" + gameObject);
             Active = false;
             onInActive.Invoke();
             ElementController.Instence.SetPriority(subActions);
@@ -128,6 +129,7 @@ namespace InteractSystem
         }
         public virtual void StepUnDo()
         {
+            if (log) Debug.Log("StepUnDo:" + gameObject);
             Active = false;
             onInActive.Invoke();
             TryExecuteFeatures((feature) => { feature.StepUnDo(); });

@@ -321,8 +321,6 @@ namespace InteractSystem.Actions
         public override void StepActive()
         {
             base.StepActive();
-            if (log)
-                Debug.Log("StepActive:" + Name, gameObject);
             actived = true;
             onStepActive.Invoke();
             gameObject.SetActive(true);

@@ -81,7 +81,7 @@ namespace InteractSystem.Actions
             }
             else
             {
-                Debug.Log(this + " in active!");
+               if(log) Debug.Log(this + " in active!");
             }
         }
     }

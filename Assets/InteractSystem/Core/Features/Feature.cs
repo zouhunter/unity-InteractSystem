@@ -9,6 +9,7 @@ namespace InteractSystem
 {
     public abstract class Feature
     {
+        public static bool log = false;
         public virtual void OnEnable() { }
         public virtual void OnDisable() { }
         public virtual void OnDestroy() { }
@@ -16,7 +17,6 @@ namespace InteractSystem
 
     public abstract class OperateNodeFeature : Feature
     {
-        public static bool log = false;
         public Graph.OperaterNode target { get;protected set; }
         public virtual void OnStartExecute(bool auto) { }
         public virtual void OnBeforeEnd(bool force) { }

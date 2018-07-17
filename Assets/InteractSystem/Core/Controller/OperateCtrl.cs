@@ -26,7 +26,7 @@ namespace InteractSystem
         }
         protected virtual void SetUserErr(string error)
         {
-            Debug.LogError(error);
+            Debug.LogWarning(error);
         }
     }
 }

@@ -19,7 +19,6 @@ namespace InteractSystem
         protected ActionItem element;
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public System.Type type { get; private set; }
-        public static bool log = false;
 
         public ActionItem Element { get { return element; } set { element = value; } }
         public string ElementName { get { return elementName; } }
@@ -87,13 +86,15 @@ namespace InteractSystem
             if (elements != null)
             {
                 elementPool.ScureAdd(elements.ToArray());
-                foreach (var item in elements)
+
+                foreach (var arg0 in elements)
                 {
-                    if (target.Active && !item.Active && item.OperateAble)
+                    if (target.Active && !arg0.Active && arg0.OperateAble)
                     {
-                        item.StepActive();
+                        arg0.StepActive();
                     }
                 }
+              
             }
         }
         /// <summary>
@@ -102,16 +103,25 @@ namespace InteractSystem
         /// <param name="undo"></param>
         protected virtual void CompleteElements(bool undo)
         {
-            var active = from item in startedList
+            ActionItem activedItem = (from item in startedList
                          let f = item.RetriveFeature<ContentActionItemFeature>()
                          where f != null
                          where f.elementName == elementName
-                         select item;
+                         select item).FirstOrDefault();
 
-            if (active == null)
+            if(log) Debug.Log("Actived ContentActionItemFeature:" + activedItem);
+
+            if (activedItem == null)
             {
+                if (log) Debug.Log("CompleteElements:" + elementName);
+                
                 var objs = elementPool.FindAll(x => x.Name == elementName);
-                if (objs == null) return;
+                if (objs == null)
+                {
+                    if (log) Debug.Log("elementPool have no Element named:" + element);
+                    return;
+                }
+
                 for (int i = 0; i < objs.Count; i++)
                 {
                     if (log)
@@ -154,8 +164,7 @@ namespace InteractSystem
         public override void StepComplete()
         {
             base.StepComplete();
-            if (startedList.Contains(this.target))
-            {
+            if (startedList.Contains(this.target)){
                 startedList.Remove(this.target);
             }
             CompleteElements(false);
@@ -163,8 +172,7 @@ namespace InteractSystem
         public override void StepUnDo()
         {
             base.StepUnDo();
-            if (startedList.Contains(this.target))
-            {
+            if (startedList.Contains(this.target)) {
                 startedList.Remove(this.target);
             }
             CompleteElements(true);

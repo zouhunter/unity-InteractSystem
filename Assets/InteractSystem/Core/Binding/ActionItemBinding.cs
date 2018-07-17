@@ -9,6 +9,7 @@ namespace InteractSystem.Binding
 {
     public class ActionItemBinding : ScriptableObject
     {
+        public static bool log;
         public virtual void Start() { }
         public virtual void Update() { }
         public virtual void OnActive(ActionItem target) { }
