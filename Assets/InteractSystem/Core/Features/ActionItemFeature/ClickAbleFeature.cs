@@ -27,6 +27,7 @@ namespace InteractSystem
                 _collider = value;
             }
         }
+        [HideInInspector]
         public UnityEvent onClick = new UnityEvent();
 
         public override void Awake()

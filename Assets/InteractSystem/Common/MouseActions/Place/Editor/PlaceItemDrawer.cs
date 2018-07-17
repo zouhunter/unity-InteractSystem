@@ -9,7 +9,7 @@ using System;
 namespace InteractSystem.Drawer
 {
     [CustomEditor(typeof(PlaceItem))]
-    public class PlaceItemDrawer : Editor
+    public class PlaceItemDrawer : ActionItemDrawer
     {
 
         [InitializeOnLoadMethod]

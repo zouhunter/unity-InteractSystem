@@ -9,7 +9,7 @@ using System;
 namespace InteractSystem.Drawer
 {
     [CustomEditor(typeof(RotateItem))]
-    public class RotateItemDrawer : Editor
+    public class RotateItemDrawer : ActionItemDrawer
     {
 
         [InitializeOnLoadMethod]

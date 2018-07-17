@@ -54,6 +54,7 @@ namespace InteractSystem.Drawer
             InitReorderLists();
         }
 
+     
         public override void OnInspectorGUI()
         {
             ActionGUIUtil.DrawDisableProperty(script_prop);
@@ -62,6 +63,14 @@ namespace InteractSystem.Drawer
             DrawSwitchToolBar();
             serializedObject.ApplyModifiedProperties();
         }
+
+        public void OnDrawBindings()
+        {
+            DrawBindigList();
+            DrawEnviromentList();
+            DrawHookLists();
+        }
+
 
         private void InitReorderLists()
         {
@@ -102,9 +111,7 @@ namespace InteractSystem.Drawer
             }
             else if (selected == 1)
             {
-                DrawBindigList();
-                DrawEnviromentList();
-                DrawHookLists();
+                OnDrawBindings();
             }
         }
 

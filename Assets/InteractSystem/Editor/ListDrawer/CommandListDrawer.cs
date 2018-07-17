@@ -106,8 +106,14 @@ namespace InteractSystem.Drawer
 
         private void DrawCommandItem(ActionCommand command)
         {
-            Editor.CreateCachedEditor(command,typeof(ActionCommandDrawer),ref drawer);
-            drawer.OnInspectorGUI();
+            Editor.CreateCachedEditor(command, typeof(ActionCommandDrawer), ref drawer);
+            var commandDrawer = drawer as ActionCommandDrawer;
+            if (commandDrawer)
+            {
+                commandDrawer.serializedObject.Update();
+                commandDrawer.OnDrawBindings();
+                commandDrawer.serializedObject.ApplyModifiedProperties();
+            }
         }
 
         protected override void DrawHeaderCallBack(Rect rect)

@@ -7,8 +7,9 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal;
+using InteractSystem.Actions;
 
-namespace InteractSystem.Actions
+namespace InteractSystem.Drawer
 { 
     public static class LayoutOption
     {
@@ -24,7 +25,7 @@ namespace InteractSystem.Actions
         public static GUILayoutOption maxHight = GUILayout.Height(EditorGUIUtility.singleLineHeight * 10);
     }
     [CustomEditor(typeof(LinkItem))]
-    public class LinkItemDrawer : Editor
+    public class LinkItemDrawer : ActionItemDrawer
     {
         [InitializeOnLoadMethod]
         static void ImportLayer()

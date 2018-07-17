@@ -272,9 +272,19 @@ namespace InteractSystem.Actions
                 {
                     continue;
                 }
-
+                if(itemB.PickUpAble)
+                {
+                    yield return MoveBToA(portA, portB);
+                }
+                else if(itemA.PickUpAble)
+                {
+                    yield return MoveBToA(portB, portA);
+                }
+                else
+                {
+                    Debug.LogErrorFormat("{0} and {1} can`t Move Both!",itemA,itemB);
+                }
                 //anglePos = portA.transform;
-                yield return MoveBToA(portA, portB);
                 LinkUtil.AttachNodes(portB, portA);
             }
             TryComplete();

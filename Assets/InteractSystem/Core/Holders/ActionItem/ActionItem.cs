@@ -17,7 +17,7 @@ namespace InteractSystem
         [SerializeField]
         protected bool endactive = true;
         [SerializeField]
-        private List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();
+        protected List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();
         public string Name
         {
             get

@@ -7,7 +7,6 @@ using System;
 
 namespace InteractSystem.Actions
 {
-  
     public class ClickItem : ActionItem
     {
         [SerializeField]

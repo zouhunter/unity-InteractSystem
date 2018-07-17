@@ -9,7 +9,7 @@ using System;
 namespace InteractSystem.Drawer
 {
     [CustomEditor(typeof(RopeElement))]
-    public class RopeElementDrawer : Editor
+    public class RopeElementDrawer : ActionItemDrawer
     {
 
         [InitializeOnLoadMethod]
