@@ -10,12 +10,13 @@ namespace InteractSystem.Drawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.PropertyField(position, property, label);
             if (property.propertyType == SerializedPropertyType.ObjectReference && property.objectReferenceValue == null)
             {
                 var go = (property.serializedObject.targetObject as MonoBehaviour).gameObject;
                 property.objectReferenceValue = go.GetComponentInChildren<Collider>();
             }
+
+            EditorGUI.PropertyField(position, property, label);
         }
     }
 

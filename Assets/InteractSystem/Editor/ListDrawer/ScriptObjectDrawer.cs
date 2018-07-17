@@ -58,7 +58,7 @@ namespace InteractSystem.Drawer
         {
             base.DrawHeaderCallBack(rect);
             //var labelRect = new Rect(rect.x, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
-            EditorGUI.LabelField(rect, title);
+            //EditorGUI.LabelField(rect, title);
 
             var rect1 = new Rect(rect.x + rect.width - ActionGUIUtil.bigButtonWidth, rect.y, ActionGUIUtil.middleButtonWidth, EditorGUIUtility.singleLineHeight);
             if (GUI.Button(rect1, "new"))

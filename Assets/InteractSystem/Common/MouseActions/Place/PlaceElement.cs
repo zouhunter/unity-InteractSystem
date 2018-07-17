@@ -71,7 +71,6 @@ namespace InteractSystem.Actions
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public int animTime { get { return Config.Instence.autoExecuteTime; } }
         public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
-        public bool HaveBinding { get { return target != null; } }
         public override bool OperateAble
         {
             get
@@ -101,13 +100,18 @@ namespace InteractSystem.Actions
         protected Tweener move;
         protected int smooth = 50;
         protected bool actived;
-        protected PlaceItem target;
-        public PlaceItem BindingObj { get { return target; } }
+        protected PlaceItem BindingObj
+        {
+            get
+            {
+                return targets.Count > 0 ? targets[0] as PlaceItem : null;
+            }
+        }
 
-        protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
-        protected bool StraightMove { get { return target ? target.straightMove : false; } }
-        protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
-        protected Transform Passby { get { return target ? target.passBy : null; } }
+        protected bool hideOnInstall { get { return BindingObj ? BindingObj.hideOnInstall : false; } }//
+        protected bool StraightMove { get { return BindingObj ? BindingObj.straightMove : false; } }
+        protected bool IgnoreMiddle { get { return BindingObj ? BindingObj.ignoreMiddle : false; } }
+        protected Transform Passby { get { return BindingObj ? BindingObj.passBy : null; } }
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
         protected Vector3 lastPos;
@@ -208,9 +212,9 @@ namespace InteractSystem.Actions
         public virtual void NormalInstall(PlaceItem target, bool binding)
         {
             StopTween();
-            if (!HaveBinding)
+            if (OperateAble)
             {
-                Binding(target);
+                RecordPlayer(target);
 
                 tweenCompleteAction = () =>
                 {
@@ -233,9 +237,9 @@ namespace InteractSystem.Actions
         public virtual void QuickInstall(PlaceItem target, bool binding)
         {
             StopTween();
-            if (!HaveBinding)
+            if (OperateAble)
             {
-                Binding(target);
+                RecordPlayer(target);
                 transform.position = target.transform.position;
                 transform.rotation = target.transform.rotation;
 
@@ -259,7 +263,7 @@ namespace InteractSystem.Actions
 #if !NoFunction
             tweenCompleteAction = () =>
             {
-                if (HaveBinding)
+                if (!OperateAble)
                 {
                     UnBinding();
                 }
@@ -280,9 +284,9 @@ namespace InteractSystem.Actions
             StopTween();
             transform.eulerAngles = startRotation;
             transform.position = startPos;
-            target = null;
+            UnBinding();
 
-            if (HaveBinding)
+            if (!OperateAble)
             {
                 UnBinding();
             }
@@ -377,14 +381,11 @@ namespace InteractSystem.Actions
             if (IsRuntimeCreated)
                 Destroy(gameObject);
         }
-        protected virtual void Binding(PlaceItem target)
-        {
-            this.target = target;
-        }
+
         protected virtual PlaceItem UnBinding()
         {
-            var old = target;
-            target = null;
+            var old = BindingObj;
+            RemovePlayer(old);
             return old;
         }
 

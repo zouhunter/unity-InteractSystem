@@ -110,6 +110,7 @@ namespace InteractSystem
 
         public virtual void StepActive()
         {
+            Debug.Log("StepActive:" + gameObject);
             gameObject.SetActive(true);
             Active = true;
             onActive.Invoke();

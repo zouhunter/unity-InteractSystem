@@ -88,7 +88,7 @@ namespace InteractSystem.Actions
             {
                 for (int i = 0; i < elements.Count; i++)
                 {
-                    if (!elements[i].HaveBinding)
+                    if (elements[i].OperateAble)
                     {
                         return elements[i];
                     }

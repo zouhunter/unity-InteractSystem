@@ -21,7 +21,7 @@ namespace InteractSystem
         public System.Type type { get; private set; }
         public static bool log = false;
 
-        public ActionItem Element { get { return element; }set { element = value; } }
+        public ActionItem Element { get { return element; } set { element = value; } }
         public string ElementName { get { return elementName; } }
 
         public ContentActionItemFeature(System.Type type)
@@ -68,11 +68,11 @@ namespace InteractSystem
                 elementPool.ScureRemove(element);
             }
         }
-        
+
 
         protected virtual void OnAddedToPool(ActionItem arg0)
         {
-            if (target.Active)
+            if (target.Active && !arg0.Active && arg0.OperateAble)
             {
                 arg0.StepActive();
             }
@@ -89,7 +89,7 @@ namespace InteractSystem
                 elementPool.ScureAdd(elements.ToArray());
                 foreach (var item in elements)
                 {
-                    if (!item.Active && item.OperateAble)
+                    if (target.Active && !item.Active && item.OperateAble)
                     {
                         item.StepActive();
                     }
@@ -145,7 +145,8 @@ namespace InteractSystem
         public override void StepActive()
         {
             base.StepActive();
-            if (!startedList.Contains(this.target)){
+            if (!startedList.Contains(this.target))
+            {
                 startedList.Add(this.target);
             }
             UpdateElementPool();
@@ -153,7 +154,8 @@ namespace InteractSystem
         public override void StepComplete()
         {
             base.StepComplete();
-            if (startedList.Contains(this.target)){
+            if (startedList.Contains(this.target))
+            {
                 startedList.Remove(this.target);
             }
             CompleteElements(false);
