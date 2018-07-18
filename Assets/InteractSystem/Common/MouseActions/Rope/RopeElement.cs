@@ -9,10 +9,11 @@ namespace InteractSystem.Actions
 {
     public class RopeElement : PickUpAbleItem
     {
+        [SerializeField,Attributes.CustomField("绳子")]
+        private UltimateRope rope;
         [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();
-        [SerializeField]
-        private UltimateRope rope;
+
         private List<Collider> ropeList = new List<Collider>();
         private List<float> lengthList = new List<float>();
         public RopeItem bindingTarget { get; set; }
@@ -27,7 +28,7 @@ namespace InteractSystem.Actions
         public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
         public bool completeHide { get; set; }
         private List<UnityAction<RopeElement>> onPlaceActions = new List<UnityAction<RopeElement>>();
-        public const string layer = "i:ropeItem";
+        public const string ropeItemLayer = "i:ropeItem";
 
         protected override void Awake()
         {
@@ -72,7 +73,7 @@ namespace InteractSystem.Actions
         {
             for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
-                ropeNodeFrom[i].gameObject.layer = LayerMask.NameToLayer(layer);
+                ropeNodeFrom[i].gameObject.layer = LayerMask.NameToLayer(ropeItemLayer);
             }
         }
 

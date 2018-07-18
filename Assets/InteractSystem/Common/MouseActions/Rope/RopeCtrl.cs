@@ -28,7 +28,7 @@ namespace InteractSystem.Actions
         private string resonwhy;
         private int ropePosLayerMask { get { return LayerMask.GetMask(RopeItem.layer); } }
         private int obstacleLayerMask { get { return LayerMask.GetMask(Layers.obstacleLayer); } }
-        private int ropeNodeLayerMask { get { return LayerMask.GetMask(RopeElement.layer); } }
+        private int ropeNodeLayerMask { get { return LayerMask.GetMask(RopeElement.ropeItemLayer); } }
         private float hitDistence { get { return Config.Instence.hitDistence; } }
         private PickUpController pickCtrl { get { return PickUpController.Instence; ; } }
 

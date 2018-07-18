@@ -9,6 +9,9 @@ namespace InteractSystem.Actions
 {
     public class LinkItem : PickUpAbleItem
     {
+        [SerializeField, Attributes.DefultGameObject("显示物体")]
+        private GameObject m_viewObj;//可选择提示
+        [SerializeField]
         private List<LinkPort> _childNodes = new List<LinkPort>();
         public Transform Trans
         {
@@ -59,8 +62,6 @@ namespace InteractSystem.Actions
             }
         }
         private event UnityAction onConnected;
-        [SerializeField, Attributes.DefultGameObject]
-        private GameObject m_viewObj;//可选择提示
         private Vector3 startPos;
         private Quaternion startRot;
         private Vector3 lastForward = Vector3.forward;

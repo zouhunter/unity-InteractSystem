@@ -12,7 +12,7 @@ namespace InteractSystem
     {
         private Coroutine delyCoroutine;
         private Dictionary<UnityAction, List<float>> delyActions = new Dictionary<UnityAction, List<float>>();
-        private Queue<UnityAction> mainThreadActions = new Queue<UnityAction>();
+        //private Queue<UnityAction> mainThreadActions = new Queue<UnityAction>();
         private event UnityAction frameActions;
         private static bool log = false;
         private static CoroutineController _instence;

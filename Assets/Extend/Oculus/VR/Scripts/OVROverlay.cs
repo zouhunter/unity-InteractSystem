@@ -436,10 +436,10 @@ public class OVROverlay : MonoBehaviour
 
 				tempRTDst.DiscardContents();
 
-				var rt = textures[eyeId] as RenderTexture;
 				bool dataIsLinear = isHdr || (QualitySettings.activeColorSpace == ColorSpace.Linear);
 
 #if !UNITY_2017_1_OR_NEWER
+				var rt = textures[eyeId] as RenderTexture;
 				dataIsLinear |= rt != null && rt.sRGB; //HACK: Unity 5.6 and earlier convert to linear on read from sRGB RenderTexture.
 #endif
 #if UNITY_ANDROID && !UNITY_EDITOR

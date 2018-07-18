@@ -9,7 +9,8 @@ namespace InteractSystem.Actions
 {
     public class MatchItem : PlaceItem
     {
-        public bool completeMoveBack;
+        [SerializeField,Attributes.CustomField("结束重置目标元素")]
+        protected bool completeMoveBack;
 
         public override void PlaceObject(PlaceElement pickup)
         {

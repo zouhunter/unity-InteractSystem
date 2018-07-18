@@ -10,7 +10,7 @@ namespace Oculus.Platform
 
   public abstract class Message<T> : Message
   {
-    public delegate void Callback(Message<T> message);
+    public new delegate void Callback(Message<T> message);
     public Message(IntPtr c_message) : base(c_message) {
       if (!IsError)
       {

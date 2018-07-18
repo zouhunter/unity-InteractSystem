@@ -29,7 +29,18 @@ namespace InteractSystem.Drawer
                 return _options;
             }
         }
-        protected int selected = 0;
+        protected Prefer.EditorPrefsInt prefer_selected = new Prefer.EditorPrefsInt("actionitemdrawer_selected");
+        protected int selected
+        {
+            get
+            {
+                return prefer_selected.value;
+            }
+            set
+            {
+                prefer_selected.value = value;
+            }
+        }
 
         protected virtual void OnEnable()
         {

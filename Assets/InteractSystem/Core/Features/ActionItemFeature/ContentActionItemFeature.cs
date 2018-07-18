@@ -12,7 +12,7 @@ namespace InteractSystem
     [System.Serializable]
     public class ContentActionItemFeature : ActionItemFeature
     {
-        [SerializeField,Attributes.CustomField("目标元素")]
+        [SerializeField,Attributes.CustomField("接收元素")]
         protected string elementName;
         protected ElementPool<ActionItem> elementPool = new ElementPool<ActionItem>();
         protected static List<ActionItem> startedList = new List<ActionItem>();
