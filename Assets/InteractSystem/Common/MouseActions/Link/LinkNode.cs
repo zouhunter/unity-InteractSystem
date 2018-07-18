@@ -12,12 +12,12 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Link", 17, "InteractSystem")]
     public class LinkNode : Graph.OperaterNode
     {
+        [SerializeField,Attributes.CustomField("快速连接（自动时）")]
+        protected bool quickLink;
+        [SerializeField, Attributes.CustomField("连接时间（自动时）")]
+        protected float autoLinkTime = 1f;
         [SerializeField]
-        private bool quickLink;
-        [SerializeField]
-        private float autoLinkTime = 1f;
-        [SerializeField]
-        public List<LinkGroup> defultLink;
+        protected List<LinkGroup> defultLink;
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         [SerializeField]
