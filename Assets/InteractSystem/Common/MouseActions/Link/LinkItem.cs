@@ -228,22 +228,9 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void StepActive()
-        {
-            base.StepActive();
-            Active = true;
-        }
-
-        public override void StepComplete()
-        {
-            base.StepComplete();
-            Active = false;
-        }
-
         public override void StepUnDo()
         {
             base.StepUnDo();
-            Active = false;
             transform.position = startPos;
             transform.rotation = startRot;
 

@@ -50,10 +50,12 @@ namespace InteractSystem
 
         protected virtual void OnAddedToPool(ISupportElement arg0)
         {
-            if (target.Statu == ExecuteStatu.Executing)
+
+            if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
             {
                 arg0.StepActive();
             }
+
             if (onAddToPool != null)
             {
                 onAddToPool.Invoke(arg0);
@@ -93,6 +95,16 @@ namespace InteractSystem
                         {
                             elementPool.ScureAdd(elements.ToArray());
                         }
+
+                        foreach (var item in elements)
+                        {
+                            Debug.Log(item.Name);
+                            if (target.Statu == ExecuteStatu.Executing && !item.Active && item.OperateAble)
+                            {
+                                item.StepActive();
+                            }
+                        }
+                        
                     }
                     else
                     {

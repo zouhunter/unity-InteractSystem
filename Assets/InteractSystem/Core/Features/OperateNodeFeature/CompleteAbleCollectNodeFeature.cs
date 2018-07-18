@@ -137,9 +137,12 @@ namespace InteractSystem
 
                 elements.ForEach(element =>
                 {
-                    element.StepActive();
+                    if(!element.Active && element.OperateAble && target.Statu == ExecuteStatu.Executing){
+                        element.StepActive();
+                    }
+
                     var feature = (element as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
-                    if(feature!= null)
+                    if (feature != null)
                     {
                         feature.RegistOnCompleteSafety(TryComplete);
                     }

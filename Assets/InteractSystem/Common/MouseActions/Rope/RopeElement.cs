@@ -94,7 +94,6 @@ namespace InteractSystem.Actions
         public override void StepActive()
         {
             base.StepActive();
-            Active = true;
             OnPlace(true);
         }
 
@@ -148,7 +147,6 @@ namespace InteractSystem.Actions
                 Invoke("TryRegenerate", 0.1f);
             }
 
-            Active = false;
             OnPlace(false);
         }
 
@@ -159,7 +157,6 @@ namespace InteractSystem.Actions
             {
                 rope.gameObject.SetActive(true);
             }
-            Active = false;
             OnPlace(true);
         }
         private void TryRegenerate()

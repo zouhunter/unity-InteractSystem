@@ -42,8 +42,8 @@ namespace InteractSystem
         }
         public bool IsRuntimeCreated { get; set; }
         public abstract bool OperateAble { get; }
-        public virtual bool Active { get { return _active; } protected set { _active = value; } }
-        protected bool _active;
+        public bool Active { get { return _active; } private set { _active = value; } }
+        private bool _active;
         protected List<UnityEngine.Object> targets = new List<UnityEngine.Object>();
         //子类actionItem(用于优先执行)
         protected ActionItem[] subActions;
@@ -110,12 +110,19 @@ namespace InteractSystem
 
         public virtual void StepActive()
         {
-            if(log) Debug.Log("StepActive:" + gameObject);
-            gameObject.SetActive(true);
-            Active = true;
-            onActive.Invoke();
-            TryExecuteFeatures((feature) => { feature.StepActive(); });
-            TryExecuteBindings((binding) => binding.OnActive(this));
+            if(!Active)
+            {
+                if (log) Debug.Log("StepActive:" + this);
+                gameObject.SetActive(true);
+                Active = true;
+                onActive.Invoke();
+                TryExecuteFeatures((feature) => { feature.StepActive(); });
+                TryExecuteBindings((binding) => binding.OnActive(this));
+            }
+            else
+            {
+                Debug.LogError("allreadly actived:" + this, gameObject);
+            }
         }
         public virtual void StepComplete()
         {

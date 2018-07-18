@@ -36,12 +36,13 @@ namespace InteractSystem.Actions
         }
         protected void OnAddedToPool(ISupportElement arg0)
         {
-            Debug.Log(arg0);
-            (arg0 as LinkItem).RegistOnConnected(TryComplete);
+            var linkItem = arg0 as LinkItem;
+            linkItem.RegistOnConnected(TryComplete);
         }
         protected void OnRemovedFromPool(ISupportElement arg0)
         {
-            (arg0 as LinkItem).RemoveOnConnected(TryComplete);
+            var linkItem = arg0 as LinkItem;
+            linkItem.RemoveOnConnected(TryComplete);
         }
 
         public override void OnStartExecute(bool auto = false)
