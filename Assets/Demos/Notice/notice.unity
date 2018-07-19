@@ -140,7 +140,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ed57a7c2e463b347be6173bcc662a3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionCommands: []
+  actionCommands:
+  - ignore: 0
+    commandName: command01
+    command: {fileID: 11400000, guid: abf11c5296bd07d498c87fb9e357ec63, type: 2}
   elementGroup: {fileID: 11400000, guid: a88ddefddb4e2e944b637bc076014a79, type: 2}
 --- !u!4 &1006660534
 Transform:
