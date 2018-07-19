@@ -11,9 +11,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
   m_Name: 1.step3
   m_EditorClassIdentifier: 
-  m_allNodes: []
-  m_allConnections: []
-  m_lastModified: 
+  m_allNodes:
+  - m_name: Start
+    m_id: a9a4f110-3606-4b85-9537-deba3ad84650
+    m_x: 186
+    m_y: 102
+    m_node: {fileID: 114066656898481930}
+    m_inputPoints: []
+    m_outputPoints:
+    - id: 28bf18a5-87d9-4572-812c-386519aa0103
+      label: 0
+      parentId: a9a4f110-3606-4b85-9537-deba3ad84650
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: 
+    m_id: 5397233b-6eaf-4295-89b4-6edde09414e5
+    m_x: 386
+    m_y: 136
+    m_node: {fileID: 114715641428259414}
+    m_inputPoints:
+    - id: 9b4f33a3-d7b4-4bc4-af0e-fd8983fe181c
+      label: 
+      parentId: 5397233b-6eaf-4295-89b4-6edde09414e5
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.455078
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 196b374b-8731-4c6c-b70f-c2f0b77c0a62
+      label: 0
+      parentId: 5397233b-6eaf-4295-89b4-6edde09414e5
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.455078
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  m_allConnections:
+  - m_id: 89b20bdc-c66a-4801-a578-925df0aa10d2
+    m_fromNodeId: a9a4f110-3606-4b85-9537-deba3ad84650
+    m_fromNodeConnectionPointId: 28bf18a5-87d9-4572-812c-386519aa0103
+    m_toNodeId: 5397233b-6eaf-4295-89b4-6edde09414e5
+    m_toNodeConnectionPoiontId: 9b4f33a3-d7b4-4bc4-af0e-fd8983fe181c
+    m_type: actionconnect
+    m_connection: {fileID: 114854433140814394}
+  m_lastModified: 131764944082735447
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: "\u8FDE\u63A5\u4E00\u4E9B\u70B9"
@@ -22,3 +79,45 @@ MonoBehaviour:
   startHooks:
   - {fileID: 11400000, guid: 07f3cf5d33ddbf84c9a0a072ce27cac5, type: 2}
   completeHooks: []
+--- !u!114 &114066656898481930
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: InteractSystem.Graph.StartNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114715641428259414
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab85ca785492194dbacafc1a723a8ac, type: 3}
+  m_Name: InteractSystem.Actions.ConnectNode
+  m_EditorClassIdentifier: 
+  _name: 
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  completeableFeature:
+    itemList:
+    - connect0
+--- !u!114 &114854433140814394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0

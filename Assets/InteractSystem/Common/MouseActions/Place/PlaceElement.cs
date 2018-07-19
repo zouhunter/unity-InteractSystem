@@ -40,7 +40,7 @@ namespace InteractSystem.Actions
 
         [HideInInspector]
         public UnityEvent onStepActive, onStepComplete, onStepUnDo;
-        [SerializeField,Attributes.DefultGameObject]
+        [SerializeField,Attributes.DefultGameObject("显示对象")]
         private GameObject m_viewObj;
         protected Vector3 startRotation;
         protected Vector3 startPos;

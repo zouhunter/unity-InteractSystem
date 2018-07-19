@@ -98,14 +98,9 @@ namespace InteractSystem.Actions
 
         private void RegistNodes()
         {
-            foreach (Transform child in transform)
+            foreach (Collider child in nodes)
             {
-                var collider = child.GetComponent<Collider>();
-                if (collider != null)
-                {
-                    collider.gameObject.layer = LayerMask.NameToLayer(layer);
-                    nodes.Add(collider);
-                }
+                child.gameObject.layer = LayerMask.NameToLayer(layer);
             }
         }
         public void AutoConnectNodes()
