@@ -29,7 +29,7 @@ namespace InteractSystem.Graph
         protected ExecuteStatu statu;
         public ExecuteStatu Statu { get { return statu; } }
         public UnityAction onEndExecute { get; set; }
-        public static bool log = true;
+        public static bool log = false;
 
         [SerializeField]
         protected string _name;

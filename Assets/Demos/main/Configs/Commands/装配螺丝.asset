@@ -113,7 +113,18 @@ MonoBehaviour:
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: "\u88C5\u914D\u87BA\u4E1D"
   commandBindings: []
-  environments: []
+  environments:
+  - instenceID: 0
+    guid: df5903029c337a34198fb41d863420a3
+    enviromentName: "\u87BA\u4E1D\u88C5\u914D"
+    originalState: 0
+    startState: 1
+    completeState: 1
+    coordinate:
+      localPosition: {x: -4.12, y: -1.61, z: -0.89}
+      localEulerAngles: {x: 0, y: 0, z: 0}
+      localScale: {x: 1, y: 1, z: 1}
+    ignore: 0
   startHooks: []
   completeHooks: []
 --- !u!114 &114260521623915886

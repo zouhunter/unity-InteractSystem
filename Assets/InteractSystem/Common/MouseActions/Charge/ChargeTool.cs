@@ -117,24 +117,12 @@ namespace InteractSystem.Actions
             }
             chargeData.value = left;
         }
-        public override void StepActive()
-        {
-            base.StepActive();
-            Active = true;
-        }
-
-        public override void StepComplete()
-        {
-            base.StepComplete();
-            Active = true;
-        }
-
+ 
         public override void StepUnDo()
         {
             base.StepUnDo();
             if(!string.IsNullOrEmpty(chargeData.type)) OnCharge(transform.position, chargeData.value, null);
             LoadData(transform.position, startData, null);
-            Active = false;
         }
         public override void SetVisible(bool visible)
         {

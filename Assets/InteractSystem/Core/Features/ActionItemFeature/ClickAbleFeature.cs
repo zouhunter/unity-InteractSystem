@@ -11,7 +11,7 @@ namespace InteractSystem
     [System.Serializable]
     public class ClickAbleFeature : ActionItemFeature
     {
-        [SerializeField, Attributes.DefultCollider]
+        [SerializeField, Attributes.DefultCollider("碰 撞 体")]
         protected Collider _collider;
         protected string _layerName;
         public virtual Collider collider
@@ -27,6 +27,7 @@ namespace InteractSystem
                 _collider = value;
             }
         }
+        [HideInInspector]
         public UnityEvent onClick = new UnityEvent();
 
         public override void Awake()

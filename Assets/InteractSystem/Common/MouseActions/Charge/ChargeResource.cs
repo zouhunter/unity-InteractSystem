@@ -19,6 +19,12 @@ namespace InteractSystem.Actions
         public ChargeEvent onChange { get; set; }
         public float capacity { get { return _capacity; } }
         public bool Used { get; set; }
+        public bool OperateAble
+        {
+            get {
+                return true;
+            }
+        }
         #region ISupportElement
         public string Name
         {

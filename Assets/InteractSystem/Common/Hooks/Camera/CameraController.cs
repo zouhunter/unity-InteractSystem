@@ -104,7 +104,47 @@ namespace InteractSystem
             }
         }
 
-        public void SetViewCamera(UnityAction onComplete, string id = null)
+        public void SetViewCameraQuick(string id = null)
+        {
+            StopStarted(false);
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return;
+            }
+            else if (id == defultID)
+            {
+                currentNode = null;
+                if (currentCamera != mainCamera)
+                {
+                    if(mainCamera)
+                    {
+                        viewCamera.gameObject.SetActive(false);
+                        mainCamera.gameObject.SetActive(true);
+                        viewCamera.transform.SetParent(viewCameraParent);
+                    }
+                }
+            }
+            else
+            {
+                var node = cameraNodes.Find(x => x != null && x.ID == id);
+                if (node == null || node == currentNode)
+                {
+                    currentNode = node;
+                    if (currentNode != null){
+                        SetTransform(currentNode.transform);
+                    }
+                }
+                else
+                {
+                    viewCamera.transform.SetParent(node.transform);
+                    SetCameraInfo(node);
+                    currentNode = node;
+                }
+            }
+        }
+
+        public void SetViewCameraAsync(UnityAction onComplete, string id = null)
         {
             StopStarted(false);
 

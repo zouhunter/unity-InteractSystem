@@ -20,17 +20,17 @@ namespace InteractSystem.Actions
             }
         }
 
-        [SerializeField]
-        private List<Collider> ropeNodeTo = new List<Collider>();
-        [SerializeField]
+      
+
+        [SerializeField,Attributes.CustomField("绳子坐标")]
         private Transform bestRopePos;
-        [SerializeField]
+        [SerializeField,Attributes.CustomField("接收距离")]
         private float triggerDistence;
-        [SerializeField]
-        private ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
         [SerializeField]
         private ContentActionItemFeature contentFeature = new ContentActionItemFeature(typeof(RopeElement));
         private CompleteAbleItemFeature completeFeature = new CompleteAbleItemFeature();
+        [SerializeField]
+        private List<Collider> ropeNodeTo = new List<Collider>();
 
         private List<Collider> connected = new List<Collider>();
         private Vector3[] ropeNodeStartPos;
@@ -51,8 +51,7 @@ namespace InteractSystem.Actions
             elementCtrl.onRegistElememt += OnRegistElement;
         }
         #endregion
-
-
+        
         #region API
 
         public void PickupCollider(Collider collider)
@@ -174,8 +173,8 @@ namespace InteractSystem.Actions
             features.Add(completeFeature);
 
             //可点击
-            clickAbleFeature.Init(this,PickUpAbleItem.layer);
-            features.Add(clickAbleFeature);
+            //clickAbleFeature.Init(this,PickUpAbleItem.layer);
+            //features.Add(clickAbleFeature);
 
             //子元素
             contentFeature.Init(this);

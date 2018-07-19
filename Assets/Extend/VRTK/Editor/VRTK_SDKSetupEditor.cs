@@ -398,8 +398,14 @@
             [InitializeOnLoadMethod]
             private static void ListenToPlayModeChanges()
             {
-                EditorApplication.playmodeStateChanged += () =>
+                EditorApplication.pauseStateChanged += (x) =>
                 {
+                    if (x == PauseState.Paused)
+                    {
+                        Debug.Log("PauseState.Paused");
+                        return;
+                    }
+
                     if (EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isPlaying)
                     {
                         FixOpenAndUnsavedScenes();

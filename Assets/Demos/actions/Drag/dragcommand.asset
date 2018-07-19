@@ -31,7 +31,7 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
-  - m_name: "\u70B9\u51FB\u4E00\u4E9BCube"
+  - m_name: "\u62D6\u62FD\u4E00\u4E9BCube"
     m_id: ef31d656-78bc-481c-be45-69f8f631d66f
     m_x: 312
     m_y: 144
@@ -62,6 +62,37 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
+  - m_name: 
+    m_id: 03b265cb-7906-4b61-9217-5e8b8152fb10
+    m_x: 396
+    m_y: 240
+    m_node: {fileID: 114738484976134770}
+    m_inputPoints:
+    - id: d1406fe5-f9a1-4299-b53c-eb1b1dd7dacf
+      label: 
+      parentId: 03b265cb-7906-4b61-9217-5e8b8152fb10
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.455078
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: d580b057-ea44-490b-ab8e-180488a02d53
+      label: 0
+      parentId: 03b265cb-7906-4b61-9217-5e8b8152fb10
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.455078
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
   m_allConnections:
   - m_id: de040d5b-1c6c-4827-902c-ae3e28b2133e
     m_fromNodeId: 5d7f0a68-564a-4aa5-8869-c20ec52485f7
@@ -70,7 +101,7 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 2c4afbb0-485c-4166-acb4-fc59e144a1f5
     m_type: actionconnect
     m_connection: {fileID: 114248506702967924}
-  m_lastModified: 131733537432983867
+  m_lastModified: 131765072869401587
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: dragcommand
@@ -101,6 +132,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
   m_Name: InteractSystem.Graph.StartNode
   m_EditorClassIdentifier: 
+--- !u!114 &114738484976134770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0245c5b37463dc4f80965b07113aaa9, type: 3}
+  m_Name: InteractSystem.Auto.AnimNode
+  m_EditorClassIdentifier: 
+  _name: 
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  delyTime: 0
+  speed: 1
+  reverse: 0
+  _animName: 
 --- !u!114 &114957999608111852
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -112,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61a36577c97332147b043e69e0a1c43e, type: 3}
   m_Name: InteractSystem.Common.Actions.DragNode
   m_EditorClassIdentifier: 
-  _name: "\u70B9\u51FB\u4E00\u4E9BCube"
+  _name: "\u62D6\u62FD\u4E00\u4E9BCube"
   startHooks: []
   completeHooks: []
   bindings: []

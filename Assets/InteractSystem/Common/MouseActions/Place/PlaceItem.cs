@@ -6,12 +6,12 @@ namespace InteractSystem.Actions
 {
     public abstract class PlaceItem : ActionItem
     {
-        public bool autoInstall;//自动安装
-        public bool ignorePass;//反忽略
-        public Transform passBy;//路过
-        public bool straightMove;//直线移动
-        public bool ignoreMiddle;//忽略中间点
-        public bool hideOnInstall;//安装完后隐藏
+        [Attributes.CustomField("自动安装")] public bool autoInstall;//自动安装
+        [Attributes.CustomField("防止忽略")] public bool ignorePass;//反忽略
+        [Attributes.CustomField("中间节点")] public Transform passBy;//路过
+        [Attributes.CustomField("跳过节点")] public bool ignoreMiddle;//忽略中间点
+        [Attributes.CustomField("直线移动")] public bool straightMove;//直线移动
+        [Attributes.CustomField("结束隐藏")] public bool hideOnInstall;//安装完后隐藏
 
         [SerializeField]
         protected ContentActionItemFeature contentFeature = new ContentActionItemFeature(typeof(PlaceElement));
@@ -39,7 +39,7 @@ namespace InteractSystem.Actions
             contentFeature.Init(this);
             features.Add(contentFeature);
 
-            completeFeature.Init(this,AutoExecute);
+            completeFeature.Init(this, AutoExecute);
             features.Add(completeFeature);
 
             clickAbleFeature.Init(this, placePosLayer);
@@ -88,7 +88,7 @@ namespace InteractSystem.Actions
             {
                 for (int i = 0; i < elements.Count; i++)
                 {
-                    if (!elements[i].HaveBinding)
+                    if (elements[i].OperateAble)
                     {
                         return elements[i];
                     }
@@ -97,11 +97,13 @@ namespace InteractSystem.Actions
             throw new Exception("配制错误,缺少" + elementName);
         }
 
-        protected virtual void OnInstallComplete() {
+        protected virtual void OnInstallComplete()
+        {
             contentFeature.Element.StepComplete();
         }
 
-        protected virtual void OnUnInstallComplete() {
+        protected virtual void OnUnInstallComplete()
+        {
             contentFeature.Element.StepUnDo();
         }
 

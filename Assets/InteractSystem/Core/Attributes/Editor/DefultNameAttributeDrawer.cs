@@ -17,11 +17,11 @@ namespace InteractSystem.Attributes
 
             if(property.propertyType == SerializedPropertyType.String)
             {
-                EditorGUI.PropertyField(position, property);
-
+                EditorGUI.PropertyField(position, property,new GUIContent(att.title));
                 if (string.IsNullOrEmpty(property.stringValue))
                 {
                     GUI.contentColor = Color.gray;
+
                     if (att.path == "name")
                     {
                         EditorGUI.LabelField(position, new GUIContent("    "), new GUIContent(property.serializedObject.targetObject.name));
@@ -30,8 +30,10 @@ namespace InteractSystem.Attributes
                     {
                         EditorGUI.LabelField(position, new GUIContent("    "), new GUIContent(property.serializedObject.FindProperty(att.path).stringValue));
                     }
+
                     GUI.contentColor = Color.white;
                 }
+               
             }
 
         }

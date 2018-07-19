@@ -20,7 +20,7 @@ namespace InteractSystem
                 }
                 return _defult;
             }
-            set
+            private set
             {
                 _defult = value;
             }

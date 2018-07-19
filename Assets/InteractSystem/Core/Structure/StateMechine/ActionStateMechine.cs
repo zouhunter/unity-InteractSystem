@@ -166,6 +166,7 @@ namespace InteractSystem.Structure
         public virtual void OnUnDoExecute(bool all)
         {
             StopUpdateAction(true);
+
             if (all)
             {
                 UnDo(root);

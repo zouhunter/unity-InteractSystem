@@ -11,13 +11,13 @@ namespace InteractSystem.Auto
     [CustomNode("Auto/Anim", 0, "InteractSystem")]
     public class AnimNode : Graph.OperaterNode
     {
-        [SerializeField]
+        [SerializeField,Attributes.CustomField("延时播放")]
         private float delyTime = 0f;
-        [SerializeField,Attributes.Range(0.1f, 10f)]
+        [SerializeField,Attributes.Range(0.1f, 10f), Attributes.CustomField("播放速度")]
         private float speed = 1;
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("反向播放")]
         private bool reverse;
-        [SerializeField,Attributes.DefultName("_name")]
+        [SerializeField,Attributes.DefultName("动画名","_name")]
         private string _animName;
         private string animName
         {

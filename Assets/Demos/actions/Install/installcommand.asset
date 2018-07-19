@@ -33,7 +33,7 @@ MonoBehaviour:
       type: actionconnect
   - m_name: "\u5B89\u88C5"
     m_id: 61f1eadf-13d0-421b-bc91-097d79ca78f0
-    m_x: 350
+    m_x: 320
     m_y: 60
     m_node: {fileID: 114472825624152076}
     m_inputPoints:
@@ -94,13 +94,6 @@ MonoBehaviour:
       max: 100
       type: actionconnect
   m_allConnections:
-  - m_id: bb398f6d-eba5-4333-9589-e78e922de642
-    m_fromNodeId: 626f9095-a1f1-483a-9c55-f375724f05a4
-    m_fromNodeConnectionPointId: 84cf2e74-be90-4868-bc3a-e5117d7b0bfa
-    m_toNodeId: c6dce825-1007-4e40-8554-c6074a97a4f2
-    m_toNodeConnectionPoiontId: 53e907e8-d2b4-4da6-8820-5632d4fea30b
-    m_type: actionconnect
-    m_connection: {fileID: 114775099110036266}
   - m_id: bd7a2276-f843-415a-a918-c72752a53e21
     m_fromNodeId: 626f9095-a1f1-483a-9c55-f375724f05a4
     m_fromNodeConnectionPointId: 84cf2e74-be90-4868-bc3a-e5117d7b0bfa
@@ -108,7 +101,14 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 99986efd-e59c-40b2-a00e-048cf0786522
     m_type: actionconnect
     m_connection: {fileID: 114239367847509912}
-  m_lastModified: 131750462092766188
+  - m_id: acc5f53f-1dda-4024-9d5c-96397997e89c
+    m_fromNodeId: 626f9095-a1f1-483a-9c55-f375724f05a4
+    m_fromNodeConnectionPointId: 84cf2e74-be90-4868-bc3a-e5117d7b0bfa
+    m_toNodeId: c6dce825-1007-4e40-8554-c6074a97a4f2
+    m_toNodeConnectionPoiontId: 53e907e8-d2b4-4da6-8820-5632d4fea30b
+    m_type: actionconnect
+    m_connection: {fileID: 114324688589406710}
+  m_lastModified: 131763176435594784
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: installcommand
@@ -146,6 +146,18 @@ MonoBehaviour:
   m_Name: InteractSystem.Graph.StartNode
   m_EditorClassIdentifier: 
 --- !u!114 &114239367847509912
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0
+--- !u!114 &114324688589406710
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -232,18 +244,6 @@ MonoBehaviour:
   itemList:
   - "\u5B89\u88C5\u5DE6\u7403"
   - "\u5B89\u88C5\u53F3\u7403"
---- !u!114 &114775099110036266
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: InteractSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0
 --- !u!114 &114899874541265034
 MonoBehaviour:
   m_ObjectHideFlags: 1

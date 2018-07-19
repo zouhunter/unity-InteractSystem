@@ -11,7 +11,7 @@ namespace InteractSystem
     public class PickUpAbleFeature: ClickAbleFeature{
         private PickUpAbleComponent _pickUpAbleItem;
       
-        [SerializeField]
+        [SerializeField,Attributes.CustomField("可拿起")]
         private bool pickUpAble = true;
         private PickUpAbleComponent pickUpAbleItem
         {
@@ -31,8 +31,7 @@ namespace InteractSystem
                 return _pickUpAbleItem;
             }
         }
-
- 
+        
         public override string LayerName
         {
             get

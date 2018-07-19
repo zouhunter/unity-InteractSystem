@@ -202,7 +202,7 @@ namespace InteractSystem
 
         public virtual void UnDoExecute()
         {
-            Debug.Log("UnDoExecute:"+this);
+            if(log) Debug.Log("UnDoExecute:"+this);
             statu = ExecuteStatu.UnStarted;
 
             if (completeHookCtrl.Statu != ExecuteStatu.UnStarted){

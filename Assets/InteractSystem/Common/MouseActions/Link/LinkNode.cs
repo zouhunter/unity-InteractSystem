@@ -12,12 +12,12 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Link", 17, "InteractSystem")]
     public class LinkNode : Graph.OperaterNode
     {
+        [SerializeField,Attributes.CustomField("快速连接（自动时）")]
+        protected bool quickLink;
+        [SerializeField, Attributes.CustomField("连接时间（自动时）")]
+        protected float autoLinkTime = 1f;
         [SerializeField]
-        private bool quickLink;
-        [SerializeField]
-        private float autoLinkTime = 1f;
-        [SerializeField]
-        public List<LinkGroup> defultLink;
+        protected List<LinkGroup> defultLink;
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         [SerializeField]
@@ -36,12 +36,13 @@ namespace InteractSystem.Actions
         }
         protected void OnAddedToPool(ISupportElement arg0)
         {
-            Debug.Log(arg0);
-            (arg0 as LinkItem).RegistOnConnected(TryComplete);
+            var linkItem = arg0 as LinkItem;
+            linkItem.RegistOnConnected(TryComplete);
         }
         protected void OnRemovedFromPool(ISupportElement arg0)
         {
-            (arg0 as LinkItem).RemoveOnConnected(TryComplete);
+            var linkItem = arg0 as LinkItem;
+            linkItem.RemoveOnConnected(TryComplete);
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -272,9 +273,19 @@ namespace InteractSystem.Actions
                 {
                     continue;
                 }
-
+                if(itemB.PickUpAble)
+                {
+                    yield return MoveBToA(portA, portB);
+                }
+                else if(itemA.PickUpAble)
+                {
+                    yield return MoveBToA(portB, portA);
+                }
+                else
+                {
+                    Debug.LogErrorFormat("{0} and {1} can`t Move Both!",itemA,itemB);
+                }
                 //anglePos = portA.transform;
-                yield return MoveBToA(portA, portB);
                 LinkUtil.AttachNodes(portB, portA);
             }
             TryComplete();

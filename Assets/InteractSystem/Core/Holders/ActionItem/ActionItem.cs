@@ -10,14 +10,14 @@ namespace InteractSystem
 {
     public abstract class ActionItem : MonoBehaviour, ISupportElement
     {
-        [SerializeField, Attributes.DefultName]
+        [SerializeField, Attributes.DefultName("关键字")]
         protected string _name;
-        [SerializeField]
+        [SerializeField] [Attributes.CustomField("执行前状态")]
         protected bool startactive = true;
-        [SerializeField]
+        [SerializeField] [Attributes.CustomField("执行后状态")]
         protected bool endactive = true;
         [SerializeField]
-        private List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();
+        protected List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();
         public string Name
         {
             get
@@ -42,8 +42,8 @@ namespace InteractSystem
         }
         public bool IsRuntimeCreated { get; set; }
         public abstract bool OperateAble { get; }
-        public virtual bool Active { get { return _active; } protected set { _active = value; } }
-        protected bool _active;
+        public bool Active { get { return _active; } private set { _active = value; } }
+        private bool _active;
         protected List<UnityEngine.Object> targets = new List<UnityEngine.Object>();
         //子类actionItem(用于优先执行)
         protected ActionItem[] subActions;
@@ -110,14 +110,23 @@ namespace InteractSystem
 
         public virtual void StepActive()
         {
-            gameObject.SetActive(true);
-            Active = true;
-            onActive.Invoke();
-            TryExecuteFeatures((feature) => { feature.StepActive(); });
-            TryExecuteBindings((binding) => binding.OnActive(this));
+            if(!Active)
+            {
+                if (log) Debug.Log("StepActive:" + this);
+                gameObject.SetActive(true);
+                Active = true;
+                onActive.Invoke();
+                TryExecuteFeatures((feature) => { feature.StepActive(); });
+                TryExecuteBindings((binding) => binding.OnActive(this));
+            }
+            else
+            {
+                Debug.LogError("allreadly actived:" + this, gameObject);
+            }
         }
         public virtual void StepComplete()
         {
+            if (log) Debug.Log("StepComplete:" + gameObject);
             Active = false;
             onInActive.Invoke();
             ElementController.Instence.SetPriority(subActions);
@@ -127,6 +136,7 @@ namespace InteractSystem
         }
         public virtual void StepUnDo()
         {
+            if (log) Debug.Log("StepUnDo:" + gameObject);
             Active = false;
             onInActive.Invoke();
             TryExecuteFeatures((feature) => { feature.StepUnDo(); });

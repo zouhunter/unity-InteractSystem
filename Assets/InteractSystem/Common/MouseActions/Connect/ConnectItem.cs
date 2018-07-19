@@ -16,10 +16,12 @@ namespace InteractSystem.Actions
                 return targets.Count == 0;
             }
         }
-        public float lineWight = 0.1f;
-        public Material lineMaterial;
+        [SerializeField, Attributes.CustomField("线宽")]
+        protected float lineWight = 0.1f;
+        [SerializeField, Attributes.CustomField("材质")]
+        protected Material lineMaterial;
 
-        private float autoTime { get { return Config.Instence.autoExecuteTime; } }
+        protected float autoTime { get { return Config.Instence.autoExecuteTime; } }
         [System.Serializable]
         public class PointGroup
         {
@@ -29,7 +31,7 @@ namespace InteractSystem.Actions
       
         public List<PointGroup> connectGroup;
         [SerializeField]
-        private List<Collider> nodes = new List<Collider>();
+        protected List<Collider> nodes = new List<Collider>();
 
         private Dictionary<int, LineRenderer> lineRenders = new Dictionary<int, LineRenderer>();
         private Dictionary<int, Vector3[]> positionDic = new Dictionary<int, Vector3[]>();
@@ -96,14 +98,9 @@ namespace InteractSystem.Actions
 
         private void RegistNodes()
         {
-            foreach (Transform child in transform)
+            foreach (Collider child in nodes)
             {
-                var collider = child.GetComponent<Collider>();
-                if (collider != null)
-                {
-                    collider.gameObject.layer = LayerMask.NameToLayer(layer);
-                    nodes.Add(collider);
-                }
+                child.gameObject.layer = LayerMask.NameToLayer(layer);
             }
         }
         public void AutoConnectNodes()

@@ -13,4 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runTimeElements: []
   autoElements: []
-  enviroments: []
+  enviroments:
+  - instanceID: 0
+    _name: "\u87BA\u4E1D\u88C5\u914D"
+    prefab: {fileID: 1862428554148646, guid: df5903029c337a34198fb41d863420a3, type: 2}

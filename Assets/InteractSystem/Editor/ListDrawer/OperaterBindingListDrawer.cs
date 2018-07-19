@@ -13,7 +13,15 @@ namespace InteractSystem.Drawer
     public class OperaterBindingListDrawer : BindingListDrawer
     {
         protected List<Binding.OperaterBinding> dragBindings = new List<Binding.OperaterBinding>();
-
+        public OperaterBindingListDrawer(string title)
+        {
+            this.title = title;
+        }
+        protected override void DrawHeaderCallBack(Rect rect)
+        {
+            base.DrawHeaderCallBack(rect);
+            EditorGUI.LabelField(rect, title);
+        }
         protected override void DrawDragField(Rect objRect, SerializedProperty prop)
         {
             if (Event.current.type == EventType.DragUpdated && objRect.Contains(Event.current.mousePosition))

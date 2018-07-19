@@ -18,11 +18,11 @@ namespace InteractSystem.Actions
         public Vector3 targetPos { get; private set; }
         public Vector3 startPos { get; private set; }
 
-        [SerializeField, Header("target (child transform)")]
+        [SerializeField, Attributes.CustomField("目标点")]
         private Transform targetHolder;
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("坍缩时间")]
         private float clampTime = 0.2f;
-        [SerializeField]
+        [SerializeField,Attributes.CustomField("范围限制")]
         private bool clampHard;
         private float autoDragTime { get { return Config.Instence.autoExecuteTime; } }
         private bool auto;

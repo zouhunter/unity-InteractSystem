@@ -17,7 +17,7 @@ namespace InteractSystem.Attributes
 
             if (property.propertyType == SerializedPropertyType.ObjectReference)
             {
-                EditorGUI.PropertyField(position, property);
+                EditorGUI.PropertyField(position, property,new GUIContent(att.title));
 
                 if (property.objectReferenceValue == null && property.serializedObject.targetObject is MonoBehaviour)
                 {

@@ -11,18 +11,23 @@ namespace InteractSystem.Actions
     [AddComponentMenu(MenuName.RotObj)]
     public class RotateItem : ActionItem
     {
-        public float minAngle = -30;
-        public float maxAngle = 30;
-        public float triggerAngle = 30;
-        public bool clampHard;
-        public bool completeMoveBack;
-        public float autoCompleteTime = 2f;
+        [SerializeField, Attributes.CustomField("最小角度（左）")]
+        protected float minAngle = -30;
+        [SerializeField, Attributes.CustomField("最大角度（右）")]
+        protected float maxAngle = 30;
+        [SerializeField, Attributes.CustomField("触发角度")]
+        protected float triggerAngle = 30;
+        [SerializeField, Attributes.CustomField("角度限定")]
+        protected bool clampHard;
+        [SerializeField, Attributes.CustomField("结束时角度重置")]
+        protected bool completeMoveBack;
+        [SerializeField, Attributes.CustomField("执行时间（自动状态）")]
+        protected float autoCompleteTime = 2f;
 
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("轴向标记")]
         private Transform _directionHolder;
-        [SerializeField]
         private Transform _operater;
-        public Transform Operater { get { if (_operater == null) _operater = transform; return _operater; } }
+        public Transform Operater { get { return clickAbleFeature.collider.transform; } }
         public Vector3 Direction { get; private set; }
         public override bool OperateAble
         {
@@ -84,7 +89,7 @@ namespace InteractSystem.Actions
             Operater.rotation = startRot;
         }
 
-     
+
         public override void StepComplete()
         {
             base.StepComplete();
@@ -108,8 +113,10 @@ namespace InteractSystem.Actions
         public void Clamp()
         {
             if (gameObject.activeInHierarchy)
-                StartCoroutine(Clamp(() => {
-                    if (TryMarchRot()){
+                StartCoroutine(Clamp(() =>
+                {
+                    if (TryMarchRot())
+                    {
                         completeFeature.OnComplete();
                     }
                 }));
@@ -134,9 +141,9 @@ namespace InteractSystem.Actions
         public void Rotate(float amount)
         {
             currAngle += amount;
-            if(clampHard)
+            if (clampHard)
             {
-                if(currAngle < minAngle || currAngle > maxAngle)
+                if (currAngle < minAngle || currAngle > maxAngle)
                 {
                     currAngle -= amount;
                     return;

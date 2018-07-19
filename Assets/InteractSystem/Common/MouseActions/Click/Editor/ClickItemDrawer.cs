@@ -9,7 +9,7 @@ using System;
 namespace InteractSystem.Drawer
 {
     [CustomEditor(typeof(ClickItem))]
-    public class ClickItemDrawer : Editor
+    public class ClickItemDrawer : ActionItemDrawer
     {
         [InitializeOnLoadMethod]
         static void ImportLayer()

@@ -13,65 +13,12 @@ namespace InteractSystem.Actions
     /// </summary>
     public class PlaceElement : PickUpAbleItem, ISupportElement
     {
-        public class Tweener
-        {
-            private MonoBehaviour holder;
-            private Vector3[] positons;
-            private float animTime;
-            private UnityAction onComplete;
-            private Transform target;
-            private Coroutine coroutine;
-            private UnityAction<int> onwayPointChanged { get; set; }
-            public Tweener(MonoBehaviour holder)
-            {
-                this.holder = holder;
-            }
-
-            internal void DOPath(Transform transform, Vector3[] vector3, int animTime, UnityAction onComplete)
-            {
-                this.positons = vector3;
-                this.animTime = animTime;
-                this.onComplete = onComplete;
-                this.target = transform;
-                coroutine = holder.StartCoroutine(MoveCore());
-            }
-
-            IEnumerator MoveCore()
-            {
-                float d_time = animTime / (positons.Length - 1);
-                for (int i = 0; i < positons.Length - 1; i++)
-                {
-                    if (onwayPointChanged != null) onwayPointChanged(i);
-                    var startPos = positons[i];
-                    var targetPos = positons[i + 1];
-                    for (float j = 0; j < d_time; j += Time.deltaTime)
-                    {
-                        target.position = Vector3.Lerp(startPos, targetPos, j);
-                        yield return null;
-                    }
-                }
-                if (onwayPointChanged != null) onwayPointChanged(positons.Length - 1);
-                if (onComplete != null) onComplete();
-            }
-            internal void Kill()
-            {
-                if (coroutine != null)
-                {
-                    holder.StopCoroutine(coroutine);
-                }
-            }
-            internal void OnWaypointChange(UnityAction<int> p)
-            {
-                onwayPointChanged = p;
-            }
-        }
 
         private ActionGroup _system;
         public ActionGroup system { get { transform.SurchSystem(ref _system); return _system; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public int animTime { get { return Config.Instence.autoExecuteTime; } }
-        public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
-        public bool HaveBinding { get { return target != null; } }
+        //public bool startActive = true;//如果是false，则到当前步骤时才会激活对象
         public override bool OperateAble
         {
             get
@@ -93,28 +40,32 @@ namespace InteractSystem.Actions
 
         [HideInInspector]
         public UnityEvent onStepActive, onStepComplete, onStepUnDo;
-        [SerializeField,Attributes.DefultGameObject]
+        [SerializeField,Attributes.DefultGameObject("显示对象")]
         private GameObject m_viewObj;
-        [SerializeField]
         protected Vector3 startRotation;
         protected Vector3 startPos;
-        protected Tweener move;
+        protected PathTweener move;
         protected int smooth = 50;
         protected bool actived;
-        protected PlaceItem target;
-        public PlaceItem BindingObj { get { return target; } }
+        protected PlaceItem BindingObj
+        {
+            get
+            {
+                return targets.Count > 0 ? targets[0] as PlaceItem : null;
+            }
+        }
 
-        protected bool hideOnInstall { get { return target ? target.hideOnInstall : false; } }//
-        protected bool StraightMove { get { return target ? target.straightMove : false; } }
-        protected bool IgnoreMiddle { get { return target ? target.ignoreMiddle : false; } }
-        protected Transform Passby { get { return target ? target.passBy : null; } }
+        protected bool hideOnInstall { get { return BindingObj ? BindingObj.hideOnInstall : false; } }//
+        protected bool StraightMove { get { return BindingObj ? BindingObj.straightMove : false; } }
+        protected bool IgnoreMiddle { get { return BindingObj ? BindingObj.ignoreMiddle : false; } }
+        protected Transform Passby { get { return BindingObj ? BindingObj.passBy : null; } }
         protected bool tweening;
         protected UnityAction tweenCompleteAction;
         protected Vector3 lastPos;
         protected override void Awake()
         {
             base.Awake();
-            move = new Tweener(this);
+            move = new PathTweener(this);
         }
         protected override void Start()
         {
@@ -122,7 +73,7 @@ namespace InteractSystem.Actions
             InitRender();
             startPos = transform.position;
             startRotation = transform.eulerAngles;
-            gameObject.SetActive(startActive);
+            gameObject.SetActive(startactive);
             elementCtrl.RegistElement(this);
         }
         protected override void OnDestroy()
@@ -208,9 +159,9 @@ namespace InteractSystem.Actions
         public virtual void NormalInstall(PlaceItem target, bool binding)
         {
             StopTween();
-            if (!HaveBinding)
+            if (OperateAble)
             {
-                Binding(target);
+                RecordPlayer(target);
 
                 tweenCompleteAction = () =>
                 {
@@ -233,9 +184,9 @@ namespace InteractSystem.Actions
         public virtual void QuickInstall(PlaceItem target, bool binding)
         {
             StopTween();
-            if (!HaveBinding)
+            if (OperateAble)
             {
-                Binding(target);
+                RecordPlayer(target);
                 transform.position = target.transform.position;
                 transform.rotation = target.transform.rotation;
 
@@ -259,7 +210,7 @@ namespace InteractSystem.Actions
 #if !NoFunction
             tweenCompleteAction = () =>
             {
-                if (HaveBinding)
+                if (!OperateAble)
                 {
                     UnBinding();
                 }
@@ -274,15 +225,15 @@ namespace InteractSystem.Actions
         /// </summary>
         public virtual void QuickUnInstall()
         {
-            Debug.Log("QuickUnInstall");
+            if(log) Debug.Log("QuickUnInstall:"+ gameObject,gameObject);
 
 #if !NoFunction
             StopTween();
             transform.eulerAngles = startRotation;
             transform.position = startPos;
-            target = null;
+            UnBinding();
 
-            if (HaveBinding)
+            if (!OperateAble)
             {
                 UnBinding();
             }
@@ -317,8 +268,6 @@ namespace InteractSystem.Actions
         public override void StepActive()
         {
             base.StepActive();
-            if (log)
-                Debug.Log("StepActive:" + Name, gameObject);
             actived = true;
             onStepActive.Invoke();
             gameObject.SetActive(true);
@@ -351,7 +300,7 @@ namespace InteractSystem.Actions
                 Debug.Log("StepUnDo:" + Name, gameObject);
             actived = false;
             onStepUnDo.Invoke();
-            gameObject.SetActive(startActive);
+            gameObject.SetActive(startactive);
         }
 
 
@@ -377,14 +326,11 @@ namespace InteractSystem.Actions
             if (IsRuntimeCreated)
                 Destroy(gameObject);
         }
-        protected virtual void Binding(PlaceItem target)
-        {
-            this.target = target;
-        }
+
         protected virtual PlaceItem UnBinding()
         {
-            var old = target;
-            target = null;
+            var old = BindingObj;
+            RemovePlayer(old);
             return old;
         }
 
