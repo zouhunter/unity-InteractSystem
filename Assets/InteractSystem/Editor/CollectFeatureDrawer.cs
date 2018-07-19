@@ -22,7 +22,7 @@ namespace InteractSystem.Drawer
             if (listDrawer == null)
             {
                 listDrawer = new ReorderableList(property.serializedObject, itemListProp);
-                listDrawer.drawHeaderCallback = (rect) => { EditorGUI.LabelField(rect, "执行列表"); };
+                listDrawer.drawHeaderCallback = (rect) => { EditorGUI.LabelField(rect, "执行列表(CollectNodeFeature)"); };
                 listDrawer.elementHeight = ActionGUIUtil.padding * 2 + EditorGUIUtility.singleLineHeight;
                 listDrawer.drawElementCallback = DrawElement;
             }

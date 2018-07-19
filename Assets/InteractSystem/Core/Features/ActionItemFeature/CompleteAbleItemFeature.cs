@@ -34,7 +34,7 @@ namespace InteractSystem
             }
             else
             {
-                Debug.LogError("have no on Complete action!");
+                Debug.LogWarning("have no on Complete action!");
             }
         }
 

@@ -12,7 +12,7 @@ namespace InteractSystem
     [System.Serializable]
     public class CollectNodeFeature : OperateNodeFeature
     {
-        [SerializeField,HideInInspector]
+        [SerializeField, HideInInspector]
         public List<string> itemList = new List<string>();
         public Type type { get; private set; }
         public readonly ElementPool<ISupportElement> elementPool = new ElementPool<ISupportElement>();
@@ -21,6 +21,7 @@ namespace InteractSystem
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public UnityAction<ISupportElement> onAddToPool { get; set; }
         public UnityAction<ISupportElement> onRemoveFromPool { get; set; }
+        public UnityAction<ISupportElement> onUpdateElement { get; set; }
         public CollectNodeFeature(Type type)
         {
             this.type = type;
@@ -50,11 +51,10 @@ namespace InteractSystem
 
         protected virtual void OnAddedToPool(ISupportElement arg0)
         {
-
-            if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
-            {
-                arg0.StepActive();
-            }
+            //if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
+            //{
+            //    arg0.StepActive();
+            //}
 
             if (onAddToPool != null)
             {
@@ -74,7 +74,7 @@ namespace InteractSystem
         {
             CompleteElements(false);
         }
-  
+
         /// <summary>
         /// 从场景中找到已经存在的元素
         /// </summary>
@@ -88,7 +88,7 @@ namespace InteractSystem
                 {
                     elementKeys.Add(elementName);
                     var elements = elementCtrl.GetElements<ISupportElement>(elementName, false);
-                    if(elements != null)
+                    if (elements != null)
                     {
                         elements = elements.Where((x => SupportType(x.GetType()))).ToList();
                         if (elements != null)
@@ -98,22 +98,28 @@ namespace InteractSystem
 
                         foreach (var item in elements)
                         {
-                            Debug.Log(item.Name);
-                            if (target.Statu == ExecuteStatu.Executing && !item.Active && item.OperateAble)
+                            //if (target.Statu == ExecuteStatu.Executing && !item.Active && item.OperateAble)
+                            //{
+                            //    if (log) Debug.Log("激活：" + item.Name);
+                            //    item.StepActive();
+                            //}
+
+                            if(onUpdateElement != null)
                             {
-                                item.StepActive();
+                                onUpdateElement.Invoke(item);
                             }
                         }
-                        
+
                     }
                     else
                     {
                         Debug.Log("have no element name:" + elementName);
                     }
-                   
+
                 }
             }
         }
+
 
         /// <summary>
         /// 注册可点击元素
@@ -147,9 +153,9 @@ namespace InteractSystem
 
         protected bool SupportType(Type targetType)
         {
-            return this.type == null || 
-                type.IsAssignableFrom(targetType) || 
-                targetType.IsSubclassOf(type) || 
+            return this.type == null ||
+                type.IsAssignableFrom(targetType) ||
+                targetType.IsSubclassOf(type) ||
                 type == targetType;
         }
 

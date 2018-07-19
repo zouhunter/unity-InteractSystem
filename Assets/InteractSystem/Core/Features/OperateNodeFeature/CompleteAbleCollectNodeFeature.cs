@@ -24,8 +24,10 @@ namespace InteractSystem
         protected override void OnAddedToPool(ISupportElement arg0)
         {
             base.OnAddedToPool(arg0);
-            if (!SupportType(arg0.GetType())) return;
-            RegistComplete(arg0);
+            if (SupportType(arg0.GetType()))
+            {
+                RegistComplete(arg0);
+            }
         }
 
         public override void SetTarget(Graph.OperaterNode node)
