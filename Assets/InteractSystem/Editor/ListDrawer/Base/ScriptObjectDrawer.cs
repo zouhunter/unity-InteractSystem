@@ -68,34 +68,24 @@ namespace InteractSystem.Drawer
 
                 ActionGUIUtil.DrawScriptablesMenu(supportTypes, (hook) =>
                 {
-                    EditorApplication.CallbackFunction action = () =>
+                   ActionGUIUtil.DelyAcceptObject(hook, (item) =>
                     {
-                        var path = AssetDatabase.GetAssetPath(hook);
-                        if (!string.IsNullOrEmpty(path))
+                        try
                         {
-                            var item = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                            try
-                            {
-                                property = new SerializedObject(obj).FindProperty(propertyPath);
-                                var prop = property.AddItem();
-                                prop.objectReferenceValue = item;
-                                property.serializedObject.ApplyModifiedProperties();
-                            }
-                            catch (Exception e)
-                            {
-                                throw e;
-                            }
-                            finally
-                            {
-                                EditorApplication.update = null;
-                            }
-
+                            property = new SerializedObject(obj).FindProperty(propertyPath);
+                            var prop = property.AddItem();
+                            prop.objectReferenceValue = item;
+                            property.serializedObject.ApplyModifiedProperties();
                         }
-                    };
-                    EditorApplication.update = action;
+                        catch (Exception e)
+                        {
+                            throw e;
+                        }
+                    });
                 });
             }
         }
+
         protected abstract void DrawObjectField(Rect objRect, SerializedProperty prop);
         protected abstract void DrawDragField(Rect objRect, SerializedProperty prop);
         protected abstract void DrawDragField(Rect rect);

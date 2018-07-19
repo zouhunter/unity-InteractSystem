@@ -35,7 +35,8 @@ namespace InteractSystem.Drawer
                 return _secondSelectables;
             }
         }
-        protected int secondSelected {
+        protected int secondSelected
+        {
             get { return _selected.value; }
             set { _selected.value = value; }
         }
@@ -49,6 +50,8 @@ namespace InteractSystem.Drawer
         public bool showScript = true;
         private void OnEnable()
         {
+            if (target == null)
+            { DestroyImmediate(this); return; }
             FindPropertys();
             InitReorderLists();
         }
@@ -57,13 +60,14 @@ namespace InteractSystem.Drawer
         {
             //base.OnInspectorGUI();
             serializedObject.Update();
-            if(showScript)
+            if (showScript)
             {
                 EditorGUILayout.PropertyField(script_prop);
 
                 var content = showAll ? "-" : "+";
                 var style = showAll ? EditorStyles.toolbarDropDown : EditorStyles.toolbarPopup;
-                if (GUILayout.Button(content, style)){
+                if (GUILayout.Button(content, style))
+                {
                     showAll = !showAll;
                 }
             }
@@ -92,7 +96,7 @@ namespace InteractSystem.Drawer
             }
             serializedObject.ApplyModifiedProperties();
         }
-       
+
         private void FindPropertys()
         {
             script_prop = serializedObject.FindProperty("m_Script");
@@ -104,7 +108,7 @@ namespace InteractSystem.Drawer
         private void InitReorderLists()
         {
             autoElemnts_list.InitReorderList(autoElements_prop);
-            autoElemnts_list.drawHeaderCallback =(rect)=> DrawHeadSwitch(rect,0);
+            autoElemnts_list.drawHeaderCallback = (rect) => DrawHeadSwitch(rect, 0);
 
             runtimeElements_list.InitReorderList(runtimeElements_prop);
             runtimeElements_list.drawHeaderCallback = (rect) => DrawHeadSwitch(rect, 1);
@@ -113,13 +117,13 @@ namespace InteractSystem.Drawer
             enviroments_list.drawHeaderCallback = (rect) => DrawHeadSwitch(rect, 2);
         }
 
-        private void DrawHeadSwitch(Rect rect,int defult)
+        private void DrawHeadSwitch(Rect rect, int defult)
         {
             var headRect = new Rect(rect.x, rect.y, rect.width * 0.3f, rect.height);
             EditorGUI.BeginChangeCheck();
             if (showAll)
             {
-                GUI.contentColor = ActionGUIUtil.NormalColor ;
+                GUI.contentColor = ActionGUIUtil.NormalColor;
                 EditorGUI.LabelField(headRect, SecondSelectables[defult]);
                 GUI.contentColor = Color.white;
             }

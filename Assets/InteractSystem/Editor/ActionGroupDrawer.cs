@@ -135,6 +135,12 @@ namespace InteractSystem.Drawer
                 {
                     var group = ScriptableObject.CreateInstance<ElementGroup>();
                     ProjectWindowUtil.CreateAsset(group, "new element_group.asset");
+                    ActionGUIUtil.DelyAcceptObject(group, item =>
+                    {
+                        elementGroup_prop = new SerializedObject(target).FindProperty("elementGroup");
+                        elementGroup_prop.objectReferenceValue = item;
+                        elementGroup_prop.serializedObject.ApplyModifiedProperties();
+                    });
                 }
             }
             else

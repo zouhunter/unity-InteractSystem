@@ -84,6 +84,29 @@ namespace InteractSystem.Drawer
             return serializedDic[objectReferenceValue];
         }
 
+
+        public static void DelyAcceptObject(UnityEngine.Object instence, UnityAction<UnityEngine.Object> onCreate)
+        {
+            if (onCreate == null) return;
+            EditorApplication.CallbackFunction action = () =>
+            {
+                var path = AssetDatabase.GetAssetPath(instence);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    var item = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                    if (item)
+                    {
+                        onCreate.Invoke(item);
+                    }
+
+                    EditorApplication.update = null;
+
+                }
+            };
+            EditorApplication.update = action;
+        }
+
+
         /// <summary>
         /// 在指定区域绘制默认属性
         /// </summary>

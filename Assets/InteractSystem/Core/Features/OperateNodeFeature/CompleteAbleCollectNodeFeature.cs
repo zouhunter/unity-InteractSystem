@@ -33,7 +33,9 @@ namespace InteractSystem
         public override void SetTarget(Graph.OperaterNode node)
         {
             base.SetTarget(node);
-            onComplete = () => { node.OnEndExecute(false); };
+            onComplete = () => {
+                node.OnEndExecute(false);
+            };
         }
 
         protected override void OnRemovedFromPool(ISupportElement arg0)
@@ -64,6 +66,7 @@ namespace InteractSystem
                 }
             }
         }
+
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
@@ -127,6 +130,7 @@ namespace InteractSystem
             if (itemList.Count > currents.Count)
             {
                 var key = itemList[currents.Count];
+
                 if (log)
                 {
                     foreach (var item in elementPool)
@@ -139,11 +143,13 @@ namespace InteractSystem
 
                 elements.ForEach(element =>
                 {
-                    if(!element.Active && element.OperateAble && target.Statu == ExecuteStatu.Executing){
+                    if(!element.Active && element.OperateAble && target.Statu == ExecuteStatu.Executing)
+                    {
                         element.StepActive();
                     }
 
                     var feature = (element as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
+
                     if (feature != null)
                     {
                         feature.RegistOnCompleteSafety(TryComplete);
