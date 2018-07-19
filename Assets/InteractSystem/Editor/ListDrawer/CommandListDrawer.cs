@@ -28,6 +28,32 @@ namespace InteractSystem.Drawer
         }
         protected List<ActionCommand> dragedCommands = new List<ActionCommand>();
         protected Editor drawer;
+        public override void InitReorderList(SerializedProperty property)
+        {
+            base.InitReorderList(property);
+            reorderList.onAddCallback = OnAddElement;
+        }
+
+        private void OnAddElement(ReorderableList list)
+        {
+            var element = ScriptableObject.CreateInstance<ActionCommand>();
+            element.ControllerType = typeof(InteractSystem.Graph.AcionGraphCtrl).FullName;
+            ProjectWindowUtil.CreateAsset(element, "new command.asset");
+            var path = property.propertyPath;
+            var obj = property.serializedObject.targetObject;
+
+            ActionGUIUtil.DelyAcceptObject(element, (item) =>
+            {
+                property = new SerializedObject(obj).FindProperty(path);
+                var prop = property.AddItem();
+                var commandName_prop = prop.FindPropertyRelative("commandName");
+                var command_prop = prop.FindPropertyRelative("command");
+                command_prop.objectReferenceValue = item;
+                commandName_prop.stringValue = item.name;
+                property.serializedObject.ApplyModifiedProperties();
+            });
+        }
+
         protected override void DrawElementCallBack(Rect rect, int index, bool isActive, bool isFocused)
         {
             rect = ActionGUIUtil.DrawBoxRect(rect, index.ToString());

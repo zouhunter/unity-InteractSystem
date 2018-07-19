@@ -1,72 +1,69 @@
-﻿//using UnityEngine;
-//using UnityEngine.UI;
-//using UnityEngine.Events;
-//using System.Collections;
-//using System.Collections.Generic;
-//using WorldActionSystem;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
+using System.Collections;
+using System.Collections.Generic;
+using InteractSystem;
+using InteractSystem.Graph;
 
-//namespace WorldActionSystem.Binding
-//{
-//    public class EventHightSender : ActionObjEventSender
-//    {
-//        private bool noticeAuto { get { return Config.Instence.highLightNotice; } }
-//        private string highLight { get { return "HighLightObjects"; } }
-//        private string unhighLight { get { return "UnHighLightObjects"; } }
-//        protected override void Awake()
-//        {
-//            base.Awake();
-//            if (string.IsNullOrEmpty(key)){
-//                key = context.Name;
-//            }
-//        }
-      
-//        protected void Update()
-//        {
-//            if (!noticeAuto) return;
-//            if (context.Completed) return;
+namespace InteractSystem.Binding
+{
+    public class EventHightSender : OperaterBinding
+    {
+        [SerializeField]
+        private string key;
+        private bool noticeAuto { get { return Config.Instence.highLightNotice; } }
+        private string highLight { get { return "HighLightObjects"; } }
+        private string unhighLight { get { return "UnHighLightObjects"; } }
+        private EventController eventCtrl;
+        
+        public override void OnStartExecuteInternal(OperaterNode node, bool auto)
+        {
+            if (eventCtrl == null)
+                eventCtrl = node.Command.Context.GetComponentInParent<ActionGroup>().EventCtrl;
 
-//            if (context.Started & !context.Completed)
-//            {
-//                SetElementState(true);
-//            }
-//            else
-//            {
-//                SetElementState(false);
-//            }
-//        }
-//        protected override void OnBeforeActive(bool forceAuto)
-//        {
-//            if (noticeAuto)
-//            {
-//                SetElementState(true);
-//            }
-//        }
-//        protected override void OnBeforeComplete(bool force)
-//        {
-//            if (noticeAuto)
-//            {
-//                SetElementState(false);
-//            }
-//        }
-//        protected override void OnBeforeUnDo()
-//        {
-//            if (noticeAuto)
-//            {
-//                SetElementState(false);
-//            }
-//        }
-//        protected void SetElementState(bool open)
-//        {
-//            if (open)
-//            {
-//                eventCtrl.NotifyObserver<string>(highLight, key);
-//            }
-//            else
-//            {
-//                eventCtrl.NotifyObserver<string>(unhighLight, key);
-//            }
-//        }
+            base.OnStartExecuteInternal(node, auto);
+            if (noticeAuto){
+                SetElementState(true);
+            }
+        }
 
-//    }
+        public override void OnBeforeEnd(OperaterNode node, bool force)
+        {
+            if (eventCtrl == null)
+                eventCtrl = node.Command.Context.GetComponentInParent<ActionGroup>().EventCtrl;
 
-//}
+            base.OnBeforeEnd(node, force);
+            if (noticeAuto)
+            {
+                SetElementState(false);
+            }
+        }
+        public override void OnUnDoExecuteInternal(OperaterNode node)
+        {
+            if (eventCtrl == null)
+                eventCtrl = node.Command.Context.GetComponentInParent<ActionGroup>().EventCtrl;
+
+            base.OnUnDoExecuteInternal(node);
+            if (noticeAuto)
+            {
+                SetElementState(false);
+            }
+        }
+        protected void SetElementState(bool open)
+        {
+            if (eventCtrl == null) return;
+            if (!noticeAuto) return;
+            if (open)
+            {
+                eventCtrl.NotifyObserver<string>(highLight, key);
+            }
+            else
+            {
+                eventCtrl.NotifyObserver<string>(unhighLight, key);
+            }
+        }
+
+    }
+
+}
