@@ -9,7 +9,7 @@ namespace InteractSystem.Actions
     /// <summary>
     /// 创建出指定的元素
     /// </summary>
-    [NodeGraph.CustomNode("Operate/Appear", 14, "InteractSystem")]
+    [NodeGraph.CustomNode("Operate/Appear", 10, "InteractSystem")]
     public class AppearNode : Graph.OperaterNode
     {
         [SerializeField,Attributes.CustomField("全自动")]

@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Actions
 { 
-    [NodeGraph.CustomNode("Operate/Drag", 13, "InteractSystem")]
+    [NodeGraph.CustomNode("Operate/Drag", 15, "InteractSystem")]
     public class DragNode :Graph.OperaterNode
     {
         public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(DragItem));

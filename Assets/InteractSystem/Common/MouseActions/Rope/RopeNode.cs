@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Actions
 {
-    [NodeGraph.CustomNode("Operate/Rope", 10, "InteractSystem")]
+    [NodeGraph.CustomNode("Operate/Rope", 18, "InteractSystem")]
     public class RopeNode : Graph.OperaterNode
     {
         public CompleteAbleCollectNodeFeature completeFeature = new CompleteAbleCollectNodeFeature(typeof(RopeItem));

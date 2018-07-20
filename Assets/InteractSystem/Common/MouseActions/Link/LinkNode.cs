@@ -9,7 +9,7 @@ namespace InteractSystem.Actions
     /// 指定个数的元素
     /// 按指定的方式完成连接
     /// </summary>
-    [NodeGraph.CustomNode("Operate/Link", 17, "InteractSystem")]
+    [NodeGraph.CustomNode("Operate/Link", 16, "InteractSystem")]
     public class LinkNode : Graph.OperaterNode
     {
         [SerializeField,Attributes.CustomField("快速连接（自动时）")]

@@ -15,6 +15,8 @@ namespace InteractSystem.Drawer
     {
         private SerializedObject serializedObj;
         private List<string> ignoreProps = new List<string> { "m_Script" };
+        public ScriptObjectListDrawer() { }
+        public ScriptObjectListDrawer(string title):base(title) { }
         protected abstract List<Type> supportTypes { get; }
         public override void InitReorderList(SerializedProperty property)
         {

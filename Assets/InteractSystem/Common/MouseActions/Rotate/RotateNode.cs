@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace InteractSystem.Actions
 {
 
-    [NodeGraph.CustomNode("Operate/Rotate", 18, "InteractSystem")]
+    [NodeGraph.CustomNode("Operate/Rotate", 19, "InteractSystem")]
     public class RotateNode : Graph.OperaterNode
     {
         [SerializeField]

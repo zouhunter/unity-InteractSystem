@@ -529,7 +529,7 @@ MonoBehaviour:
     command: {fileID: 11400000, guid: 5620bdf5990a1c8419c4f98b4af3b459, type: 2}
   - ignore: 0
     commandName: "\u5B89\u88C5\u4E00\u4E2A\u7403"
-    command: {fileID: 0}
+    command: {fileID: 11400000, guid: f5e39c23c5a9f8c42a1e321857838411, type: 2}
   - ignore: 0
     commandName: "\u8FDE\u63A5\u4E00\u4E9B\u70B9"
     command: {fileID: 11400000, guid: e761b0bade8fc8f4bb6cc7ef1a37fb19, type: 2}

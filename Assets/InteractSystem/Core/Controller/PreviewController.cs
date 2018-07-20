@@ -14,11 +14,6 @@ namespace InteractSystem
         public Vector3 position;
         public Vector3 eulerAngle;
     }
-    //public abstract class NoticeController
-    //{
-    //    protected abstract ActionGroup actionGroup { get;}
-    //    public abstract bool Active { get; }
-    //}
 
     /// <summary>
     /// 预览控制器
@@ -43,7 +38,6 @@ namespace InteractSystem
         }
         private Dictionary<GameObject, List<GameObject>> actived = new Dictionary<GameObject, List<GameObject>>();
         private Dictionary<GameObject, Queue<GameObject>> pool = new Dictionary<GameObject, Queue<GameObject>>();
-        private bool Active { get { return Config.Instence.previewNotice; } }
         private static float alpha { get { return Config.Instence.previewAlpha; } }
         private static PreviewController _instence;
         public static PreviewController Instence
@@ -66,7 +60,6 @@ namespace InteractSystem
 
         public void Notice(GameObject prefab, params PreviewSet[] sets)
         {
-            if (!Active) return;
             if (prefab == null || sets == null || sets.Length == 0) return;
 
             var newItems = CreatePreivews(prefab, sets);
@@ -83,7 +76,6 @@ namespace InteractSystem
 
         public void UnNotice(GameObject prefab)
         {
-            if (!Active) return;
             if (prefab == null) return;
 
             if (actived.ContainsKey(prefab))

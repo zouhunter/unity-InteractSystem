@@ -6,12 +6,14 @@ using UnityEditorInternal;
 namespace InteractSystem.Drawer
 {
 
-    [CustomEditor(typeof(ActionItem), true)]
+    [CustomEditor(typeof(ActionItem), true) ,CanEditMultipleObjects]
     public class ActionItemDrawer : Editor
     {
+        protected SerializedProperty actionNotice_Prop;
         protected SerializedProperty bindings_Prop;
-        protected SerializedProperty script_Prop;
-        protected ReorderListDrawer bindingList = new ActionItemBindingListDrawer("1.功能绑定（继承OperateBinding）");
+        protected SerializedProperty script_Prop; 
+        protected ReorderListDrawer bindingList = new ActionItemBindingListDrawer("1.功能绑定（继承ActionItemBinding）");
+        protected ReorderListDrawer actionNoticeList = new ActionNoticeListDrawer("2.聚焦提示（继承ActionNotice）");
         protected Dictionary<int, List<SerializedProperty>> propDic = new Dictionary<int, List<SerializedProperty>>();
 
         private GUIContent[] _options;
@@ -45,8 +47,10 @@ namespace InteractSystem.Drawer
         protected virtual void OnEnable()
         {
             bindings_Prop = serializedObject.FindProperty("bindings");
+            actionNotice_Prop = serializedObject.FindProperty("actionNotice");
             script_Prop = serializedObject.FindProperty("m_Script");
             bindingList.InitReorderList(bindings_Prop);
+            actionNoticeList.InitReorderList(actionNotice_Prop);
             CollectProperty();
         }
 
@@ -100,7 +104,7 @@ namespace InteractSystem.Drawer
                     propDic[index] = new List<SerializedProperty>() { property };
                 }
 
-                if (prop.propertyPath == "bindings")
+                if (prop.propertyPath == "actionNotice")
                 {
                     index = 1;
                 }
@@ -125,6 +129,10 @@ namespace InteractSystem.Drawer
             if (property.propertyPath == "bindings")
             {
                 bindingList.DoLayoutList();
+            }
+            else if (property.propertyPath == "actionNotice")
+            {
+                actionNoticeList.DoLayoutList();
             }
             else
             {

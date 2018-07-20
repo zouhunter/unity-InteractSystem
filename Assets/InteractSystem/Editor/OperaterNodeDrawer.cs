@@ -52,6 +52,7 @@ namespace InteractSystem.Drawer
             {
                 Debug.LogError("no target !!!");
                 DestroyImmediate(this);
+                return;
             }
 
             InitPrefers();
@@ -63,7 +64,7 @@ namespace InteractSystem.Drawer
         {
             ActionGUIUtil.DrawDisableProperty(script_prop);
             serializedObject.Update();
-            EditorGUILayout.PropertyField(_name_prop, new GUIContent("Name"));
+            DrawName();
             DrawSwitch();
             serializedObject.ApplyModifiedProperties();
         }
@@ -93,6 +94,17 @@ namespace InteractSystem.Drawer
             enviromentList.InitReorderList(environments_prop);
             startHooksList.InitReorderList(startHooks_prop);
             completeHooksList.InitReorderList(completeHooks_prop);
+        }
+
+        protected virtual void DrawName()
+        {
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(_name_prop, new GUIContent("Name"));
+            target.name = _name_prop.stringValue;
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(target);
+            }
         }
 
         protected virtual void DrawSwitch()
@@ -127,14 +139,15 @@ namespace InteractSystem.Drawer
             var enterChildern = true;
             while (iterator.NextVisible(enterChildern))
             {
-                if (!ignoredPaths.Contains(iterator.propertyPath)){
+                if (!ignoredPaths.Contains(iterator.propertyPath))
+                {
                     EditorGUILayout.PropertyField(iterator, true);
                 }
                 enterChildern = false;
             }
         }
 
-        public virtual float OnDrawDefult(float x,float y,float width, int level = 0)
+        public virtual float OnDrawDefult(float x, float y, float width, int level = 0)
         {
             var position = new Rect(x, y, width, 0);
             var serializedProperty = serializedObject.GetIterator();

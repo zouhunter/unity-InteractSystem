@@ -8,10 +8,7 @@ namespace InteractSystem {
 
     public class AngleCtroller
     {
-        protected GameObject viewObj { get { return Config.Instence.angleObj; } }
-        protected Color highLightColor { get { return Config.Instence.highLightColor; } }
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
-        //private Dictionary<string, Queue<GameObject>> objectDicQueue = new Dictionary<string, Queue<GameObject>>();
         private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
         private ActionSystem actionSystem;
         private static AngleCtroller _instence;
@@ -19,7 +16,6 @@ namespace InteractSystem {
         {
             get
             {
-
                 if (_instence == null)
                 {
                     _instence = new AngleCtroller(ActionSystem.Instence);
@@ -27,15 +23,42 @@ namespace InteractSystem {
                 return _instence;
             }
         }
+        public GameObject this[Transform target]
+        {
+            get
+            {
+                if (actived.ContainsKey(target))
+                {
+                    return actived[target];
+                }
+                return null;
+            }
+        }
+
         private AngleCtroller(ActionSystem system)
         {
             actionSystem = system;
         }
 
+
+        public void Notice(Transform target,GameObject angle,bool update = false)
+        {
+            if (!Config.Instence.actionItemNotice) return;
+
+            if (!actived.ContainsKey(target))
+            {
+                actived.Add(target, GetAngleInstence(target, angle));
+            }
+            else
+            {
+                if(update){
+                    CopyTranform(actived[target].transform, target);
+                }
+            }
+        }
         public void UnNotice(Transform target)
         {
-            if (!Config.Instence.highLightNotice) return;
-            if (!Config.Instence.angleObj) return;
+            if (!Config.Instence.actionItemNotice) return;
 
             if (actived.ContainsKey(target))
             {
@@ -44,25 +67,7 @@ namespace InteractSystem {
             }
         }
 
-        public void Notice(Transform target,bool update = false,string angleName = null)
-        {
-            if (!Config.Instence.highLightNotice) return;
-            if (!Config.Instence.angleObj) return;
-
-            if (!actived.ContainsKey(target))
-            {
-                actived.Add(target, GetAngleByName(target,angleName));
-            }
-            else
-            {
-                if(update)
-                {
-                    CopyTranform(actived[target].transform, target);
-                }
-            }
-        }
-
-        private GameObject GetDefultAngle(Transform target)
+        private GameObject GetAngleInstence(Transform target,GameObject anglePrefab)
         {
             GameObject angle = null;
            
@@ -72,43 +77,14 @@ namespace InteractSystem {
             }
             else
             {
-                angle = Object.Instantiate(viewObj);
+                angle = Object.Instantiate(anglePrefab);
                 angle.transform.SetParent(actionSystem.transform);
-                //Highlighter high = null;
-                //if (!highLightDic.TryGetValue(angle,out high))
-                //{
-                //    high = InitHighLighter(angle);
-                //    highLightDic.Add(angle, high);
-                //}
-                //high.On();
             }
             CopyTranform(angle.transform, target);
             angle.SetActive(true);
             HighLighter(angle);
             return angle;
         }
-
-        private GameObject GetAngleByName(Transform target,string angleName)
-        {
-            
-            //if (!string.IsNullOrEmpty(angleName) && objectDicQueue.ContainsKey(angleName))
-            //{
-               
-            //}
-            return GetDefultAngle(target);
-        }
-
-
-        //private static Highlighter InitHighLighter(GameObject angle)
-        //{
-        //    Highlighter high = angle.GetComponent<Highlighter>();
-        //    if (high == null)
-        //    {
-        //        high = angle.AddComponent<Highlighter>();
-        //    }
-        //    high.SeeThroughOn();
-        //    return high;
-        //}
 
         public static void CopyTranform(Transform obj, Transform target)
         {

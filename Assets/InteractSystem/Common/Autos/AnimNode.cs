@@ -8,7 +8,7 @@ using NodeGraph;
 
 namespace InteractSystem.Auto
 {
-    [CustomNode("Auto/Anim", 0, "InteractSystem")]
+    [CustomNode("Auto/Anim", 5, "InteractSystem")]
     public class AnimNode : Graph.OperaterNode
     {
         [SerializeField,Attributes.CustomField("延时播放")]

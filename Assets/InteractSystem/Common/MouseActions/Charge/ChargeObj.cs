@@ -9,6 +9,7 @@ namespace InteractSystem.Actions
     /// <summary>
     /// (暂时没有考虑不足和溢出的问题)
     /// </summary>
+    [NodeGraph.CustomNode("Operate/Charge", 11, "InteractSystem")]
     public class ChargeObj : Graph.OperaterNode
     {
         public CompleteAbleCollectNodeFeature completeAbleFeature = new CompleteAbleCollectNodeFeature(typeof(ChargeItem));

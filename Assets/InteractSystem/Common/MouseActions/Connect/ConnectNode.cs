@@ -7,7 +7,7 @@ using System;
 
 namespace InteractSystem.Actions
 {
-    [NodeGraph.CustomNode("Operate/Connect", 10, "InteractSystem")]
+    [NodeGraph.CustomNode("Operate/Connect", 13, "InteractSystem")]
     public class ConnectNode : Graph.OperaterNode
     {
         public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(ConnectItem));

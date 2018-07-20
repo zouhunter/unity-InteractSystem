@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace InteractSystem.Actions
 {
-    [NodeGraph.CustomNode("Operate/Place", 10, "InteractSystem")]
+    [NodeGraph.CustomNode("Operate/Place", 17, "InteractSystem")]
     public class PlaceNode : Graph.OperaterNode
     {
         [SerializeField]

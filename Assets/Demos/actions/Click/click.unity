@@ -243,6 +243,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 796330fcd103f9a46919580d8395aa80, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -254,9 +256,13 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   clickableCount: 1
-  autoCompleteTime: 2
   clickAbleFeature:
     _collider: {fileID: 696410462}
+    onClick:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!1 &696410459
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,6 +478,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 796330fcd103f9a46919580d8395aa80, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -483,9 +491,13 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   clickableCount: 1
-  autoCompleteTime: 2
   clickAbleFeature:
-    _collider: {fileID: 0}
+    _collider: {fileID: 1569458286}
+    onClick:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!1 &1506231950
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,6 +543,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 796330fcd103f9a46919580d8395aa80, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -542,9 +556,13 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   clickableCount: 1
-  autoCompleteTime: 2
   clickAbleFeature:
-    _collider: {fileID: 0}
+    _collider: {fileID: 840703242}
+    onClick:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!1 &1569458283
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,6 +693,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 796330fcd103f9a46919580d8395aa80, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -686,9 +706,13 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   clickableCount: 1
-  autoCompleteTime: 2
   clickAbleFeature:
     _collider: {fileID: 78569558}
+    onClick:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!1 &1588537162
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,6 +758,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 796330fcd103f9a46919580d8395aa80, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -745,9 +771,13 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   clickableCount: 1
-  autoCompleteTime: 2
   clickAbleFeature:
     _collider: {fileID: 2018114706}
+    onClick:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!1 &1675707224
 GameObject:
   m_ObjectHideFlags: 0

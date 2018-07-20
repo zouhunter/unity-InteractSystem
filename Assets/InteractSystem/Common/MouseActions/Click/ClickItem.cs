@@ -38,6 +38,21 @@ namespace InteractSystem.Actions
 
             return features;
         }
+        public override void StepActive()
+        {
+            base.StepActive();
+            Notice(transform);
+        }
+        public override void StepUnDo()
+        {
+            base.StepUnDo();
+            UnNotice(transform);
+        }
+        public override void StepComplete()
+        {
+            base.StepComplete();
+            UnNotice(transform);
+        }
 
         public void AutoExecute(Graph.OperaterNode node)
         {

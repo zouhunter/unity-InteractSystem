@@ -77,7 +77,7 @@ MonoBehaviour:
   commandBindings: []
   environments: []
   startHooks:
-  - {fileID: 11400000, guid: 07f3cf5d33ddbf84c9a0a072ce27cac5, type: 2}
+  - {fileID: 11400000, guid: 2cdaef9f7d7038e4294e24f53b28a2b6, type: 2}
   completeHooks: []
 --- !u!114 &114038835483217658
 MonoBehaviour:

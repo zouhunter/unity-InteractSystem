@@ -14,7 +14,7 @@ using System;
 
 namespace InteractSystem.Auto
 {
-    [CustomNode("Auto/Timer", 1, "InteractSystem")]
+    [CustomNode("Auto/Timer", 4, "InteractSystem")]
     public class TimerNode : Graph.OperaterNode
     {
         [SerializeField, Attributes.CustomField("等待时间")]

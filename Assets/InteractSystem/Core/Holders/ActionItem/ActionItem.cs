@@ -12,12 +12,17 @@ namespace InteractSystem
     {
         [SerializeField, Attributes.DefultName("关键字")]
         protected string _name;
-        [SerializeField] [Attributes.CustomField("执行前状态")]
+        [SerializeField]
+        [Attributes.CustomField("执行前状态")]
         protected bool startactive = true;
-        [SerializeField] [Attributes.CustomField("执行后状态")]
+        [SerializeField]
+        [Attributes.CustomField("执行后状态")]
         protected bool endactive = true;
         [SerializeField]
         protected List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();
+        [SerializeField]
+        protected List<Notice.ActionNotice> actionNotice = new List<InteractSystem.Notice.ActionNotice>();
+
         public string Name
         {
             get
@@ -59,15 +64,16 @@ namespace InteractSystem
             TryExecuteFeatures((feature) => { feature.Awake(); });
             ElementController.Instence.RegistElement(this);
         }
-
-
         protected virtual void Start()
         {
             InitBindingScripts();
+            InitActionNoticeScripts();
             TryExecuteFeatures((feature) => { feature.Start(); });
             TryExecuteBindings((binding) => binding.Start());
             gameObject.SetActive(startactive);
         }
+
+      
         protected virtual void OnEnable()
         {
             targets.Clear();
@@ -81,6 +87,7 @@ namespace InteractSystem
         }
         protected virtual void Update()
         {
+            TryUpdateNotice();
             TryExecuteFeatures((feature) => { feature.Update(); });
             TryExecuteBindings((binding) => binding.Update());
         }
@@ -93,6 +100,39 @@ namespace InteractSystem
         {
             Body.SetActive(visible);
         }
+
+        public virtual void Notice(Transform target)
+        {
+            if (Config.Instence.actionItemNotice)
+            {
+                foreach (var item in actionNotice)
+                {
+                    item.Notice(target);
+                }
+            }
+        }
+
+        public virtual void TryUpdateNotice()
+        {
+            if (Config.Instence.actionItemNotice)
+            {
+                foreach (var item in actionNotice){
+                    item.Update();
+                }
+            }
+        }
+
+        public virtual void UnNotice(Transform target)
+        {
+            if (Config.Instence.actionItemNotice)
+            {
+                foreach (var item in actionNotice)
+                {
+                    item.UnNotice(target);
+                }
+            }
+        }
+
         public virtual void RecordPlayer(UnityEngine.Object target)
         {
             if (!targets.Contains(target))
@@ -110,7 +150,7 @@ namespace InteractSystem
 
         public virtual void StepActive()
         {
-            if(!Active)
+            if (!Active)
             {
                 if (log) Debug.Log("StepActive:" + this);
                 gameObject.SetActive(true);
@@ -162,6 +202,24 @@ namespace InteractSystem
             bindings = clampedBindings;
         }
 
+        private void InitActionNoticeScripts()
+        {
+            var clampedNotices = new List<Notice.ActionNotice>();
+            foreach (var item in actionNotice)
+            {
+                clampedNotices.Add(Instantiate(item));
+            }
+            if (Config.Instence.actionNotices != null)
+            {
+                foreach (var item in Config.Instence.actionNotices)
+                {
+                    var instence = Instantiate(item);
+                    clampedNotices.Add(instence);
+                }
+            }
+            actionNotice = clampedNotices;
+        }
+
         public T RetriveFeature<T>() where T : ActionItemFeature
         {
             if (actionItemFeatures == null)
@@ -174,8 +232,9 @@ namespace InteractSystem
             }
         }
 
-        protected virtual List<ActionItemFeature> RegistFeatures() {
-            return new List<ActionItemFeature>( Config.Instence.actionItemFeatures);
+        protected virtual List<ActionItemFeature> RegistFeatures()
+        {
+            return new List<ActionItemFeature>(Config.Instence.actionItemFeatures);
         }
 
         protected void TryExecuteFeatures(UnityAction<ActionItemFeature> featureAction)
