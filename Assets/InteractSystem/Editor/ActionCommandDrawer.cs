@@ -48,6 +48,11 @@ namespace InteractSystem.Drawer
     
         private void OnEnable()
         {
+            if(target == null)
+            {
+                DestroyImmediate(this);
+                return;
+            }
             InitPrefers();
             InitNodes();
             InitProps();

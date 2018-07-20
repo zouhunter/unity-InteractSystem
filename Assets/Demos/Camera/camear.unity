@@ -529,10 +529,10 @@ MonoBehaviour:
     command: {fileID: 11400000, guid: 5620bdf5990a1c8419c4f98b4af3b459, type: 2}
   - ignore: 0
     commandName: "\u5B89\u88C5\u4E00\u4E2A\u7403"
-    command: {fileID: 11400000, guid: 49de5b7bbdcb7c345aa419ca99a0e7b3, type: 2}
+    command: {fileID: 0}
   - ignore: 0
     commandName: "\u8FDE\u63A5\u4E00\u4E9B\u70B9"
-    command: {fileID: 11400000, guid: 3573c2135667e314288a47b1e9dc8395, type: 2}
+    command: {fileID: 11400000, guid: e761b0bade8fc8f4bb6cc7ef1a37fb19, type: 2}
   elementGroup: {fileID: 11400000, guid: 6b184e95f2da330449deaf120fc7bacf, type: 2}
 --- !u!4 &527938050
 Transform:
@@ -1427,6 +1427,46 @@ Transform:
   m_Father: {fileID: 359798307}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1846151324
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1846151326}
+  - component: {fileID: 1846151325}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1846151325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1846151324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66d78c797d2ad741b7ab558bfbbb47b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1846151326
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1846151324}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.9615948, y: -0.18785746, z: -0.97493637}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2046402201
 GameObject:
   m_ObjectHideFlags: 0
@@ -1470,7 +1510,7 @@ MonoBehaviour:
     previewNotice: 1
     quickMoveElement: 0
     ignoreController: 0
-    lineMaterial: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+    lineMaterial: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 3}
     lineWidth: 0.2
     highLightColor: {r: 0, g: 1, b: 0, a: 1}
     angleObj: {fileID: 0}

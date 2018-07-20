@@ -8,7 +8,6 @@ using UnityEngine.Assertions.Comparers;
 
 namespace InteractSystem.Actions
 {
-    [AddComponentMenu(MenuName.RotObj)]
     public class RotateItem : ActionItem
     {
         [SerializeField, Attributes.CustomField("最小角度（左）")]

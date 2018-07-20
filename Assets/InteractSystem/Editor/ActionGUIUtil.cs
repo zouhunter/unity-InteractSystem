@@ -59,9 +59,9 @@ namespace InteractSystem.Drawer
         internal static void DrawScriptablesMenu(List<Type> bindingTypes,UnityAction<ScriptableObject> onCreate = null)
         {
             var options = bindingTypes.ConvertAll(x => new GUIContent(x.FullName)).ToArray();
-            Debug.Log(options.Length);
             EditorUtility.DisplayCustomMenu(new Rect(Event.current.mousePosition, Vector2.zero), options, -1, (data, ops, s) =>
             {
+                Debug.Log(s);
                 if (s >= 0)
                 {
                     var type = bindingTypes[s];
