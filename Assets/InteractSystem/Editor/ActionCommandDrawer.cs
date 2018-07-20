@@ -22,29 +22,29 @@ namespace InteractSystem.Drawer
         protected SerializedProperty startHooks_prop;
         protected SerializedProperty completeHooks_prop;
 
-        //protected ReorderListDrawer nodeList = new NodeListDrawer("节点序列（双击可快速配制）");
+        protected ReorderListDrawer nodeList = new NodeListDrawer("节点序列（双击可快速配制）");
         protected ReorderListDrawer bindingList = new CommandBindingListDrawer("1.功能绑定（继承于CommandBinding）");
         protected ReorderListDrawer enviromentList = new EnviromentInfoListDrawer("2.环境控制(自定义物体出现隐藏)");
         protected ReorderListDrawer startHooksList = new HookListDrawer("3.操作对象启动前（提示执行）");
         protected ReorderListDrawer completeHooksList = new HookListDrawer("4.操作对象完成后（等待完成）");
 
-        //private GUIContent[] _options;
-        //protected GUIContent[] options
-        //{
-        //    get
-        //    {
-        //        if (_options == null)
-        //        {
-        //            _options = new GUIContent[] {
-        //                new GUIContent("操作节点"),
-        //                new GUIContent("绑定执行")
-        //            };
-        //        }
-        //        return _options;
-        //    }
-        //}
-        //protected int selected;
-        //protected const string prefer_selected = "prefer_actioncommand_drawer_selected";
+        private GUIContent[] _options;
+        protected GUIContent[] options
+        {
+            get
+            {
+                if (_options == null)
+                {
+                    _options = new GUIContent[] {
+                        new GUIContent("操作节点"),
+                        new GUIContent("绑定执行")
+                    };
+                }
+                return _options;
+            }
+        }
+        protected int selected;
+        protected const string prefer_selected = "prefer_actioncommand_drawer_selected";
     
         private void OnEnable()
         {
@@ -53,8 +53,8 @@ namespace InteractSystem.Drawer
                 DestroyImmediate(this);
                 return;
             }
-            //InitPrefers();
-            //InitNodes();
+            InitPrefers();
+            InitNodes();
             InitProps();
             InitReorderLists();
         }
@@ -84,13 +84,13 @@ namespace InteractSystem.Drawer
             InitHookLists();
         }
 
-        //private void InitPrefers()
-        //{
-        //    if (EditorPrefs.HasKey(prefer_selected))
-        //    {
-        //        selected = EditorPrefs.GetInt(prefer_selected);
-        //    }
-        //}
+        private void InitPrefers()
+        {
+            if (EditorPrefs.HasKey(prefer_selected))
+            {
+                selected = EditorPrefs.GetInt(prefer_selected);
+            }
+        }
 
         private void InitProps()
         {
@@ -104,20 +104,20 @@ namespace InteractSystem.Drawer
 
         private void DrawSwitchToolBar()
         {
-            //EditorGUI.BeginChangeCheck();
-            //selected = GUILayout.Toolbar(selected, options);
-            //if (EditorGUI.EndChangeCheck())
-            //{
-            //    EditorPrefs.SetInt(prefer_selected, selected);
-            //}
-            //if (selected == 0)
-            //{
-            //    DrawNodeList();
-            //}
-            //else if (selected == 1)
-            //{
+            EditorGUI.BeginChangeCheck();
+            selected = GUILayout.Toolbar(selected, options);
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorPrefs.SetInt(prefer_selected, selected);
+            }
+            if (selected == 0)
+            {
+                DrawNodeList();
+            }
+            else if (selected == 1)
+            {
                 OnDrawBindings();
-            //}
+            }
         }
 
 
@@ -159,17 +159,17 @@ namespace InteractSystem.Drawer
         #endregion
 
         #region Nodes
-        //private void InitNodes()
-        //{
-        //    opreateNodes = (from node in command.Nodes
-        //                    where node.Object is Graph.OperaterNode
-        //                    select node.Object as Graph.OperaterNode).ToArray();
-        //    nodeList.InitReorderList(opreateNodes, typeof(Graph.OperaterNode));
-        //}
-        //private void DrawNodeList()
-        //{
-        //    nodeList.DoLayoutList();
-        //}
+        private void InitNodes()
+        {
+            opreateNodes = (from node in command.Nodes
+                            where node.Object is Graph.OperaterNode
+                            select node.Object as Graph.OperaterNode).ToArray();
+            nodeList.InitReorderList(opreateNodes, typeof(Graph.OperaterNode));
+        }
+        private void DrawNodeList()
+        {
+            nodeList.DoLayoutList();
+        }
         #endregion
 
     }

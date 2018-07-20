@@ -61,13 +61,13 @@ namespace InteractSystem
         protected virtual void Awake()
         {
             actionItemFeatures = RegistFeatures();
+            InitBindingScripts();
+            InitActionNoticeScripts();
             TryExecuteFeatures((feature) => { feature.Awake(); });
             ElementController.Instence.RegistElement(this);
         }
         protected virtual void Start()
         {
-            InitBindingScripts();
-            InitActionNoticeScripts();
             TryExecuteFeatures((feature) => { feature.Start(); });
             TryExecuteBindings((binding) => binding.Start());
             gameObject.SetActive(startactive);
@@ -234,6 +234,7 @@ namespace InteractSystem
 
         protected virtual List<ActionItemFeature> RegistFeatures()
         {
+            if(log) Debug.Log("regist features" + this,gameObject);
             return new List<ActionItemFeature>(Config.Instence.actionItemFeatures);
         }
 
