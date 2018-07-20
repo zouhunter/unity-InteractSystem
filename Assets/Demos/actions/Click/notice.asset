@@ -26,6 +26,15 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.51426387
+      value: 0.54055476
+      inSlope: 2.809974
+      outSlope: 2.809974
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.06097416
+    - serializedVersion: 3
       time: 0.9874878
       value: 0
       inSlope: -2.3713744
@@ -37,7 +46,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  startPos: {x: 0, y: 0, z: 0}
-  endPos: {x: 0, y: 5, z: 0}
+  startPos: {x: 0, y: 1, z: 0}
+  endPos: {x: 0, y: 3, z: 0}
   rotateSpeed: 100
   animTime: 2

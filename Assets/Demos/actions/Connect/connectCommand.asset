@@ -34,7 +34,7 @@ MonoBehaviour:
   - m_name: "\u8FDE\u63A5\u4E00\u4E9B\u5BF9\u8C61"
     m_id: e73c4e6b-94f1-439f-a13a-54fdfc18a16c
     m_x: 280
-    m_y: 170
+    m_y: 150
     m_node: {fileID: 114996539430454806}
     m_inputPoints:
     - id: 2a787ea8-9046-4a7d-ba67-d92c2b8f0b60
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 1
+  copyCount: 0
 --- !u!114 &114996539430454806
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -110,13 +110,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eab85ca785492194dbacafc1a723a8ac, type: 3}
-  m_Name: InteractSystem.Common.Actions.ConnectNode
+  m_Name: "\u8FDE\u63A5\u4E00\u4E9B\u5BF9\u8C61"
   m_EditorClassIdentifier: 
   _name: "\u8FDE\u63A5\u4E00\u4E9B\u5BF9\u8C61"
   startHooks: []
   completeHooks: []
   bindings: []
   environments: []
-  completeableFeature:
+  lineMaterial: {fileID: 0}
+  lineWight: 0.1
+  connectGroup:
+  - p1: 0
+    p2: 0
+    material: {fileID: 0}
+    width: 0.1
+  collectNodeFeature:
     itemList:
-    - connectItem01
+    - connectItemA
+    - connectItemB

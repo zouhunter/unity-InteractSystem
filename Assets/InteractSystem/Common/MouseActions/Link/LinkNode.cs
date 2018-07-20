@@ -21,17 +21,17 @@ namespace InteractSystem.Actions
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         [SerializeField]
-        protected CollectNodeFeature completeableFeature = new CollectNodeFeature(typeof(LinkItem));
+        protected CollectNodeFeature collectNodeFeature = new CollectNodeFeature(typeof(LinkItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
 
-            completeableFeature.SetTarget(this);
-            completeableFeature.onAddToPool = OnAddedToPool;
-            completeableFeature.onRemoveFromPool = OnRemovedFromPool;
+            collectNodeFeature.SetTarget(this);
+            collectNodeFeature.onAddToPool = OnAddedToPool;
+            collectNodeFeature.onRemoveFromPool = OnRemovedFromPool;
 
-            features.Add(completeableFeature);
+            features.Add(collectNodeFeature);
             return features;
         }
         protected void OnAddedToPool(ISupportElement arg0)
@@ -62,7 +62,7 @@ namespace InteractSystem.Actions
 
             CoroutineController.Instence.StopCoroutine(AutoLinkItems());
 
-            if (completeableFeature.finalGroup == null)
+            if (collectNodeFeature.finalGroup == null)
             {
                 QuickLinkItems();
             }
@@ -75,14 +75,14 @@ namespace InteractSystem.Actions
 
             CoroutineController.Instence.StopCoroutine(AutoLinkItems());
 
-            if (completeableFeature.finalGroup != null)
+            if (collectNodeFeature.finalGroup != null)
             {
-                Array.ForEach(completeableFeature.finalGroup, linkItem =>
+                Array.ForEach(collectNodeFeature.finalGroup, linkItem =>
                 {
                     //解除本脚本对linkItem的锁定
                     elementCtrl.UnLockElement(linkItem, this);
                 });
-                completeableFeature.finalGroup = null;
+                collectNodeFeature.finalGroup = null;
             }
             LinkCtrl.Instence.RemoveLock(this);
         }
@@ -99,7 +99,7 @@ namespace InteractSystem.Actions
         /// </summary>
         private void OnStepActive()
         {
-            completeableFeature.elementPool.ForEach(linkItem =>
+            collectNodeFeature.elementPool.ForEach(linkItem =>
             {
                 linkItem.StepActive();
                 (linkItem as LinkItem).RegistOnConnected(TryComplete);
@@ -115,7 +115,7 @@ namespace InteractSystem.Actions
             if (log) Debug.Log("TryComplete");
             //所有可能的元素组合
             var combinations = CreateCombinations();
-            var count = completeableFeature.itemList.Count - 1;//连接数
+            var count = collectNodeFeature.itemList.Count - 1;//连接数
             //对每一个组合进行判断
             foreach (var combination in combinations)
             {
@@ -159,7 +159,7 @@ namespace InteractSystem.Actions
         private void OnCombinationOK(List<LinkItem> combination)
         {
             //Debug.Log("OnCombinationOK");
-            completeableFeature.finalGroup = combination.ToArray();
+            collectNodeFeature.finalGroup = combination.ToArray();
             foreach (var item in combination)
             {
                 elementCtrl.LockElement(item, this);
@@ -173,17 +173,17 @@ namespace InteractSystem.Actions
         {
             var result = new List<List<LinkItem>>();
             var dic = new Dictionary<int, List<LinkItem>>();
-            for (int i = 0; i < completeableFeature.itemList.Count; i++)
+            for (int i = 0; i < collectNodeFeature.itemList.Count; i++)
             {
                 var id = i;
-                var items = completeableFeature.elementPool.FindAll(x => x.Name == completeableFeature.itemList[i]).Select(x => x as LinkItem).ToList();
+                var items = collectNodeFeature.elementPool.FindAll(x => x.Name == collectNodeFeature.itemList[i]).Select(x => x as LinkItem).ToList();
                 if (items != null)
                 {
                     dic.Add(id, items);
                 }
                 else
                 {
-                    Debug.LogError("缺少：" + completeableFeature.itemList[i]);
+                    Debug.LogError("缺少：" + collectNodeFeature.itemList[i]);
                     return null;
                 }
             }
@@ -220,7 +220,7 @@ namespace InteractSystem.Actions
                     }
                 }
             }
-            result.RemoveAll(x => x.Count < completeableFeature.itemList.Count);
+            result.RemoveAll(x => x.Count < collectNodeFeature.itemList.Count);
             return result;
         }
 
@@ -294,9 +294,9 @@ namespace InteractSystem.Actions
         private LinkItem[] SurchLinkItems()
         {
             List<LinkItem> linkItemGroup = new List<LinkItem>();
-            foreach (var itemName in completeableFeature.itemList)
+            foreach (var itemName in collectNodeFeature.itemList)
             {
-                var item = completeableFeature.elementPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x as LinkItem) && (x as LinkItem).CanUse);
+                var item = collectNodeFeature.elementPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x as LinkItem) && (x as LinkItem).CanUse);
                 Debug.Assert(item != null, "缺少：" + itemName);
                 linkItemGroup.Add(item as LinkItem);
             }
