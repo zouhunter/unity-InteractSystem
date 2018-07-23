@@ -359,7 +359,7 @@ MonoBehaviour:
   operateNode_log: 1
   actionItem_log: 1
   actionHook_log: 0
-  feature_log: 0
+  feature_log: 1
   actionItemBinding_log: 1
   elementCtrl_Log: 1
 --- !u!4 &2027092914

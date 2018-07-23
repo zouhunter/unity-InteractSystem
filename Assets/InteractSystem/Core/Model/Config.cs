@@ -47,6 +47,25 @@ namespace InteractSystem
         public List<OperateNodeFeature> operateNodeFeatures = new List<OperateNodeFeature>();
         public List<ActionItemFeature> actionItemFeatures = new List<ActionItemFeature>();
 
+        public event UnityAction<Binding.ActionItemBinding> onAddActionItemBinding;
+
+        public void AddActionItemBinding(params Binding.ActionItemBinding[] abs)
+        {
+            for (int i = 0; i < abs.Length; i++)
+            {
+                if(actionItemBindings.Find(x=>x.GetType() == abs[i].GetType()))
+                {
+                    continue;
+                }
+                else
+                {
+                    actionItemBindings.Add(abs[i]);
+                    if (onAddActionItemBinding != null)
+                        onAddActionItemBinding.Invoke(abs[i]);
+                }
+            }
+        }
+
         public static void SetConfig(Config config = null)
         {
             if (config == null)

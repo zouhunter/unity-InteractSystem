@@ -62,6 +62,7 @@ namespace InteractSystem
         {
             actionItemFeatures = RegistFeatures();
             InitBindingScripts();
+            Config.Instence.onAddActionItemBinding += OnAddActionItemBinding;
             InitActionNoticeScripts();
             TryExecuteFeatures((feature) => { feature.Awake(); });
             ElementController.Instence.RegistElement(this);
@@ -238,6 +239,11 @@ namespace InteractSystem
         {
             if(log) Debug.Log("regist features" + this,gameObject);
             return new List<ActionItemFeature>(Config.Instence.actionItemFeatures);
+        }
+
+        protected virtual void OnAddActionItemBinding(Binding.ActionItemBinding binding)
+        {
+            bindings.Add(Instantiate(binding));
         }
 
         protected void TryExecuteFeatures(UnityAction<ActionItemFeature> featureAction)

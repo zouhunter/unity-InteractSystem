@@ -130,5 +130,5 @@ MonoBehaviour:
     width: 0.1
   - p1: connectItemB
     p2: connectItemC
-    material: {fileID: 2100000, guid: 3a28713385443bf4999a43fc74a7a82e, type: 2}
+    material: {fileID: 2100000, guid: 91498449c58c4414a8fbea177893fc27, type: 2}
     width: 0.1
