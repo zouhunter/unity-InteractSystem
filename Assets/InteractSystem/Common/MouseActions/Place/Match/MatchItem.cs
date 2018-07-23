@@ -53,9 +53,17 @@ namespace InteractSystem.Actions
         
         public bool Matched { get { return contentFeature.Element != null; } }
 
+
         public override void StepComplete()
         {
             base.StepComplete();
+            if (!AlreadyPlaced)
+            {
+                PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
+                Attach(obj);
+                obj.QuickInstall(this, false);
+                obj.StepComplete();
+            }
             if (Matched && completeMoveBack)
             {
                 (contentFeature.Element as PlaceElement).QuickUnInstall();

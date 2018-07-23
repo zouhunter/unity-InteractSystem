@@ -42,7 +42,17 @@ namespace InteractSystem.Actions
             }
             return canplace;
         }
-
+        public override void StepComplete()
+        {
+            base.StepComplete();
+            if (!AlreadyPlaced)
+            {
+                PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
+                Attach(obj);
+                obj.QuickInstall(this, true);
+                obj.StepComplete();
+            }
+        }
         protected override void OnUnInstallComplete()
         {
             base.OnUnInstallComplete();

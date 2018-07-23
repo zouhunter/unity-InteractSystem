@@ -78,18 +78,16 @@ namespace InteractSystem.Structure
             {
                 foreach (var item in list)
                 {
-                    if (statusDic.ContainsKey(item))
+                    if (!statusDic.ContainsKey(item))
                     {
-                        if (statusDic[item].statu != ExecuteStatu.Completed)
-                        {
-                            stateMechine.Complete(item);
-                        }
+                        statusDic[item] = new UnitStatus();
                     }
-                    else
+
+                    if (statusDic[item].statu != ExecuteStatu.Completed)
                     {
-                        Debug.Log("ignore complete :" + unit.node.name);
+                        stateMechine.Complete(item);
                     }
-                   
+
                 }
             }
         }
@@ -105,16 +103,17 @@ namespace InteractSystem.Structure
             {
                 foreach (var item in list)
                 {
-                    if(statusDic.ContainsKey(item))
+                    if (statusDic.ContainsKey(item))
                     {
-                        if (statusDic[item].statu != ExecuteStatu.UnStarted) {
+                        if (statusDic[item].statu != ExecuteStatu.UnStarted)
+                        {
                             stateMechine.UnDo(item);
                         }
                         stateMechine.UnDo(item);
                     }
-                   else
+                    else
                     {
-                       if(log) Debug.Log("ignore:" + item.node);
+                        if (log) Debug.Log("ignore:" + item.node);
                     }
                 }
             }

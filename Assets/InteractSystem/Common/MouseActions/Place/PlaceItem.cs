@@ -64,17 +64,7 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void StepComplete()
-        {
-            base.StepComplete();
-            if (!AlreadyPlaced)
-            {
-                PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
-                Attach(obj);
-                obj.QuickInstall(this, true);
-                obj.StepComplete();
-            }
-        }
+     
 
         /// <summary>
         /// 找出一个没有安装的元素
