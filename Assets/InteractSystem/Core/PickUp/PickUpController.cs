@@ -179,6 +179,7 @@ namespace InteractSystem
         private void MoveWithMouse()
         {
             disRay = viewCamera.ScreenPointToRay(Input.mousePosition);
+
             if (Physics.Raycast(disRay, out disHit, elementDistence, obstacleLayerMask) && disHit.collider != pickedUpObj.Collider)
             {
                 pickedUpObj.SetPosition(GetPositionFromHit());

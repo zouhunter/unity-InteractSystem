@@ -79,6 +79,7 @@ namespace InteractSystem.Drawer
             portLists = new ReorderableList[linkPorts.Length];
             for (int i = 0; i < portLists.Length; i++)
             {
+                var id = i;
                 var port = linkPorts[i];
                 port.connectAble.Sort();
 
@@ -93,6 +94,8 @@ namespace InteractSystem.Drawer
                     EditorGUI.LabelField(idRect, "端口");
                     EditorGUI.BeginChangeCheck();
                     port.Range = GUI.HorizontalSlider(rangeRect, port.Range, 0.1f, 2);
+                    port.NodeID = id;
+                    port.InitLayer();
                     if (EditorGUI.EndChangeCheck())
                     {
                         port.Range = (float)System.Math.Round(port.Range, 2);

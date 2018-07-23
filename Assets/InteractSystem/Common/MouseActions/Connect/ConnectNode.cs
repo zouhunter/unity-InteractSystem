@@ -13,8 +13,8 @@ namespace InteractSystem.Actions
         [System.Serializable]
         public class PointGroup
         {
-            public int p1;
-            public int p2;
+            public string p1;
+            public string p2;
             public Material material;
             public float width = 0.1f;
         }
@@ -25,21 +25,47 @@ namespace InteractSystem.Actions
         [SerializeField, Attributes.CustomField("线宽")]
         public float lineWight = 0.1f;
 
-        [SerializeField]
-        protected CollectNodeFeature collectNodeFeature = new CollectNodeFeature(typeof(ConnectItem));
+        protected RuntimeCollectNodeFeature<ConnectItem> collectNodeFeature;
         public PointGroup[] connectGroup;
+        private string[] _elements;
+        public string[] elements
+        {
+            get
+            {
+                if(_elements == null)
+                {
+                    var list = new List<string>();
+                    for (int i = 0; i < connectGroup.Length; i++)
+                    {
+                        var group = connectGroup[i];
+                        if (!list.Contains(group.p1))
+                        {
+                            list.Add(group.p1);
+                        }
+                        if (!list.Contains(group.p2))
+                        {
+                            list.Add(group.p2);
+                        }
+                    }
+                    _elements = list.ToArray();
+                }
+                return _elements;
+            }
+        }
 
         protected float autoTime { get { return Config.Instence.autoExecuteTime; } }
-
+       
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-
+            _elements = null;
+            collectNodeFeature = new RuntimeCollectNodeFeature<ConnectItem>(elements);
             collectNodeFeature.SetTarget(this);
             collectNodeFeature.onUpdateElement = OnUpdateFromPool;
             features.Add(collectNodeFeature);
             return features;
         }
+        
 
         private void OnUpdateFromPool(ISupportElement arg0)
         {
@@ -56,15 +82,8 @@ namespace InteractSystem.Actions
 
         public PointGroup GetConnectInfo(string itemA, string itemB)
         {
-            var idA = collectNodeFeature.itemList.IndexOf(itemA);
-            var idB = collectNodeFeature.itemList.IndexOf(itemB);
-            if (idA >= 0 && idB >= 0)
-            {
-                var sid = idA | idB;
-                var groupInfo = Array.Find(connectGroup, x => (x.p1 | x.p2) == sid);
-                return groupInfo;
-            }
-            return null;
+            var groupInfo = Array.Find(connectGroup, x => (x.p1 == itemA && x.p2 == itemB) || (x.p2 == itemA && x.p1 == itemB));
+            return groupInfo;
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -99,10 +118,11 @@ namespace InteractSystem.Actions
             {
                 CoroutineController.Instence.StopCoroutine(AutoConnectItems());
             }
-            if (collectNodeFeature.finalGroup == null)
-            {
+
+            if (collectNodeFeature.finalGroup == null) {
                 QuickConnectItems();
             }
+
             ConnectCtrl.Instence.RemoveLock(this);
         }
 
@@ -124,13 +144,16 @@ namespace InteractSystem.Actions
 
         public void TryComplete()
         {
-            var list = new ConnectItem[collectNodeFeature.itemList.Count];
+            var list = new ConnectItem[elements.Length];
             //找到所有的组合,并判断是否已经连接
             for (int i = 0; i < connectGroup.Length; i++)
             {
                 var groupi = connectGroup[i];
-                var itemAName = collectNodeFeature.itemList[groupi.p1];
-                var itemBName = collectNodeFeature.itemList[groupi.p2];
+                var itemAName = groupi.p1;
+                var itemBName = groupi.p2;
+                var itemAID = Array.IndexOf(elements, itemAName);
+                var itemBID = Array.IndexOf(elements, itemBName);
+
                 ConnectItem itemA = collectNodeFeature.elementPool.Find(x => x.Name == itemAName && x is ConnectItem) as ConnectItem;
                 ConnectItem itemB = collectNodeFeature.elementPool.Find(x => x.Name == itemBName && x is ConnectItem) as ConnectItem;
 
@@ -142,8 +165,8 @@ namespace InteractSystem.Actions
                     }
                     else
                     {
-                        list[groupi.p1] = itemA;
-                        list[groupi.p2] = itemB;
+                        list[itemAID] = itemA;
+                        list[itemBID] = itemB;
                     }
                 }
                 else
@@ -166,23 +189,25 @@ namespace InteractSystem.Actions
             }
             else
             {
-                list = new ConnectItem[collectNodeFeature.itemList.Count];
+                list = new ConnectItem[elements.Length];
             }
 
             //找到所有的组合,并判断是否已经连接
             for (int i = 0; i < connectGroup.Length; i++)
             {
                 var groupi = connectGroup[i];
-                var itemA = list[groupi.p1] as ConnectItem;
-                var itemB = list[groupi.p2] as ConnectItem;
+                var idA = Array.IndexOf(elements, groupi.p1);
+                var idB = Array.IndexOf(elements, groupi.p2);
+                var itemA = list[idA] as ConnectItem;
+                var itemB = list[idB] as ConnectItem;
 
                 if (ConnectUtil.HaveConnected(itemA, itemB))
                 {
                     continue;
                 }
 
-                var itemAName = collectNodeFeature.itemList[groupi.p1];
-                var itemBName = collectNodeFeature.itemList[groupi.p2];
+                var itemAName = groupi.p1;
+                var itemBName = groupi.p2;
 
                 itemA = itemA != null ? itemA : collectNodeFeature.elementPool.Find(x => x.Name == itemAName && x is ConnectItem && x.OperateAble) as ConnectItem;
                 itemB = itemB != null ? itemB : collectNodeFeature.elementPool.Find(x => x.Name == itemBName && x is ConnectItem && x.OperateAble) as ConnectItem;
@@ -193,8 +218,8 @@ namespace InteractSystem.Actions
 
                 Debug.Assert(connected);
 
-                list[groupi.p1] = itemA;
-                list[groupi.p2] = itemB;
+                list[idA] = itemA;
+                list[idB] = itemB;
             }
 
             OnConnectOK(list);
@@ -206,29 +231,33 @@ namespace InteractSystem.Actions
                 for (int i = 0; i < connectGroup.Length; i++)
                 {
                     var groupi = connectGroup[i];
-                    var itemA = collectNodeFeature.finalGroup[groupi.p1] as ConnectItem;
-                    var itemB = collectNodeFeature.finalGroup[groupi.p2] as ConnectItem;
+                    var idA = Array.IndexOf(elements, groupi.p1);
+                    var idB = Array.IndexOf(elements, groupi.p2);
+                    var itemA = collectNodeFeature.finalGroup[idA] as ConnectItem;
+                    var itemB = collectNodeFeature.finalGroup[idB] as ConnectItem;
                     ConnectUtil.TryDisconnect(itemA, itemB);
                 }
         }
 
         private IEnumerator AutoConnectItems()
         {
-            ConnectItem[] list = new ConnectItem[collectNodeFeature.itemList.Count];
+            ConnectItem[] list = new ConnectItem[elements.Length];
             Debug.Log("自动连接未完成部分");
             for (int i = 0; i < connectGroup.Length; i++)
             {
                 var groupi = connectGroup[i];
-                var itemA = list[groupi.p1] as ConnectItem;
-                var itemB = list[groupi.p2] as ConnectItem;
+                var idA = Array.IndexOf(elements, groupi.p1);
+                var idB = Array.IndexOf(elements, groupi.p2);
+                var itemA = list[idA] as ConnectItem;
+                var itemB = list[idB] as ConnectItem;
 
                 if (ConnectUtil.HaveConnected(itemA, itemB))
                 {
                     continue;
                 }
 
-                var itemAName = collectNodeFeature.itemList[groupi.p1];
-                var itemBName = collectNodeFeature.itemList[groupi.p2];
+                var itemAName = groupi.p1;
+                var itemBName = groupi.p2;
 
                 itemA = itemA != null ? itemA : collectNodeFeature.elementPool.Find(x => x.Name == itemAName && x is ConnectItem && x.OperateAble) as ConnectItem;
                 itemB = itemB != null ? itemB : collectNodeFeature.elementPool.Find(x => x.Name == itemBName && x is ConnectItem && x.OperateAble) as ConnectItem;
@@ -245,8 +274,8 @@ namespace InteractSystem.Actions
                     yield return null;
                 }
 
-                list[groupi.p1] = itemA;
-                list[groupi.p2] = itemB;
+                list[idA] = itemA;
+                list[idB] = itemB;
             }
             OnConnectOK(list);
             OnEndExecute(false);
@@ -259,8 +288,11 @@ namespace InteractSystem.Actions
             collectNodeFeature.finalGroup = combination;
             foreach (var item in combination)
             {
-                item.RecordPlayer(this);
-                ElementController.Instence.LockElement(item, this);
+                if(item != null)
+                {
+                    item.RecordPlayer(this);
+                    ElementController.Instence.LockElement(item, this);
+                }
             }
         }
 

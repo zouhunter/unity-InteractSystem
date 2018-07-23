@@ -78,21 +78,15 @@ namespace InteractSystem.Actions
         {
             foreach (ConnectNode node in lockList)
             {
-                var itemList = node.RetriveFeature<CollectNodeFeature>().itemList;
-                var firstItemID = itemList.IndexOf(firstItem.Name);
-                if (firstItemID >= 0)
+                var groups = Array.FindAll(node.connectGroup, x => x.p1 == firstItem.Name || x.p2 == firstItem.Name);
+                if (groups != null)
                 {
-                    var groups = Array.FindAll(node.connectGroup, x => x.p1 == firstItemID || x.p2 == firstItemID);
-
-                    if(groups != null)
+                    foreach (var group in groups)
                     {
-                        foreach (var group in groups)
-                        {
-                            var nameA = itemList[group.p1];
-                            var nameB = itemList[group.p2];
-                            var targetName = nameA == firstItem.Name ? nameB : nameA;
-                            NoticeTargetPos(targetName);
-                        }
+                        var nameA = group.p1;
+                        var nameB = group.p2;
+                        var targetName = nameA == firstItem.Name ? nameB : nameA;
+                        NoticeTargetPos(targetName);
                     }
                 }
             }
@@ -159,7 +153,8 @@ namespace InteractSystem.Actions
             currentLineWidth = 0;
             foreach (ConnectNode node in lockList)
             {
-                if (node.RetriveFeature<CollectNodeFeature>().itemList.Contains(itemA))
+                var id = Array.FindIndex(node.elements,x=>x== itemA);
+                if (id >=0)
                 {
                     if(node.lineMaterial)
                     {

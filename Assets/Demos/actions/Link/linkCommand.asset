@@ -102,7 +102,9 @@ MonoBehaviour:
     ItemB: 1
     portB: 0
   collectNodeFeature:
-    itemList: []
+    itemList:
+    - LinkItem
+    - LinkItem
 --- !u!114 &114271080708060464
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -26,23 +26,18 @@ namespace InteractSystem.Actions
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
-
             collectNodeFeature.SetTarget(this);
-            collectNodeFeature.onAddToPool = OnAddedToPool;
-            collectNodeFeature.onRemoveFromPool = OnRemovedFromPool;
-
+            collectNodeFeature.onUpdateElement = OnUpdateElement;
             features.Add(collectNodeFeature);
             return features;
         }
-        protected void OnAddedToPool(ISupportElement arg0)
+
+        protected void OnUpdateElement(ISupportElement arg0)
         {
-            var linkItem = arg0 as LinkItem;
-            linkItem.RegistOnConnected(TryComplete);
-        }
-        protected void OnRemovedFromPool(ISupportElement arg0)
-        {
-            var linkItem = arg0 as LinkItem;
-            linkItem.RemoveOnConnected(TryComplete);
+            if(arg0.OperateAble && Statu == ExecuteStatu.Executing && !arg0.Active)
+            {
+                arg0.StepActive();
+            }
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -54,7 +49,7 @@ namespace InteractSystem.Actions
         protected override void OnStartExecuteInternal()
         {
             base.OnStartExecuteInternal();
-            OnStepActive();
+            //OnStepActive();
             if (auto)
             {
                 CoroutineController.Instence.StartCoroutine(AutoLinkItems());
@@ -80,6 +75,12 @@ namespace InteractSystem.Actions
 
             CoroutineController.Instence.StopCoroutine(AutoLinkItems());
 
+            UnLockElements();
+            LinkCtrl.Instence.RemoveLock(this);
+        }
+
+        private void UnLockElements()
+        {
             if (collectNodeFeature.finalGroup != null)
             {
                 Array.ForEach(collectNodeFeature.finalGroup, linkItem =>
@@ -89,8 +90,8 @@ namespace InteractSystem.Actions
                 });
                 collectNodeFeature.finalGroup = null;
             }
-            LinkCtrl.Instence.RemoveLock(this);
         }
+
         /// <summary>
         /// 提示连接元素
         /// </summary>
@@ -102,20 +103,20 @@ namespace InteractSystem.Actions
         /// <summary>
         /// 获取需要数量的linkItem
         /// </summary>
-        private void OnStepActive()
-        {
-            collectNodeFeature.elementPool.ForEach(linkItem =>
-            {
-                linkItem.StepActive();
-                (linkItem as LinkItem).RegistOnConnected(TryComplete);
-            });
-        }
+        //private void OnStepActive()
+        //{
+        //    collectNodeFeature.elementPool.ForEach(linkItem =>
+        //    {
+        //        linkItem.StepActive();
+        //        (linkItem as LinkItem).RegistOnConnected(TryComplete);
+        //    });
+        //}
 
         /// <summary>
         /// 找到满足条件的连接体,
         /// 并将其锁定
         /// </summary>
-        private void TryComplete()
+        public void TryComplete()
         {
             if (log) Debug.Log("TryComplete");
             //所有可能的元素组合

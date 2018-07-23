@@ -21,7 +21,7 @@ public class singleCommand : MonoBehaviour {
     {
         if(GUILayout.Button("StartCommand"))
         {
-            command.StartExecute(autoExecute);
+            command.StartExecute (autoExecute);
         }
         if (GUILayout.Button("EndCommand"))
         {

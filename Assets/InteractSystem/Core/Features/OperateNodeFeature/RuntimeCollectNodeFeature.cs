@@ -10,22 +10,20 @@ using InteractSystem.Actions;
 namespace InteractSystem
 {
     [System.Serializable]
-    public class CollectNodeFeature : OperateNodeFeature
+    public class RuntimeCollectNodeFeature<T> : OperateNodeFeature where T:ISupportElement
     {
-        [SerializeField, HideInInspector]
-        public List<string> itemList = new List<string>();
-        public Type type { get; private set; }
-        public readonly ElementPool<ISupportElement> elementPool = new ElementPool<ISupportElement>();
-        public ISupportElement[] finalGroup { get; set; }
-        protected List<ISupportElement> currents = new List<ISupportElement>();
+        protected List<string> itemList = new List<string>();
+        public readonly ElementPool<T> elementPool = new ElementPool<T>();
+        public T[] finalGroup { get; set; }
+        protected List<T> currents = new List<T>();
         protected static ElementController elementCtrl { get { return ElementController.Instence; } }
-        public UnityAction<ISupportElement> onAddToPool { get; set; }
-        public UnityAction<ISupportElement> onRemoveFromPool { get; set; }
-        public UnityAction<ISupportElement> onUpdateElement { get; set; }
+        public UnityAction<T> onAddToPool { get; set; }
+        public UnityAction<T> onRemoveFromPool { get; set; }
+        public UnityAction<T> onUpdateElement { get; set; }
 
-        public CollectNodeFeature(Type type)
+        public RuntimeCollectNodeFeature(params string[] itemList)
         {
-            this.type = type;
+            this.itemList.AddRange(itemList);
             elementCtrl.onRegistElememt += OnRegistElement;
             elementCtrl.onRemoveElememt += OnRemoveElement;
         }
@@ -41,21 +39,16 @@ namespace InteractSystem
             elementPool.onAdded = OnAddedToPool;
             elementPool.onRemoved = OnRemovedFromPool;
         }
-        protected virtual void OnRemovedFromPool(ISupportElement arg0)
+        protected virtual void OnRemovedFromPool(T arg0)
         {
-            if (onRemoveFromPool != null && SupportType(arg0.GetType()))
+            if (onRemoveFromPool != null)
             {
                 onRemoveFromPool.Invoke(arg0);
             }
         }
 
-        protected virtual void OnAddedToPool(ISupportElement arg0)
+        protected virtual void OnAddedToPool(T arg0)
         {
-            //if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
-            //{
-            //    arg0.StepActive();
-            //}
-
             if (onUpdateElement != null)
                 onUpdateElement.Invoke(arg0);
 
@@ -88,14 +81,12 @@ namespace InteractSystem
                 if (!elementKeys.Contains(elementName))
                 {
                     elementKeys.Add(elementName);
-                    var elements = elementCtrl.GetElements<ISupportElement>(elementName, false);
+                    var elements = elementCtrl.GetElements<T>(elementName, false);
                     if (elements != null)
                     {
-                        elements = elements.Where((x => SupportType(x.GetType()))).ToList();
-                        
                         foreach (var item in elements)
                         {
-                            if(elementPool.Contains(item))
+                            if (elementPool.Contains(item))
                             {
                                 if (onUpdateElement != null)
                                 {
@@ -124,11 +115,11 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRegistElement(ISupportElement arg0)
         {
-            if (SupportType(arg0.GetType()) && itemList.Contains(arg0.Name))
+            if (arg0 is T && itemList.Contains(arg0.Name))
             {
-                if (!elementPool.Contains(arg0))
+                if (!elementPool.Contains((T)arg0))
                 {
-                    elementPool.ScureAdd(arg0);
+                    elementPool.ScureAdd((T)arg0);
                 }
             }
         }
@@ -139,21 +130,13 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRemoveElement(ISupportElement arg0)
         {
-            if (SupportType(arg0.GetType()) && itemList.Contains(arg0.Name))
+            if (arg0 is T && itemList.Contains(arg0.Name))
             {
-                if (elementPool.Contains(arg0))
+                if (elementPool.Contains((T)arg0))
                 {
-                    elementPool.ScureRemove(arg0);
+                    elementPool.ScureRemove((T)arg0);
                 }
             }
-        }
-
-        protected bool SupportType(Type targetType)
-        {
-            return this.type == null ||
-                type.IsAssignableFrom(targetType) ||
-                targetType.IsSubclassOf(type) ||
-                type == targetType;
         }
 
         /// <summary>
@@ -177,13 +160,28 @@ namespace InteractSystem
                     if (objs == null) return;
                     for (int i = 0; i < objs.Count; i++)
                     {
-                        if (undo)
+                        if (log)
                         {
-                            objs[i].StepUnDo();
+                            if (undo)
+                            {
+                                Debug.Log("UnDoElements:" + element + objs[i].Active);
+                            }
+                            else
+                            {
+                                Debug.Log("CompleteElements:" + element + objs[i].Active);
+                            }
                         }
-                        else
+
+                        if (objs[i].Active)
                         {
-                            objs[i].StepComplete();
+                            if (undo)
+                            {
+                                objs[i].StepUnDo();
+                            }
+                            else
+                            {
+                                objs[i].StepComplete();
+                            }
                         }
                     }
                 }

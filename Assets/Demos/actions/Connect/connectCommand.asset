@@ -34,7 +34,7 @@ MonoBehaviour:
   - m_name: "\u8FDE\u63A5\u4E00\u4E9B\u5BF9\u8C61"
     m_id: e73c4e6b-94f1-439f-a13a-54fdfc18a16c
     m_x: 230
-    m_y: 170
+    m_y: 80
     m_node: {fileID: 114996539430454806}
     m_inputPoints:
     - id: 2a787ea8-9046-4a7d-ba67-d92c2b8f0b60
@@ -70,7 +70,7 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 2a787ea8-9046-4a7d-ba67-d92c2b8f0b60
     m_type: actionconnect
     m_connection: {fileID: 114752997652099804}
-  m_lastModified: 131768095836353706
+  m_lastModified: 131768294037840183
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: dragcommand
@@ -119,17 +119,16 @@ MonoBehaviour:
   environments: []
   lineMaterial: {fileID: 2100000, guid: eb1f72889c203b14388d0b4117b5ab1b, type: 2}
   lineWight: 0.1
-  collectNodeFeature:
-    itemList:
-    - connectItemA
-    - connectItemB
-    - connectItemC
   connectGroup:
-  - p1: 0
-    p2: 1
+  - p1: connectItemA
+    p2: connectItemB
     material: {fileID: 2100000, guid: faee559bc0a11f34aa3ff80f8211684d, type: 2}
     width: 0.1
-  - p1: 1
-    p2: 2
+  - p1: connectItemA
+    p2: connectItemC
+    material: {fileID: 2100000, guid: 3a28713385443bf4999a43fc74a7a82e, type: 2}
+    width: 0.1
+  - p1: connectItemB
+    p2: connectItemC
     material: {fileID: 2100000, guid: 3a28713385443bf4999a43fc74a7a82e, type: 2}
     width: 0.1

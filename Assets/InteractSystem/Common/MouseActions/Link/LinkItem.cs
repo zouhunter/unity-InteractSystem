@@ -61,14 +61,15 @@ namespace InteractSystem.Actions
                 return true;
             }
         }
-        private event UnityAction onConnected;
+        //private event UnityAction onConnected;
         private Vector3 startPos;
         private Quaternion startRot;
         private Vector3 lastForward = Vector3.forward;
         private List<LinkPort> _groupNodes = new List<LinkPort>();
         private List<LinkItem> linkLock = new List<LinkItem>();
-        private float posHoldTime = 3f;
+        private float posHoldTime = 1f;
         private float posHoldTimer;
+        private Vector3 mousePosCatch;
 
         protected override void Awake()
         {
@@ -88,15 +89,7 @@ namespace InteractSystem.Actions
             base.Update();
             UpdateMatchTime();
         }
-
-        public void RegistOnConnected(UnityAction onConnected)
-        {
-            this.onConnected += onConnected;
-        }
-        public void RemoveOnConnected(UnityAction onConnected)
-        {
-            this.onConnected -= onConnected;
-        }
+        
 
         private void InitPorts()
         {
@@ -164,6 +157,10 @@ namespace InteractSystem.Actions
                 linkLock.Clear();
                 OnTranformChanged(linkLock);
             }
+            else
+            {
+                mousePosCatch = pos;
+            }
         }
 
         private void UpdateMatchTime()
@@ -178,6 +175,7 @@ namespace InteractSystem.Actions
                 {
                     isMatching = false;
                     posHoldTimer = 0;
+                    OnSetPosition(mousePosCatch);
                 }
             }
         }
@@ -198,6 +196,7 @@ namespace InteractSystem.Actions
                     lastForward = forward;
                 }
             }
+
         }
 
         public void OnTranformChanged(List<LinkItem> context)
@@ -219,19 +218,10 @@ namespace InteractSystem.Actions
             }
             return connected;
         }
-
-        public void OnConnected()
-        {
-            if (this.onConnected != null)
-            {
-                onConnected.Invoke();
-            }
-        }
-
         public override void StepUnDo()
         {
             base.StepUnDo();
-            transform.position = startPos;
+            mousePosCatch = transform.position = startPos;
             transform.rotation = startRot;
 
             foreach (var item in ChildNodes)

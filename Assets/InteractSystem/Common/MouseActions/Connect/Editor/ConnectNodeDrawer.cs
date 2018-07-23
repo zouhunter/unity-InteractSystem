@@ -63,12 +63,12 @@ namespace InteractSystem.Drawer
             var titleRect = new Rect(leftRect.x, leftRect.y, leftRect.width * 0.3f,  EditorGUIUtility.singleLineHeight);
             var contentRect = new Rect(leftRect.x + leftRect.width * 0.4f, leftRect.y, leftRect.width * 0.6f,  EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(titleRect, "A");
-            p1_prop.intValue = EditorGUI.IntField(contentRect, p1_prop.intValue);
+            p1_prop.stringValue = EditorGUI.TextField(contentRect, p1_prop.stringValue);
 
             titleRect.y += EditorGUIUtility.singleLineHeight ;// new Rect(rightRect.x, rightRect.y, rightRect.width * 0.3f,  EditorGUIUtility.singleLineHeight);
             contentRect.y += EditorGUIUtility.singleLineHeight;//= new Rect(rightRect.x + rightRect.width * 0.4f, rightRect.y, rightRect.width * 0.6f,  EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(titleRect, "B");
-            p2_prop.intValue = EditorGUI.IntField(contentRect, p2_prop.intValue);
+            p2_prop.stringValue = EditorGUI.TextField(contentRect, p2_prop.stringValue);
 
 
             var rightRect = new Rect(rect.x + rect.width * 0.5f, rect.y, rect.width * 0.5f, EditorGUIUtility.singleLineHeight);

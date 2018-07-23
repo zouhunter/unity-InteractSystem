@@ -32,8 +32,11 @@ namespace InteractSystem.Actions
 
         public void Update()
         {
-            if (linkConnectCtrl != null)
+            if (!Active) return;
+
+            if (linkItem != null && linkConnectCtrl != null) { 
                 linkConnectCtrl.Update();
+            }
         }
 
         void OnMatch(LinkPort itemA, LinkPort itemB)
@@ -44,8 +47,11 @@ namespace InteractSystem.Actions
             var linkInfo = itemA.connectAble.Find(x => x.itemName == itemB.Body.Name && x.nodeId == itemB.NodeID);
             LinkUtil.ResetTargetTranform(itemA.Body, itemB.Body, linkInfo.relativePos, linkInfo.relativeDir);
             LinkUtil.UpdateBrotherPos(itemA.Body, new List<LinkItem>());
+
             if (linkItem)
+            {
                 linkItem.isMatching = true;
+            }
         }
         void OnDisMath(LinkPort itemA, LinkPort itemB)
         {
@@ -53,17 +59,22 @@ namespace InteractSystem.Actions
 
             highter.UnHighLightTarget(itemA.gameObject);
             highter.UnHighLightTarget(itemB.gameObject);
-            if (linkItem) linkItem.isMatching = false;
+
+            if (linkItem)
+            {
+                linkItem.isMatching = false;
+            }
+
         }
 
         void OnPickUp(PickUpAbleComponent obj)
         {
             if (!Active) return;
 
-            var linkItem = obj.GetComponentInParent<LinkItem>();
-            if (linkItem)
+            var item = obj.GetComponentInParent<LinkItem>();
+            if (item)
             {
-                this.linkItem = linkItem;
+                this.linkItem = item;
                 if (linkItem)
                 {
                     linkConnectCtrl.SetActiveItem(linkItem, false);
@@ -81,11 +92,11 @@ namespace InteractSystem.Actions
         {
             if (!Active) return;
 
-            var linkItem = obj.GetComponentInParent<LinkItem>();
+            var item = obj.GetComponentInParent<LinkItem>();
 
-            if (linkItem)
+            if (item)
             {
-                this.linkItem = linkItem;
+                this.linkItem = item;
                 if (linkItem && !linkItem.Used)
                 {
                     linkConnectCtrl.SetActiveItem(linkItem, true);
@@ -97,12 +108,14 @@ namespace InteractSystem.Actions
         {
             if (!Active) return;
 
-            var linkItem = obj.GetComponentInParent<LinkItem>();
+            var item = obj.GetComponentInParent<LinkItem>();
 
-            if (linkItem)
+            if (item)
             {
                 ElementController.Instence.ClearExtraCreated();
             }
+
+            linkItem = null;
         }
 
         /// <summary>
@@ -113,31 +126,33 @@ namespace InteractSystem.Actions
         {
             if (!Active) return;
 
-            var linkItem = obj.GetComponentInParent<LinkItem>();
+            var item = obj.GetComponentInParent<LinkItem>();
 
-            if (linkItem)
+            if (item)
             {
                 LinkUtil.ClearActivedLinkPort(linkItem);
-                this. linkItem = linkItem;
                 if (linkItem)
                 {
                     linkConnectCtrl.SetDisableItem();
                 }
             }
+            this.linkItem = null;
         }
 
         void OnPickStay(PickUpAbleComponent obj)
         {
             if (!Active) return;
 
-            var linkItem = obj.GetComponentInParent<LinkItem>();
+            var item = obj.GetComponentInParent<LinkItem>();
 
-            if (linkItem)
+            if (item)
             {
-                LinkUtil.ClearActivedLinkPort(linkItem);
+                LinkUtil.ClearActivedLinkPort(item);
                 linkConnectCtrl.TryConnect();
                 pickCtrl.PickStay();
             }
+
+            linkItem = null;
         }
 
         void OnConnected(LinkPort[] nodes)
@@ -146,7 +161,8 @@ namespace InteractSystem.Actions
 
             foreach (var item in nodes)
             {
-                item.Body.OnConnected();
+                //item.Body.OnConnected();
+                TryCompleteLinkNode();
                 var childNodes = item.Body.ChildNodes;
                 foreach (var node in childNodes)
                 {
@@ -155,6 +171,15 @@ namespace InteractSystem.Actions
             }
 
           if(log)  Debug.Log("Connected");
+        }
+
+        private void TryCompleteLinkNode()
+        {
+            var list = lockList.ToArray();
+            foreach (var item in list)
+            {
+                (item as LinkNode).TryComplete();
+            }
         }
 
     }
