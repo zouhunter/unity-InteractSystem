@@ -10,7 +10,7 @@ namespace InteractSystem.Actions
 {
     public static class ConnectUtil
     {
-        public static bool TryConnect(ConnectItem itemA, ConnectItem itemB, ConnectNode.PointGroup pointInfo)
+        public static LineRenderer TryConnect(ConnectItem itemA, ConnectItem itemB, ConnectNode.PointGroup pointInfo)
         {
             if (itemA.OperateAble && itemB.OperateAble)
             {
@@ -24,18 +24,24 @@ namespace InteractSystem.Actions
                 {
                     lineRender = new GameObject(targetName, typeof(LineRenderer)).GetComponent<LineRenderer>();
                     lineRender.transform.SetParent(parent);
-                    UpdateLineStyle(lineRender, pointInfo.width, pointInfo.material);
-                    lineRender.positionCount = 2;
-                    var posA = itemA.RetriveFeature<ClickAbleFeature>().collider.transform.position;
-                    var posB = itemB.RetriveFeature<ClickAbleFeature>().collider.transform.position;
-                    lineRender.SetPositions(new Vector3[] { posA, posB });
                 }
+                UpdateLineStyle(lineRender, pointInfo.width, pointInfo.material);
+                lineRender.positionCount = 2;
+                var posA = itemA.RetriveFeature<ClickAbleFeature>().collider.transform.position;
+                var posB = itemB.RetriveFeature<ClickAbleFeature>().collider.transform.position;
+                lineRender.SetPositions(new Vector3[] { posA, posB });
                 //
-                return true;
+                return lineRender;
             }
             else
             {
-                return false;
+                if(HaveConnected(itemA,itemB))
+                {
+                    Transform parent = itemA.GetInstanceID() > itemB.GetInstanceID() ? itemA.transform : itemB.transform;
+                    string targetName = itemA.GetInstanceID() > itemB.GetInstanceID() ? itemB.Name : itemA.name;
+                    return parent.Find(targetName).GetComponent<LineRenderer>();
+                }
+                return null;
             }
         }
 
@@ -56,6 +62,7 @@ namespace InteractSystem.Actions
 
         public static bool HaveConnected(ConnectItem itemA, ConnectItem itemB)
         {
+            if (itemA == null || itemB == null) return false;
             return Array.Find(itemA.Connected, x => x == itemB) &&
                 Array.Find(itemB.Connected, x => x == itemA);
         }

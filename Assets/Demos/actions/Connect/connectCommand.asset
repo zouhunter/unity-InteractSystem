@@ -117,14 +117,19 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
-  lineMaterial: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  lineMaterial: {fileID: 2100000, guid: eb1f72889c203b14388d0b4117b5ab1b, type: 2}
   lineWight: 0.1
   collectNodeFeature:
     itemList:
     - connectItemA
     - connectItemB
+    - connectItemC
   connectGroup:
   - p1: 0
     p2: 1
-    material: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+    material: {fileID: 2100000, guid: faee559bc0a11f34aa3ff80f8211684d, type: 2}
+    width: 0.1
+  - p1: 1
+    p2: 2
+    material: {fileID: 2100000, guid: 3a28713385443bf4999a43fc74a7a82e, type: 2}
     width: 0.1

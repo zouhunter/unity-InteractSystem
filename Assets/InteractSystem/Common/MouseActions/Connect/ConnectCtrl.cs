@@ -28,6 +28,7 @@ namespace InteractSystem.Actions
         private float hitDistence { get { return Config.Instence.hitDistence; } }
         private Material currentMat;
         private float currentLineWidth;
+        private List<Transform> noticed = new List<Transform>();
 
         public ConnectCtrl()
         {
@@ -67,9 +68,58 @@ namespace InteractSystem.Actions
                     WorpLineInfo(firstItem.Name);
                     positons.Clear();
                     positons.Add(firstItem.transform.position);
-                    //connectObj = firstItem.GetComponentInParent<ConnectItem>();
-                    //connectObj.TrySelectFirstCollider(firstItem);
+                    ClearNoticePoss(firstItem);
+                    NoticeTargetPoss();
                 }
+            }
+        }
+
+        private void NoticeTargetPoss()
+        {
+            foreach (ConnectNode node in lockList)
+            {
+                var itemList = node.RetriveFeature<CollectNodeFeature>().itemList;
+                var firstItemID = itemList.IndexOf(firstItem.Name);
+                if (firstItemID >= 0)
+                {
+                    var groups = Array.FindAll(node.connectGroup, x => x.p1 == firstItemID || x.p2 == firstItemID);
+
+                    if(groups != null)
+                    {
+                        foreach (var group in groups)
+                        {
+                            var nameA = itemList[group.p1];
+                            var nameB = itemList[group.p2];
+                            var targetName = nameA == firstItem.Name ? nameB : nameA;
+                            NoticeTargetPos(targetName);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void NoticeTargetPos(string connectItemName)
+        {
+            var elements = ElementController.Instence.GetElements<ConnectItem>(connectItemName, true);
+            Debug.Assert(elements != null);
+            foreach (var item in elements)
+            {
+                if(!ConnectUtil.HaveConnected(item,firstItem))
+                {
+                    firstItem.Notice(item.transform);
+
+                    if(!noticed.Contains(item.transform))
+                        noticed.Add(item.transform);
+                }
+               
+            }
+        }
+
+        private void ClearNoticePoss(ConnectItem content)
+        {
+            foreach (var item in noticed)
+            {
+                content.UnNotice(item);
             }
         }
 
@@ -143,7 +193,7 @@ namespace InteractSystem.Actions
         {
             if (Input.GetMouseButtonDown(0))
             {
-                ClearLineRender();
+                ClearStarteds();
             }
             else
             {
@@ -182,13 +232,14 @@ namespace InteractSystem.Actions
                 canConnect = ConnectUtil.TryConnect(element1, element2, groupInfo);
                 node.TryComplete();
             }
-            ClearLineRender();
-
+            ClearStarteds();
+         
             if (!canConnect && onError != null) onError.Invoke(string.Format("{0}和{1}两点不需要连接", element1, element2));
         }
 
-        private void ClearLineRender()
+        private void ClearStarteds()
         {
+            ClearNoticePoss(firstItem);
             firstItem = null;
             positons.Clear();
 #if UNITY_5_6_OR_NEWER

@@ -76,8 +76,7 @@ namespace InteractSystem.Actions
         protected override void OnStartExecuteInternal()
         {
             base.OnStartExecuteInternal();
-            if (auto)
-            {
+            if (auto) {
                 CoroutineController.Instence.StartCoroutine(AutoConnectItems());
             }
         }
@@ -85,10 +84,28 @@ namespace InteractSystem.Actions
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
+            if (auto){
+                CoroutineController.Instence.StopCoroutine(AutoConnectItems());
+            }
             DisconnetConnected();
             UnLockElements();
             ConnectCtrl.Instence.RemoveLock(this);
         }
+
+        public override void OnEndExecute(bool force)
+        {
+            base.OnEndExecute(force);
+            if (auto)
+            {
+                CoroutineController.Instence.StopCoroutine(AutoConnectItems());
+            }
+            if (collectNodeFeature.finalGroup == null)
+            {
+                QuickConnectItems();
+            }
+            ConnectCtrl.Instence.RemoveLock(this);
+        }
+
 
         private void UnLockElements()
         {
@@ -104,15 +121,6 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void OnEndExecute(bool force)
-        {
-            base.OnEndExecute(force);
-            if (collectNodeFeature.finalGroup == null)
-            {
-                QuickConnectItems();
-            }
-            ConnectCtrl.Instence.RemoveLock(this);
-        }
 
         public void TryComplete()
         {
@@ -151,7 +159,45 @@ namespace InteractSystem.Actions
 
         private void QuickConnectItems()
         {
-            throw new NotImplementedException();
+            ConnectItem[] list = null;
+            if (collectNodeFeature.finalGroup != null)
+            {
+                list = Array.ConvertAll(collectNodeFeature.finalGroup, x => x as ConnectItem);
+            }
+            else
+            {
+                list = new ConnectItem[collectNodeFeature.itemList.Count];
+            }
+
+            //找到所有的组合,并判断是否已经连接
+            for (int i = 0; i < connectGroup.Length; i++)
+            {
+                var groupi = connectGroup[i];
+                var itemA = list[groupi.p1] as ConnectItem;
+                var itemB = list[groupi.p2] as ConnectItem;
+
+                if (ConnectUtil.HaveConnected(itemA, itemB))
+                {
+                    continue;
+                }
+
+                var itemAName = collectNodeFeature.itemList[groupi.p1];
+                var itemBName = collectNodeFeature.itemList[groupi.p2];
+
+                itemA = itemA != null ? itemA : collectNodeFeature.elementPool.Find(x => x.Name == itemAName && x is ConnectItem && x.OperateAble) as ConnectItem;
+                itemB = itemB != null ? itemB : collectNodeFeature.elementPool.Find(x => x.Name == itemBName && x is ConnectItem && x.OperateAble) as ConnectItem;
+
+                Debug.Assert(itemA != null && itemB != null);
+
+                var connected = ConnectUtil.TryConnect(itemA, itemB, groupi);
+
+                Debug.Assert(connected);
+
+                list[groupi.p1] = itemA;
+                list[groupi.p2] = itemB;
+            }
+
+            OnConnectOK(list);
         }
 
         private void DisconnetConnected()
@@ -166,10 +212,46 @@ namespace InteractSystem.Actions
                 }
         }
 
-        private string AutoConnectItems()
+        private IEnumerator AutoConnectItems()
         {
-            throw new NotImplementedException();
+            ConnectItem[] list = new ConnectItem[collectNodeFeature.itemList.Count];
+            Debug.Log("自动连接未完成部分");
+            for (int i = 0; i < connectGroup.Length; i++)
+            {
+                var groupi = connectGroup[i];
+                var itemA = list[groupi.p1] as ConnectItem;
+                var itemB = list[groupi.p2] as ConnectItem;
+
+                if (ConnectUtil.HaveConnected(itemA, itemB))
+                {
+                    continue;
+                }
+
+                var itemAName = collectNodeFeature.itemList[groupi.p1];
+                var itemBName = collectNodeFeature.itemList[groupi.p2];
+
+                itemA = itemA != null ? itemA : collectNodeFeature.elementPool.Find(x => x.Name == itemAName && x is ConnectItem && x.OperateAble) as ConnectItem;
+                itemB = itemB != null ? itemB : collectNodeFeature.elementPool.Find(x => x.Name == itemBName && x is ConnectItem && x.OperateAble) as ConnectItem;
+
+                Debug.Assert(itemA != null && itemB != null);
+
+                var parent = itemA.GetInstanceID() > itemB.GetInstanceID() ? itemA : itemB;
+
+                var lineRender = ConnectUtil.TryConnect(itemA, itemB, groupi);
+                for (float timer = 0; timer < autoTime; timer += Time.deltaTime)
+                {
+                    var pos = Vector3.Lerp(itemA.transform.position, itemB.transform.position, timer / autoTime);
+                    lineRender.SetPositions(new Vector3[] { itemA.transform.position,pos});
+                    yield return null;
+                }
+
+                list[groupi.p1] = itemA;
+                list[groupi.p2] = itemB;
+            }
+            OnConnectOK(list);
+            OnEndExecute(false);
         }
+
 
         private void OnConnectOK(ConnectItem[] combination)
         {
@@ -177,7 +259,7 @@ namespace InteractSystem.Actions
             collectNodeFeature.finalGroup = combination;
             foreach (var item in combination)
             {
-                item.RecordPlayer(item);
+                item.RecordPlayer(this);
                 ElementController.Instence.LockElement(item, this);
             }
         }
