@@ -13,7 +13,6 @@ namespace InteractSystem.Actions
 
     public class DetachItem : ActionItem
     {
-        private Rigidbody m_rigidbody;
         public override bool OperateAble
         {
             get
@@ -26,11 +25,14 @@ namespace InteractSystem.Actions
         private Quaternion startRot;
         public PickUpAbleFeature pickupableFeature = new PickUpAbleFeature();
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
+        [SerializeField]
+        private DetachRule rule;
         public const string layer = "i:detachitem";
 
         protected override void Start()
         {
             base.Start();
+            if (rule) rule = Instantiate(rule);
             startPos = transform.localPosition;
             startRot = transform.localRotation;
         }
@@ -39,6 +41,7 @@ namespace InteractSystem.Actions
             var features = base.RegistFeatures();
 
             pickupableFeature.Init(this, layer);
+            pickupableFeature.RegistOnSetPosition(SetPosition);
             features.Add(pickupableFeature);
 
             completeAbleFeature.Init(this, AutoExecute);
@@ -56,37 +59,28 @@ namespace InteractSystem.Actions
             base.StepComplete();
             if (!OperateAble)
             {
-                AddRigibody();
+                if(rule) rule.OnDetach(this);
             }
         }
         public override void StepUnDo()
         {
             base.StepUnDo();
-            RemoveRigibody();
+            if (rule)
+                rule.UnDoDetach();
             transform.localPosition = startPos;
             transform.localRotation = startRot;
         }
 
         internal void OnDetach()
         {
-            AddRigibody();
+            if(rule)
+                rule.OnDetach(this);
             completeAbleFeature.OnComplete();
         }
 
-        private void AddRigibody()
+       private void SetPosition(Vector3 pos)
         {
-            if (m_rigidbody == null)
-            {
-                m_rigidbody = gameObject.AddComponent<Rigidbody>();
-            }
-        }
-        private void RemoveRigibody()
-        {
-            if (m_rigidbody != null)
-            {
-                m_rigidbody = gameObject.AddComponent<Rigidbody>();
-                Destroy(m_rigidbody);
-            }
+            transform.position = pos;
         }
     }
 }

@@ -328,6 +328,7 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -339,13 +340,14 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   pickupableFeature:
-    _collider: {fileID: 0}
+    _collider: {fileID: 71588755}
     onClick:
       m_PersistentCalls:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     pickUpAble: 1
+  rule: {fileID: 0}
 --- !u!1 &356563622
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,6 +393,7 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -409,6 +412,7 @@ MonoBehaviour:
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     pickUpAble: 1
+  rule: {fileID: 11400000, guid: 0d822be8b9442f241b38a2dea1ca691a, type: 2}
 --- !u!1 &1053876064
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,6 +504,7 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -511,13 +516,14 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   pickupableFeature:
-    _collider: {fileID: 0}
+    _collider: {fileID: 175374840}
     onClick:
       m_PersistentCalls:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     pickUpAble: 1
+  rule: {fileID: 11400000, guid: feb34d28487490241b790ae748c20b4c, type: 2}
 --- !u!1 &1745483086
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +654,7 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice: []
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -666,6 +673,7 @@ MonoBehaviour:
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     pickUpAble: 1
+  rule: {fileID: 11400000, guid: feb34d28487490241b790ae748c20b4c, type: 2}
 --- !u!1 &2147207747
 GameObject:
   m_ObjectHideFlags: 0
