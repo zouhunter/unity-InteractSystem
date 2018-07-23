@@ -48,7 +48,7 @@ namespace InteractSystem.Actions
 
         public void Update()
         {
-            if (ropeSelected == null) return;
+            //if (ropeSelected == null) return;
 
             if (pickUpedRopeNode == null)
             {

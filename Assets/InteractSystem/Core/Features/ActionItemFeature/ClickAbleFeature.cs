@@ -13,6 +13,8 @@ namespace InteractSystem
     {
         [SerializeField, Attributes.DefultCollider("碰 撞 体")]
         protected Collider _collider;
+        [SerializeField, Attributes.CustomField("可 交 互")]
+        protected bool pickUpAble = true;
         protected string _layerName;
         public virtual Collider collider
         {
@@ -38,7 +40,7 @@ namespace InteractSystem
 
         public void Click()
         {
-            if(onClick != null)
+            if (onClick != null)
             {
                 onClick.Invoke();
             }
@@ -52,8 +54,8 @@ namespace InteractSystem
 
         public virtual void Init(ActionItem actionItem, string itemLayer)
         {
-           target = actionItem;
-           LayerName = itemLayer;
+            target = actionItem;
+            LayerName = itemLayer;
         }
 
         public virtual string LayerName
@@ -64,17 +66,26 @@ namespace InteractSystem
         public override void StepActive()
         {
             base.StepActive();
-            collider.enabled = true;
+            if (pickUpAble)
+            {
+                collider.enabled = true;
+            }
         }
         public override void StepUnDo()
         {
             base.StepUnDo();
-            collider.enabled = false;
+            if (pickUpAble)
+            {
+                collider.enabled = false;
+            }
         }
         public override void StepComplete()
         {
             base.StepComplete();
-            collider.enabled = false;
+            if (pickUpAble)
+            {
+                collider.enabled = false;
+            }
         }
     }
 }

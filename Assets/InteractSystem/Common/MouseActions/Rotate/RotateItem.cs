@@ -94,7 +94,13 @@ namespace InteractSystem.Actions
             base.StepComplete();
             if (completeMoveBack)
             {
+                currAngle = 0;
                 Operater.rotation = startRot;
+            }
+            else
+            {
+                currAngle = triggerAngle;
+                Operater.rotation = Quaternion.Euler(Direction * triggerAngle) * startRot;
             }
         }
         public override void StepUnDo()

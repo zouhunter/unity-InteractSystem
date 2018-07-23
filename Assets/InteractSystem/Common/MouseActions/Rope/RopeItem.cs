@@ -24,6 +24,8 @@ namespace InteractSystem.Actions
 
         [SerializeField,Attributes.CustomField("绳子坐标")]
         private Transform bestRopePos;
+        [SerializeField, Attributes.CustomField("默认绳子")]
+        private RopeElement defultRope;
         [SerializeField,Attributes.CustomField("接收距离")]
         private float triggerDistence;
         [SerializeField]
@@ -34,7 +36,7 @@ namespace InteractSystem.Actions
 
         private List<Collider> connected = new List<Collider>();
         private Vector3[] ropeNodeStartPos;
-        private RopeElement ropeElement { get { return contentFeature.Element as RopeElement; } }
+        private RopeElement ropeElement { get { return contentFeature.Element as RopeElement == null ? defultRope: contentFeature.Element as RopeElement; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
         public const string layer = "i:ropepos";
 
@@ -43,6 +45,8 @@ namespace InteractSystem.Actions
         {
             base.Awake();
             RegistNodes();
+            if (defultRope != null)
+                defultRope.bindingTarget = this;
         }
 
         protected override void Start()
@@ -145,7 +149,7 @@ namespace InteractSystem.Actions
         public void TryPlaceRope(RopeElement ropeSelected)
         {
             if (ropeSelected == null) return;
-            if (ropeElement != null) return;
+            //if (ropeElement != null) return;
             if (!ropeSelected.OperateAble) return;
 
             var distence = Vector3.Distance(ropeSelected.transform.position, transform.position);
@@ -215,7 +219,15 @@ namespace InteractSystem.Actions
         public override void StepComplete()
         {
             base.StepComplete();
+            if(ropeElement == null)
+            {
+                QuickPlaceRope();
+            }
             QuickInstallRopeNodes(ropeElement.RopeNodeFrom);
+        }
+
+        private void QuickPlaceRope()
+        {
         }
         #endregion
 
@@ -229,12 +241,14 @@ namespace InteractSystem.Actions
             if (ropes != null)
             {
                 var ropeElements = ropes.FindAll(x => x.bindingTarget == this || x.bindingTarget == null);
-                foreach (var ropeElement in ropeElements)
+                foreach (var rope in ropeElements)
                 {
-                    if (ropeElement != null)
+                    if (rope != null)
                     {
-                        ropeElement.StepActive();
-                        ropeElement.RegistOnPlace(TryPlaceRope);
+                        if(!rope.Active)
+                            rope.StepActive();
+
+                        rope.RegistOnPlace(TryPlaceRope);
                     }
                 }
             }

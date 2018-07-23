@@ -10,9 +10,6 @@ namespace InteractSystem
     [Serializable]
     public class PickUpAbleFeature: ClickAbleFeature{
         private PickUpAbleComponent _pickUpAbleItem;
-      
-        [SerializeField,Attributes.CustomField("可拿起")]
-        private bool pickUpAble = true;
         private PickUpAbleComponent pickUpAbleItem
         {
             get
@@ -23,6 +20,7 @@ namespace InteractSystem
                     if (_pickUpAbleItem == null)
                     {
                         _pickUpAbleItem = collider.gameObject.AddComponent<PickUpAbleComponent>();
+                        _pickUpAbleItem.PickUpAble = pickUpAble;
                         _pickUpAbleItem.onPickUp = new UnityEvent();
                         _pickUpAbleItem.onPickDown = new UnityEvent();
                         _pickUpAbleItem.onPickStay = new UnityEvent();
@@ -52,6 +50,7 @@ namespace InteractSystem
         }
         public void OnPickUp()
         {
+
             pickUpAbleItem.OnPickUp();
         }
         public void OnPickStay()

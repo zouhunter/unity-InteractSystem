@@ -94,7 +94,14 @@ namespace InteractSystem.Actions
         public override void StepActive()
         {
             base.StepActive();
-            OnPlace(true);
+            if(pickUpableFeature.PickUpAble)
+            {
+                OnPlace(true);
+            }
+            else
+            {
+                OnPlace(false);
+            }
         }
 
         public bool TryMoveToPos(Collider collider, Vector3 pos)
@@ -127,7 +134,11 @@ namespace InteractSystem.Actions
 
         internal void OnPlace(bool startState = false)
         {
-            pickUpableFeature.collider.enabled = startState;
+            if (PickUpAble)
+            {
+                pickUpableFeature.collider.enabled = startState;
+            }
+
             foreach (var item in ropeNodeFrom)
             {
                 item.enabled = !startState;
