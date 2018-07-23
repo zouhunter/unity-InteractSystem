@@ -18,13 +18,16 @@ namespace InteractSystem
         public readonly ElementPool<ISupportElement> elementPool = new ElementPool<ISupportElement>();
         public ISupportElement[] finalGroup { get; set; }
         protected List<ISupportElement> currents = new List<ISupportElement>();
-        protected ElementController elementCtrl { get { return ElementController.Instence; } }
+        protected static ElementController elementCtrl { get { return ElementController.Instence; } }
         public UnityAction<ISupportElement> onAddToPool { get; set; }
         public UnityAction<ISupportElement> onRemoveFromPool { get; set; }
         public UnityAction<ISupportElement> onUpdateElement { get; set; }
+
         public CollectNodeFeature(Type type)
         {
             this.type = type;
+            elementCtrl.onRegistElememt += OnRegistElement;
+            elementCtrl.onRemoveElememt += OnRemoveElement;
         }
 
         public virtual void SetTarget(Graph.OperaterNode node)
@@ -37,9 +40,6 @@ namespace InteractSystem
             base.OnEnable();
             elementPool.onAdded = OnAddedToPool;
             elementPool.onRemoved = OnRemovedFromPool;
-
-            elementCtrl.onRegistElememt += OnRegistElement;
-            elementCtrl.onRemoveElememt += OnRemoveElement;
         }
         protected virtual void OnRemovedFromPool(ISupportElement arg0)
         {
@@ -56,10 +56,11 @@ namespace InteractSystem
             //    arg0.StepActive();
             //}
 
+            if (onUpdateElement != null)
+                onUpdateElement.Invoke(arg0);
+
             if (onAddToPool != null)
-            {
                 onAddToPool.Invoke(arg0);
-            }
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -91,22 +92,19 @@ namespace InteractSystem
                     if (elements != null)
                     {
                         elements = elements.Where((x => SupportType(x.GetType()))).ToList();
-                        if (elements != null)
-                        {
-                            elementPool.ScureAdd(elements.ToArray());
-                        }
-
+                        
                         foreach (var item in elements)
                         {
-                            //if (target.Statu == ExecuteStatu.Executing && !item.Active && item.OperateAble)
-                            //{
-                            //    if (log) Debug.Log("激活：" + item.Name);
-                            //    item.StepActive();
-                            //}
-
-                            if(onUpdateElement != null)
+                            if(elementPool.Contains(item))
                             {
-                                onUpdateElement.Invoke(item);
+                                if (onUpdateElement != null)
+                                {
+                                    onUpdateElement.Invoke(item);
+                                }
+                            }
+                            else
+                            {
+                                elementPool.ScureAdd(item);
                             }
                         }
 
@@ -119,7 +117,6 @@ namespace InteractSystem
                 }
             }
         }
-
 
         /// <summary>
         /// 注册可点击元素

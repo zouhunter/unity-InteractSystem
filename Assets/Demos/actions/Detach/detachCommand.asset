@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b71da72cbd77a4bbd801f7d7cdfd24, type: 3}
-  m_Name: InteractSystem.Common.Actions.DetachNode
+  m_Name: "\u62D4\u9664\u4E00\u4E9B\u7269\u4F53"
   m_EditorClassIdentifier: 
   _name: "\u62D4\u9664\u4E00\u4E9B\u7269\u4F53"
   startHooks: []

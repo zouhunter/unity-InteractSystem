@@ -34,7 +34,7 @@ MonoBehaviour:
   - m_name: "\u64AD\u653E\u52A8\u753B"
     m_id: 49eb06bd-4277-417e-9885-df29fd385e13
     m_x: 260
-    m_y: 220
+    m_y: 170
     m_node: {fileID: 114978294349438572}
     m_inputPoints:
     - id: 877eae3d-f83d-49a1-b592-0fe58cdb9935
@@ -64,8 +64,8 @@ MonoBehaviour:
       type: actionconnect
   - m_name: "\u5EF6\u65F6\u5173\u95ED"
     m_id: f6911383-ee16-44a8-88e8-3d8086018644
-    m_x: 410
-    m_y: 220
+    m_x: 420
+    m_y: 170
     m_node: {fileID: 114008602502079026}
     m_inputPoints:
     - id: 797b2d5d-d730-4ed2-a0c2-2f744a353eed
@@ -180,11 +180,9 @@ MonoBehaviour:
   m_Name: "\u64AD\u653E\u52A8\u753B"
   m_EditorClassIdentifier: 
   _name: "\u64AD\u653E\u52A8\u753B"
-  startHooks:
-  - {fileID: 0}
+  startHooks: []
   completeHooks: []
-  bindings:
-  - {fileID: 0}
+  bindings: []
   environments: []
   delyTime: 0
   speed: 1

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_allNodes:
   - m_name: Start
     m_id: 5d7f0a68-564a-4aa5-8869-c20ec52485f7
-    m_x: 90
-    m_y: 160
+    m_x: 60
+    m_y: 150
     m_node: {fileID: 114401601842333208}
     m_inputPoints: []
     m_outputPoints:
@@ -33,8 +33,8 @@ MonoBehaviour:
       type: actionconnect
   - m_name: "\u8FDE\u63A5\u4E00\u4E9B\u5BF9\u8C61"
     m_id: e73c4e6b-94f1-439f-a13a-54fdfc18a16c
-    m_x: 280
-    m_y: 150
+    m_x: 230
+    m_y: 170
     m_node: {fileID: 114996539430454806}
     m_inputPoints:
     - id: 2a787ea8-9046-4a7d-ba67-d92c2b8f0b60
@@ -70,7 +70,7 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 2a787ea8-9046-4a7d-ba67-d92c2b8f0b60
     m_type: actionconnect
     m_connection: {fileID: 114752997652099804}
-  m_lastModified: 131733663534076437
+  m_lastModified: 131768095836353706
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: dragcommand
@@ -117,14 +117,14 @@ MonoBehaviour:
   completeHooks: []
   bindings: []
   environments: []
-  lineMaterial: {fileID: 0}
+  lineMaterial: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   lineWight: 0.1
-  connectGroup:
-  - p1: 0
-    p2: 0
-    material: {fileID: 0}
-    width: 0.1
   collectNodeFeature:
     itemList:
     - connectItemA
     - connectItemB
+  connectGroup:
+  - p1: 0
+    p2: 1
+    material: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+    width: 0.1

@@ -11,11 +11,17 @@ namespace InteractSystem.Actions
     {
         [SerializeField]
         protected ClickAbleFeature clickableFeature = new ClickAbleFeature();
+        [SerializeField,Attributes.CustomField("可点击数")]
+        protected int connectableCount = 1;
+        protected List<ConnectItem> connected = new List<ConnectItem>();
+
+        public ConnectItem[] Connected { get { return connected.ToArray() ; } }
+
         public override bool OperateAble
         {
             get
             {
-                return targets.Count == 0;
+                return connected.Count < connectableCount;
             }
         }
         public const string layer = "i:connectitem";
@@ -32,6 +38,23 @@ namespace InteractSystem.Actions
         private void OnClickItem()
         {
 
+        }
+
+        public void OnConnectTo(ConnectItem item)
+        {
+            if(!connected.Contains(item))
+            {
+                connected.Add(item);
+            }
+        }
+
+        public void OnDisConnectTo(ConnectItem item)
+        {
+            Debug.Log("OnDisConnectTo:" + item);
+            if(connected.Contains(item))
+            {
+                connected.Remove(item);
+            }
         }
 
         //public override void StepComplete()

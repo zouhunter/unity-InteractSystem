@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -328,6 +328,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 7d978b2cb7c78a649a016ccfca3125f6, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -483,6 +485,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 7d978b2cb7c78a649a016ccfca3125f6, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -729,6 +733,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 7d978b2cb7c78a649a016ccfca3125f6, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -884,6 +890,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 7d978b2cb7c78a649a016ccfca3125f6, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -963,6 +971,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 7d978b2cb7c78a649a016ccfca3125f6, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1119,6 +1129,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 7d978b2cb7c78a649a016ccfca3125f6, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -1283,6 +1295,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
+  actionNotice:
+  - {fileID: 11400000, guid: 7d978b2cb7c78a649a016ccfca3125f6, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []

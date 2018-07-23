@@ -182,6 +182,7 @@ namespace InteractSystem.Graph
                 if (completeHookCtrl.Statu != ExecuteStatu.UnStarted){
                     completeHookCtrl.OnUnDoExecute();
                 }
+
                 OnUnDoExecuteInternal();
 
                 if (startHookCtrl.Statu != ExecuteStatu.UnStarted){

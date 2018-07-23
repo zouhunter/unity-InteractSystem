@@ -66,14 +66,16 @@ namespace InteractSystem
             TryExecuteFeatures((feature) => { feature.Awake(); });
             ElementController.Instence.RegistElement(this);
         }
+
         protected virtual void Start()
         {
             TryExecuteFeatures((feature) => { feature.Start(); });
             TryExecuteBindings((binding) => binding.Start());
             gameObject.SetActive(startactive);
+        
         }
 
-      
+
         protected virtual void OnEnable()
         {
             targets.Clear();

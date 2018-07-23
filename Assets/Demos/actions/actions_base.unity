@@ -356,11 +356,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeGraphObj_log: 0
-  operateNode_log: 0
-  actionItem_log: 0
+  operateNode_log: 1
+  actionItem_log: 1
   actionHook_log: 0
   feature_log: 0
-  actionItemBinding_log: 0
+  actionItemBinding_log: 1
+  elementCtrl_Log: 1
 --- !u!4 &2027092914
 Transform:
   m_ObjectHideFlags: 0

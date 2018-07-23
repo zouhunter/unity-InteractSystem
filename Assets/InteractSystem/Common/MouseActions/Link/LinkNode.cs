@@ -48,12 +48,17 @@ namespace InteractSystem.Actions
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
+            LinkCtrl.Instence.RegistLock(this);
+        }
+
+        protected override void OnStartExecuteInternal()
+        {
+            base.OnStartExecuteInternal();
             OnStepActive();
             if (auto)
             {
                 CoroutineController.Instence.StartCoroutine(AutoLinkItems());
             }
-            LinkCtrl.Instence.RegistLock(this);
         }
 
         protected override void OnBeforeEnd(bool force)
@@ -62,10 +67,10 @@ namespace InteractSystem.Actions
 
             CoroutineController.Instence.StopCoroutine(AutoLinkItems());
 
-            if (collectNodeFeature.finalGroup == null)
-            {
+            if (collectNodeFeature.finalGroup == null){
                 QuickLinkItems();
             }
+
             LinkCtrl.Instence.RemoveLock(this);
         }
 

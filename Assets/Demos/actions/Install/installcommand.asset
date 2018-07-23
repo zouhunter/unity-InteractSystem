@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0e9389a85beafd4aaa3aec8b9fe2060, type: 3}
-  m_Name: InteractSystem.Common.Actions.PlaceNode
+  m_Name: "\u5B89\u88C5"
   m_EditorClassIdentifier: 
   _name: "\u5B89\u88C5"
   startHooks: []
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0e9389a85beafd4aaa3aec8b9fe2060, type: 3}
-  m_Name: InteractSystem.Common.Actions.PlaceNode
+  m_Name: "\u5339\u914D"
   m_EditorClassIdentifier: 
   _name: "\u5339\u914D"
   startHooks: []

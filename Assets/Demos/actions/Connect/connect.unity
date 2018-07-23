@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -221,7 +221,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 238559500}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4.15}
+  m_LocalPosition: {x: -3.4, y: 0, z: -4.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 625616753}
@@ -239,10 +239,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e849999faabf2d347ba5cb0224cabf05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: connectItem01
+  _name: 
   startactive: 1
   endactive: 1
-  bindings: []
+  bindings:
+  - {fileID: 11400000, guid: 23811f190041b9542b3e479c49f52635, type: 2}
   actionNotice: []
   onActive:
     m_PersistentCalls:
@@ -261,6 +262,7 @@ MonoBehaviour:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+  connectableCount: 1
 --- !u!1 &426922524
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +415,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1807022645}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.19, y: 0, z: -4.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 141766607}
@@ -434,7 +436,8 @@ MonoBehaviour:
   _name: 
   startactive: 1
   endactive: 1
-  bindings: []
+  bindings:
+  - {fileID: 11400000, guid: 23811f190041b9542b3e479c49f52635, type: 2}
   actionNotice: []
   onActive:
     m_PersistentCalls:
@@ -453,3 +456,4 @@ MonoBehaviour:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+  connectableCount: 1

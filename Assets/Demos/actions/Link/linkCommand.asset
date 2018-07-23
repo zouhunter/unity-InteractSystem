@@ -101,10 +101,8 @@ MonoBehaviour:
     portA: 1
     ItemB: 1
     portB: 0
-  completeableFeature:
-    itemList:
-    - LinkItem
-    - LinkItem
+  collectNodeFeature:
+    itemList: []
 --- !u!114 &114271080708060464
 MonoBehaviour:
   m_ObjectHideFlags: 1
