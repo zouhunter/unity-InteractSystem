@@ -13,7 +13,7 @@ namespace InteractSystem.Actions
             get
             {
                 return pickCtrl.pickedUpObj != null ?
-                    pickCtrl.pickedUpObj.GetComponent<ChargeTool>() : null;
+                    pickCtrl.pickedUpObj.GetComponentInParent<ChargeTool>() : null;
             }
         }
         private ChargeItem chargeObj;

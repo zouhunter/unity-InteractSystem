@@ -74,7 +74,7 @@ namespace InteractSystem
         private CameraController(MonoBehaviour holder)
         {
             this.holder = holder;
-            viewCameraParent = holder. transform;
+            viewCameraParent = holder.transform;
             mainCamera = Camera.main;
             Debug.Assert(mainCamera);
             viewCamera = UnityEngine.Object.Instantiate(mainCamera);

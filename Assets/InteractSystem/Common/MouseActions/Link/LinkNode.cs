@@ -27,18 +27,10 @@ namespace InteractSystem.Actions
         {
             var features = base.RegistFeatures();
             collectNodeFeature.SetTarget(this);
-            collectNodeFeature.onUpdateElement = OnUpdateElement;
             features.Add(collectNodeFeature);
             return features;
         }
 
-        protected void OnUpdateElement(ISupportElement arg0)
-        {
-            if(arg0.OperateAble && Statu == ExecuteStatu.Executing && !arg0.Active)
-            {
-                arg0.StepActive();
-            }
-        }
 
         public override void OnStartExecute(bool auto = false)
         {

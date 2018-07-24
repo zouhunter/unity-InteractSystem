@@ -8,7 +8,7 @@ using System;
 namespace InteractSystem.Actions
 {
     [RequireComponent(typeof(ChargeItem))]
-    public abstract class ChargeObjBinding : ChargeBinding
+    public abstract class ChargeItemBinding : ChargeBinding
     {
         protected ChargeItem target;
         protected virtual void Awake()

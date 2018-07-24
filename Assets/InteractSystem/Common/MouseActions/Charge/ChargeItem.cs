@@ -31,8 +31,6 @@ namespace InteractSystem.Actions
         public List<ChargeData> currentList { get { return _currentList; } }
         private int index;
         private ElementController elementCtrl { get { return ElementController.Instence; } }
-        private static List<ChargeItem> activeChargeItems = new List<ChargeItem>();
-
         public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
 
@@ -56,19 +54,13 @@ namespace InteractSystem.Actions
         public override void StepActive()
         {
             base.StepActive();
-            if (!activeChargeItems.Contains(this))
-            {
-                activeChargeItems.Add(this);
-            }
+            //激活可用的tool
+            //ActiveElements(this);
         }
         public override void StepComplete()
         {
             base.StepComplete();
-            if (activeChargeItems.Contains(this))
-            {
-                activeChargeItems.Remove(this);
-            }
-            CompleteElements(this, false);
+            //CompleteElements(this, false);
             CompleteCurrentCharge();
         }
 
@@ -90,11 +82,7 @@ namespace InteractSystem.Actions
         public override void StepUnDo()
         {
             base.StepUnDo();
-            if(activeChargeItems.Contains(this)){
-                activeChargeItems.Remove(this);
-            }
-
-            CompleteElements(this, true);
+            //CompleteElements(this, true);
             var currentListArray = currentList.ToArray();
             foreach (var item in currentListArray)
             {
@@ -260,104 +248,6 @@ namespace InteractSystem.Actions
             }
         }
         
-
-        private void ActiveElements(ChargeItem element)
-        {
-            var actived = activeChargeItems.Find(x => x.Name == element.Name);
-
-            if (actived == null)
-            {
-                var tools = ElementController.Instence.GetElements<ChargeTool>();
-                if (tools != null)
-                {
-                    for (int i = 0; i < tools.Count; i++)
-                    {
-                        if (completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
-
-                        if (log) Debug.Log("ActiveElements:" + element.Name + (!tools[i].Active));
-
-                        if (!tools[i].Active)
-                        {
-                            tools[i].StepActive();
-                        }
-                    }
-                }
-
-                var resources = ElementController.Instence.GetElements<ChargeResource>();
-                if (resources != null)
-                {
-                    for (int i = 0; i < resources.Count; i++)
-                    {
-                        if (completeDatas.FindAll(y => y.type == resources[i].type).Count == 0) continue;
-
-                        if (log) Debug.Log("ActiveElements:" + element.Name + (!resources[i].Active));
-
-                        if (!resources[i].Active)
-                        {
-                            resources[i].StepActive();
-                        }
-                    }
-                }
-
-            }
-            if(!activeChargeItems.Contains(element)) activeChargeItems.Add(element);
-        }
-
-        private void CompleteElements(ChargeItem element, bool undo)
-        {
-            activeChargeItems.Remove(element);
-            var active = activeChargeItems.Find(x => x.Name == element.Name);
-            if (active == null)
-            {
-                var tools = ElementController.Instence.GetElements<ChargeTool>();
-                if (tools != null)
-                {
-                    for (int i = 0; i < tools.Count; i++)
-                    {
-                        if (log) Debug.Log("CompleteElements:" + element.Name + tools[i].Active);
-
-                        if (completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
-
-                        if (tools[i].Active)
-                        {
-                            if (undo)
-                            {
-                                tools[i].StepUnDo();
-                            }
-                            else
-                            {
-                                tools[i].StepComplete();
-                            }
-                        }
-                    }
-                }
-
-                var resources = ElementController.Instence.GetElements<ChargeResource>();
-                if (resources != null)
-                {
-                    for (int i = 0; i < resources.Count; i++)
-                    {
-                        if (log) Debug.Log("CompleteElements:" + element.Name + resources[i].Active);
-
-                        if (completeDatas.FindAll(y => y.type == resources[i].type).Count == 0) continue;
-
-                        if (resources[i].Active)
-                        {
-                            if (undo)
-                            {
-                                resources[i].StepUnDo();
-                            }
-                            else
-                            {
-                                resources[i].StepComplete();
-                            }
-                        }
-                    }
-                }
-            }
-
-
-        }
 
         private void InitStartData()
         {

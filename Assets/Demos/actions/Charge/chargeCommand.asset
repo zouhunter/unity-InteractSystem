@@ -9,19 +9,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
-  m_Name: ropeCommand
+  m_Name: chargeCommand
   m_EditorClassIdentifier: 
   m_allNodes:
   - m_name: Start
-    m_id: 86f12f1c-c602-45df-a261-65fd24f1fe38
-    m_x: 36
-    m_y: 72
-    m_node: {fileID: 114509087512272958}
+    m_id: b8d8d1dd-11d0-4c96-9520-9c3030f90100
+    m_x: 10
+    m_y: 140
+    m_node: {fileID: 114450035558269604}
     m_inputPoints: []
     m_outputPoints:
-    - id: 85da1e33-1861-460f-adde-0d217717f597
+    - id: e1ce4028-bda1-4cc2-b5d8-790dd1253f15
       label: 0
-      parentId: 86f12f1c-c602-45df-a261-65fd24f1fe38
+      parentId: b8d8d1dd-11d0-4c96-9520-9c3030f90100
       isInput: 0
       buttonRect:
         serializedVersion: 2
@@ -31,15 +31,15 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
-  - m_name: "\u8FDE\u63A5\u7EF3\u5B50"
-    m_id: b0828b33-65dd-417e-a57d-74853ed0c2cb
-    m_x: 261
-    m_y: 181
-    m_node: {fileID: 114165608691006010}
+  - m_name: "\u586B\u5145\u6D4B\u8BD5"
+    m_id: 23553913-6630-4e9e-befe-f97fbc0e4c29
+    m_x: 200
+    m_y: 120
+    m_node: {fileID: 114682105220314976}
     m_inputPoints:
-    - id: b568ea29-8d2f-44de-a5f3-3d1d7f241c9e
+    - id: faf71a2f-64ff-401a-9f33-8f4aae6586b8
       label: 
-      parentId: b0828b33-65dd-417e-a57d-74853ed0c2cb
+      parentId: 23553913-6630-4e9e-befe-f97fbc0e4c29
       isInput: 1
       buttonRect:
         serializedVersion: 2
@@ -50,9 +50,9 @@ MonoBehaviour:
       max: 1
       type: actionconnect
     m_outputPoints:
-    - id: a34805af-6d4f-47bc-8130-b00a43ef2def
+    - id: 6db26c35-6c59-412d-b55e-e339f3409243
       label: 0
-      parentId: b0828b33-65dd-417e-a57d-74853ed0c2cb
+      parentId: 23553913-6630-4e9e-befe-f97fbc0e4c29
       isInput: 0
       buttonRect:
         serializedVersion: 2
@@ -63,41 +63,23 @@ MonoBehaviour:
       max: 100
       type: actionconnect
   m_allConnections:
-  - m_id: 4f5f5102-f6bc-4853-b775-78c177c57d13
-    m_fromNodeId: 86f12f1c-c602-45df-a261-65fd24f1fe38
-    m_fromNodeConnectionPointId: 85da1e33-1861-460f-adde-0d217717f597
-    m_toNodeId: b0828b33-65dd-417e-a57d-74853ed0c2cb
-    m_toNodeConnectionPoiontId: b568ea29-8d2f-44de-a5f3-3d1d7f241c9e
+  - m_id: eda3293b-0065-495c-96fe-07dd584de4b8
+    m_fromNodeId: b8d8d1dd-11d0-4c96-9520-9c3030f90100
+    m_fromNodeConnectionPointId: e1ce4028-bda1-4cc2-b5d8-790dd1253f15
+    m_toNodeId: 23553913-6630-4e9e-befe-f97fbc0e4c29
+    m_toNodeConnectionPoiontId: faf71a2f-64ff-401a-9f33-8f4aae6586b8
     m_type: actionconnect
-    m_connection: {fileID: 114708028667661230}
-  m_lastModified: 131769228629811933
+    m_connection: {fileID: 114719886721576820}
+  m_lastModified: 131769231432222222
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
-  _stepName: installcommand
+  _stepName: chargeCommand
   commandBindings: []
   environments: []
-  startHooks: []
+  startHooks:
+  - {fileID: 11400000, guid: 423de3c2ec2bdb3419111a1a682612f4, type: 2}
   completeHooks: []
---- !u!114 &114165608691006010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e54c99516603cd42b6a996a8a73ab55, type: 3}
-  m_Name: "\u8FDE\u63A5\u7EF3\u5B50"
-  m_EditorClassIdentifier: 
-  _name: "\u8FDE\u63A5\u7EF3\u5B50"
-  startHooks: []
-  completeHooks: []
-  bindings: []
-  environments: []
-  completeFeature:
-    itemList:
-    - ropeItem01
---- !u!114 &114509087512272958
+--- !u!114 &114450035558269604
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -108,7 +90,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
   m_Name: InteractSystem.Graph.StartNode
   m_EditorClassIdentifier: 
---- !u!114 &114708028667661230
+--- !u!114 &114682105220314976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cdd6d74e442204bbf63400e4291f50, type: 3}
+  m_Name: "\u586B\u5145\u6D4B\u8BD5"
+  m_EditorClassIdentifier: 
+  _name: "\u586B\u5145\u6D4B\u8BD5"
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  completeAbleFeature:
+    itemList:
+    - "\u52A0\u6C34"
+--- !u!114 &114719886721576820
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

@@ -8,7 +8,7 @@ using System;
 namespace InteractSystem.Actions
 {
 
-    public class ChargeObjAnim : ChargeObjBinding
+    public class ChargeItemAnim : ChargeItemBinding
     {
         [SerializeField]
         private Transform scaleTrans;

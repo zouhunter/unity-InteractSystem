@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   command: {fileID: 11400000, guid: 4c488dd69fdec14489a5ce6e69386f6b, type: 2}
-  autoExecute: 0
+  autoExecute: 1
 --- !u!4 &864549688
 Transform:
   m_ObjectHideFlags: 0

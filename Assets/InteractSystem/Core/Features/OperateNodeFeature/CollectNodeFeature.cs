@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using InteractSystem.Actions;
+
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace InteractSystem
 {
@@ -21,8 +19,9 @@ namespace InteractSystem
         protected static ElementController elementCtrl { get { return ElementController.Instence; } }
         public UnityAction<ISupportElement> onAddToPool { get; set; }
         public UnityAction<ISupportElement> onRemoveFromPool { get; set; }
-        public UnityAction<ISupportElement> onUpdateElement { get; set; }
-
+        public UnityAction<ISupportElement> onActiveElement { get; set; }
+        public UnityAction<ISupportElement> onUnDoElement { get; set; }
+        public UnityAction<ISupportElement> onCompleteElement { get; set; }
         public CollectNodeFeature(Type type)
         {
             this.type = type;
@@ -51,13 +50,13 @@ namespace InteractSystem
 
         protected virtual void OnAddedToPool(ISupportElement arg0)
         {
-            //if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
-            //{
-            //    arg0.StepActive();
-            //}
+            if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
+            {
+                arg0.StepActive();
 
-            if (onUpdateElement != null)
-                onUpdateElement.Invoke(arg0);
+                if (onActiveElement != null)
+                    onActiveElement.Invoke(arg0);
+            }
 
             if (onAddToPool != null)
                 onAddToPool.Invoke(arg0);
@@ -97,9 +96,12 @@ namespace InteractSystem
                         {
                             if(elementPool.Contains(item))
                             {
-                                if (onUpdateElement != null)
+                                if (target.Statu == ExecuteStatu.Executing && !item.Active && item.OperateAble)
                                 {
-                                    onUpdateElement.Invoke(item);
+                                    item.StepActive();
+
+                                    if (onActiveElement != null)
+                                        onActiveElement.Invoke(item);
                                 }
                             }
                             else
@@ -177,13 +179,18 @@ namespace InteractSystem
                     if (objs == null) return;
                     for (int i = 0; i < objs.Count; i++)
                     {
+                        var currentObj = objs[i];
                         if (undo)
                         {
-                            objs[i].StepUnDo();
+                            currentObj.StepUnDo();
+                            if (onUnDoElement != null)
+                                onUnDoElement(currentObj);
                         }
                         else
                         {
-                            objs[i].StepComplete();
+                            currentObj.StepComplete();
+                            if (onCompleteElement != null)
+                                onCompleteElement(currentObj);
                         }
                     }
                 }

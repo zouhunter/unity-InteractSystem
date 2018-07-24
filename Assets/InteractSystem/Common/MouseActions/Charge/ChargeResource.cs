@@ -6,93 +6,50 @@ using UnityEngine.Events;
 
 namespace InteractSystem.Actions
 {
-    public class ChargeResource : MonoBehaviour, ISupportElement
+    public class ChargeResource : ActionItem
     {
         [SerializeField]
         private ChargeData startData;
         [SerializeField]
         private float _capacity = 1;
-        [SerializeField]
-        private string _name;
         public string type { get { return startData.type; } }
         public float current { get; private set; }
         public ChargeEvent onChange { get; set; }
         public float capacity { get { return _capacity; } }
         public bool Used { get; set; }
-        public bool OperateAble
+        public override bool OperateAble
         {
             get {
                 return true;
             }
         }
-        #region ISupportElement
-        public string Name
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_name)){
-                    return name;
-                }
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-        public bool Active { get; private set; }
-
-        public bool IsRuntimeCreated { get; set; }
-
-        public GameObject Body
-        {
-            get
-            {
-                return gameObject;
-            }
-        }
-
-        public void StepActive()
-        {
-            Active = true;
-        }
-
-        public void StepComplete()
-        {
-            Active = true;
-        }
-
-        public void StepUnDo()
-        {
-            var extro = current - startData.value;
-            if (onChange != null)
-            {//把多的去掉
-                onChange.Invoke(transform.position, new ChargeData(type, -extro), null);
-            }
-            current = startData.value;
-            Active = false;
-        }
-
-        #endregion
-
+  
         private ElementController elementCtrl;
         public const string layer = "i:chargeresource";
 
-        protected void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             elementCtrl = ElementController.Instence;
             elementCtrl.RegistElement(this);
             InitLayer();
         }
 
-        private void OnDestroy()
+        protected override void Start()
         {
-            if (elementCtrl != null)
-                elementCtrl.RemoveElement(this);
-        }
-        private void Start()
-        {
+            base.Start();
             InitCurrent();
+        }
+        public override void StepUnDo()
+        {
+            base.StepUnDo();
+            var extro = current - startData.value;
+            if (onChange != null)
+            {
+                //把多的去掉
+                onChange.Invoke(transform.position, new ChargeData(type, -extro), null);
+            }
+            current = startData.value;
         }
 
         public void Subtruct(float value, UnityAction onComplete)
@@ -108,6 +65,7 @@ namespace InteractSystem.Actions
                     onComplete.Invoke();
             }
         }
+
         private void InitCurrent()
         {
             current = startData.value;
@@ -120,11 +78,6 @@ namespace InteractSystem.Actions
         private void InitLayer()
         {
             GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer(layer);
-        }
-
-        public void SetVisible(bool visible)
-        {
-            gameObject.SetActive(visible);
         }
     }
 

@@ -26,7 +26,7 @@ namespace InteractSystem
         private ActionGroup system { get {  transform.SurchSystem(ref _system);return _system; } }
         protected CameraController cameraCtrl { get { return CameraController.Instence; } }
 
-        private void Awake()
+        private void Start()
         {
             if (_target == null && transform.childCount > 0)
             {
