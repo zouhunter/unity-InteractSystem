@@ -51,15 +51,15 @@ namespace InteractSystem.Actions
             base.Start();
             InitStartData();
         }
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             //激活可用的tool
             //ActiveElements(this);
         }
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             //CompleteElements(this, false);
             CompleteCurrentCharge();
         }
@@ -79,9 +79,9 @@ namespace InteractSystem.Actions
                 Charge(item, null);
             }
         }
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             //CompleteElements(this, true);
             var currentListArray = currentList.ToArray();
             foreach (var item in currentListArray)

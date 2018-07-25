@@ -13,9 +13,11 @@ namespace InteractSystem
         [SerializeField]
         public string elementName;
         public ActionItem actionItem { get; set; }
+
         protected ElementPool<ActionItem> elementPool = new ElementPool<ActionItem>();
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         protected System.Type type;
+
         public CompleteAbleNodeFeature(System.Type type)
         {
             this.type = type;
@@ -113,7 +115,7 @@ namespace InteractSystem
 
             actionItem = item.target as ActionItem;
             item.target.RecordPlayer(target);
-            item.target.StepComplete();
+            item.target.SetInActive(target);
         }
 
 
@@ -135,7 +137,7 @@ namespace InteractSystem
             var elements = elementPool.FindAll(x => x.Name == elementName && x.OperateAble);
             elements.ForEach(element =>
             {
-                element.StepActive();
+                element.SetActive(target);
                 var feature = element.RetriveFeature<CompleteAbleItemFeature>();
                 if (feature != null)
                 {
@@ -153,7 +155,7 @@ namespace InteractSystem
             {
                 if(actionItem != null)
                 {
-                    actionItem.StepUnDo();
+                    actionItem.UnDoChanges(target);
                     actionItem.RemovePlayer(target);
                     actionItem = null;
                 }
@@ -164,7 +166,7 @@ namespace InteractSystem
                 if (element != null)
                 {
                     element.RecordPlayer(target);
-                    element.StepComplete();
+                    element.SetInActive(target);
                     actionItem = element;
                 }
                 else

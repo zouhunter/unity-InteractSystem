@@ -91,9 +91,9 @@ namespace InteractSystem.Actions
             transform.position = pos;
         }
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             if(pickUpableFeature.PickUpAble)
             {
                 OnPlace(true);
@@ -145,9 +145,9 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (completeHide)
             {
                 rope.gameObject.SetActive(false);
@@ -161,9 +161,9 @@ namespace InteractSystem.Actions
             OnPlace(false);
         }
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             if (completeHide)
             {
                 rope.gameObject.SetActive(true);

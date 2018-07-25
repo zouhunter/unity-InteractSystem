@@ -8,23 +8,22 @@ using UnityEngine.Events;
 namespace InteractSystem
 {
     [System.Serializable]
-    public class CollectNodeFeature : OperateNodeFeature
+    public abstract class CollectNodeFeature : OperateNodeFeature
     {
         [SerializeField, HideInInspector]
         public List<string> itemList = new List<string>();
         public Type type { get; private set; }
         public readonly ElementPool<ISupportElement> elementPool = new ElementPool<ISupportElement>();
         public ISupportElement[] finalGroup { get; set; }
-        protected List<ISupportElement> currents = new List<ISupportElement>();
         protected static ElementController elementCtrl { get { return ElementController.Instence; } }
-        public UnityAction<ISupportElement> onAddToPool { get; set; }
-        public UnityAction<ISupportElement> onRemoveFromPool { get; set; }
-        public UnityAction<ISupportElement> onActiveElement { get; set; }
-        public UnityAction<ISupportElement> onUnDoElement { get; set; }
-        public UnityAction<ISupportElement> onCompleteElement { get; set; }
-        public CollectNodeFeature(Type type)
+        public event UnityAction<ISupportElement> onAddToPool;
+        public event UnityAction<ISupportElement> onRemoveFromPool;
+        protected bool autoActive;
+
+        public CollectNodeFeature(Type type, bool autoActive = true)
         {
             this.type = type;
+            this.autoActive = autoActive;
             elementCtrl.onRegistElememt += OnRegistElement;
             elementCtrl.onRemoveElememt += OnRemoveElement;
         }
@@ -52,10 +51,9 @@ namespace InteractSystem
         {
             if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
             {
-                arg0.StepActive();
-
-                if (onActiveElement != null)
-                    onActiveElement.Invoke(arg0);
+                if (autoActive){
+                    ActiveElement(arg0);
+                }
             }
 
             if (onAddToPool != null)
@@ -98,10 +96,10 @@ namespace InteractSystem
                             {
                                 if (target.Statu == ExecuteStatu.Executing && !item.Active && item.OperateAble)
                                 {
-                                    item.StepActive();
-
-                                    if (onActiveElement != null)
-                                        onActiveElement.Invoke(item);
+                                    if (autoActive)
+                                    {
+                                        ActiveElement(item);
+                                    }
                                 }
                             }
                             else
@@ -157,45 +155,11 @@ namespace InteractSystem
                 targetType.IsSubclassOf(type) ||
                 type == targetType;
         }
-
         /// <summary>
         /// 选择性结束element
         /// </summary>
         /// <param name="undo"></param>
-        protected virtual void CompleteElements(bool undo)
-        {
-            foreach (var element in itemList)
-            {
-                //找到所有被激活的对象
-                var active = from item in target.StartedList
-                             let f = item.RetriveFeature<CollectNodeFeature>()
-                             where f != null
-                             where f.itemList.Contains(element)
-                             select item;
+        protected abstract void CompleteElements(bool undo);
 
-                if (active == null || active.Count() == 0)
-                {
-                    var objs = elementPool.FindAll(x => x.Name == element);
-                    if (objs == null) return;
-                    for (int i = 0; i < objs.Count; i++)
-                    {
-                        var currentObj = objs[i];
-                        if (undo)
-                        {
-                            currentObj.StepUnDo();
-                            if (onUnDoElement != null)
-                                onUnDoElement(currentObj);
-                        }
-                        else
-                        {
-                            currentObj.StepComplete();
-                            if (onCompleteElement != null)
-                                onCompleteElement(currentObj);
-                        }
-                    }
-                }
-            }
-
-        }
     }
 }

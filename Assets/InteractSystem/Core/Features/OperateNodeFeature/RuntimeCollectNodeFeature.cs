@@ -62,11 +62,11 @@ namespace InteractSystem
         }
         public override void OnUnDoExecute()
         {
-            CompleteElements(true);
+            //CompleteElements(true);
         }
         public override void OnBeforeEnd(bool force)
         {
-            CompleteElements(false);
+            CompleteElements();
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace InteractSystem
         /// 选择性结束element
         /// </summary>
         /// <param name="undo"></param>
-        protected virtual void CompleteElements(bool undo)
+        protected virtual void CompleteElements()
         {
             foreach (var element in itemList)
             {
@@ -162,11 +162,11 @@ namespace InteractSystem
                     {
                         if (log)
                         {
-                            if (undo)
-                            {
-                                Debug.Log("UnDoElements:" + element + objs[i].Active);
-                            }
-                            else
+                            //if (undo)
+                            //{
+                            //    Debug.Log("UnDoElements:" + element + objs[i].Active);
+                            //}
+                            //else
                             {
                                 Debug.Log("CompleteElements:" + element + objs[i].Active);
                             }
@@ -174,13 +174,13 @@ namespace InteractSystem
 
                         if (objs[i].Active)
                         {
-                            if (undo)
+                            //if (undo)
+                            //{
+                            //    objs[i].UnDo();
+                            //}
+                            //else
                             {
-                                objs[i].StepUnDo();
-                            }
-                            else
-                            {
-                                objs[i].StepComplete();
+                                objs[i].SetInActive(target);
                             }
                         }
                     }

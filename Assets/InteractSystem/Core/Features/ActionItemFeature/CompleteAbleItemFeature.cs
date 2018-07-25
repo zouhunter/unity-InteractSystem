@@ -26,11 +26,9 @@ namespace InteractSystem
         {
             if (onCompleteActions.Count > 0)
             {
-                var actions = onCompleteActions.ToArray();
-                foreach (var action in actions)
-                {
-                    action.Invoke(this);
-                }
+                var action = onCompleteActions[0];
+                onCompleteActions.RemoveAt(0);
+                action.Invoke(this);
             }
             else
             {

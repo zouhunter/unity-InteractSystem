@@ -20,22 +20,21 @@ namespace InteractSystem.Hooks
 
         protected abstract void InitState();
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             time = 1f / duration;
             coroutine = StartCoroutine(PlayAnim(onAutoPlayEnd));
         }
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
-
+            base.SetInActive(target);
             StopAnim();
         }
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             StopAnim();
         }
 

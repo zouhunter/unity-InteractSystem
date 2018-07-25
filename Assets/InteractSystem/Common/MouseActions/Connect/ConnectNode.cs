@@ -76,7 +76,7 @@ namespace InteractSystem.Actions
 
             if (Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
             {
-                arg0.StepActive();
+                arg0.SetActive(this);
             }
         }
 

@@ -9,7 +9,7 @@ namespace InteractSystem.Actions
     public class PlaceNode : Graph.OperaterNode
     {
         [SerializeField]
-        protected CompleteAbleCollectNodeFeature completeAbleNodeFeature = new CompleteAbleCollectNodeFeature(typeof(PlaceItem));
+        protected QueueCollectNodeFeature completeAbleNodeFeature = new QueueCollectNodeFeature(typeof(PlaceItem));
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             completeAbleNodeFeature.SetTarget(this);

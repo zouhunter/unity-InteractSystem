@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -113,93 +113,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &788522046
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1838006093}
-    m_Modifications:
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -2.06
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: c41018ab5df80bd47afea3bca1b408e6, type: 2}
-  m_IsPrefabParent: 0
---- !u!4 &788522047 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4719445789720674, guid: c41018ab5df80bd47afea3bca1b408e6,
-    type: 2}
-  m_PrefabInternal: {fileID: 788522046}
---- !u!1 &1838006091
+--- !u!1 &2061867517
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 1838006093}
-  - component: {fileID: 1838006092}
+  - component: {fileID: 2061867519}
+  - component: {fileID: 2061867518}
   m_Layer: 0
-  m_Name: chargecommand
+  m_Name: SceneSwitch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1838006092
+--- !u!114 &2061867518
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1838006091}
+  m_GameObject: {fileID: 2061867517}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 190d5ee184fe51b40b98350eeec31986, type: 3}
+  m_Script: {fileID: 11500000, guid: b70cdb0ceaa1fcd449cd0501946e146a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  command: {fileID: 11400000, guid: 570764245f5522a41a230b944acd02ff, type: 2}
-  autoExecute: 0
---- !u!4 &1838006093
+  scenes:
+  - auto
+  - charge
+  - click
+  - connect
+  - detach
+  - install
+  - link
+  - rope
+  - rotate
+  subSupportScenes:
+  - actions_base
+--- !u!4 &2061867519
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1838006091}
+  m_GameObject: {fileID: 2061867517}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.19697918, y: -0.27417865, z: -1.7575243}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 788522047}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

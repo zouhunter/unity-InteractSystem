@@ -10,7 +10,7 @@ namespace InteractSystem.Actions
     public class RotateNode : Graph.OperaterNode
     {
         [SerializeField]
-        protected CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(RotateItem));
+        protected QueueCollectNodeFeature completeableFeature = new QueueCollectNodeFeature(typeof(RotateItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {

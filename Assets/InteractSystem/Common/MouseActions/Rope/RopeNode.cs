@@ -10,7 +10,7 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Rope", 18, "InteractSystem")]
     public class RopeNode : Graph.OperaterNode
     {
-        public CompleteAbleCollectNodeFeature completeFeature = new CompleteAbleCollectNodeFeature(typeof(RopeItem));
+        public QueueCollectNodeFeature completeFeature = new QueueCollectNodeFeature(typeof(RopeItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {

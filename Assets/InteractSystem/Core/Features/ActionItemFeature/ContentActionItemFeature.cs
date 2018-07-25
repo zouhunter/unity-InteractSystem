@@ -73,7 +73,7 @@ namespace InteractSystem
         {
             if (target.Active && !arg0.Active && arg0.OperateAble)
             {
-                arg0.StepActive();
+                arg0.SetActive(target);
             }
         }
 
@@ -91,7 +91,7 @@ namespace InteractSystem
                 {
                     if (target.Active && !arg0.Active && arg0.OperateAble)
                     {
-                        arg0.StepActive();
+                        arg0.SetActive(target);
                     }
                 }
               
@@ -140,11 +140,11 @@ namespace InteractSystem
                     {
                         if (undo)
                         {
-                            objs[i].StepUnDo();
+                            objs[i].UnDoChanges(target);
                         }
                         else
                         {
-                            objs[i].StepComplete();
+                            objs[i].SetInActive(target);
                         }
                     }
                 }
@@ -152,26 +152,26 @@ namespace InteractSystem
         }
 
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             if (!startedList.Contains(this.target))
             {
                 startedList.Add(this.target);
             }
             UpdateElementPool();
         }
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (startedList.Contains(this.target)){
                 startedList.Remove(this.target);
             }
             CompleteElements(false);
         }
-        public override void StepUnDo()
+        public override void UnDo(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDo(target);
             if (startedList.Contains(this.target)) {
                 startedList.Remove(this.target);
             }

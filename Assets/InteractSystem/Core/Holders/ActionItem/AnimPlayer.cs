@@ -23,21 +23,23 @@ namespace InteractSystem
         {
              get { return playableCount > targets.Count; } 
         }
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             IsPlaying = true;
         }
-        public override void StepUnDo()
+
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepUnDo();
-            IsPlaying = false;
-        }
-        public override void StepComplete()
-        {
-            base.StepComplete();
+            base.SetInActive(target);
             IsPlaying = false;
             onPlayComplete.Invoke();
+        }
+
+        public override void UnDoChanges(UnityEngine.Object target)
+        {
+            base.UnDoChanges(target);
+            IsPlaying = false;
         }
 
         public virtual bool CanPlay()

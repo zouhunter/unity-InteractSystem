@@ -54,15 +54,15 @@ namespace InteractSystem.Actions
         public bool Matched { get { return contentFeature.Element != null; } }
 
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (!AlreadyPlaced)
             {
                 PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
                 Attach(obj);
                 obj.QuickInstall(this, false);
-                obj.StepComplete();
+                obj.SetInActive(this);
             }
             if (Matched && completeMoveBack)
             {
@@ -70,9 +70,9 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
 
             if (Matched)
             {

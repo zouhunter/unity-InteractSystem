@@ -4,4 +4,41 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Demos/actions/actions_base.unity
+    guid: ed5f81e1d5c3c794095d5b2d4356bc2a
+  - enabled: 1
+    path: Assets/Demos/actions/Appear/appear.unity
+    guid: 8e88851d81ce91d488f4c7b3a97b9fd2
+  - enabled: 1
+    path: Assets/Demos/actions/Auto/auto.unity
+    guid: 0f894dec6cb51a94285f5ee6c854cabc
+  - enabled: 1
+    path: Assets/Demos/actions/Charge/charge.unity
+    guid: c85019637ae706a4a8e6c4604d84a3f5
+  - enabled: 1
+    path: Assets/Demos/actions/Click/click.unity
+    guid: 1580c39028cde34439390504f8e24ddb
+  - enabled: 1
+    path: Assets/Demos/actions/Connect/connect.unity
+    guid: c12a92c1dd3a5d4458c25d2b509fea44
+  - enabled: 1
+    path: Assets/Demos/actions/Detach/detach.unity
+    guid: f9137c9b940ca9b4ba65be41cfb67322
+  - enabled: 1
+    path: Assets/Demos/actions/Drag/drag.unity
+    guid: 34319066943108140a9e64ad47d0115a
+  - enabled: 1
+    path: Assets/Demos/actions/Install/install.unity
+    guid: 993cd4f5649b9de44a8a741debaa6da7
+  - enabled: 1
+    path: Assets/Demos/actions/Link/link.unity
+    guid: febfcd16643335a41bb11526a6f0da14
+  - enabled: 1
+    path: Assets/Demos/actions/Rope/rope.unity
+    guid: 910ea322680c98344b46aa3f9366c5de
+  - enabled: 1
+    path: Assets/Demos/actions/Rotate/rotate.unity
+    guid: 7d90ebb86e1ff1546b25cad652eef37c
+  m_configObjects: {}

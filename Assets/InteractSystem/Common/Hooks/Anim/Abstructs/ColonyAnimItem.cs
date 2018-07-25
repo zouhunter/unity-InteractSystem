@@ -39,9 +39,9 @@ namespace InteractSystem.Hooks
             }
         }
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             for (int i = 0; i < viewItems.Length; i++)
             {
                 var item = viewItems[i];
@@ -49,9 +49,9 @@ namespace InteractSystem.Hooks
             }
         }
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             for (int i = 0; i < viewItems.Length; i++)
             {
                 var item = viewItems[i];

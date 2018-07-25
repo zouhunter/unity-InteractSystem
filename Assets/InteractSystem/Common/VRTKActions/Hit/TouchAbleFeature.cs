@@ -41,27 +41,27 @@ namespace InteractSystem.VRTKActions
 			}
 		}
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             if (!touchAble)
             {
                 touchAble = true;
             }
         }
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (touchAble)
             {
                 touchAble = false;
             }
         }
 
-        public override void StepUnDo()
+        public override void UnDo(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDo(target);
             if (touchAble)
                 touchAble = true;
         }

@@ -69,17 +69,17 @@ namespace InteractSystem.Actions
             }
            completeAbleFeature. OnComplete();
         }
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (auto){
                 coroutineCtrl.StopCoroutine(AutoDrag());
             }
             transform.localPosition = targetPos;
         }
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             if (auto) {
                 coroutineCtrl.StopCoroutine(AutoDrag());
             }

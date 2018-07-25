@@ -10,7 +10,7 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Drag", 15, "InteractSystem")]
     public class DragNode :Graph.OperaterNode
     {
-        public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(DragItem));
+        public QueueCollectNodeFeature completeableFeature = new QueueCollectNodeFeature(typeof(DragItem));
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();

@@ -21,7 +21,7 @@ namespace InteractSystem.Actions
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         [SerializeField]
-        protected CollectNodeFeature collectNodeFeature = new CollectNodeFeature(typeof(LinkItem));
+        protected CollectNodeFeature collectNodeFeature = new GroupCollectNodeFeature(typeof(LinkItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {

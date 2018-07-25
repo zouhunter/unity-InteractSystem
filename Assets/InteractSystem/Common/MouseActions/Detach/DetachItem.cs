@@ -54,17 +54,17 @@ namespace InteractSystem.Actions
             OnDetach();
         }
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (!OperateAble)
             {
                 if(rule) rule.OnDetach(this);
             }
         }
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             if (rule)
                 rule.UnDoDetach();
             transform.localPosition = startPos;

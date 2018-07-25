@@ -10,7 +10,7 @@ namespace InteractSystem.Actions
     [CustomNode("Operate/Click", 12, "InteractSystem")]
     public class ClickNode : Graph.OperaterNode
     {
-        public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(ClickItem));
+        public QueueCollectNodeFeature completeableFeature = new QueueCollectNodeFeature(typeof(ClickItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {

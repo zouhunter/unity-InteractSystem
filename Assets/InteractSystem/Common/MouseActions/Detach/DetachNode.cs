@@ -8,7 +8,7 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Detach", 14, "InteractSystem")]
     public class DetachNode :Graph.OperaterNode
     {
-        public CompleteAbleCollectNodeFeature completeableFeature = new CompleteAbleCollectNodeFeature(typeof(DetachItem));
+        public QueueCollectNodeFeature completeableFeature = new QueueCollectNodeFeature(typeof(DetachItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {

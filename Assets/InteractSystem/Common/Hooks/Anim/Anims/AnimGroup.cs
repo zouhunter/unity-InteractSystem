@@ -43,33 +43,33 @@ namespace InteractSystem.Hooks
             gameObject.SetActive(visible);
         }
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
             actived = true;
             completedCount = 0;
             foreach (var item in childAnims)
             {
                 item.onAutoPlayEnd = OnPlayEnd;
-                item.StepActive();
+                item.SetActive(target);
             }
         }
 
      
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
             actived = false;
             foreach (var item in childAnims)
             {
-                item.StepComplete();
+                item.SetInActive(target);
             }
         }
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
             actived = false;
             foreach (var item in childAnims)
             {
-                item.StepUnDo();
+                item.UnDoChanges(target);
             }
         }
 

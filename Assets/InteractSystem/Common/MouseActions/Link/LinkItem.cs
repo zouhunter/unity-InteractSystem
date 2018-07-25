@@ -218,9 +218,9 @@ namespace InteractSystem.Actions
             }
             return connected;
         }
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             mousePosCatch = transform.position = startPos;
             transform.rotation = startRot;
 

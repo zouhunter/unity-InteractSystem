@@ -33,9 +33,9 @@ namespace InteractSystem.Hooks
             targetRotation = Quaternion.Euler(bodyTrans.transform.parent.InverseTransformVector(targetTrans.transform.eulerAngles));
         }
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
 
             if (reverse)
             {
@@ -49,9 +49,9 @@ namespace InteractSystem.Hooks
             }
         }
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
 
             bodyTrans.localPosition = startPosition;
             bodyTrans.localRotation = startRotation;

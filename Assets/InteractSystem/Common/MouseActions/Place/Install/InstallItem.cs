@@ -42,15 +42,15 @@ namespace InteractSystem.Actions
             }
             return canplace;
         }
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (!AlreadyPlaced)
             {
                 PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
                 Attach(obj);
                 obj.QuickInstall(this, true);
-                obj.StepComplete();
+                obj.SetInActive(this);
             }
         }
         protected override void OnUnInstallComplete()
@@ -71,7 +71,7 @@ namespace InteractSystem.Actions
         {
             PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
             Attach(obj);
-            obj.StepActive();
+            obj.SetActive(this);
             if (Config.Instence.quickMoveElement && !ignorePass)
             {
                 obj.QuickInstall(this, true);

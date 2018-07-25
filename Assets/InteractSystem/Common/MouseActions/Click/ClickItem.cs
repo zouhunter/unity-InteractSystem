@@ -30,7 +30,6 @@ namespace InteractSystem.Actions
             var features = base.RegistFeatures();
          
             clickAbleFeature.Init(this, layer);
-            clickAbleFeature.onClick.AddListener(completeAbleFeature.OnComplete);
             features.Add(clickAbleFeature);
 
             completeAbleFeature.Init(this, AutoExecute);
@@ -38,22 +37,26 @@ namespace InteractSystem.Actions
 
             return features;
         }
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
+            clickAbleFeature.RegistOnClick(completeAbleFeature.OnComplete);
             Notice(transform);
         }
-        public override void StepUnDo()
+    
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepUnDo();
-            UnNotice(transform);
-        }
-        public override void StepComplete()
-        {
-            base.StepComplete();
+            base.SetInActive(target);
+            clickAbleFeature.RemoveOnClick(completeAbleFeature.OnComplete);
             UnNotice(transform);
         }
 
+        public override void UnDoChanges(UnityEngine.Object target)
+        {
+            base.UnDoChanges(target);
+            clickAbleFeature.RemoveOnClick(completeAbleFeature.OnComplete);
+            UnNotice(transform);
+        }
         public void AutoExecute(Graph.OperaterNode node)
         {
             coroutineCtrl.DelyExecute(completeAbleFeature.OnComplete, autoCompleteTime);

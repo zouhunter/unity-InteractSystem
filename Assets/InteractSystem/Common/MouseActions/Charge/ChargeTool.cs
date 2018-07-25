@@ -25,7 +25,6 @@ namespace InteractSystem.Actions
         public ChargeEvent onLoad { get; set; }
         public ChargeEvent onCharge { get; set; }
 
-        public bool Used { get; set; }
         public bool charged { get { return chargeData.type != null && chargeData.value > 0; } }
         public ChargeData data { get { return (ChargeData)chargeData; } }
         public float capacity { get { return _capacity; } }
@@ -118,10 +117,12 @@ namespace InteractSystem.Actions
             chargeData.value = left;
         }
  
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
-            if(!string.IsNullOrEmpty(chargeData.type)) OnCharge(transform.position, chargeData.value, null);
+            base.UnDoChanges(target);
+            if(!string.IsNullOrEmpty(chargeData.type))
+                OnCharge(transform.position, chargeData.value, null);
+
             LoadData(transform.position, startData, null);
         }
         public override void SetVisible(bool visible)

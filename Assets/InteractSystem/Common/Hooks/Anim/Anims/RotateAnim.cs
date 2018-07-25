@@ -62,9 +62,9 @@ namespace InteractSystem.Hooks
             }
         }
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
 
             bodyTrans.localPosition = startPosition;
             bodyTrans.localRotation = startRotation;

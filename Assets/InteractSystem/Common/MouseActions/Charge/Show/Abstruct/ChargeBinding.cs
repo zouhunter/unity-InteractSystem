@@ -25,6 +25,7 @@ namespace InteractSystem.Actions
                 }
             }
         }
+
         protected virtual void StartAsync(UnityAction onComplete)
         {
             TryCleanLast();
@@ -43,6 +44,7 @@ namespace InteractSystem.Actions
                 action.Invoke();
             }
         }
+
         private void TryCleanLast()
         {
             OnBeforeCompleteAsync();
@@ -52,6 +54,7 @@ namespace InteractSystem.Actions
                 onComplete = null;
             }
         }
+
         protected virtual void OnBeforeCompleteAsync() { }
     }
 }

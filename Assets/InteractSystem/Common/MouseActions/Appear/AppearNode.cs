@@ -22,13 +22,13 @@ namespace InteractSystem.Actions
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         [SerializeField]
-        protected CollectNodeFeature collectNodeFeature = new CollectNodeFeature(typeof(ISupportElement));
+        protected CollectNodeFeature collectNodeFeature = new GroupCollectNodeFeature(typeof(ISupportElement));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
             collectNodeFeature.SetTarget(this);
-            collectNodeFeature.onAddToPool = OnAddedToPool;
+            collectNodeFeature.onAddToPool += OnAddedToPool;
             features.Add(collectNodeFeature);
             return features;
         }

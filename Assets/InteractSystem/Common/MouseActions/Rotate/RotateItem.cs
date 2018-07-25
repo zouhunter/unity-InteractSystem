@@ -82,16 +82,16 @@ namespace InteractSystem.Actions
             startRot = Operater.rotation;
         }
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             Operater.rotation = startRot;
         }
 
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (completeMoveBack)
             {
                 currAngle = 0;
@@ -103,9 +103,9 @@ namespace InteractSystem.Actions
                 Operater.rotation = Quaternion.Euler(Direction * triggerAngle) * startRot;
             }
         }
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             Operater.rotation = startRot;
             currAngle = 0;
         }

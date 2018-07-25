@@ -265,9 +265,9 @@ namespace InteractSystem.Actions
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
         /// </summary>
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             actived = true;
             onStepActive.Invoke();
             gameObject.SetActive(true);
@@ -275,9 +275,9 @@ namespace InteractSystem.Actions
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
         /// </summary>
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if (log){
                 Debug.Log("StepComplete:" + Name, gameObject);
             }
@@ -293,9 +293,9 @@ namespace InteractSystem.Actions
         /// <summary>
         /// 步骤重置(没有用到的元素)
         /// </summary>
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             if (log)
                 Debug.Log("StepUnDo:" + Name, gameObject);
             actived = false;

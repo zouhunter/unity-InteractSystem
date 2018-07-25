@@ -7,7 +7,42 @@ using System;
 
 namespace InteractSystem
 {
-    public class CameraController
+    public class ActionSingleLenton<T> where T : ActionSingleLenton<T>, new()
+    {
+        protected static T instance = default(T);
+        protected static object lockHelper = new object();
+        protected ActionSystem actionSystem;
+        public static T Instence
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (lockHelper)
+                    {
+                        if (instance == null || !instance.actionSystem || !instance.actionSystem.gameObject)
+                        {
+                            instance = new T();
+                            if (ActionSystem.Instence)
+                            {
+                                instance.InitInstence(ActionSystem.Instence);
+                            }
+                            else
+                            {
+                                Debug.LogWarning("ActionSystem Don`t Exists!");
+                            }
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+        protected virtual void InitInstence(ActionSystem actionSystem)
+        {
+            this.actionSystem = actionSystem;
+        }
+    }
+    public class CameraController : ActionSingleLenton<CameraController>
     {
         private List<CameraNode> cameraNodes = new List<CameraNode>();
         private Camera viewCamera;
@@ -17,7 +52,7 @@ namespace InteractSystem
         {
             get
             {
-                if (mainCamera != null && mainCamera.gameObject.activeSelf)
+                if (mainCamera != null && mainCamera.gameObject && mainCamera.gameObject.activeSelf)
                 {
                     return mainCamera;
                 }
@@ -57,33 +92,18 @@ namespace InteractSystem
         public event UnityAction<Transform> onCameraMoveTo;
         private const float defultSpeed = 5;
         private const float maxTime = 2f;
-        private MonoBehaviour holder;
-        private static CameraController _instence;
-        public static CameraController Instence
-        {
-            get
-            {
-                if (_instence == null)
-                {
-                    _instence = new CameraController(ActionSystem.Instence);
-                }
-                return _instence;
-            }
-        }
 
-        private CameraController(MonoBehaviour holder)
+        protected override void InitInstence(ActionSystem actionSystem)
         {
-            this.holder = holder;
-            viewCameraParent = holder.transform;
+            base.InitInstence(actionSystem);
+            viewCameraParent = this.actionSystem.transform;
             mainCamera = Camera.main;
             Debug.Assert(mainCamera);
             viewCamera = UnityEngine.Object.Instantiate(mainCamera);
             viewCamera.gameObject.AddComponent<ViewCamera>();
-            viewCamera.transform.SetParent(holder.transform);
+            viewCamera.transform.SetParent(this.actionSystem.transform);
             viewCamera.gameObject.SetActive(!mainCamera.isActiveAndEnabled);
         }
-
-     
 
         private void OnMainCameraCallBack()
         {
@@ -117,7 +137,7 @@ namespace InteractSystem
                 currentNode = null;
                 if (currentCamera != mainCamera)
                 {
-                    if(mainCamera)
+                    if (mainCamera)
                     {
                         viewCamera.gameObject.SetActive(false);
                         mainCamera.gameObject.SetActive(true);
@@ -131,7 +151,8 @@ namespace InteractSystem
                 if (node == null || node == currentNode)
                 {
                     currentNode = node;
-                    if (currentNode != null){
+                    if (currentNode != null)
+                    {
                         SetTransform(currentNode.transform);
                     }
                 }
@@ -159,7 +180,7 @@ namespace InteractSystem
                 currentNode = null;
                 if (currentCamera != mainCamera)
                 {
-                    lastCoroutine = holder. StartCoroutine(MoveCameraToMainCamera(OnStepComplete));
+                    lastCoroutine = actionSystem.StartCoroutine(MoveCameraToMainCamera(OnStepComplete));
                 }
                 else
                 {
@@ -180,7 +201,7 @@ namespace InteractSystem
                 }
                 else
                 {
-                    lastCoroutine = holder.StartCoroutine(MoveCameraToNode(node, OnStepComplete));
+                    lastCoroutine = actionSystem.StartCoroutine(MoveCameraToNode(node, OnStepComplete));
                 }
             }
         }
@@ -189,11 +210,11 @@ namespace InteractSystem
         {
             if (mainCamera != null)
             {
-                viewCamera.transform.SetParent(holder.transform);
+                viewCamera.transform.SetParent(actionSystem.transform);
                 var startPos = viewCamera.transform.position;
                 var startRot = viewCamera.transform.rotation;
                 var distence = Vector3.Distance(startPos, mainCamera.transform.position);
-                var time = Mathf.Clamp((distence / defultSpeed),0, maxTime);
+                var time = Mathf.Clamp((distence / defultSpeed), 0, maxTime);
                 for (float i = 0; i < time; i += Time.deltaTime)
                 {
                     viewCamera.transform.position = Vector3.Lerp(startPos, mainCamera.transform.position, i / time);
@@ -215,7 +236,7 @@ namespace InteractSystem
         {
             if (mainCamera != null)
             {
-                viewCamera.transform.SetParent(holder.transform);
+                viewCamera.transform.SetParent(actionSystem.transform);
 
                 if (!viewCamera.gameObject.activeSelf)
                 {
@@ -287,7 +308,7 @@ namespace InteractSystem
         {
             if (lastCoroutine != null)
             {
-                holder.StopCoroutine(lastCoroutine);
+                actionSystem.StopCoroutine(lastCoroutine);
                 lastCoroutine = null;
             }
             if (force)

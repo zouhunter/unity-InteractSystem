@@ -13,10 +13,10 @@ namespace InteractSystem
         [SerializeField, Attributes.DefultName("关键字")]
         protected string _name;
         [SerializeField]
-        [Attributes.CustomField("执行前状态")]
+        [Attributes.CustomField("显示（初始）")]
         protected bool startactive = true;
         [SerializeField]
-        [Attributes.CustomField("执行后状态")]
+        [Attributes.CustomField("显示（禁用）")]
         protected bool endactive = true;
         [SerializeField]
         protected List<Binding.ActionItemBinding> bindings = new List<Binding.ActionItemBinding>();
@@ -47,14 +47,17 @@ namespace InteractSystem
         }
         public bool IsRuntimeCreated { get; set; }
         public abstract bool OperateAble { get; }
-        public bool Active { get { return _active; } private set { _active = value; } }
+        public bool Active { get { return lockList.Count > 0; } }
         private bool _active;
+        //临时激活对象列表
+        protected List<UnityEngine.Object> lockList = new List<UnityEngine.Object>();
+        //关联使用者
         protected List<UnityEngine.Object> targets = new List<UnityEngine.Object>();
         //子类actionItem(用于优先执行)
         protected ActionItem[] subActions;
         protected List<ActionItemFeature> actionItemFeatures;
 
-        [HideInInspector]
+        [HideInInspector]//激活及关闭事件
         public UnityEvent onActive, onInActive;
         public static bool log = false;
 
@@ -73,7 +76,6 @@ namespace InteractSystem
             TryExecuteFeatures((feature) => { feature.Start(); });
             TryExecuteBindings((binding) => binding.Start());
             gameObject.SetActive(startactive);
-        
         }
 
 
@@ -151,15 +153,18 @@ namespace InteractSystem
             }
         }
 
-        public virtual void StepActive()
+        public virtual void SetActive(UnityEngine.Object target)
         {
-            if (!Active)
+            if(!lockList.Contains(target))
+                lockList.Add(target);
+
+            if (lockList.Count == 1)
             {
-                if (log) Debug.Log("StepActive:" + this);
+                if (log)
+                    Debug.Log("StepActive:" + this);
                 gameObject.SetActive(true);
-                Active = true;
                 onActive.Invoke();
-                TryExecuteFeatures((feature) => { feature.StepActive(); });
+                TryExecuteFeatures((feature) => { feature.SetActive(target); });
                 TryExecuteBindings((binding) => binding.OnActive(this));
             }
             else
@@ -167,24 +172,28 @@ namespace InteractSystem
                 Debug.LogError("allreadly actived:" + this, gameObject);
             }
         }
-        public virtual void StepComplete()
+        public virtual void SetInActive(UnityEngine.Object target)
         {
-            if (log) Debug.Log("StepComplete:" + gameObject);
-            Active = false;
-            onInActive.Invoke();
-            ElementController.Instence.SetPriority(subActions);
-            TryExecuteFeatures((feature) => { feature.StepComplete(); });
-            TryExecuteBindings((binding) => binding.OnInActive(this));
-            gameObject.SetActive(endactive);
+            if (lockList.Contains(target))
+                lockList.Remove(target);
+
+            if (lockList.Count == 0)
+            {
+                if (log)
+                    Debug.Log("StepComplete:" + gameObject);
+                onInActive.Invoke();
+                ElementController.Instence.SetPriority(subActions);
+                TryExecuteFeatures((feature) => { feature.SetInActive(target); });
+                TryExecuteBindings((binding) => binding.OnInActive(this));
+                UpdateState();
+            }
         }
-        public virtual void StepUnDo()
+        public virtual void UnDoChanges(UnityEngine.Object target)
         {
-            if (log) Debug.Log("StepUnDo:" + gameObject);
-            Active = false;
-            onInActive.Invoke();
-            TryExecuteFeatures((feature) => { feature.StepUnDo(); });
-            TryExecuteBindings((binding) => binding.OnInActive(this));
-            gameObject.SetActive(startactive);
+            if (log){
+                Debug.Log("StepUnDo:" + gameObject);
+            }
+            TryExecuteFeatures((feature) => { feature.UnDo(target); });
         }
 
         protected virtual void InitBindingScripts()
@@ -264,6 +273,18 @@ namespace InteractSystem
                 {
                     bindingAction(binding);
                 });
+            }
+        }
+
+        private void UpdateState()
+        {
+            if (OperateAble)
+            {
+                gameObject.SetActive(startactive);
+            }
+            else
+            {
+                gameObject.SetActive(endactive);
             }
         }
     }

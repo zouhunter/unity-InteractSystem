@@ -53,7 +53,7 @@ namespace InteractSystem.Auto
                 animPlayer.reverse = reverse;
                 animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
                 animPlayer.SetVisible(true);
-                animPlayer.StepActive();
+                animPlayer.SetActive(this);
             }
         }
         private void OnAnimPlayCallBack()
@@ -66,7 +66,7 @@ namespace InteractSystem.Auto
             base.OnBeforeEnd(force);
             if (animPlayer != null)
             {
-                animPlayer.StepComplete();
+                animPlayer.SetInActive(this);
             }
         }
         public override void OnUnDoExecute()
@@ -74,7 +74,7 @@ namespace InteractSystem.Auto
             base.OnUnDoExecute();
             if (animPlayer != null)
             {
-                animPlayer.StepUnDo();
+                animPlayer.UnDoChanges(this);
                 animPlayer.RemovePlayer(this);
             }
         }

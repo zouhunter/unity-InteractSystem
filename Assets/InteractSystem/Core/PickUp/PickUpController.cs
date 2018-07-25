@@ -29,19 +29,21 @@ namespace InteractSystem
             }
         }
 
+
         public event UnityAction<PickUpAbleComponent> onPickup;
         public event UnityAction<PickUpAbleComponent> onPickdown;
         public event UnityAction<PickUpAbleComponent> onPickStay;
         public event UnityAction<PickUpAbleComponent> onPickTwinceLeft;
         public event UnityAction<PickUpAbleComponent> onPickTwinceRight;
         private float timer = 0f;
+        private MonoBehaviour holder;
         private static PickUpController _instence;
         public static PickUpController Instence
         {
 
             get
             {
-                if (_instence == null)
+                if (_instence == null || !_instence.holder || !_instence.holder.gameObject)
                 {
                     _instence = new PickUpController(ActionSystem.Instence);
                 }
@@ -51,6 +53,7 @@ namespace InteractSystem
 
         private PickUpController(MonoBehaviour holder)
         {
+            this.holder = holder;
             holder.StartCoroutine(Update());
         }
 

@@ -39,7 +39,8 @@ namespace InteractSystem.Binding
             }
             else
             {
-               if(log) Debug.LogWarning("viewObj:" + viewObj + "can not inactive!");
+               if(log)
+                    Debug.LogWarning("viewObj:" + viewObj + "can not inactive!");
             }
         }
     }

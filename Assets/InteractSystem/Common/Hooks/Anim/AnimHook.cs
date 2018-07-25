@@ -49,7 +49,7 @@ namespace InteractSystem.Hooks
             animPlayer.reverse = reverse;
             animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
             animPlayer.SetVisible(true);
-            animPlayer.StepActive();
+            animPlayer.SetActive(this);
         }
         private void OnAnimPlayCallBack()
         {
@@ -64,7 +64,7 @@ namespace InteractSystem.Hooks
                 FindAnimCore(true);
             }
             Debug.Assert(animPlayer != null, "缺少：" + animName);
-            animPlayer.StepComplete();
+            animPlayer.SetInActive(this);
         }
 
 
@@ -72,7 +72,7 @@ namespace InteractSystem.Hooks
         {
             base.OnUnDoExecute();
             coroutineCtrl.Cansalce(DelyPlay);
-            animPlayer.StepUnDo();
+            animPlayer.UnDoChanges(this);
             animPlayer.RemovePlayer(this);
             animPlayer = null;
         }

@@ -20,7 +20,7 @@ namespace InteractSystem
                     if (_pickUpAbleItem == null)
                     {
                         _pickUpAbleItem = collider.gameObject.AddComponent<PickUpAbleComponent>();
-                        _pickUpAbleItem.PickUpAble = pickUpAble;
+                        _pickUpAbleItem.PickUpAble = interactAble;
                         _pickUpAbleItem.onPickUp = new UnityEvent();
                         _pickUpAbleItem.onPickDown = new UnityEvent();
                         _pickUpAbleItem.onPickStay = new UnityEvent();
@@ -100,28 +100,28 @@ namespace InteractSystem
             pickUpAbleItem.onSetViewForward -= onSetViewForward;
         }
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
-            if (pickUpAble)
+            base.SetActive(target);
+            if (interactAble)
             {
                 PickUpAble = true;
             }
         }
 
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
-            if (pickUpAble)
+            base.SetInActive(target);
+            if (interactAble)
             {
                 PickUpAble = false;
             }
         }
 
-        public override void StepUnDo()
+        public override void UnDo(UnityEngine.Object target)
         {
-            base.StepUnDo();
-            if (pickUpAble)
+            base.UnDo(target);
+            if (interactAble)
                 PickUpAble = true;
         }
 		
@@ -129,7 +129,7 @@ namespace InteractSystem
         {
             get
             {
-                return pickUpAble && pickUpAbleItem.PickUpAble;
+                return interactAble && pickUpAbleItem.PickUpAble;
             }
             set
             {

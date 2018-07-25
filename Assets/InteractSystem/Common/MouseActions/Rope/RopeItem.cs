@@ -198,27 +198,27 @@ namespace InteractSystem.Actions
                 var element = arg0 as RopeElement;
                 if (Active && element.OperateAble)
                 {
-                    element.StepActive();
+                    element.SetActive(this);
                     element.RegistOnPlace(TryPlaceRope);
                 }
             }
         }
 
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
+            base.SetActive(target);
             TryFindAnRopeItems();
         }
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             PickDownAllCollider();
             connected.Clear();
         }
-        public override void StepComplete()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepComplete();
+            base.SetInActive(target);
             if(ropeElement == null)
             {
                 QuickPlaceRope();
@@ -246,7 +246,7 @@ namespace InteractSystem.Actions
                     if (rope != null)
                     {
                         if(!rope.Active)
-                            rope.StepActive();
+                            rope.SetActive(this);
 
                         rope.RegistOnPlace(TryPlaceRope);
                     }

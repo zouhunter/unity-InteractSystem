@@ -255,9 +255,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  clickableCount: 1
+  clickableCount: 2
   clickAbleFeature:
     _collider: {fileID: 696410462}
+    interactAble: 1
     onClick:
       m_PersistentCalls:
         m_Calls: []
@@ -490,9 +491,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  clickableCount: 1
+  clickableCount: 2
   clickAbleFeature:
     _collider: {fileID: 1569458286}
+    interactAble: 1
     onClick:
       m_PersistentCalls:
         m_Calls: []
@@ -555,9 +557,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  clickableCount: 1
+  clickableCount: 2
   clickAbleFeature:
     _collider: {fileID: 840703242}
+    interactAble: 1
     onClick:
       m_PersistentCalls:
         m_Calls: []
@@ -705,9 +708,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  clickableCount: 1
+  clickableCount: 2
   clickAbleFeature:
     _collider: {fileID: 78569558}
+    interactAble: 1
     onClick:
       m_PersistentCalls:
         m_Calls: []
@@ -770,9 +774,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  clickableCount: 1
+  clickableCount: 2
   clickAbleFeature:
     _collider: {fileID: 2018114706}
+    interactAble: 1
     onClick:
       m_PersistentCalls:
         m_Calls: []

@@ -5,14 +5,16 @@ using System.Collections;
 using System.Collections.Generic;
 using InteractSystem.Actions;
 using System;
+using System.Linq;
 
 namespace InteractSystem
 {
     [System.Serializable]
-    public class CompleteAbleCollectNodeFeature: CollectNodeFeature
+    public class QueueCollectNodeFeature : CollectNodeFeature
     {
-        public UnityAction onComplete { get;private set; }
-        public CompleteAbleCollectNodeFeature(System.Type type) : base(type) { }
+        public UnityAction onComplete { get; private set; }
+        protected List<ISupportElement> currents = new List<ISupportElement>();
+        public QueueCollectNodeFeature(System.Type type) : base(type, false) { }
 
         public override void OnEnable()
         {
@@ -33,7 +35,8 @@ namespace InteractSystem
         public override void SetTarget(Graph.OperaterNode node)
         {
             base.SetTarget(node);
-            onComplete = () => {
+            onComplete = () =>
+            {
                 node.OnEndExecute(false);
             };
         }
@@ -50,11 +53,11 @@ namespace InteractSystem
             if (index < itemList.Count)
             {
                 var key = itemList[index];
-                var item = elementPool.Find(x => x.Name == key && x.Active  && x is ActionItem && (x as ActionItem).OperateAble) as ActionItem;
+                var item = elementPool.Find(x => x.Name == key && x.Active && x is ActionItem && (x as ActionItem).OperateAble) as ActionItem;
                 if (item != null)
                 {
                     var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
-                    if(completeFeature != null)
+                    if (completeFeature != null)
                     {
                         completeFeature.RegistOnCompleteSafety(OnAutoComplete);
                         completeFeature.AutoExecute(target);
@@ -95,9 +98,10 @@ namespace InteractSystem
 
             if (itemList[currents.Count] == item.target.Name)
             {
+                Debug.Log("add:" + item.target);
                 currents.Add(item.target as ActionItem);
                 item.target.RecordPlayer(target);
-                item.target.StepComplete();
+                SetInActiveElement(item.target);
             }
 
             if (currents.Count >= itemList.Count)
@@ -131,21 +135,14 @@ namespace InteractSystem
             {
                 var key = itemList[currents.Count];
 
-                if (log)
-                {
-                    foreach (var item in elementPool)
-                    {
-                        Debug.Log(item.Name + ":" + (item as ActionItem).OperateAble);
-                    }
-                }
-                
                 var elements = elementPool.FindAll(x => x.Name == key && (x as ActionItem).OperateAble);
 
                 elements.ForEach(element =>
                 {
-                    if(!element.Active && element.OperateAble && target.Statu == ExecuteStatu.Executing)
+                    if (!element.Active && element.OperateAble && target.Statu == ExecuteStatu.Executing)
                     {
-                        element.StepActive();
+                        //element.StepActive();
+                        ActiveElement(element);
                     }
 
                     var feature = (element as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
@@ -170,59 +167,72 @@ namespace InteractSystem
         }
 
         /// <summary>
-        ///尝试将元素设置为结束状态
+        ///尝试将元素设置为非激活状态
         /// </summary>
         /// <param name="undo"></param>
         protected override void CompleteElements(bool undo)
         {
-            base.CompleteElements(undo);
+            //base.CompleteElements(undo);
 
-            if (undo)
+            for (int i = 0; i < itemList.Count; i++)
             {
-                foreach (var item in currents)
+                var elementName = itemList[i];
+
+                bool isUsing = IsUsingElement(elementName);
+
+                if (currents.Count <= i && !undo)
                 {
-                    item.StepUnDo();
-                    (item as ActionItem).RemovePlayer(target);
-                }
-                currents.Clear();
-            }
-            else
-            {
-                for (int i = 0; i < itemList.Count; i++)
-                {
-                    if (currents.Count <= i)
+                    var element = elementPool.Find(x => x.Name == elementName && x.Active && x.OperateAble);
+
+                    if (element != null)
                     {
-                        var element = elementPool.Find(x => x.Name == itemList[i] && (x as ActionItem).OperateAble);
-                        if (element != null)
-                        {
-                            (element as ActionItem).RecordPlayer(target);
-                            element.StepComplete();
-                            currents.Add(element);
-                        }
-                        else
-                        {
-                            Debug.LogError("缺少：" + itemList[i]);
-                        }
+                        (element as ActionItem).RecordPlayer(target);
+                        currents.Add(element);
+                        SetInActiveElement(element);
+                    }
+                    else
+                    {
+                        Debug.LogError("缺少：" + itemList[i]);
+                    }
+                }
+                else
+                {
+                    if (undo)
+                    {
+                        UndoElement(currents[i]);
+                        (currents[i] as ActionItem).RemovePlayer(target);
                     }
                     else
                     {
                         var item = currents[i];
-                        if (item.Active)
-                        {
-                            currents[i].StepComplete();
-                        }
-                       (currents[i] as ActionItem).RecordPlayer(target);
+                        (item as ActionItem).RecordPlayer(target);
+                        SetInActiveElement(item);
                     }
                 }
             }
+
+            if (undo)
+            {
+                currents.Clear();
+            }
         }
+        protected bool IsUsingElement(string elementName)
+        {
+            var active = from item in target.StartedList
+                         let f = item.RetriveFeature<CollectNodeFeature>()
+                         where f != null
+                         where f.itemList.Contains(elementName)
+                         select item;
+            return active != null && active.Count() > 0;
+        }
+
         /// <summary>
         /// 注册结束事件（仅元素在本步骤开始后创建时执行注册）
         /// </summary>
         /// <param name="arg0"></param>
         protected void RegistComplete(ISupportElement arg0)
         {
-            if (target. Statu == ExecuteStatu.Executing)
+            if (target.Statu == ExecuteStatu.Executing)
             {
                 if (arg0 is ActionItem)
                 {
@@ -241,7 +251,7 @@ namespace InteractSystem
             if (arg0 is ActionItem)
             {
                 var feature = arg0.RetriveFeature<CompleteAbleItemFeature>();
-                if(feature == null)
+                if (feature == null)
                 {
                     Debug.Log(arg0 + "中没有:CompleteAbleItemFeature");
                 }

@@ -14,7 +14,7 @@ namespace InteractSystem
         [SerializeField, Attributes.DefultCollider("碰 撞 体")]
         protected Collider _collider;
         [SerializeField, Attributes.CustomField("可 交 互")]
-        protected bool pickUpAble = true;
+        protected bool interactAble = true;
         protected string _layerName;
         public virtual Collider collider
         {
@@ -29,8 +29,9 @@ namespace InteractSystem
                 _collider = value;
             }
         }
-        [HideInInspector]
-        public UnityEvent onClick = new UnityEvent();
+
+        [SerializeField]
+        protected UnityEvent onClickEvent;
 
         public override void Awake()
         {
@@ -40,9 +41,27 @@ namespace InteractSystem
 
         public void Click()
         {
+            Debug.Log("click:" + target);
+            Debug.Assert(interactAble, target + " can not click!");
+
+            if (onClickEvent != null)
+            {
+                onClickEvent.Invoke();
+            }
+        }
+
+        public void RegistOnClick(UnityAction onClick)
+        {
+            if(onClick != null)
+            {
+                onClickEvent.AddListener(onClick);
+            }
+        }
+        internal void RemoveOnClick(UnityAction onClick)
+        {
             if (onClick != null)
             {
-                onClick.Invoke();
+                onClickEvent.RemoveListener(onClick);
             }
         }
 
@@ -58,34 +77,35 @@ namespace InteractSystem
             LayerName = itemLayer;
         }
 
+      
         public virtual string LayerName
         {
             get { return _layerName; }
             set { _layerName = value; }
         }
-        public override void StepActive()
+        public override void SetActive(UnityEngine.Object target)
         {
-            base.StepActive();
-            if (pickUpAble)
+            base.SetActive(target);
+            if (interactAble)
             {
                 collider.enabled = true;
             }
         }
-        public override void StepUnDo()
+        public override void SetInActive(UnityEngine.Object target)
         {
-            base.StepUnDo();
-            if (pickUpAble)
-            {
+            base.SetInActive(target);
+            if (interactAble) {
                 collider.enabled = false;
             }
         }
-        public override void StepComplete()
+        public override void UnDo(UnityEngine.Object target)
         {
-            base.StepComplete();
-            if (pickUpAble)
-            {
+            base.UnDo(target);
+            if (interactAble){
                 collider.enabled = false;
             }
+            onClickEvent.RemoveAllListeners();
         }
+      
     }
 }

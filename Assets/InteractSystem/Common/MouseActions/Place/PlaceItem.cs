@@ -53,14 +53,14 @@ namespace InteractSystem.Actions
 
         public abstract void PlaceObject(PlaceElement pickup);
 
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             if (AlreadyPlaced)
             {
                 var detachedObj = Detach();
                 detachedObj.QuickUnInstall();
-                detachedObj.StepUnDo();
+                detachedObj.UnDoChanges(this);
             }
         }
 
@@ -89,12 +89,12 @@ namespace InteractSystem.Actions
 
         protected virtual void OnInstallComplete()
         {
-            contentFeature.Element.StepComplete();
+            contentFeature.Element.SetInActive(this);
         }
 
         protected virtual void OnUnInstallComplete()
         {
-            contentFeature.Element.StepUnDo();
+            contentFeature.Element.UnDoChanges(this);
         }
 
         public virtual void Attach(PlaceElement obj)

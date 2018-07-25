@@ -40,9 +40,9 @@ namespace InteractSystem.Actions
             base.Start();
             InitCurrent();
         }
-        public override void StepUnDo()
+        public override void UnDoChanges(UnityEngine.Object target)
         {
-            base.StepUnDo();
+            base.UnDoChanges(target);
             var extro = current - startData.value;
             if (onChange != null)
             {

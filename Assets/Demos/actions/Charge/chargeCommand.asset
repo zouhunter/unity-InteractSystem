@@ -108,7 +108,8 @@ MonoBehaviour:
   environments: []
   completeAbleFeature:
     itemList:
-    - "\u52A0\u6C34"
+    - "\u52A0\u6C341"
+    - "\u52A0\u6C342"
 --- !u!114 &114719886721576820
 MonoBehaviour:
   m_ObjectHideFlags: 1

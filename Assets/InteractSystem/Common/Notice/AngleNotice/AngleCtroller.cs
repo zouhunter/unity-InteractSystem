@@ -16,7 +16,7 @@ namespace InteractSystem {
         {
             get
             {
-                if (_instence == null)
+                if (_instence == null || _instence.actionSystem == null || !_instence.actionSystem.gameObject)
                 {
                     _instence = new AngleCtroller(ActionSystem.Instence);
                 }

@@ -12,32 +12,32 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Charge", 11, "InteractSystem")]
     public class ChargeObj : Graph.OperaterNode
     {
-        public CompleteAbleCollectNodeFeature completeAbleFeature = new CompleteAbleCollectNodeFeature(typeof(ChargeItem));
+        public QueueCollectNodeFeature completeAbleFeature = new QueueCollectNodeFeature(typeof(ChargeItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
             completeAbleFeature.SetTarget(this);
-            completeAbleFeature.onActiveElement = OnActiveElement;
-            completeAbleFeature.onUnDoElement = OnUnDoElement;
-            completeAbleFeature.onCompleteElement = OnCompleteElement;
+            completeAbleFeature.onActiveElement += OnActiveElement;
+            completeAbleFeature.onUnDoElement += OnUnDoElement;
+            completeAbleFeature.onInActiveElement += OnCompleteElement;
             features.Add(completeAbleFeature);
             return features;
         }
 
         private void OnCompleteElement(ISupportElement arg0)
         {
-            CompleteElements(arg0 as ChargeItem, false);
+            CompleteSubElements(arg0 as ChargeItem, false);
         }
 
         private void OnUnDoElement(ISupportElement arg0)
         {
-            CompleteElements(arg0 as ChargeItem, true);
+            CompleteSubElements(arg0 as ChargeItem, true);
         }
 
         private void OnActiveElement(ISupportElement arg0)
         {
-            ActiveElements(arg0 as ChargeItem);
+            ActiveSubElements(arg0 as ChargeItem);
         }
 
         public override void OnStartExecute(bool auto = false)
@@ -57,7 +57,7 @@ namespace InteractSystem.Actions
         }
 
 
-        private void ActiveElements(ChargeItem element)
+        private void ActiveSubElements(ChargeItem element)
         {
             var actived = completeAbleFeature.elementPool.Find(x => x as ChargeItem != element && x.Name == element.Name);
 
@@ -74,7 +74,7 @@ namespace InteractSystem.Actions
 
                         if (!tools[i].Active)
                         {
-                            tools[i].StepActive();
+                            tools[i].SetActive(this);
                         }
                     }
                 }
@@ -90,7 +90,7 @@ namespace InteractSystem.Actions
 
                         if (!resources[i].Active)
                         {
-                            resources[i].StepActive();
+                            resources[i].SetActive(this);
                         }
                     }
                 }
@@ -101,10 +101,11 @@ namespace InteractSystem.Actions
         }
 
 
-        private void CompleteElements(ChargeItem element, bool undo)
+        private void CompleteSubElements(ChargeItem element, bool undo)
         {
             completeAbleFeature.elementPool.Remove(element);
             var active = completeAbleFeature.elementPool.Find(x => x.Name == element.Name);
+
             if (active == null)
             {
                 var tools = ElementController.Instence.GetElements<ChargeTool>();
@@ -120,11 +121,11 @@ namespace InteractSystem.Actions
                         {
                             if (undo)
                             {
-                                tools[i].StepUnDo();
+                                tools[i].UnDoChanges(this);
                             }
                             else
                             {
-                                tools[i].StepComplete();
+                                tools[i].SetInActive(this);
                             }
                         }
                     }
@@ -143,11 +144,11 @@ namespace InteractSystem.Actions
                         {
                             if (undo)
                             {
-                                resources[i].StepUnDo();
+                                resources[i].UnDoChanges(this);
                             }
                             else
                             {
-                                resources[i].StepComplete();
+                                resources[i].SetInActive(this);
                             }
                         }
                     }
