@@ -71,7 +71,7 @@ namespace InteractSystem
 
         protected virtual void OnAddedToPool(ActionItem arg0)
         {
-            if (target.Active && !arg0.Active && arg0.OperateAble)
+            if (target.Actived && !arg0.Actived && arg0.OperateAble)
             {
                 arg0.SetActive(target);
             }
@@ -89,7 +89,7 @@ namespace InteractSystem
 
                 foreach (var arg0 in elements)
                 {
-                    if (target.Active && !arg0.Active && arg0.OperateAble)
+                    if (target.Actived && !arg0.Actived && arg0.OperateAble)
                     {
                         arg0.SetActive(target);
                     }
@@ -128,15 +128,15 @@ namespace InteractSystem
                     {
                         if (undo)
                         {
-                            Debug.Log("UnDoElements:" + element + objs[i].Active);
+                            Debug.Log("UnDoElements:" + element + objs[i].Actived);
                         }
                         else
                         {
-                            Debug.Log("CompleteElements:" + element + objs[i].Active);
+                            Debug.Log("CompleteElements:" + element + objs[i].Actived);
                         }
                     }
 
-                    if (objs[i].Active)
+                    if (objs[i].Actived)
                     {
                         if (undo)
                         {
@@ -152,26 +152,26 @@ namespace InteractSystem
         }
 
 
-        public override void SetActive(UnityEngine.Object target)
+        public override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             if (!startedList.Contains(this.target))
             {
                 startedList.Add(this.target);
             }
             UpdateElementPool();
         }
-        public override void SetInActive(UnityEngine.Object target)
+        public override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (startedList.Contains(this.target)){
                 startedList.Remove(this.target);
             }
             CompleteElements(false);
         }
-        public override void UnDo(UnityEngine.Object target)
+        public override void OnUnDo(UnityEngine.Object target)
         {
-            base.UnDo(target);
+            base.OnUnDo(target);
             if (startedList.Contains(this.target)) {
                 startedList.Remove(this.target);
             }

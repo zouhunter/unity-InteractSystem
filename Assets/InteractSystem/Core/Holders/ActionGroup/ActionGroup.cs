@@ -31,14 +31,14 @@ namespace InteractSystem
     
         private void OnEnable()
         {
-            elementGroup.SetActive(transform);
+            if(elementGroup) elementGroup.SetActive(transform);
             InitActionCommands();
             ActionSystem.RegistGroup(this);
         }
         
         private void OnDisable()
         {
-            elementGroup.SetInActive();
+            if (elementGroup) elementGroup.SetInActive();
             ActionSystem.RemoveGroup(this);
         }
         #endregion

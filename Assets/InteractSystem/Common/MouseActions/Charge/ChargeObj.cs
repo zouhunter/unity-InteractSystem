@@ -70,9 +70,9 @@ namespace InteractSystem.Actions
                     {
                         if (element.completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
 
-                        if (log) Debug.Log("ActiveElements:" + element.Name + (!tools[i].Active));
+                        if (log) Debug.Log("ActiveElements:" + element.Name + (!tools[i].Actived));
 
-                        if (!tools[i].Active)
+                        if (!tools[i].Actived)
                         {
                             tools[i].SetActive(this);
                         }
@@ -86,9 +86,9 @@ namespace InteractSystem.Actions
                     {
                         if (element.completeDatas.FindAll(y => y.type == resources[i].type).Count == 0) continue;
 
-                        if (log) Debug.Log("ActiveElements:" + element.Name + (!resources[i].Active));
+                        if (log) Debug.Log("ActiveElements:" + element.Name + (!resources[i].Actived));
 
-                        if (!resources[i].Active)
+                        if (!resources[i].Actived)
                         {
                             resources[i].SetActive(this);
                         }
@@ -113,11 +113,11 @@ namespace InteractSystem.Actions
                 {
                     for (int i = 0; i < tools.Count; i++)
                     {
-                        if (log) Debug.Log("CompleteElements:" + element.Name + tools[i].Active);
+                        if (log) Debug.Log("CompleteElements:" + element.Name + tools[i].Actived);
 
                         if (element.completeDatas.FindAll(y => tools[i].CanLoad(y.type)).Count == 0) return;
 
-                        if (tools[i].Active)
+                        if (tools[i].Actived)
                         {
                             if (undo)
                             {
@@ -136,11 +136,11 @@ namespace InteractSystem.Actions
                 {
                     for (int i = 0; i < resources.Count; i++)
                     {
-                        if (log) Debug.Log("CompleteElements:" + element.Name + resources[i].Active);
+                        if (log) Debug.Log("CompleteElements:" + element.Name + resources[i].Actived);
 
                         if (element.completeDatas.FindAll(y => y.type == resources[i].type).Count == 0) continue;
 
-                        if (resources[i].Active)
+                        if (resources[i].Actived)
                         {
                             if (undo)
                             {

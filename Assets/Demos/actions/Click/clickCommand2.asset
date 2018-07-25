@@ -1,0 +1,126 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
+  m_Name: clickCommand2
+  m_EditorClassIdentifier: 
+  m_allNodes:
+  - m_name: Start
+    m_id: bcfdc446-93ba-4613-b0a4-4010c5a4c47a
+    m_x: 94
+    m_y: 124
+    m_node: {fileID: 114192555966308046}
+    m_inputPoints: []
+    m_outputPoints:
+    - id: 8db97908-bd2d-44c4-b4f0-501e1f5f6a0f
+      label: 0
+      parentId: bcfdc446-93ba-4613-b0a4-4010c5a4c47a
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  - m_name: "\u4E2D\u95F4\u5F00\u59CB\u70B9"
+    m_id: 77422bf0-6454-4951-a0d1-acc54bfd25de
+    m_x: 270
+    m_y: 250
+    m_node: {fileID: 114489896740260716}
+    m_inputPoints:
+    - id: c663e0a6-505d-49f3-a3cb-8d9f1540cad8
+      label: 
+      parentId: 77422bf0-6454-4951-a0d1-acc54bfd25de
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: a5db1ea4-4a9d-4914-a4ea-6e3f55fb8297
+      label: 0
+      parentId: 77422bf0-6454-4951-a0d1-acc54bfd25de
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
+  m_allConnections:
+  - m_id: 876e1186-2fc3-4378-8b4c-c5a4dafc5d0e
+    m_fromNodeId: bcfdc446-93ba-4613-b0a4-4010c5a4c47a
+    m_fromNodeConnectionPointId: 8db97908-bd2d-44c4-b4f0-501e1f5f6a0f
+    m_toNodeId: 77422bf0-6454-4951-a0d1-acc54bfd25de
+    m_toNodeConnectionPoiontId: c663e0a6-505d-49f3-a3cb-8d9f1540cad8
+    m_type: actionconnect
+    m_connection: {fileID: 114864577138359470}
+  m_lastModified: 131770116600299645
+  m_graphDescription: 
+  m_controllerType: InteractSystem.Graph.AcionGraphCtrl
+  _stepName: clickCommand2
+  commandBindings: []
+  environments: []
+  startHooks: []
+  completeHooks: []
+--- !u!114 &114192555966308046
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
+  m_Name: InteractSystem.Graph.StartNode
+  m_EditorClassIdentifier: 
+--- !u!114 &114489896740260716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4f0f3ab2171b349969860a8194d74e, type: 3}
+  m_Name: "\u4E2D\u95F4\u5F00\u59CB\u70B9"
+  m_EditorClassIdentifier: 
+  _name: "\u4E2D\u95F4\u5F00\u59CB\u70B9"
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  completeableFeature:
+    itemList:
+    - click03
+    - click02
+    - click04
+    - click01
+    - click05
+--- !u!114 &114864577138359470
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  copyCount: 0

@@ -265,9 +265,9 @@ namespace InteractSystem.Actions
         /// <summary>
         /// 步骤激活（随机选中的一些installObj）
         /// </summary>
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             actived = true;
             onStepActive.Invoke();
             gameObject.SetActive(true);
@@ -275,9 +275,9 @@ namespace InteractSystem.Actions
         /// <summary>
         /// 步骤结束（安装上之后整个步骤结束）
         /// </summary>
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (log){
                 Debug.Log("StepComplete:" + Name, gameObject);
             }

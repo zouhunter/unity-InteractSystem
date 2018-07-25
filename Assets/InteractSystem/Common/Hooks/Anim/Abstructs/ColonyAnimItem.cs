@@ -49,9 +49,9 @@ namespace InteractSystem.Hooks
             }
         }
 
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             for (int i = 0; i < viewItems.Length; i++)
             {
                 var item = viewItems[i];

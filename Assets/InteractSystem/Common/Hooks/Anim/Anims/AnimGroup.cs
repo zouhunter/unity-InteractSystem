@@ -43,7 +43,7 @@ namespace InteractSystem.Hooks
             gameObject.SetActive(visible);
         }
 
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
             actived = true;
             completedCount = 0;
@@ -55,7 +55,7 @@ namespace InteractSystem.Hooks
         }
 
      
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
             actived = false;
             foreach (var item in childAnims)

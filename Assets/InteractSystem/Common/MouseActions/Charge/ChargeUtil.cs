@@ -27,7 +27,7 @@ namespace InteractSystem.Actions
                 for (int i = 0; i < resourceItems.Length; i++)
                 {
                     ChargeResource tempItem = resourceItems[i];
-                    if(tempItem != null && tempItem.Active && item.CanLoad(tempItem.type) && tempItem.current > 0)
+                    if(tempItem != null && tempItem.Actived && item.CanLoad(tempItem.type) && tempItem.current > 0)
                     {
                         resourceItem = tempItem;
                         return true;
@@ -51,7 +51,7 @@ namespace InteractSystem.Actions
                 for (int i = 0; i < containerItems.Length; i++)
                 {
                     ChargeItem tempItem = containerItems[i];
-                    if (tempItem != null && tempItem.Active && tempItem.completeDatas.FindAll(x => x.type == item.data.type).Count > 0)
+                    if (tempItem != null && tempItem.Actived && tempItem.completeDatas.FindAll(x => x.type == item.data.type).Count > 0)
                     {
                         container = tempItem;
                         return true;

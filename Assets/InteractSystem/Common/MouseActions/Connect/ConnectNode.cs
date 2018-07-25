@@ -74,7 +74,7 @@ namespace InteractSystem.Actions
                 Debug.Log("OnUpdateFromPool:" + arg0);
             }
 
-            if (Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
+            if (Statu == ExecuteStatu.Executing && !arg0.Actived && arg0.OperateAble)
             {
                 arg0.SetActive(this);
             }

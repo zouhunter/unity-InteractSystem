@@ -67,11 +67,11 @@ namespace InteractSystem.Actions
                 transform.localPosition = Vector3.Lerp(startPos, targetPos, i / autoDragTime);
                 yield return null;
             }
-           completeAbleFeature. OnComplete();
+           completeAbleFeature. OnComplete(firstLock);
         }
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (auto){
                 coroutineCtrl.StopCoroutine(AutoDrag());
             }
@@ -119,7 +119,7 @@ namespace InteractSystem.Actions
         {
             if (Vector3.Distance(transform.localPosition, targetPos) < 0.2f)
             {
-               completeAbleFeature. OnComplete();
+                completeAbleFeature.OnComplete(firstLock);
             }
         }
 

@@ -11,23 +11,23 @@ namespace InteractSystem
 
     public sealed class CompleteAbleItemFeature : ActionItemFeature
     {
-        private List<UnityAction<CompleteAbleItemFeature>> onCompleteActions = new List<UnityAction<CompleteAbleItemFeature>>();
-        public UnityAction<Graph.OperaterNode> onAutoExecute { get;private set; }
+        private Dictionary<UnityEngine.Object, UnityAction<CompleteAbleItemFeature>> onCompleteActions = new Dictionary<UnityEngine.Object, UnityAction<CompleteAbleItemFeature>>();
+        public UnityAction<Graph.OperaterNode> onAutoExecute { get; private set; }
 
-        public void RegistOnCompleteSafety(UnityAction<CompleteAbleItemFeature> onClicked)
+        public void RegistOnCompleteSafety(UnityEngine.Object context, UnityAction<CompleteAbleItemFeature> onClicked)
         {
-            if (!onCompleteActions.Contains(onClicked))
+            if (context != null && onClicked != null)
             {
-                onCompleteActions.Add(onClicked);
+                onCompleteActions[context] = onClicked;
             }
         }
 
-        public void OnComplete()
+        public void OnComplete(UnityEngine.Object context)
         {
-            if (onCompleteActions.Count > 0)
+            if (context != null && onCompleteActions.ContainsKey(context))
             {
-                var action = onCompleteActions[0];
-                onCompleteActions.RemoveAt(0);
+                var action = onCompleteActions[context];
+                onCompleteActions.Remove(context);
                 action.Invoke(this);
             }
             else
@@ -36,15 +36,15 @@ namespace InteractSystem
             }
         }
 
-        public void RemoveOnComplete(UnityAction<CompleteAbleItemFeature> onClicked)
+        public void RemoveOnComplete(UnityEngine.Object context)
         {
-            if (onCompleteActions.Contains(onClicked))
+            if (onCompleteActions.ContainsKey(context))
             {
-                onCompleteActions.Remove(onClicked);
+                onCompleteActions.Remove(context);
             }
         }
 
-        internal void Init(ActionItem actionItem,UnityAction<Graph.OperaterNode> onAutoExecute)
+        internal void Init(ActionItem actionItem, UnityAction<Graph.OperaterNode> onAutoExecute)
         {
             target = actionItem;
             this.onAutoExecute = onAutoExecute;

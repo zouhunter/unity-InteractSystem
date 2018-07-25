@@ -28,7 +28,7 @@ namespace InteractSystem.Actions
                 Debug.LogError("【配制错误】:零件未挂MatchObj脚本");
                 matchAble = false;
             }
-            else if (!this.Active)
+            else if (!this.Actived)
             {
                 matchAble = false;
                 why = "操作顺序错误";
@@ -54,9 +54,9 @@ namespace InteractSystem.Actions
         public bool Matched { get { return contentFeature.Element != null; } }
 
 
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (!AlreadyPlaced)
             {
                 PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
@@ -84,9 +84,9 @@ namespace InteractSystem.Actions
         protected override void OnInstallComplete()
         {
             base.OnInstallComplete();
-            if (Active)
+            if (Actived)
             {
-                completeFeature. OnComplete();
+                completeFeature. OnComplete(firstLock);
             }
         }
 

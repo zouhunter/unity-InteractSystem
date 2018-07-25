@@ -168,11 +168,11 @@ namespace InteractSystem
                             //}
                             //else
                             {
-                                Debug.Log("CompleteElements:" + element + objs[i].Active);
+                                Debug.Log("CompleteElements:" + element + objs[i].Actived);
                             }
                         }
 
-                        if (objs[i].Active)
+                        if (objs[i].Actived)
                         {
                             //if (undo)
                             //{

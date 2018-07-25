@@ -53,13 +53,13 @@ namespace InteractSystem
             if (index < itemList.Count)
             {
                 var key = itemList[index];
-                var item = elementPool.Find(x => x.Name == key && x.Active && x is ActionItem && (x as ActionItem).OperateAble) as ActionItem;
+                var item = elementPool.Find(x => x.Name == key && x.Actived && x is ActionItem && (x as ActionItem).OperateAble) as ActionItem;
                 if (item != null)
                 {
                     var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
                     if (completeFeature != null)
                     {
-                        completeFeature.RegistOnCompleteSafety(OnAutoComplete);
+                        completeFeature.RegistOnCompleteSafety(target, OnAutoComplete);
                         completeFeature.AutoExecute(target);
                     }
                 }
@@ -86,7 +86,7 @@ namespace InteractSystem
 
         private void OnAutoComplete(CompleteAbleItemFeature arg0)
         {
-            arg0.RemoveOnComplete(OnAutoComplete);
+            arg0.RemoveOnComplete(target);
             TryAutoComplete(currents.Count);
         }
 
@@ -139,7 +139,7 @@ namespace InteractSystem
 
                 elements.ForEach(element =>
                 {
-                    if (!element.Active && element.OperateAble && target.Statu == ExecuteStatu.Executing)
+                    if (element.OperateAble && target.Statu == ExecuteStatu.Executing)
                     {
                         //element.StepActive();
                         ActiveElement(element);
@@ -149,7 +149,7 @@ namespace InteractSystem
 
                     if (feature != null)
                     {
-                        feature.RegistOnCompleteSafety(TryComplete);
+                        feature.RegistOnCompleteSafety(target, TryComplete);
                     }
                     else
                     {
@@ -172,42 +172,40 @@ namespace InteractSystem
         /// <param name="undo"></param>
         protected override void CompleteElements(bool undo)
         {
-            //base.CompleteElements(undo);
-
             for (int i = 0; i < itemList.Count; i++)
             {
                 var elementName = itemList[i];
+                var elements = elementPool.FindAll(x => x.Name == elementName);
 
-                bool isUsing = IsUsingElement(elementName);
+                foreach (var item in elements)
+                {
+                    item.SetInActive(target);
 
+                    if (undo){
+                        UndoElement(item);
+                        item.RemovePlayer(target);
+                    }
+                }
+
+                ///锁定元素并结束
                 if (currents.Count <= i && !undo)
                 {
-                    var element = elementPool.Find(x => x.Name == elementName && x.Active && x.OperateAble);
-
-                    if (element != null)
-                    {
-                        (element as ActionItem).RecordPlayer(target);
+                    var element = elements.FirstOrDefault();
+                    if (element != null) {
                         currents.Add(element);
-                        SetInActiveElement(element);
                     }
                     else
                     {
                         Debug.LogError("缺少：" + itemList[i]);
                     }
                 }
-                else
+
+                //记录使用
+                if(!undo)
                 {
-                    if (undo)
-                    {
-                        UndoElement(currents[i]);
-                        (currents[i] as ActionItem).RemovePlayer(target);
-                    }
-                    else
-                    {
-                        var item = currents[i];
-                        (item as ActionItem).RecordPlayer(target);
-                        SetInActiveElement(item);
-                    }
+                    var item = currents[i];
+                    (item as ActionItem).RecordPlayer(target);
+                    SetInActiveElement(item);
                 }
             }
 
@@ -215,15 +213,6 @@ namespace InteractSystem
             {
                 currents.Clear();
             }
-        }
-        protected bool IsUsingElement(string elementName)
-        {
-            var active = from item in target.StartedList
-                         let f = item.RetriveFeature<CollectNodeFeature>()
-                         where f != null
-                         where f.itemList.Contains(elementName)
-                         select item;
-            return active != null && active.Count() > 0;
         }
 
         /// <summary>
@@ -238,7 +227,7 @@ namespace InteractSystem
                 {
                     // 注册元素结束事件
                     var feature = (arg0 as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
-                    feature.RegistOnCompleteSafety(TryComplete);
+                    feature.RegistOnCompleteSafety(target, TryComplete);
                 }
             }
         }
@@ -257,7 +246,7 @@ namespace InteractSystem
                 }
                 else
                 {
-                    feature.RemoveOnComplete(TryComplete);
+                    feature.RemoveOnComplete(target);
                 }
             }
         }

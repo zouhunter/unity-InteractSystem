@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace InteractSystem
 {
     public interface IActiveAble {
-        bool Active { get; }//即使步骤过去也可以是激活状态
+        bool Actived { get; }//即使步骤过去也可以是激活状态
         void SetActive(UnityEngine.Object target);//使用到该元素的步骤开始
         void SetInActive(UnityEngine.Object target);//使用到该元素的步骤结束
         void UnDoChanges(UnityEngine.Object target);////重置元素信息在目标的改变

@@ -49,7 +49,7 @@ namespace InteractSystem
 
         protected virtual void OnAddedToPool(ISupportElement arg0)
         {
-            if (target.Statu == ExecuteStatu.Executing && !arg0.Active && arg0.OperateAble)
+            if (target.Statu == ExecuteStatu.Executing && !arg0.Actived && arg0.OperateAble)
             {
                 if (autoActive){
                     ActiveElement(arg0);
@@ -94,7 +94,7 @@ namespace InteractSystem
                         {
                             if(elementPool.Contains(item))
                             {
-                                if (target.Statu == ExecuteStatu.Executing && !item.Active && item.OperateAble)
+                                if (target.Statu == ExecuteStatu.Executing && !item.Actived && item.OperateAble)
                                 {
                                     if (autoActive)
                                     {

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fcc90baab9e71c459351de431e5f65d, type: 3}
-  m_Name: clickCommand
+  m_Name: clickCommand1
   m_EditorClassIdentifier: 
   m_allNodes:
   - m_name: Start
@@ -108,10 +108,10 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 4f99f531-adce-415f-96ce-0ae37ab328a2
     m_type: actionconnect
     m_connection: {fileID: 114582136189067628}
-  m_lastModified: 131769985340822032
+  m_lastModified: 131770116564137576
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
-  _stepName: dragcommand
+  _stepName: clickCommand1
   commandBindings: []
   environments: []
   startHooks: []

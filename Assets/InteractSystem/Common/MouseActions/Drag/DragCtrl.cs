@@ -35,7 +35,7 @@ namespace InteractSystem.Actions
             if (Physics.Raycast(ray, out hit, distence, LayerMask.GetMask(DragItem.layerName)))
             {
                 var obj = hit.collider.GetComponentInParent<DragItem>();
-                if (obj.Active)
+                if (obj.Actived)
                 {
                     selectedObj = obj;
                 }

@@ -37,29 +37,35 @@ namespace InteractSystem.Actions
 
             return features;
         }
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
-            clickAbleFeature.RegistOnClick(completeAbleFeature.OnComplete);
+            base.OnSetActive(target);
+            clickAbleFeature.RegistOnClick(TriggerComplete);
             Notice(transform);
         }
-    
-        public override void SetInActive(UnityEngine.Object target)
+
+
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
-            clickAbleFeature.RemoveOnClick(completeAbleFeature.OnComplete);
+            base.OnSetInActive(target);
+            clickAbleFeature.RemoveOnClick(TriggerComplete);
             UnNotice(transform);
+        }
+
+        protected void TriggerComplete()
+        {
+            completeAbleFeature.OnComplete(firstLock);
         }
 
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
-            clickAbleFeature.RemoveOnClick(completeAbleFeature.OnComplete);
+            clickAbleFeature.RemoveOnClick(TriggerComplete);
             UnNotice(transform);
         }
         public void AutoExecute(Graph.OperaterNode node)
         {
-            coroutineCtrl.DelyExecute(completeAbleFeature.OnComplete, autoCompleteTime);
+            coroutineCtrl.DelyExecute(TriggerComplete, autoCompleteTime);
         }
     }
 }

@@ -57,9 +57,9 @@ namespace InteractSystem.Hooks
             anim.Play();
         }
 
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             Debug.Log("StepActive" + this);
             Init();
             state.normalizedTime = reverse ? 1 : 0f;
@@ -70,9 +70,9 @@ namespace InteractSystem.Hooks
                 coroutine = StartCoroutine(DelyStop());
         }
 
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             Debug.Log("StepComplete:" + this);
             SetCurrentAnim(reverse ? 0 : 1);
             if (coroutine != null)

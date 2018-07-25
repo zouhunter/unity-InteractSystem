@@ -20,16 +20,16 @@ namespace InteractSystem.Hooks
 
         protected abstract void InitState();
 
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             time = 1f / duration;
             coroutine = StartCoroutine(PlayAnim(onAutoPlayEnd));
         }
 
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             StopAnim();
         }
         public override void UnDoChanges(UnityEngine.Object target)

@@ -20,7 +20,7 @@ namespace InteractSystem.Actions
 
         void OnBtnClicked(ClickItem obj)
         {
-            if (!obj.Active)
+            if (!obj.Actived)
             {
                 SetUserErr("不可点击" + obj.Name);
             }

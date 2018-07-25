@@ -172,7 +172,7 @@ namespace InteractSystem.Actions
             //可结束
             completeFeature.Init(this, (graph) =>
             {
-                StartCoroutine(AutoConnectRopeNodes(completeFeature.OnComplete));
+                StartCoroutine(AutoConnectRopeNodes(TriggerComplete));
             });
             features.Add(completeFeature);
 
@@ -187,6 +187,11 @@ namespace InteractSystem.Actions
             return features;
         }
 
+        protected void TriggerComplete()
+        {
+            completeFeature.OnComplete(firstLock);
+        }
+
         /// <summary>
         /// 试图绑定绳子
         /// </summary>
@@ -196,7 +201,7 @@ namespace InteractSystem.Actions
             if (ropeElement == null && arg0 is RopeElement)
             {
                 var element = arg0 as RopeElement;
-                if (Active && element.OperateAble)
+                if (Actived && element.OperateAble)
                 {
                     element.SetActive(this);
                     element.RegistOnPlace(TryPlaceRope);
@@ -204,9 +209,9 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             TryFindAnRopeItems();
         }
 
@@ -216,9 +221,9 @@ namespace InteractSystem.Actions
             PickDownAllCollider();
             connected.Clear();
         }
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if(ropeElement == null)
             {
                 QuickPlaceRope();
@@ -245,7 +250,7 @@ namespace InteractSystem.Actions
                 {
                     if (rope != null)
                     {
-                        if(!rope.Active)
+                        if(!rope.Actived)
                             rope.SetActive(this);
 
                         rope.RegistOnPlace(TryPlaceRope);
@@ -304,7 +309,7 @@ namespace InteractSystem.Actions
         {
             if (Connected)
             {
-                completeFeature.OnComplete();
+                TriggerComplete();
                 //OnComplete();
             }
             else

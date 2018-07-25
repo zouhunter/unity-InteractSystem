@@ -47,7 +47,8 @@ namespace InteractSystem
         }
         public bool IsRuntimeCreated { get; set; }
         public abstract bool OperateAble { get; }
-        public bool Active { get { return lockList.Count > 0; } }
+        protected UnityEngine.Object firstLock { get { return lockList.Count > 0 ? lockList[0] : null; } }
+        public bool Actived { get { return lockList.Count > 0; } }
         private bool _active;
         //临时激活对象列表
         protected List<UnityEngine.Object> lockList = new List<UnityEngine.Object>();
@@ -153,7 +154,7 @@ namespace InteractSystem
             }
         }
 
-        public virtual void SetActive(UnityEngine.Object target)
+        public void SetActive(UnityEngine.Object target)
         {
             if(!lockList.Contains(target))
                 lockList.Add(target);
@@ -162,17 +163,23 @@ namespace InteractSystem
             {
                 if (log)
                     Debug.Log("StepActive:" + this);
-                gameObject.SetActive(true);
-                onActive.Invoke();
-                TryExecuteFeatures((feature) => { feature.SetActive(target); });
-                TryExecuteBindings((binding) => binding.OnActive(this));
+              
+                OnSetActive(target);
             }
             else
             {
-                Debug.LogError("allreadly actived:" + this, gameObject);
+                Debug.LogWarning("allreadly actived:" + this, gameObject);
             }
         }
-        public virtual void SetInActive(UnityEngine.Object target)
+
+        protected virtual void OnSetActive(UnityEngine.Object target) {
+            gameObject.SetActive(true);
+            onActive.Invoke();
+            TryExecuteFeatures((feature) => { feature.OnSetActive(target); });
+            TryExecuteBindings((binding) => binding.OnActive(this));
+        }
+
+        public void SetInActive(UnityEngine.Object target)
         {
             if (lockList.Contains(target))
                 lockList.Remove(target);
@@ -180,20 +187,40 @@ namespace InteractSystem
             if (lockList.Count == 0)
             {
                 if (log)
-                    Debug.Log("StepComplete:" + gameObject);
-                onInActive.Invoke();
-                ElementController.Instence.SetPriority(subActions);
-                TryExecuteFeatures((feature) => { feature.SetInActive(target); });
-                TryExecuteBindings((binding) => binding.OnInActive(this));
-                UpdateState();
+                    Debug.Log("SetInActive:" + gameObject);
+              
+                OnSetInActive(target);
+            }
+            else
+            {
+                Debug.LogWarning("can`t inactived:" + this, gameObject);
             }
         }
+
+        protected virtual void OnSetInActive(UnityEngine.Object target)
+        {
+            onInActive.Invoke();
+            ElementController.Instence.SetPriority(subActions);
+            TryExecuteFeatures((feature) => { feature.OnSetInActive(target); });
+            TryExecuteBindings((binding) => binding.OnInActive(this));
+            UpdateState();
+        }
+
         public virtual void UnDoChanges(UnityEngine.Object target)
         {
             if (log){
-                Debug.Log("StepUnDo:" + gameObject);
+                Debug.LogFormat("StepUnDo from {0} :{1}",target,gameObject, gameObject);
             }
-            TryExecuteFeatures((feature) => { feature.UnDo(target); });
+
+            if (lockList.Contains(target))
+                lockList.Remove(target);
+
+            if (lockList.Count == 0)
+            {
+                TryExecuteBindings((binding) => binding.OnInActive(this));
+                UpdateState();
+            }
+            TryExecuteFeatures((feature) => { feature.OnUnDo(target); });
         }
 
         protected virtual void InitBindingScripts()

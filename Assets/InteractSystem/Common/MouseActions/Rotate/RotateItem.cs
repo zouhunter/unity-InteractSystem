@@ -73,7 +73,7 @@ namespace InteractSystem.Actions
                 yield return null;
                 Operater.rotation = Quaternion.Lerp(start, target, timer / autoCompleteTime);
             }
-            completeFeature.OnComplete();
+            completeFeature.OnComplete(firstLock);
         }
 
         private void InitDirection()
@@ -82,16 +82,16 @@ namespace InteractSystem.Actions
             startRot = Operater.rotation;
         }
 
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             Operater.rotation = startRot;
         }
 
 
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (completeMoveBack)
             {
                 currAngle = 0;
@@ -122,7 +122,7 @@ namespace InteractSystem.Actions
                 {
                     if (TryMarchRot())
                     {
-                        completeFeature.OnComplete();
+                        completeFeature.OnComplete(firstLock);
                     }
                 }));
         }

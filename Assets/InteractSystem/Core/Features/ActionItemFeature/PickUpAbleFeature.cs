@@ -100,27 +100,27 @@ namespace InteractSystem
             pickUpAbleItem.onSetViewForward -= onSetViewForward;
         }
 
-        public override void SetActive(UnityEngine.Object target)
+        public override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             if (interactAble)
             {
                 PickUpAble = true;
             }
         }
 
-        public override void SetInActive(UnityEngine.Object target)
+        public override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (interactAble)
             {
                 PickUpAble = false;
             }
         }
 
-        public override void UnDo(UnityEngine.Object target)
+        public override void OnUnDo(UnityEngine.Object target)
         {
-            base.UnDo(target);
+            base.OnUnDo(target);
             if (interactAble)
                 PickUpAble = true;
         }

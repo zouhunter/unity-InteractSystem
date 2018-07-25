@@ -54,9 +54,9 @@ namespace InteractSystem.Actions
             OnDetach();
         }
 
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (!OperateAble)
             {
                 if(rule) rule.OnDetach(this);
@@ -75,10 +75,10 @@ namespace InteractSystem.Actions
         {
             if(rule)
                 rule.OnDetach(this);
-            completeAbleFeature.OnComplete();
+            completeAbleFeature.OnComplete(firstLock);
         }
-
-       private void SetPosition(Vector3 pos)
+  
+        private void SetPosition(Vector3 pos)
         {
             transform.position = pos;
         }

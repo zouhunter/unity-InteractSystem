@@ -61,13 +61,13 @@ namespace InteractSystem
             if (target.Statu != ExecuteStatu.Completed)
             {
                 var key = elementName;
-                var item = elementPool.Find(x => x.Name == key && x.Active && x.OperateAble && x is ActionItem) as ActionItem;
+                var item = elementPool.Find(x => x.Name == key && x.Actived && x.OperateAble && x is ActionItem) as ActionItem;
                 if (item != null)
                 {
                     var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
                     if (completeFeature != null)
                     {
-                        completeFeature.RegistOnCompleteSafety(OnAutoComplete);
+                        completeFeature.RegistOnCompleteSafety(target,OnAutoComplete);
                         completeFeature.AutoExecute(target);
                     }
                 }
@@ -88,7 +88,7 @@ namespace InteractSystem
 
         private void OnAutoComplete(CompleteAbleItemFeature arg0)
         {
-            arg0.RemoveOnComplete(OnAutoComplete);
+            arg0.RemoveOnComplete(target);
             AutoCompleteItems();
         }
 
@@ -141,7 +141,7 @@ namespace InteractSystem
                 var feature = element.RetriveFeature<CompleteAbleItemFeature>();
                 if (feature != null)
                 {
-                    feature.RegistOnCompleteSafety(TryComplete);
+                    feature.RegistOnCompleteSafety(target,TryComplete);
                 }
             });
         }
@@ -187,7 +187,7 @@ namespace InteractSystem
                 {
                     // 注册元素结束事件
                     var feature = arg0.RetriveFeature<CompleteAbleItemFeature>();
-                    feature.RegistOnCompleteSafety(TryComplete);
+                    feature.RegistOnCompleteSafety(target,TryComplete);
                 }
             }
         }
@@ -200,7 +200,7 @@ namespace InteractSystem
             if (arg0 is ActionItem)
             {
                 var feature = arg0.RetriveFeature<CompleteAbleItemFeature>();
-                feature.RemoveOnComplete(TryComplete);
+                feature.RemoveOnComplete(target);
             }
         }
 

@@ -12,7 +12,7 @@ namespace InteractSystem.Drawer
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             property.isExpanded = true;
-            return EditorGUI.GetPropertyHeight(property, true) - EditorGUIUtility.singleLineHeight - 2.5f;
+            return EditorGUI.GetPropertyHeight(property,label, true) - EditorGUIUtility.singleLineHeight - 2.5f;
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

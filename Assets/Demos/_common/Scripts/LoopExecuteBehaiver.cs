@@ -52,5 +52,21 @@ public class LoopExecuteBehaiver : MonoBehaviour
     private void OnGUI()
     {
         GUILayout.Label("[当前步骤：]" + currentStep);
+
+
+        if (GUILayout.Button("EndCommand"))
+        {
+            group.RemoteController.EndExecuteCommand();
+        }
+
+        if (GUILayout.Button("UnDoCommand"))
+        {
+            var haveLast = group.RemoteController.UnDoCommand();
+            if (haveLast)
+            {
+                group.RemoteController.UnDoCommand();
+            }
+            LoopExecute(true);
+        }
     }
 }

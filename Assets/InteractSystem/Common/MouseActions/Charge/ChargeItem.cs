@@ -51,15 +51,15 @@ namespace InteractSystem.Actions
             base.Start();
             InitStartData();
         }
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             //激活可用的tool
             //ActiveElements(this);
         }
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             //CompleteElements(this, false);
             CompleteCurrentCharge();
         }
@@ -165,7 +165,7 @@ namespace InteractSystem.Actions
                     return;
                 }
             }
-            completeAbleFeature.OnComplete();
+            completeAbleFeature.OnComplete(lockList[0]);
         }
 
         public void AutoExecute(Graph.OperaterNode node)
@@ -183,7 +183,7 @@ namespace InteractSystem.Actions
             }
             else
             {
-                completeAbleFeature.OnComplete();
+                completeAbleFeature.OnComplete(firstLock);
             }
         }
         private void CompleteOneElement(ChargeData complete, UnityAction onComplete)
@@ -198,7 +198,7 @@ namespace InteractSystem.Actions
             if (complete.value - total > 0)
             {
                 var tools = elementCtrl.GetElements<ChargeTool>();
-                var tool = tools.Find(x => x.CanLoad(complete.type) && x.Active);
+                var tool = tools.Find(x => x.CanLoad(complete.type) && x.Actived);
                 UnityAction chargeObjAction = () =>
                 {
                     ChargeCurrentObj(tool, () =>
@@ -224,7 +224,7 @@ namespace InteractSystem.Actions
         private void ChargeOneTool(ChargeTool tool, UnityAction onComplete)
         {
             var resources = elementCtrl.GetElements<ChargeResource>();
-            var chargeResource = resources.Find(x => tool.CanLoad(x.type) && x.Active);
+            var chargeResource = resources.Find(x => tool.CanLoad(x.type) && x.Actived);
             var value = Mathf.Min(tool.capacity, chargeResource.current);
             var type = chargeResource.type;
             tool.PickUpAble = false;

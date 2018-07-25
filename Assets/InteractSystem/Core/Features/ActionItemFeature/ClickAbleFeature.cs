@@ -83,24 +83,24 @@ namespace InteractSystem
             get { return _layerName; }
             set { _layerName = value; }
         }
-        public override void SetActive(UnityEngine.Object target)
+        public override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             if (interactAble)
             {
                 collider.enabled = true;
             }
         }
-        public override void SetInActive(UnityEngine.Object target)
+        public override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (interactAble) {
                 collider.enabled = false;
             }
         }
-        public override void UnDo(UnityEngine.Object target)
+        public override void OnUnDo(UnityEngine.Object target)
         {
-            base.UnDo(target);
+            base.OnUnDo(target);
             if (interactAble){
                 collider.enabled = false;
             }

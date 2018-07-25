@@ -41,12 +41,12 @@ namespace InteractSystem.VRTKActions
 
         public void SetComplete()
         {
-            completeAbleFeature.OnComplete();
+            completeAbleFeature.OnComplete(firstLock);
         }
 
         public void AutoExecute(Graph.OperaterNode node)
         {
-            coroutineCtrl.DelyExecute(completeAbleFeature.OnComplete, autoCompleteTime);
+            coroutineCtrl.DelyExecute(()=>completeAbleFeature.OnComplete(firstLock), autoCompleteTime);
         }
     }
 }

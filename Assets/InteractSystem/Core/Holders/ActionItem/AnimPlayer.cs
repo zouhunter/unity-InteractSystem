@@ -23,15 +23,15 @@ namespace InteractSystem
         {
              get { return playableCount > targets.Count; } 
         }
-        public override void SetActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object target)
         {
-            base.SetActive(target);
+            base.OnSetActive(target);
             IsPlaying = true;
         }
 
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             IsPlaying = false;
             onPlayComplete.Invoke();
         }

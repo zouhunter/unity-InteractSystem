@@ -69,7 +69,7 @@ namespace InteractSystem.Actions
             if (Physics.Raycast(ray, out hit, hitDistence, ropeNodeLayerMask))
             {
                 var obj = hit.collider.GetComponentInParent<RopeElement>();
-                if (obj != null && obj.Active)//正在进行操作
+                if (obj != null && obj.Actived)//正在进行操作
                 {
                     //obj.BindingTarget.PickupCollider(hit.collider);
                     ropeSelected = obj;

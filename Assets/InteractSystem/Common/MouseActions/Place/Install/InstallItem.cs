@@ -20,7 +20,7 @@ namespace InteractSystem.Actions
         {
             why = null;
             var canplace = true;
-            if (!this.Active)
+            if (!this.Actived)
             {
                 canplace = false;
                 why = "操作顺序错误";
@@ -42,9 +42,9 @@ namespace InteractSystem.Actions
             }
             return canplace;
         }
-        public override void SetInActive(UnityEngine.Object target)
+        protected override void OnSetInActive(UnityEngine.Object target)
         {
-            base.SetInActive(target);
+            base.OnSetInActive(target);
             if (!AlreadyPlaced)
             {
                 PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
@@ -56,7 +56,7 @@ namespace InteractSystem.Actions
         protected override void OnUnInstallComplete()
         {
             base.OnUnInstallComplete();
-            if (Active)
+            if (Actived)
             {
                 if (AlreadyPlaced)
                 {
@@ -85,9 +85,9 @@ namespace InteractSystem.Actions
         protected override void OnInstallComplete()
         {
             base.OnInstallComplete();
-            if (Active)
+            if (Actived)
             {
-               completeFeature.OnComplete();
+               completeFeature.OnComplete(firstLock);
             }
             else
             {

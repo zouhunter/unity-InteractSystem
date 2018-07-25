@@ -70,7 +70,7 @@ namespace InteractSystem.Actions
         {
             if (pickedUpObj == null) return;
 
-            if (!pickedUpObj.Active)
+            if (!pickedUpObj.Actived)
             {
                 resonwhy = "当前步骤无需该零件!";
                 installAble = false;

@@ -59,7 +59,7 @@ namespace InteractSystem.Actions
 
             if (Input.GetMouseButton(0))
             {
-                if (selectedObj.Active)
+                if (selectedObj.Actived)
                 {
                     ray = viewCamera.ScreenPointToRay(Input.mousePosition);
                     Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, selectedObj.transform.position, axis);

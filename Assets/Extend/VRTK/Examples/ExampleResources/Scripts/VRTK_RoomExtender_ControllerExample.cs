@@ -20,7 +20,6 @@
                 return;
             }
             roomExtender = FindObjectOfType<VRTK_RoomExtender>();
-            Debug.Log(roomExtender, roomExtender);
             //Setup controller event listeners
             GetComponent<VRTK_ControllerEvents>().TouchpadPressed += new ControllerInteractionEventHandler(DoTouchpadPressed);
             GetComponent<VRTK_ControllerEvents>().TouchpadReleased += new ControllerInteractionEventHandler(DoTouchpadReleased);

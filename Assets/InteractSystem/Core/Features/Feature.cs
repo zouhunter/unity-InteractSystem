@@ -56,8 +56,8 @@ namespace InteractSystem
         public virtual void Awake() { }
         public virtual void Start() { }
         public virtual void Update() { }
-        public virtual void SetActive(UnityEngine.Object target) { }
-        public virtual void SetInActive(UnityEngine.Object target) { }
-        public virtual void UnDo(UnityEngine.Object target) { }
+        public virtual void OnSetActive(UnityEngine.Object target) { }
+        public virtual void OnSetInActive(UnityEngine.Object target) { }
+        public virtual void OnUnDo(UnityEngine.Object target) { }
     }
 }
