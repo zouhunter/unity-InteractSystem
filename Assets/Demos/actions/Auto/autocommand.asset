@@ -33,7 +33,7 @@ MonoBehaviour:
       type: actionconnect
   - m_name: delay installAnim
     m_id: f6911383-ee16-44a8-88e8-3d8086018644
-    m_x: 420
+    m_x: 410
     m_y: 220
     m_node: {fileID: 114008602502079026}
     m_inputPoints:
@@ -222,7 +222,7 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 845d8842-0bf0-4495-9d1d-8b3238de4a95
     m_type: actionconnect
     m_connection: {fileID: 114022995673182582}
-  m_lastModified: 131770981709072547
+  m_lastModified: 131770983648983504
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: autocommand
@@ -259,7 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
 --- !u!114 &114401601842333208
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
 --- !u!114 &114518400340773192
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -318,7 +318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
 --- !u!114 &114674688052507364
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
 --- !u!114 &114746934705637072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,4 +413,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1

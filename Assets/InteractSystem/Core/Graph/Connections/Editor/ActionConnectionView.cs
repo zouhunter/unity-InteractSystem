@@ -45,7 +45,7 @@ namespace InteractSystem.Graph
         }
         internal override void OnDrawLabel(Vector2 centerPos, string label)
         {
-            var count = connection.copyCount + 1;
+            var count = connection.count;
             if (count > 1)
             {
                 var rect = new Vector2(centerPos.x, centerPos.y + 15);

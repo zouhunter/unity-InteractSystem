@@ -156,49 +156,28 @@ namespace InteractSystem.Actions
         /// 动画安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void NormalInstall(PlaceItem target, bool binding)
+        public virtual void NormalInstall(PlaceItem target)
         {
             StopTween();
-            if (OperateAble)
+
+            tweenCompleteAction = () =>
             {
-                RecordPlayer(target);
+                OnInstallComplete();
+            };
 
-                tweenCompleteAction = () =>
-                {
-                    OnInstallComplete();
-                };
-
-                DoPath(target.transform.position, target.transform.eulerAngles);
-
-                if (!binding)
-                {
-                    UnBinding();
-                }
-            }
+            DoPath(target.transform.position, target.transform.eulerAngles);
         }
 
         /// <summary>
         /// 定位安装
         /// </summary>
         /// <param name="target"></param>
-        public virtual void QuickInstall(PlaceItem target, bool binding)
+        public virtual void QuickInstall(PlaceItem target)
         {
             StopTween();
-            if (OperateAble)
-            {
-                RecordPlayer(target);
-                transform.position = target.transform.position;
-                transform.rotation = target.transform.rotation;
-
-                if (!binding)
-                    UnBinding();
-
-                OnInstallComplete();
-            }
-            else
-            {
-                Debug.LogError(this + "HaveBinding:" + BindingObj);
-            }
+            transform.position = target.transform.position;
+            transform.rotation = target.transform.rotation;
+            OnInstallComplete();
         }
         /// <summary>
         /// 卸载
@@ -312,10 +291,6 @@ namespace InteractSystem.Actions
 
         protected virtual void OnInstallComplete()
         {
-            //if (hideOnInstall)
-            //{
-            //    gameObject.SetActive(false);
-            //}
             if (onInstallOkEvent != null)
                 onInstallOkEvent();
         }

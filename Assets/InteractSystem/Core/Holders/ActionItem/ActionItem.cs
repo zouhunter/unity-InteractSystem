@@ -173,10 +173,6 @@ namespace InteractSystem
 
                 OnSetActive(target);
             }
-            else
-            {
-                Debug.LogWarning("allreadly actived:" + this, gameObject);
-            }
         }
 
         protected virtual void OnSetActive(UnityEngine.Object target)
@@ -190,9 +186,11 @@ namespace InteractSystem
         public void SetInActive(UnityEngine.Object target)
         {
             if (lockList.Contains(target))
+            {
                 lockList.Remove(target);
+            }
 
-            if (lockList.Count == 0)
+            if (lockList.Count == 0 || !OperateAble)
             {
                 if (log)
                     Debug.Log("SetInActive:" + gameObject);
@@ -201,7 +199,7 @@ namespace InteractSystem
             }
             else
             {
-                Debug.LogWarning("can`t inactived:" + this, gameObject);
+                Debug.LogWarning("can`t inactived:" + this +  target,gameObject);
             }
         }
 

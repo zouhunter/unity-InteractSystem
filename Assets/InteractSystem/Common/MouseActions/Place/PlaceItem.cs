@@ -80,7 +80,9 @@ namespace InteractSystem.Actions
                 {
                     if (elements[i].OperateAble)
                     {
-                        return elements[i];
+                        var element = elements[i];
+                        element.RecordPlayer(this);
+                        return element;
                     }
                 }
             }
@@ -99,8 +101,7 @@ namespace InteractSystem.Actions
 
         public virtual void Attach(PlaceElement obj)
         {
-            if (contentFeature.Element != null)
-            {
+            if (contentFeature.Element != null){
                 Debug.LogError(this + "allready attached");
             }
 

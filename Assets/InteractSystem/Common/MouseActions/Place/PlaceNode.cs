@@ -19,6 +19,9 @@ namespace InteractSystem.Actions
         {
             base.OnStartExecute(auto);
             PlaceCtrl.Instence.RegistLock(this);
+            if(auto){
+                completeAbleNodeFeature.AutoCompleteItems();
+            }
         }
         public override void OnUnDoExecute()
         {

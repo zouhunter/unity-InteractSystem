@@ -67,7 +67,7 @@ namespace InteractSystem
                     var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
                     if (completeFeature != null)
                     {
-                        completeFeature.RegistOnCompleteSafety(target,OnAutoComplete);
+                        completeFeature.RegistOnCompleteSafety(target, OnAutoComplete);
                         completeFeature.AutoExecute(target);
                     }
                 }
@@ -86,10 +86,12 @@ namespace InteractSystem
                 onComplete.Invoke();
         }
 
-        private void OnAutoComplete(CompleteAbleItemFeature arg0)
+        private void OnAutoComplete(UnityEngine.Object context, ActionItem item)
         {
-            arg0.RemoveOnComplete(target);
-            AutoCompleteItems();
+            if (context == target)
+            {
+                AutoCompleteItems();
+            }
         }
 
         /// <summary>
@@ -107,15 +109,15 @@ namespace InteractSystem
                 }
             }
         }
-        protected virtual void TryComplete(CompleteAbleItemFeature item)
+        protected virtual void TryComplete(UnityEngine.Object _target, ActionItem item)
         {
             if (target.Statu != ExecuteStatu.Executing) return;//没有执行
-            if (!item.target.OperateAble) return;//目标无法点击
+            if (!item.OperateAble) return;//目标无法点击
             if (actionItem != null) return;
 
-            actionItem = item.target as ActionItem;
-            item.target.RecordPlayer(target);
-            item.target.SetInActive(target);
+            actionItem = item as ActionItem;
+            item.RecordPlayer(target);
+            item.SetInActive(target);
         }
 
 
@@ -141,7 +143,7 @@ namespace InteractSystem
                 var feature = element.RetriveFeature<CompleteAbleItemFeature>();
                 if (feature != null)
                 {
-                    feature.RegistOnCompleteSafety(target,TryComplete);
+                    feature.RegistOnCompleteSafety(target, TryComplete);
                 }
             });
         }
@@ -153,7 +155,7 @@ namespace InteractSystem
         {
             if (undo)
             {
-                if(actionItem != null)
+                if (actionItem != null)
                 {
                     actionItem.UnDoChanges(target);
                     actionItem.RemovePlayer(target);
@@ -187,7 +189,7 @@ namespace InteractSystem
                 {
                     // 注册元素结束事件
                     var feature = arg0.RetriveFeature<CompleteAbleItemFeature>();
-                    feature.RegistOnCompleteSafety(target,TryComplete);
+                    feature.RegistOnCompleteSafety(target, TryComplete);
                 }
             }
         }

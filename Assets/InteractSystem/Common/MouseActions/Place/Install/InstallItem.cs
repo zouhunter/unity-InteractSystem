@@ -12,7 +12,7 @@ namespace InteractSystem.Actions
         public override void PlaceObject(PlaceElement pickup)
         {
             Attach(pickup);
-            pickup.QuickInstall(this, true);
+            pickup.QuickInstall(this);
             pickup.PickUpAble = false;
         }
 
@@ -49,7 +49,7 @@ namespace InteractSystem.Actions
             {
                 PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
                 Attach(obj);
-                obj.QuickInstall(this, true);
+                obj.QuickInstall(this);
                 obj.SetInActive(this);
             }
         }
@@ -74,11 +74,11 @@ namespace InteractSystem.Actions
             obj.SetActive(this);
             if (Config.Instence.quickMoveElement && !ignorePass)
             {
-                obj.QuickInstall(this, true);
+                obj.QuickInstall(this);
             }
             else
             {
-                obj.NormalInstall(this, true);
+                obj.NormalInstall(this);
             }
         }
 

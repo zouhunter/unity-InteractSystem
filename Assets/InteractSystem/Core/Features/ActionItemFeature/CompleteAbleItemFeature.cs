@@ -8,13 +8,14 @@ using System;
 
 namespace InteractSystem
 {
+    public delegate void CompleteItemEvent(UnityEngine.Object context, ActionItem actionItem);
 
     public sealed class CompleteAbleItemFeature : ActionItemFeature
     {
-        private Dictionary<UnityEngine.Object, UnityAction<CompleteAbleItemFeature>> onCompleteActions = new Dictionary<UnityEngine.Object, UnityAction<CompleteAbleItemFeature>>();
+        private Dictionary<UnityEngine.Object, CompleteItemEvent> onCompleteActions = new Dictionary<UnityEngine.Object, CompleteItemEvent>();
         public UnityAction<UnityEngine.Object> onAutoExecute { get; private set; }
 
-        public void RegistOnCompleteSafety(UnityEngine.Object context, UnityAction<CompleteAbleItemFeature> onComplete)
+        public void RegistOnCompleteSafety(UnityEngine.Object context, CompleteItemEvent onComplete)
         {
             if (context != null && onComplete != null)
             {
@@ -31,7 +32,7 @@ namespace InteractSystem
 
                 var action = onCompleteActions[context];
                 onCompleteActions.Remove(context);
-                action.Invoke(this);
+                action.Invoke(context,target);
             }
             else
             {

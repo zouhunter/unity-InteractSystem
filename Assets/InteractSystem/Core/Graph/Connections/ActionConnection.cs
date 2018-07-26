@@ -9,7 +9,7 @@ namespace InteractSystem.Graph
     [CustomConnection("actionconnect")]
     public class ActionConnection : Connection
     {
-        [Attributes.Range(0,20)]
-        public int copyCount;
+        [Attributes.Range(1,20)]
+        public int count = 1;
     }
 }

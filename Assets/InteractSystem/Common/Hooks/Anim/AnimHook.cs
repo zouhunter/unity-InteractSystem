@@ -57,7 +57,7 @@ namespace InteractSystem.Hooks
             }
         }
 
-        private void OnAnimPlayCallBack(CompleteAbleItemFeature arg0)
+        private void OnAnimPlayCallBack(UnityEngine.Object target,ActionItem item)
         {
             if (Statu != ExecuteStatu.Completed)
             {

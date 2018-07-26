@@ -92,7 +92,7 @@ namespace InteractSystem.Hooks
         }
        
 
-        private void OnPlayEnd(CompleteAbleItemFeature feature)
+        private void OnPlayEnd(UnityEngine.Object context,ActionItem actionItem)
         {
             if (!actived) return;
 

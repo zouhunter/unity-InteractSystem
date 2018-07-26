@@ -7,7 +7,6 @@ using InteractSystem;
 
 public class singleCommand : MonoBehaviour {
     public ActionCommand command;
-    public bool autoExecute;
     private void Start()
     {
         command.SetContext(transform);
@@ -21,7 +20,11 @@ public class singleCommand : MonoBehaviour {
     {
         if(GUILayout.Button("StartCommand"))
         {
-            command.StartExecute (autoExecute);
+            command.StartExecute (false);
+        }
+        if (GUILayout.Button("StartCommand -auto"))
+        {
+            command.StartExecute(true);
         }
         if (GUILayout.Button("EndCommand"))
         {

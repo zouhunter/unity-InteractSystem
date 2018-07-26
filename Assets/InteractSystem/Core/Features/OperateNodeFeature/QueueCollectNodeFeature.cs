@@ -91,18 +91,37 @@ namespace InteractSystem
         }
 
 
-        protected virtual void TryComplete(CompleteAbleItemFeature item)
+        protected virtual void TryComplete(UnityEngine.Object context, ActionItem actionItem)
         {
-            Debug.Assert (target.Statu == ExecuteStatu.Executing);//没有执行
-            Debug.Assert (item.target.OperateAble ||item.target.HavePlayer(target));//目标无法点击
-            Debug.Assert (currents.Count < itemList.Count);//超过需要
-
-            if (itemList[currents.Count] == item.target.Name)
+            if (context != target)
             {
-                if (log) Debug.Log("add:" + item.target);
-                currents.Add(item.target as ActionItem);
-                item.target.RecordPlayer(target);
-                SetInActiveElement(item.target);
+                if(log) Debug.Log("目标不一至");
+                return;
+            }
+            if(target.Statu != ExecuteStatu.Executing)
+            {
+                if(log) Debug.Log("没有执行");
+                return;
+            }
+            if(!actionItem.OperateAble &&!actionItem.HavePlayer(target))
+            {
+                if (log) Debug.Log("目标无法操作");
+                return;
+            }
+            if(currents.Count >= itemList.Count)
+            {
+                if (log) Debug.Log("超过需要");
+                return;
+            }
+
+
+            if (itemList[currents.Count] == actionItem.Name)
+            {
+                if (log) Debug.Log("add:" + actionItem);
+                currents.Add(actionItem);
+                actionItem.RecordPlayer(target);
+
+                SetInActiveElement(actionItem);
             }
 
             if (currents.Count >= itemList.Count)
@@ -112,7 +131,7 @@ namespace InteractSystem
             }
             else
             {
-                FindOperateAbleItems();
+                ActiveElements();
                 if (autoExecute)
                 {
                     AutoComplete(currents.Count);
@@ -120,17 +139,10 @@ namespace InteractSystem
             }
         }
 
-
-        public override void OnStartExecute(bool auto = false)
-        {
-            base.OnStartExecute(auto);
-            FindOperateAbleItems();
-        }
-
         /// <summary>
         /// 将所能点击的目标设置为激活状态
         /// </summary>
-        private void FindOperateAbleItems()
+        protected override void ActiveElements()
         {
             if (itemList.Count > currents.Count)
             {
@@ -142,7 +154,6 @@ namespace InteractSystem
                 {
                     if (element.OperateAble && target.Statu == ExecuteStatu.Executing)
                     {
-                        //element.StepActive();
                         ActiveElement(element);
                     }
 
@@ -173,7 +184,6 @@ namespace InteractSystem
             }
         }
 
-
         protected override void UnDoActivedElement()
         {
             ForEachElement((item) =>
@@ -191,6 +201,10 @@ namespace InteractSystem
                 var elementName = itemList[i];
                 var elements = elementPool.FindAll(x => x.Name == elementName);
 
+                foreach (var element in elements) {
+                    SetInActiveElement(element);
+                }
+
                 ///锁定元素并结束
                 if (currents.Count <= i)
                 {
@@ -206,7 +220,6 @@ namespace InteractSystem
                 }
                 var item = currents[i];
                 (item as ActionItem).RecordPlayer(target);
-                SetInActiveElement(item);
             }
         }
         /// <summary>

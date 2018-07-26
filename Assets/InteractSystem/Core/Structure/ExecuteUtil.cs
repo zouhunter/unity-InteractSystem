@@ -124,13 +124,13 @@ namespace InteractSystem.Structure
                 var childNodes = new List<ExecuteUnit>();
                 foreach (var connection in connections)
                 {
-                    var copyCount = (connection.Object as Graph.ActionConnection).copyCount;
                     var node = graphObj.Nodes.Find(x => x.Id == connection.ToNodeId);
                     (node.Object as Graph.ActionNode).SetContext(graphObj);//设置上下文
                     var childUnit = CreateOringalUnit(node.Object as Graph.ActionNode, orignalUnits);
                     RetiveChildNode(graphObj, node, childUnit);
                     childNodes.Add(childUnit);
 
+                    var copyCount = (connection.Object as Graph.ActionConnection).count - 1;
                     if (copyCount > 0)
                     {
                         copyDic.Add(new KeyValuePair<ExecuteUnit, int>(childUnit, copyCount));

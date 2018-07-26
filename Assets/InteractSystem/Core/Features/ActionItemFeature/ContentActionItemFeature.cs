@@ -71,12 +71,20 @@ namespace InteractSystem
 
         protected virtual void OnAddedToPool(ActionItem arg0)
         {
-            if (target.Actived && !arg0.Actived && arg0.OperateAble)
+            if (target.Actived  && arg0.OperateAble)
             {
                 arg0.SetActive(target);
             }
         }
-
+        protected void ForEachElement(UnityAction<ISupportElement> onFind)
+        {
+            var objs = elementPool.FindAll(x => x.Name == elementName);
+            Debug.Assert(objs != null, "no element name:" + elementName);
+            foreach (var item in objs)
+            {
+                onFind.Invoke(item);
+            }
+        }
         /// <summary>
         /// 从场景中找到已经存在的元素
         /// </summary>
@@ -89,68 +97,27 @@ namespace InteractSystem
 
                 foreach (var arg0 in elements)
                 {
-                    if (target.Actived && !arg0.Actived && arg0.OperateAble)
+                    if (target.Actived &&  arg0.OperateAble)
                     {
-                        arg0.SetActive(target);
+                        ActiveElement(arg0);
                     }
                 }
               
             }
         }
-        /// <summary>
-        /// 选择性结束element
-        /// </summary>
-        /// <param name="undo"></param>
-        protected virtual void CompleteElements(bool undo)
+        protected void UnDoActivedElement()
         {
-            ActionItem activedItem = (from item in startedList
-                         let f = item.RetriveFeature<ContentActionItemFeature>()
-                         where f != null
-                         where f.elementName == elementName
-                         select item).FirstOrDefault();
-
-            if(log) Debug.Log("Actived ContentActionItemFeature:" + activedItem);
-
-            if (activedItem == null)
-            {
-                if (log) Debug.Log("CompleteElements:" + elementName);
-                
-                var objs = elementPool.FindAll(x => x.Name == elementName);
-                if (objs == null)
-                {
-                    if (log) Debug.Log("elementPool have no Element named:" + element);
-                    return;
-                }
-
-                for (int i = 0; i < objs.Count; i++)
-                {
-                    if (log)
-                    {
-                        if (undo)
-                        {
-                            Debug.Log("UnDoElements:" + element + objs[i].Actived);
-                        }
-                        else
-                        {
-                            Debug.Log("CompleteElements:" + element + objs[i].Actived);
-                        }
-                    }
-
-                    if (objs[i].Actived)
-                    {
-                        if (undo)
-                        {
-                            objs[i].UnDoChanges(target);
-                        }
-                        else
-                        {
-                            objs[i].SetInActive(target);
-                        }
-                    }
-                }
-            }
+            ForEachElement((element) => {
+                UndoElement(element);
+            });
         }
 
+        protected void InActivedElements()
+        {
+            ForEachElement((element) => {
+                SetInActiveElement(element);
+            });
+        }
 
         public override void OnSetActive(UnityEngine.Object target)
         {
@@ -167,7 +134,7 @@ namespace InteractSystem
             if (startedList.Contains(this.target)){
                 startedList.Remove(this.target);
             }
-            CompleteElements(false);
+            InActivedElements();
         }
         public override void OnUnDo(UnityEngine.Object target)
         {
@@ -175,7 +142,7 @@ namespace InteractSystem
             if (startedList.Contains(this.target)) {
                 startedList.Remove(this.target);
             }
-            CompleteElements(true);
+            UnDoActivedElement();
         }
     }
 }

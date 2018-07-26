@@ -15,7 +15,7 @@ namespace InteractSystem.Actions
         public override void PlaceObject(PlaceElement pickup)
         {
             Attach(pickup);
-            pickup.QuickInstall(this, false);
+            pickup.QuickInstall(this);
         }
 
      
@@ -61,7 +61,7 @@ namespace InteractSystem.Actions
             {
                 PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
                 Attach(obj);
-                obj.QuickInstall(this, false);
+                obj.QuickInstall(this);
                 obj.SetInActive(this);
             }
             if (Matched && completeMoveBack)
@@ -86,6 +86,7 @@ namespace InteractSystem.Actions
             base.OnInstallComplete();
             if (Actived)
             {
+                (contentFeature.Element as PlaceElement).RemovePlayer(this);
                 completeFeature. OnComplete(firstLock);
             }
         }
@@ -98,7 +99,7 @@ namespace InteractSystem.Actions
             {
                 if (!completeMoveBack)
                 {
-                    obj.QuickInstall(this, false);
+                    obj.QuickInstall(this);
                 }
                 else
                 {
@@ -107,7 +108,7 @@ namespace InteractSystem.Actions
             }
             else
             {
-                obj.NormalInstall(this, false);
+                obj.NormalInstall(this);
             }
         }
     }
