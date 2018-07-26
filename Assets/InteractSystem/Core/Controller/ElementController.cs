@@ -92,16 +92,16 @@ namespace InteractSystem
 
         internal void SetPriority(ActionItem[] subActions)
         {
-            if (log && subActions.Length > 0)
+            priorityList.Clear();
+
+            if (log && subActions != null && subActions.Length > 0)
             {
                 var str = "SetPriority:";
                 foreach (var item in subActions){
                     str += item;
                 }
-                Debug.Log(str);
+                priorityList.AddRange(subActions);
             }
-            priorityList.Clear();
-            priorityList.AddRange(subActions);
         }
 
         /// <summary>
@@ -172,20 +172,19 @@ namespace InteractSystem
         /// <typeparam name="T"></typeparam>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public T TryCreateElement<T>(string elementName, Transform parent, bool regist = true) where T : ISupportElement
+        public T TryCreateElement<T>(string elementName, Transform parent, bool clearAble = true) where T : ISupportElement
         {
             T element = default(T);
             var prefab = runTimeElementPrefabs.Find(x => x.Name == elementName);
             if (prefab != null)
             {
                 var e = CreateElement(prefab, parent);
-                e.Name = prefab.Name;
+                //e.Name = prefab.Name;
                 if (e is T)
                 {
                     element = (T)e;
                     element.IsRuntimeCreated = true;
-                    if (regist)
-                    {
+                    if (clearAble){
                         rutimeCreatedList.ScureAdd(element);
                     }
                 }
@@ -196,7 +195,7 @@ namespace InteractSystem
             }
             else
             {
-                Debug.Log("prefab not exist:" + elementName);
+                Debug.LogError("prefab not exist:" + elementName);
             }
             return element;
         }

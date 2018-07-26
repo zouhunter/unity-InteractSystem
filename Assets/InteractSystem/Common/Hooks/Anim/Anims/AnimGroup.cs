@@ -13,20 +13,38 @@ namespace InteractSystem.Hooks
         private AnimPlayer[] childAnims;
         private bool actived;
         private int completedCount;
-        public override float duration
+        public override float speed
         {
             get
             {
-                return _duration;
+                return base.speed;
             }
 
             set
             {
-                _duration = value;
-                SetChildAnimDuration();
+                base.speed = value;
+                foreach (var item in childAnims){
+                    item.speed = speed;
+                }
             }
         }
-  
+        public override bool opposite
+        {
+            get
+            {
+                return base.opposite;
+            }
+
+            set
+            {
+                base.opposite = value;
+                foreach (var item in childAnims)
+                {
+                    item.opposite = opposite;
+                }
+            }
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -72,14 +90,7 @@ namespace InteractSystem.Hooks
                 item.UnDoChanges(target);
             }
         }
-
-        private void SetChildAnimDuration()
-        {
-            foreach (var item in childAnims)
-            {
-                item.duration = duration;
-            }
-        }
+       
 
         private void OnPlayEnd()
         {

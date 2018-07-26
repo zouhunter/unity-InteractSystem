@@ -29,13 +29,12 @@ namespace InteractSystem
             {
                 if (string.IsNullOrEmpty(_name))
                 {
+                    if (name.EndsWith("(Clone)")){
+                        name = name.Replace("(Clone)","");
+                    }
                     return name;
                 }
                 return _name;
-            }
-            set
-            {
-                _name = value;
             }
         }
         public GameObject Body
@@ -203,7 +202,10 @@ namespace InteractSystem
             ElementController.Instence.SetPriority(subActions);
             TryExecuteFeatures((feature) => { feature.OnSetInActive(target); });
             TryExecuteBindings((binding) => binding.OnInActive(this));
-            UpdateState();
+            if (!OperateAble)
+            {
+                gameObject.SetActive(endactive);
+            }
         }
 
         public virtual void UnDoChanges(UnityEngine.Object target)
@@ -218,8 +220,9 @@ namespace InteractSystem
             if (lockList.Count == 0)
             {
                 TryExecuteBindings((binding) => binding.OnInActive(this));
-                UpdateState();
+                gameObject.SetActive(startactive);
             }
+
             TryExecuteFeatures((feature) => { feature.OnUnDo(target); });
         }
 
@@ -302,17 +305,6 @@ namespace InteractSystem
                 });
             }
         }
-
-        private void UpdateState()
-        {
-            if (OperateAble)
-            {
-                gameObject.SetActive(startactive);
-            }
-            else
-            {
-                gameObject.SetActive(endactive);
-            }
-        }
+        
     }
 }

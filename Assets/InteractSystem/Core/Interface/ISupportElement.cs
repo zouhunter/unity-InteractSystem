@@ -26,7 +26,7 @@ namespace InteractSystem
 
     public interface ISupportElement:IActiveAble, IVisiable, IContinueUse
     {
-        string Name { get; set; }//唯一的名称
+        string Name { get; }//唯一的名称
         bool IsRuntimeCreated { get; set; }//判断是静态的元素还是动态创建
     }
 }

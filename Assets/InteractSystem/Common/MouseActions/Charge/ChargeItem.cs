@@ -39,7 +39,7 @@ namespace InteractSystem.Actions
             var features = base.RegistFeatures();
             clickAbleFeature.Init(this, layer);
             features.Add(clickAbleFeature);
-           
+
             completeAbleFeature.Init(this, AutoExecute);
             features.Add(completeAbleFeature);
 
@@ -54,35 +54,19 @@ namespace InteractSystem.Actions
         protected override void OnSetActive(UnityEngine.Object target)
         {
             base.OnSetActive(target);
-            //激活可用的tool
-            //ActiveElements(this);
         }
         protected override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
-            //CompleteElements(this, false);
-            CompleteCurrentCharge();
+            if (!OperateAble) {
+                CompleteCurrentCharge();
+            }
         }
 
-        private void CompleteCurrentCharge()
-        {
-            var currentListArray = currentList.ToArray();
-            foreach (var item in currentListArray)
-            {
-                var temp = item;
-                temp.value = -item.value;
-                Charge(temp, null);
-            }
-            currentList.Clear();
-            foreach (var item in completeDatas)
-            {
-                Charge(item, null);
-            }
-        }
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
-            //CompleteElements(this, true);
+
             var currentListArray = currentList.ToArray();
             foreach (var item in currentListArray)
             {
@@ -228,7 +212,8 @@ namespace InteractSystem.Actions
             var value = Mathf.Min(tool.capacity, chargeResource.current);
             var type = chargeResource.type;
             tool.PickUpAble = false;
-            tool.LoadData(chargeResource.transform.position, new ChargeData(type, value), () => {
+            tool.LoadData(chargeResource.transform.position, new ChargeData(type, value), () =>
+            {
                 tool.PickUpAble = true;
             });
             chargeResource.Subtruct(value, () => { onComplete.Invoke(); });
@@ -242,12 +227,29 @@ namespace InteractSystem.Actions
             {
                 tool.PickUpAble = false;
                 tool.OnCharge(transform.position, worpData.value, () => { tool.PickUpAble = true; });
-                Charge(worpData, () => {
+                Charge(worpData, () =>
+                {
                     onComplete();
                 });
             }
         }
-        
+
+        private void CompleteCurrentCharge()
+        {
+            var currentListArray = currentList.ToArray();
+            foreach (var item in currentListArray)
+            {
+                var temp = item;
+                temp.value = -item.value;
+                Charge(temp, null);
+            }
+            currentList.Clear();
+            foreach (var item in completeDatas)
+            {
+                Charge(item, null);
+            }
+        }
+
 
         private void InitStartData()
         {

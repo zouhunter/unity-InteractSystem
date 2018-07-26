@@ -329,6 +329,9 @@ MonoBehaviour:
   - ignore: 0
     commandName: clickCommand1
     command: {fileID: 11400000, guid: d9530401834d1ae4780daedc0d962f0f, type: 2}
+  - ignore: 0
+    commandName: clickCommand2
+    command: {fileID: 11400000, guid: 47340177ed860404284c34007134208c, type: 2}
   elementGroup: {fileID: 0}
 --- !u!4 &421960583
 Transform:

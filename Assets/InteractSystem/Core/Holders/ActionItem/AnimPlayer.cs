@@ -8,16 +8,19 @@ namespace InteractSystem
 {
     public abstract class AnimPlayer : ActionItem
     {
-        [SerializeField]
+        [SerializeField,Attributes.CustomField("反向")]
         protected bool _reverse;
+        [SerializeField, Attributes.CustomField("速度比")]
         protected float _duration = 1;
-        public virtual float duration { get { return _duration; } set { _duration = value; } }
-        public virtual bool reverse { get { return _reverse; } set { _reverse = value; } }
+        public virtual float speed { get; set; }
+        public virtual bool opposite { get; set; }
+        public virtual float duration { get { return speed * _duration; } }
+        public virtual bool reverse { get { return opposite ? !_reverse:_reverse; } }
         public UnityAction onAutoPlayEnd { get; set; }
         public bool IsPlaying { get; protected set; }
         [HideInInspector]
         public UnityEvent onPlayComplete;
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("可播放数")]
         protected int playableCount = 1;
         public override bool OperateAble
         {

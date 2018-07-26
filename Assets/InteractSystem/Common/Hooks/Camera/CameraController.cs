@@ -88,7 +88,7 @@ namespace InteractSystem
         }
         internal const string defultID = "defult";
         private Coroutine lastCoroutine;
-        private UnityAction lastAction;
+        //private UnityAction lastAction;
         public event UnityAction<Transform> onCameraMoveTo;
         private const float defultSpeed = 5;
         private const float maxTime = 2f;
@@ -105,10 +105,10 @@ namespace InteractSystem
             viewCamera.gameObject.SetActive(!mainCamera.isActiveAndEnabled);
         }
 
-        private void OnMainCameraCallBack()
-        {
-            if (lastAction != null) lastAction.Invoke();
-        }
+        //private void OnMainCameraCallBack()
+        //{
+        //    if (lastAction != null) lastAction.Invoke();
+        //}
         public void RegistNode(CameraNode node)
         {
             if (!cameraNodes.Contains(node))
@@ -126,6 +126,8 @@ namespace InteractSystem
 
         public void SetViewCameraQuick(string id = null)
         {
+            onCameraMoveTo = null;
+
             StopStarted(false);
 
             if (string.IsNullOrEmpty(id))
@@ -165,15 +167,15 @@ namespace InteractSystem
             }
         }
 
-        public void SetViewCameraAsync(UnityAction onComplete, string id = null)
+        public void SetViewCameraAsync(UnityAction<Transform> onComplete, string id = null)
         {
             StopStarted(false);
 
-            lastAction = onComplete;
+            onCameraMoveTo = onComplete;
 
             if (string.IsNullOrEmpty(id))
             {
-                OnStepComplete();
+                OnStepComplete(mainCamera.transform);
             }
             else if (id == defultID)
             {
@@ -184,7 +186,7 @@ namespace InteractSystem
                 }
                 else
                 {
-                    OnStepComplete();
+                    OnStepComplete(mainCamera.transform);
                 }
             }
             else
@@ -197,7 +199,7 @@ namespace InteractSystem
                     {
                         SetTransform(currentNode.transform);
                     }
-                    OnStepComplete();
+                    OnStepComplete(currentNode.transform);
                 }
                 else
                 {
@@ -206,7 +208,7 @@ namespace InteractSystem
             }
         }
 
-        IEnumerator MoveCameraToMainCamera(UnityAction onComplete)
+        IEnumerator MoveCameraToMainCamera(UnityAction<Transform> onComplete)
         {
             if (mainCamera != null)
             {
@@ -229,10 +231,10 @@ namespace InteractSystem
                 viewCamera.transform.SetParent(viewCameraParent);
             }
 
-            if (onComplete != null) onComplete.Invoke();
+            if (onComplete != null) onComplete.Invoke(mainCamera.transform);
         }
 
-        IEnumerator MoveCameraToNode(CameraNode target, UnityAction onComplete)
+        IEnumerator MoveCameraToNode(CameraNode target, UnityAction<Transform> onComplete)
         {
             if (mainCamera != null)
             {
@@ -272,7 +274,7 @@ namespace InteractSystem
                 onCameraMoveTo.Invoke(target.transform);
             }
 
-            if (onComplete != null) onComplete.Invoke();
+            if (onComplete != null) onComplete.Invoke(currentNode.transform);
         }
         private void SetTransform(Transform target)
         {
@@ -295,7 +297,7 @@ namespace InteractSystem
         }
         public void OnDestroy()
         {
-            lastAction = null;
+            onCameraMoveTo = null;
             lastCoroutine = null;
             cameraNodes.Clear();
         }
@@ -315,15 +317,16 @@ namespace InteractSystem
             {
                 currentNode = null;
             }
-            OnStepComplete();
+
+            OnStepComplete(currentCamera.transform);
         }
-        private void OnStepComplete()
+        private void OnStepComplete(Transform target)
         {
-            if (lastAction != null)
+            if (onCameraMoveTo != null)
             {
-                var action = lastAction;
-                lastAction = null;
-                action.Invoke();
+                var action = onCameraMoveTo;
+                onCameraMoveTo = null;
+                action.Invoke(target);
             }
         }
     }

@@ -6,12 +6,12 @@ namespace InteractSystem.Hooks
 {
     public class InstallAnim : CodeAnimItem
     {
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("本体")]
         protected Transform bodyTrans;
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("目标")]
         protected Transform targetTrans;
 
-        [SerializeField, Range(-10, 10)]
+        [SerializeField, Attributes.CustomField("转速")]
         protected float rotateSpeed;
 
         protected Vector3 startPosition;

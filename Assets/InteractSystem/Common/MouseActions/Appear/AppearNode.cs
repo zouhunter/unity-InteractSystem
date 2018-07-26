@@ -14,15 +14,15 @@ namespace InteractSystem.Actions
     {
         [SerializeField,Attributes.CustomField("全自动")]
         protected bool forceAuto;
-        [SerializeField, Attributes.CustomField("时间间隔")]
+        [SerializeField, Attributes.CustomField("时间间隔（自动）")]
         protected float spanTime = 1f;
-        [SerializeField, Attributes.CustomField("生成规则")]
+        [SerializeField, Attributes.CustomField("生成规则（自动）")]
         protected AutoAppearRule autoRule;
         protected CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         [SerializeField]
-        protected CollectNodeFeature collectNodeFeature = new GroupCollectNodeFeature(typeof(ISupportElement));
+        protected GroupCollectNodeFeature collectNodeFeature = new GroupCollectNodeFeature(typeof(ISupportElement));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
@@ -36,8 +36,6 @@ namespace InteractSystem.Actions
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            if (log)
-                Debug.Log("OnStartExecute:" + this);
 
             if(!TryComplete())
             {
@@ -55,7 +53,8 @@ namespace InteractSystem.Actions
             collectNodeFeature.elementPool.ForEach(ele =>{
                 elementCtrl.UnLockElement(ele, this);
             });
-
+            
+            
             collectNodeFeature.finalGroup = null;
             elementCtrl.ClearExtraCreated();
         }
@@ -76,7 +75,7 @@ namespace InteractSystem.Actions
                 TryComplete();
             }
         }
-
+        
         /// <summary>
         /// 锁定元素
         /// </summary>
@@ -113,7 +112,7 @@ namespace InteractSystem.Actions
         /// <returns></returns>
         private bool TryComplete()
         {
-            //Debug.Log("TryComplete");
+            if(log) Debug.Log("TryComplete:" + this);
             if (ExistEnoughObj())
             {
                 OnEndExecute(false);
@@ -187,7 +186,8 @@ namespace InteractSystem.Actions
         private ISupportElement CreateElement(string elementName)
         {
             var element = elementCtrl.TryCreateElement<ISupportElement>(elementName,Command.Context);
-            if(autoRule) autoRule.OnCreate(element);
+            if(autoRule)
+                autoRule.OnCreate(element);
             Debug.Assert(element != null,elementName + " 为空！", this);
             return element;
         }

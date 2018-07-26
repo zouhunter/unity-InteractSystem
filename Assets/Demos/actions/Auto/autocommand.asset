@@ -111,7 +111,7 @@ MonoBehaviour:
   m_lastModified: 131765710331677071
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
-  _stepName: 
+  _stepName: autocommand
   commandBindings: []
   environments: []
   startHooks: []
@@ -185,6 +185,6 @@ MonoBehaviour:
   bindings: []
   environments: []
   delyTime: 0
-  speed: 1
-  reverse: 0
+  speed: 0.1
+  opposite: 0
   _animName: CubeAnim

@@ -23,8 +23,8 @@ namespace InteractSystem.Hooks
         public override void OnStartExecute(bool auto)
         {
             base.OnStartExecute(auto);
-            cameraCtrl.SetViewCameraAsync(() => {
-                OnEndExecute(false);
+            cameraCtrl.SetViewCameraAsync((x) => {
+               if(Statu != ExecuteStatu.Completed) OnEndExecute(false);
             }, cameraNodeID);
         }
     }

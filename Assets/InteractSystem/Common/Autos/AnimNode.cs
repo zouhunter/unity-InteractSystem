@@ -11,12 +11,13 @@ namespace InteractSystem.Auto
     [CustomNode("Auto/Anim", 5, "InteractSystem")]
     public class AnimNode : Graph.OperaterNode
     {
+
         [SerializeField,Attributes.CustomField("延时播放")]
         private float delyTime = 0f;
         [SerializeField,Attributes.Range(0.1f, 10f), Attributes.CustomField("播放速度")]
         private float speed = 1;
         [SerializeField, Attributes.CustomField("反向播放")]
-        private bool reverse;
+        private bool opposite;
         [SerializeField,Attributes.DefultName("动画名","_name")]
         private string _animName;
         private string animName
@@ -49,8 +50,8 @@ namespace InteractSystem.Auto
             Debug.Assert(animPlayer != null, "no enough animplayer named:" + Name);
             if (animPlayer != null)
             {
-                animPlayer.duration = speed;
-                animPlayer.reverse = reverse;
+                animPlayer.speed = speed;
+                animPlayer.opposite = opposite;
                 animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
                 animPlayer.SetVisible(true);
                 animPlayer.SetActive(this);

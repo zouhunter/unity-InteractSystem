@@ -62,21 +62,21 @@ namespace InteractSystem
 
         public override void OnStartExecute(bool auto = false)
         {
-            UpdateElementPool();
+            ActiveElements();
         }
         public override void OnUnDoExecute()
         {
-            CompleteElements(true);
+            UnDoActivedElement();
         }
         public override void OnBeforeEnd(bool force)
         {
-            CompleteElements(false);
+            InActivedElements();
         }
 
         /// <summary>
         /// 从场景中找到已经存在的元素
         /// </summary>
-        protected void UpdateElementPool()
+        protected void ActiveElements()
         {
             List<string> elementKeys = new List<string>();
             for (int i = 0; i < itemList.Count; i++)
@@ -124,6 +124,7 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRegistElement(ISupportElement arg0)
         {
+            Debug.Log(arg0.Name);
             if (SupportType(arg0.GetType()) && itemList.Contains(arg0.Name))
             {
                 if (!elementPool.Contains(arg0))
@@ -155,11 +156,21 @@ namespace InteractSystem
                 targetType.IsSubclassOf(type) ||
                 type == targetType;
         }
-        /// <summary>
-        /// 选择性结束element
-        /// </summary>
-        /// <param name="undo"></param>
-        protected abstract void CompleteElements(bool undo);
+        protected void ForEachElement(UnityAction<ISupportElement> onFind)
+        {
+            for (int i = 0; i < itemList.Count; i++)
+            {
+                var element = itemList[i];
+                var objs = elementPool.FindAll(x => x.Name == element);
+                Debug.Assert(objs != null, "no element name:" + element);
+                foreach (var item in objs)
+                {
+                    onFind.Invoke(item);
+                }
+            }
+        }
+        protected abstract void UnDoActivedElement();
+        protected abstract void InActivedElements();
 
     }
 }

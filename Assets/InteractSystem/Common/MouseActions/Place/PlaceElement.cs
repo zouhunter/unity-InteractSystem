@@ -298,6 +298,7 @@ namespace InteractSystem.Actions
             base.UnDoChanges(target);
             if (log)
                 Debug.Log("StepUnDo:" + Name, gameObject);
+
             actived = false;
             onStepUnDo.Invoke();
             gameObject.SetActive(startactive);

@@ -15,7 +15,7 @@ namespace InteractSystem.Hooks
         [SerializeField, Attributes.Range(0.1f, 10f)]
         private float speed = 1;
         [SerializeField]
-        private bool reverse;
+        private bool opposite;
         [SerializeField, Attributes.DefultName]
         private string _animName;
         public string animName
@@ -45,8 +45,8 @@ namespace InteractSystem.Hooks
         {
             FindAnimCore(true);
             Debug.Assert(animPlayer != null, "no enough animplayer named:" + this);
-            animPlayer.duration = speed;
-            animPlayer.reverse = reverse;
+            animPlayer.speed = speed;
+            animPlayer.opposite = opposite;
             animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
             animPlayer.SetVisible(true);
             animPlayer.SetActive(this);

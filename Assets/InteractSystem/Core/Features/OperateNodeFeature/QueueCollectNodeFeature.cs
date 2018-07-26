@@ -12,7 +12,7 @@ namespace InteractSystem
     [System.Serializable]
     public class QueueCollectNodeFeature : CollectNodeFeature
     {
-        public UnityAction onComplete { get; private set; }
+        protected UnityAction onComplete { get; private set; }
         protected List<ISupportElement> currents = new List<ISupportElement>();
         public QueueCollectNodeFeature(System.Type type) : base(type, false) { }
 
@@ -166,55 +166,42 @@ namespace InteractSystem
             TryAutoComplete(0);
         }
 
-        /// <summary>
-        ///尝试将元素设置为非激活状态
-        /// </summary>
-        /// <param name="undo"></param>
-        protected override void CompleteElements(bool undo)
+    
+        protected override void UnDoActivedElement()
+        {
+            ForEachElement((item) =>
+            {
+                UndoElement(item);
+                item.RemovePlayer(target);
+            });
+            currents.Clear();
+        }
+
+        protected override void InActivedElements()
         {
             for (int i = 0; i < itemList.Count; i++)
             {
                 var elementName = itemList[i];
                 var elements = elementPool.FindAll(x => x.Name == elementName);
 
-                foreach (var item in elements)
-                {
-                    item.SetInActive(target);
-
-                    if (undo){
-                        UndoElement(item);
-                        item.RemovePlayer(target);
-                    }
-                }
-
                 ///锁定元素并结束
-                if (currents.Count <= i && !undo)
+                if (currents.Count <= i)
                 {
                     var element = elements.FirstOrDefault();
-                    if (element != null) {
+                    if (element != null)
+                    {
                         currents.Add(element);
                     }
                     else
                     {
-                        Debug.LogError("缺少：" + itemList[i]);
+                        Debug.LogError("缺少：" + elementName);
                     }
                 }
-
-                //记录使用
-                if(!undo)
-                {
-                    var item = currents[i];
-                    (item as ActionItem).RecordPlayer(target);
-                    SetInActiveElement(item);
-                }
-            }
-
-            if (undo)
-            {
-                currents.Clear();
+                var item = currents[i];
+                (item as ActionItem).RecordPlayer(target);
+                SetInActiveElement(item);
             }
         }
-
         /// <summary>
         /// 注册结束事件（仅元素在本步骤开始后创建时执行注册）
         /// </summary>
