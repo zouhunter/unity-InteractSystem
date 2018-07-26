@@ -90,7 +90,7 @@ namespace InteractSystem.Actions
             }
         }
 
-        public override void AutoExecute(Graph.OperaterNode operateNode)
+        public override void OnAutoExecute(UnityEngine.Object operateNode)
         {
             var obj = GetUnInstalledObj(contentFeature.ElementName);
             Attach(obj);

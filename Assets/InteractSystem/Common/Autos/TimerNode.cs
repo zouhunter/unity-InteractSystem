@@ -29,7 +29,9 @@ namespace InteractSystem.Auto
 
         private void AutoComplete()
         {
-            OnEndExecute(false);
+            if (Statu != ExecuteStatu.Completed){
+                OnEndExecute(false);
+            }
         }
 
         public override void OnUnDoExecute()

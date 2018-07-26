@@ -33,9 +33,9 @@ namespace InteractSystem.Hooks
             targetRotation = Quaternion.Euler(bodyTrans.transform.parent.InverseTransformVector(targetTrans.transform.eulerAngles));
         }
 
-        protected override void OnSetInActive(UnityEngine.Object target)
+        protected override void OnSetActive(UnityEngine.Object arg0)
         {
-            base.OnSetInActive(target);
+            base.OnSetActive(arg0);
 
             if (reverse)
             {
@@ -59,10 +59,10 @@ namespace InteractSystem.Hooks
 
         protected override IEnumerator PlayAnim(UnityAction onComplete)
         {
-            currentPos = bodyTrans.localPosition;
-            currentRot = bodyTrans.localRotation;
-            currentTargetPos = targetPosition - startPosition + bodyTrans.localPosition;
-            currentTargetRot = targetRotation * Quaternion.Inverse(startRotation) * bodyTrans.localRotation;
+            currentPos = startPosition;// bodyTrans.localPosition;
+            currentRot = startRotation;// bodyTrans.localRotation;
+            currentTargetPos = targetPosition - startPosition + currentPos;//bodyTrans.localPosition;
+            currentTargetRot = targetRotation * Quaternion.Inverse(startRotation) * startRotation;//bodyTrans.localRotation;
 
             var startPos = reverse ? currentTargetPos : currentPos;
             var targetPos = reverse ? currentPos : currentTargetPos;

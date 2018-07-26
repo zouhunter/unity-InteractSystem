@@ -12,10 +12,9 @@ namespace InteractSystem.Structure
     public class ExecuteUnit
     {
         public Graph.ActionNode node;
-        public List<ExecuteUnit> parentUnits = new List<ExecuteUnit>();
-        public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();
-        //
-        private List<Graph.ActionNode> childNodesList = new List<Graph.ActionNode>();
+        public List<ExecuteUnit> parentUnits = new List<ExecuteUnit>();//父级列表
+        public List<List<ExecuteUnit>> childUnits = new List<List<ExecuteUnit>>();//子级按顺序列表
+        private List<Graph.ActionNode> childNodesList = new List<Graph.ActionNode>();//子操作节点
         
         public ExecuteUnit(Graph.ActionNode parentNode)
         {

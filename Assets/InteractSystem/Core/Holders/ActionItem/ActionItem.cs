@@ -29,8 +29,9 @@ namespace InteractSystem
             {
                 if (string.IsNullOrEmpty(_name))
                 {
-                    if (name.EndsWith("(Clone)")){
-                        name = name.Replace("(Clone)","");
+                    if (name.EndsWith("(Clone)"))
+                    {
+                        name = name.Replace("(Clone)", "");
                     }
                     return name;
                 }
@@ -121,7 +122,8 @@ namespace InteractSystem
         {
             if (Config.Instence.actionItemNotice)
             {
-                foreach (var item in actionNotice){
+                foreach (var item in actionNotice)
+                {
                     item.Update();
                 }
             }
@@ -152,17 +154,23 @@ namespace InteractSystem
                 this.targets.Remove(target);
             }
         }
+        public virtual bool HavePlayer(UnityEngine.Object target)
+        {
+            if (targets.Contains(target))
+            { return true; }
+            return false;
+        }
 
         public void SetActive(UnityEngine.Object target)
         {
-            if(!lockList.Contains(target))
+            if (!lockList.Contains(target))
                 lockList.Add(target);
 
             if (lockList.Count == 1)
             {
                 if (log)
                     Debug.Log("StepActive:" + this);
-              
+
                 OnSetActive(target);
             }
             else
@@ -171,7 +179,8 @@ namespace InteractSystem
             }
         }
 
-        protected virtual void OnSetActive(UnityEngine.Object target) {
+        protected virtual void OnSetActive(UnityEngine.Object target)
+        {
             gameObject.SetActive(true);
             onActive.Invoke();
             TryExecuteFeatures((feature) => { feature.OnSetActive(target); });
@@ -187,7 +196,7 @@ namespace InteractSystem
             {
                 if (log)
                     Debug.Log("SetInActive:" + gameObject);
-              
+
                 OnSetInActive(target);
             }
             else
@@ -210,8 +219,9 @@ namespace InteractSystem
 
         public virtual void UnDoChanges(UnityEngine.Object target)
         {
-            if (log){
-                Debug.LogFormat("StepUnDo from {0} :{1}",target,gameObject, gameObject);
+            if (log)
+            {
+                Debug.LogFormat("StepUnDo from {0} :{1}", target, gameObject, gameObject);
             }
 
             if (lockList.Contains(target))
@@ -276,7 +286,7 @@ namespace InteractSystem
 
         protected virtual List<ActionItemFeature> RegistFeatures()
         {
-            if(log) Debug.Log("regist features" + this,gameObject);
+            if (log) Debug.Log("regist features" + this, gameObject);
             return new List<ActionItemFeature>(Config.Instence.actionItemFeatures);
         }
 
@@ -305,6 +315,6 @@ namespace InteractSystem
                 });
             }
         }
-        
+
     }
 }

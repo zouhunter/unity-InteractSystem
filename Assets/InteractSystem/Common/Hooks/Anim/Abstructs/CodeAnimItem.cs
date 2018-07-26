@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+using InteractSystem.Graph;
 
 namespace InteractSystem.Hooks
 {
@@ -20,25 +21,26 @@ namespace InteractSystem.Hooks
 
         protected abstract void InitState();
 
-        protected override void OnSetActive(UnityEngine.Object target)
+        protected override void OnPlayAnim(UnityEngine.Object arg0)
         {
-            base.OnSetActive(target);
+            base.OnPlayAnim(arg0);
+
             time = 1f / duration;
-            coroutine = StartCoroutine(PlayAnim(onAutoPlayEnd));
+            coroutine = StartCoroutine(PlayAnim(OnAnimComplete));
         }
 
         protected override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
-            StopAnim();
+            StopActivedCoroutine();
         }
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
-            StopAnim();
+            StopActivedCoroutine();
         }
 
-        protected virtual void StopAnim() {
+        protected virtual void StopActivedCoroutine() {
             if (coroutine != null)
             {
                 StopCoroutine(coroutine);

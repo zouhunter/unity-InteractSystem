@@ -19,7 +19,7 @@ namespace InteractSystem
         public event UnityAction<ISupportElement> onAddToPool;
         public event UnityAction<ISupportElement> onRemoveFromPool;
         protected bool autoActive;
-
+        protected bool autoExecute;
         public CollectNodeFeature(Type type, bool autoActive = true)
         {
             this.type = type;
@@ -63,6 +63,7 @@ namespace InteractSystem
         public override void OnStartExecute(bool auto = false)
         {
             ActiveElements();
+            autoExecute = auto;
         }
         public override void OnUnDoExecute()
         {
@@ -124,7 +125,6 @@ namespace InteractSystem
         /// <param name="arg0"></param>
         protected void OnRegistElement(ISupportElement arg0)
         {
-            Debug.Log(arg0.Name);
             if (SupportType(arg0.GetType()) && itemList.Contains(arg0.Name))
             {
                 if (!elementPool.Contains(arg0))

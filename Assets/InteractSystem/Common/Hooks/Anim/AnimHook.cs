@@ -16,7 +16,7 @@ namespace InteractSystem.Hooks
         private float speed = 1;
         [SerializeField]
         private bool opposite;
-        [SerializeField, Attributes.DefultName]
+        [SerializeField, Attributes.DefultName("动画名")]
         private string _animName;
         public string animName
         {
@@ -45,15 +45,24 @@ namespace InteractSystem.Hooks
         {
             FindAnimCore(true);
             Debug.Assert(animPlayer != null, "no enough animplayer named:" + this);
-            animPlayer.speed = speed;
-            animPlayer.opposite = opposite;
-            animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
-            animPlayer.SetVisible(true);
-            animPlayer.SetActive(this);
+            if (animPlayer)
+            {
+                animPlayer.speed = speed;
+                animPlayer.opposite = opposite;
+                animPlayer.SetVisible(true);
+                animPlayer.SetActive(this);
+                var feature = animPlayer.RetriveFeature<CompleteAbleItemFeature>();
+                feature.RegistOnCompleteSafety(this, OnAnimPlayCallBack);
+                feature.AutoExecute(this);
+            }
         }
-        private void OnAnimPlayCallBack()
+
+        private void OnAnimPlayCallBack(CompleteAbleItemFeature arg0)
         {
-            OnEndExecute(false);
+            if (Statu != ExecuteStatu.Completed)
+            {
+                OnEndExecute(false);
+            }
         }
 
         protected override void OnBeforeEndExecute()
@@ -84,7 +93,7 @@ namespace InteractSystem.Hooks
                 var elements = elementCtrl.GetElements<AnimPlayer>(animName, true);
                 if (elements != null && elements.Count > 0)
                 {
-                    animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];
+                    animPlayer = elements.Find(x => x.Body != null && x.OperateAble);//[0];
                 }
             }
 

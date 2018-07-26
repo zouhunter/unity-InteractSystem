@@ -39,7 +39,7 @@ namespace InteractSystem.Actions
             contentFeature.Init(this);
             features.Add(contentFeature);
 
-            completeFeature.Init(this, AutoExecute);
+            completeFeature.Init(this, OnAutoExecute);
             features.Add(completeFeature);
 
             clickAbleFeature.Init(this, placePosLayer);
@@ -47,7 +47,7 @@ namespace InteractSystem.Actions
 
             return features;
         }
-        public abstract void AutoExecute(Graph.OperaterNode node);
+        public abstract void OnAutoExecute(UnityEngine.Object node);
 
         public abstract bool CanPlace(PlaceElement element, out string why);
 

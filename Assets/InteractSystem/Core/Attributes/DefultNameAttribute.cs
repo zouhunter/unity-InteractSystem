@@ -8,6 +8,7 @@ namespace InteractSystem.Attributes
         public DefultNameAttribute()
         {
             path = "name";
+            this.title = "Name";
         }
         public DefultNameAttribute(string title)
         {

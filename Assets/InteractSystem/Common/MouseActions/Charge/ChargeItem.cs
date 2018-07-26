@@ -40,7 +40,7 @@ namespace InteractSystem.Actions
             clickAbleFeature.Init(this, layer);
             features.Add(clickAbleFeature);
 
-            completeAbleFeature.Init(this, AutoExecute);
+            completeAbleFeature.Init(this, OnAutoExecute);
             features.Add(completeAbleFeature);
 
             return features;
@@ -152,7 +152,7 @@ namespace InteractSystem.Actions
             completeAbleFeature.OnComplete(lockList[0]);
         }
 
-        public void AutoExecute(Graph.OperaterNode node)
+        public void OnAutoExecute(UnityEngine.Object node)
         {
             index = 0;
             AutoCompleteInternal();

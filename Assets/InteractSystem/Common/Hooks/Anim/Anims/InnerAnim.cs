@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.Collections;
 using System;
+using InteractSystem.Graph;
 
 namespace InteractSystem.Hooks
 {
@@ -24,7 +25,7 @@ namespace InteractSystem.Hooks
                 animName = anim.clip.name;
         }
 
-        void Init()
+        protected void Init()
         {
             gameObject.SetActive(true);
             anim.playAutomatically = false;
@@ -32,7 +33,7 @@ namespace InteractSystem.Hooks
             RegisterEvent();
         }
 
-        void RegisterEvent()
+        protected void RegisterEvent()
         {
             state = anim[animName];
             animTime = state.length;
@@ -45,7 +46,7 @@ namespace InteractSystem.Hooks
         {
             float waitTime = animTime / Mathf.Abs(state.speed);
             yield return new WaitForSeconds(waitTime);
-            onAutoPlayEnd.Invoke();
+            OnAnimComplete();
         }
 
         private void SetCurrentAnim(float time)
@@ -56,16 +57,17 @@ namespace InteractSystem.Hooks
             state.speed = 0;
             anim.Play();
         }
-
         protected override void OnSetActive(UnityEngine.Object target)
         {
             base.OnSetActive(target);
-            Debug.Log("StepActive" + this);
             Init();
+        }
+        protected override void OnPlayAnim(UnityEngine.Object arg0)
+        {
+            base.OnPlayAnim(arg0);
             state.normalizedTime = reverse ? 1 : 0f;
             state.speed = reverse ? -duration : duration;
             anim.Play();
-
             if (coroutine == null)
                 coroutine = StartCoroutine(DelyStop());
         }
@@ -73,7 +75,7 @@ namespace InteractSystem.Hooks
         protected override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
-            Debug.Log("StepComplete:" + this);
+            if (log) Debug.Log("StepComplete:" + this);
             SetCurrentAnim(reverse ? 0 : 1);
             if (coroutine != null)
                 StopCoroutine(coroutine);

@@ -12,13 +12,13 @@ namespace InteractSystem
     public sealed class CompleteAbleItemFeature : ActionItemFeature
     {
         private Dictionary<UnityEngine.Object, UnityAction<CompleteAbleItemFeature>> onCompleteActions = new Dictionary<UnityEngine.Object, UnityAction<CompleteAbleItemFeature>>();
-        public UnityAction<Graph.OperaterNode> onAutoExecute { get; private set; }
+        public UnityAction<UnityEngine.Object> onAutoExecute { get; private set; }
 
-        public void RegistOnCompleteSafety(UnityEngine.Object context, UnityAction<CompleteAbleItemFeature> onClicked)
+        public void RegistOnCompleteSafety(UnityEngine.Object context, UnityAction<CompleteAbleItemFeature> onComplete)
         {
-            if (context != null && onClicked != null)
+            if (context != null && onComplete != null)
             {
-                onCompleteActions[context] = onClicked;
+                onCompleteActions[context] = onComplete;
             }
         }
 
@@ -26,6 +26,9 @@ namespace InteractSystem
         {
             if (context != null && onCompleteActions.ContainsKey(context))
             {
+               if(log)
+                    Debug.Log(this + " :OnComplete:" + context);
+
                 var action = onCompleteActions[context];
                 onCompleteActions.Remove(context);
                 action.Invoke(this);
@@ -44,13 +47,13 @@ namespace InteractSystem
             }
         }
 
-        internal void Init(ActionItem actionItem, UnityAction<Graph.OperaterNode> onAutoExecute)
+        internal void Init(ActionItem actionItem, UnityAction<UnityEngine.Object> onAutoExecute)
         {
             target = actionItem;
             this.onAutoExecute = onAutoExecute;
         }
 
-        public void AutoExecute(Graph.OperaterNode operateNode)
+        public void AutoExecute(UnityEngine.Object operateNode)
         {
             if (onAutoExecute != null)
             {

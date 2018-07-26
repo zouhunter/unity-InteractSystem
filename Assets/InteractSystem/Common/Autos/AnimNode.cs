@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using NodeGraph;
+using System.Collections.Generic;
 
 namespace InteractSystem.Auto
 {
@@ -18,22 +19,28 @@ namespace InteractSystem.Auto
         private float speed = 1;
         [SerializeField, Attributes.CustomField("反向播放")]
         private bool opposite;
-        [SerializeField,Attributes.DefultName("动画名","_name")]
-        private string _animName;
-        private string animName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_animName))
-                {
-                    return Name;
-                }
-                return _animName;
-            }
-        }
-        private AnimPlayer animPlayer;
         private CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         private ElementController elementCtrl { get { return ElementController.Instence; } }
+        [SerializeField]
+        private QueueCollectNodeFeature collectNodeFeature = new QueueCollectNodeFeature(typeof(AnimPlayer));
+        protected override List<OperateNodeFeature> RegistFeatures()
+        {
+            var features = base.RegistFeatures();
+            collectNodeFeature.SetTarget(this);
+            collectNodeFeature.onBeforeAutoExecute += OnBeforeAutoExecute;
+            features.Add(collectNodeFeature);
+            return features;
+        }
+        /// <summary>
+        /// 对目标进行修改
+        /// </summary>
+        /// <param name="arg0"></param>
+        private void OnBeforeAutoExecute(CompleteAbleItemFeature arg0)
+        {
+            var animPlayer = arg0.target as AnimPlayer;
+            animPlayer.speed = speed;
+            animPlayer.opposite = opposite;
+        }
 
         /// <summary>
         /// 播放动画
@@ -41,64 +48,9 @@ namespace InteractSystem.Auto
         public override void OnStartExecute(bool auto)
         {
             base.OnStartExecute(auto);
-            coroutineCtrl.DelyExecute(DelyPlay, delyTime);
+            coroutineCtrl.DelyExecute(collectNodeFeature.AutoCompleteItems, delyTime);
         }
-
-        private void DelyPlay()
-        {
-            FindAnimCore(true);
-            Debug.Assert(animPlayer != null, "no enough animplayer named:" + Name);
-            if (animPlayer != null)
-            {
-                animPlayer.speed = speed;
-                animPlayer.opposite = opposite;
-                animPlayer.onAutoPlayEnd = OnAnimPlayCallBack;
-                animPlayer.SetVisible(true);
-                animPlayer.SetActive(this);
-            }
-        }
-        private void OnAnimPlayCallBack()
-        {
-            OnEndExecute(false);
-        }
-
-        protected override void OnBeforeEnd(bool force)
-        {
-            base.OnBeforeEnd(force);
-            if (animPlayer != null)
-            {
-                animPlayer.SetInActive(this);
-            }
-        }
-        public override void OnUnDoExecute()
-        {
-            base.OnUnDoExecute();
-            if (animPlayer != null)
-            {
-                animPlayer.UnDoChanges(this);
-                animPlayer.RemovePlayer(this);
-            }
-        }
-
-        private void FindAnimCore(bool record)
-        {
-            if (animPlayer == null)
-            {
-                var elements = elementCtrl.GetElements<AnimPlayer>(animName,true);
-                if (elements != null && elements.Count > 0)
-                {
-                    animPlayer = elements.Find(x => x.Body != null && x.CanPlay());//[0];
-                }
-            }
-
-            if (animPlayer)
-            {
-                if (record){
-                    animPlayer.RecordPlayer(this);
-                }
-                animPlayer.gameObject.SetActive(true);
-            }
-        }
+        
 
     }
 }

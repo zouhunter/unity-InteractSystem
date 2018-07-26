@@ -44,12 +44,12 @@ namespace InteractSystem.Actions
             pickupableFeature.RegistOnSetPosition(SetPosition);
             features.Add(pickupableFeature);
 
-            completeAbleFeature.Init(this, AutoExecute);
+            completeAbleFeature.Init(this, OnAutoExecute);
             features.Add(completeAbleFeature);
 
             return features;
         }
-        public void AutoExecute(Graph.OperaterNode node)
+        public void OnAutoExecute(UnityEngine.Object node)
         {
             OnDetach();
         }

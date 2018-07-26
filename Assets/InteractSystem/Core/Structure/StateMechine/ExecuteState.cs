@@ -78,8 +78,7 @@ namespace InteractSystem.Structure
             {
                 foreach (var item in list)
                 {
-                    if (!statusDic.ContainsKey(item))
-                    {
+                    if (!statusDic.ContainsKey(item)) {
                         statusDic[item] = new UnitStatus();
                     }
 
@@ -110,6 +109,7 @@ namespace InteractSystem.Structure
                             stateMechine.UnDo(item);
                         }
                         stateMechine.UnDo(item);
+                        statusDic[item].Clear();
                     }
                     else
                     {
@@ -156,7 +156,6 @@ namespace InteractSystem.Structure
                 var lastworking = statusDic[unit].workUnits.Peek();
                 if (!IsGroupCompleted(lastworking))
                 {
-                    Debug.Log(unit.node + "等待还没有执行完的同级任务");
                     return true;
                 }
             }

@@ -9,7 +9,7 @@ namespace InteractSystem.Actions
 {
     public class ClickItem : ActionItem
     {
-        [SerializeField, Attributes.CustomField("可点击次数")]
+        [SerializeField, Attributes.CustomField("节点支持")]
         protected int clickableCount = 1;
 
         [SerializeField]
@@ -32,7 +32,7 @@ namespace InteractSystem.Actions
             clickAbleFeature.Init(this, layer);
             features.Add(clickAbleFeature);
 
-            completeAbleFeature.Init(this, AutoExecute);
+            completeAbleFeature.Init(this, OnAutoExecute);
             features.Add(completeAbleFeature);
 
             return features;
@@ -63,7 +63,7 @@ namespace InteractSystem.Actions
             clickAbleFeature.RemoveOnClick(TriggerComplete);
             UnNotice(transform);
         }
-        public void AutoExecute(Graph.OperaterNode node)
+        public void OnAutoExecute(UnityEngine.Object node)
         {
             coroutineCtrl.DelyExecute(TriggerComplete, autoCompleteTime);
         }

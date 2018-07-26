@@ -44,7 +44,7 @@ namespace InteractSystem.Actions
             clickAbleFeature.Init(this, layerName);
             features.Add(clickAbleFeature);
 
-            completeAbleFeature.Init(this, AutoExecute);
+            completeAbleFeature.Init(this, OnAutoExecute);
             features.Add(completeAbleFeature);
 
             return features;
@@ -54,7 +54,7 @@ namespace InteractSystem.Actions
             base.Start();
             InitPositions();
         }
-        public  void AutoExecute(Graph.OperaterNode node)
+        public  void OnAutoExecute(UnityEngine.Object node)
         {
             coroutineCtrl.StartCoroutine (AutoDrag());
         }

@@ -33,7 +33,7 @@ namespace InteractSystem.VRTKActions
             touchFeature.RegistOnTouch(SetComplete);
             features.Add(touchFeature);
 
-            completeAbleFeature.Init(this, AutoExecute);
+            completeAbleFeature.Init(this, OnAutoExecute);
             features.Add(completeAbleFeature);
 
             return features;
@@ -44,7 +44,7 @@ namespace InteractSystem.VRTKActions
             completeAbleFeature.OnComplete(firstLock);
         }
 
-        public void AutoExecute(Graph.OperaterNode node)
+        public void OnAutoExecute(UnityEngine.Object node)
         {
             coroutineCtrl.DelyExecute(()=>completeAbleFeature.OnComplete(firstLock), autoCompleteTime);
         }

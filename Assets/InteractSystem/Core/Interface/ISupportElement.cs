@@ -20,6 +20,7 @@ namespace InteractSystem
     public interface IContinueUse
     {
         bool OperateAble { get; }//能否操作
+        bool HavePlayer(UnityEngine.Object target);
         void RecordPlayer(UnityEngine.Object target);//记录元素
         void RemovePlayer(UnityEngine.Object target);//清除记录
     }

@@ -222,7 +222,7 @@ Camera:
   m_GameObject: {fileID: 1543600961}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -310,12 +310,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeGraphObj_log: 0
-  operateNode_log: 1
-  actionItem_log: 1
+  operateNode_log: 0
+  actionItem_log: 0
   actionHook_log: 0
   feature_log: 1
-  actionItemBinding_log: 1
-  elementCtrl_Log: 1
+  actionItemBinding_log: 0
+  elementCtrl_Log: 0
 --- !u!4 &2027092914
 Transform:
   m_ObjectHideFlags: 0

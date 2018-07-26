@@ -51,24 +51,24 @@ namespace InteractSystem.Hooks
             childAnims = GetComponentsInChildren<AnimPlayer>(true).Where(x=>x != this).ToArray();
         }
 
-        //public override void SetPosition(Vector3 pos)
-        //{
-        //    transform.position = pos;
-        //}
 
         public override void SetVisible(bool visible)
         {
             gameObject.SetActive(visible);
         }
 
-        protected override void OnSetActive(UnityEngine.Object target)
+        protected override void OnPlayAnim(UnityEngine.Object target)
         {
+            base.OnPlayAnim(target);
+
             actived = true;
             completedCount = 0;
             foreach (var item in childAnims)
             {
-                item.onAutoPlayEnd = OnPlayEnd;
+                var feature = item.RetriveFeature<CompleteAbleItemFeature>();
+                feature.RegistOnCompleteSafety(target, OnPlayEnd);
                 item.SetActive(target);
+                feature.AutoExecute(target);
             }
         }
 
@@ -92,15 +92,14 @@ namespace InteractSystem.Hooks
         }
        
 
-        private void OnPlayEnd()
+        private void OnPlayEnd(CompleteAbleItemFeature feature)
         {
             if (!actived) return;
 
             completedCount++;
             if(completedCount >= childAnims.Length)
             {
-               if(onAutoPlayEnd != null)
-                    onAutoPlayEnd.Invoke();
+                OnAnimComplete();
             }
         }
     }

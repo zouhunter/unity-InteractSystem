@@ -93,22 +93,46 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
+  - m_name: 
+    m_id: 88b2382f-e4f2-4d7e-96b5-a434fd52788a
+    m_x: 274
+    m_y: 303
+    m_node: {fileID: 114470841399188204}
+    m_inputPoints:
+    - id: 29c789e0-9986-4433-aafa-c0fc532b1b5a
+      label: 
+      parentId: 88b2382f-e4f2-4d7e-96b5-a434fd52788a
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.455078
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 22c9235b-87ee-4df1-a29b-012c320d1a79
+      label: 0
+      parentId: 88b2382f-e4f2-4d7e-96b5-a434fd52788a
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.455078
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
   m_allConnections:
-  - m_id: 7d99c791-1252-4b24-b5a5-e2f8778ce07a
+  - m_id: 35560cc2-4813-4f4c-9995-039059b38207
     m_fromNodeId: bcfdc446-93ba-4613-b0a4-4010c5a4c47a
     m_fromNodeConnectionPointId: 8db97908-bd2d-44c4-b4f0-501e1f5f6a0f
-    m_toNodeId: 39e263f7-295c-40bd-a251-34f8b2f20160
-    m_toNodeConnectionPoiontId: d15c31db-8874-444c-b727-c1bcc26bb82d
+    m_toNodeId: 88b2382f-e4f2-4d7e-96b5-a434fd52788a
+    m_toNodeConnectionPoiontId: 29c789e0-9986-4433-aafa-c0fc532b1b5a
     m_type: actionconnect
-    m_connection: {fileID: 114850687298802128}
-  - m_id: a6ea708b-e5e7-4f2e-b3fa-292ee62292c7
-    m_fromNodeId: bcfdc446-93ba-4613-b0a4-4010c5a4c47a
-    m_fromNodeConnectionPointId: 8db97908-bd2d-44c4-b4f0-501e1f5f6a0f
-    m_toNodeId: 1d8a2814-a3dd-487e-a1f6-abdb978d3a71
-    m_toNodeConnectionPoiontId: 4f99f531-adce-415f-96ce-0ae37ab328a2
-    m_type: actionconnect
-    m_connection: {fileID: 114582136189067628}
-  m_lastModified: 131770116564137576
+    m_connection: {fileID: 114542080837859464}
+  m_lastModified: 131770954106043744
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: clickCommand1
@@ -150,7 +174,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16a19a09a00df346a0670b8d7677c75, type: 3}
   m_Name: InteractSystem.Graph.StartNode
   m_EditorClassIdentifier: 
---- !u!114 &114582136189067628
+--- !u!114 &114470841399188204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4f0f3ab2171b349969860a8194d74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _name: 
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  completeableFeature:
+    itemList:
+    - click01
+    - click01
+    - click01
+--- !u!114 &114542080837859464
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -185,15 +230,3 @@ MonoBehaviour:
     - click03
     - click02
     - click01
---- !u!114 &114850687298802128
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
-  m_Name: InteractSystem.Graph.ActionConnection
-  m_EditorClassIdentifier: 
-  copyCount: 0

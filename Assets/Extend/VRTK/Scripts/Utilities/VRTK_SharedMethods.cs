@@ -484,14 +484,12 @@ namespace VRTK
         {
             return Enum.GetValues(typeof(BuildTargetGroup)).Cast<BuildTargetGroup>().Where(group =>
             {
-                if (group == BuildTargetGroup.Unknown)
-                {
+                if (group == BuildTargetGroup.Unknown) {
                     return false;
                 }
 
                 string targetGroupName = Enum.GetName(typeof(BuildTargetGroup), group);
                 FieldInfo targetGroupFieldInfo = typeof(BuildTargetGroup).GetField(targetGroupName, BindingFlags.Public | BindingFlags.Static);
-
                 return targetGroupFieldInfo != null && targetGroupFieldInfo.GetCustomAttributes(typeof(ObsoleteAttribute), false).Length == 0;
             }).ToArray();
         }

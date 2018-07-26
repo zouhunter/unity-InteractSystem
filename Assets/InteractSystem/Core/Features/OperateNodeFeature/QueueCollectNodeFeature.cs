@@ -9,13 +9,16 @@ using System.Linq;
 
 namespace InteractSystem
 {
+    /// <summary>
+    /// 顺序执行一组元素
+    /// </summary>
     [System.Serializable]
     public class QueueCollectNodeFeature : CollectNodeFeature
     {
         protected UnityAction onComplete { get; private set; }
         protected List<ISupportElement> currents = new List<ISupportElement>();
         public QueueCollectNodeFeature(System.Type type) : base(type, false) { }
-
+        public event UnityAction<CompleteAbleItemFeature> onBeforeAutoExecute;
         public override void OnEnable()
         {
             base.OnEnable();
@@ -48,26 +51,29 @@ namespace InteractSystem
             RemoveComplete(arg0 as ActionItem);
         }
 
-        protected void TryAutoComplete(int index)
+        protected void AutoComplete(int index)
         {
-            if (index < itemList.Count)
+            Debug.Assert(index < itemList.Count);
+            var key = itemList[index];
+            var item = elementPool.Find(x => x.Name == key && (x.OperateAble || x.HavePlayer(target))) as ActionItem;
+            if (item != null)
             {
-                var key = itemList[index];
-                var item = elementPool.Find(x => x.Name == key && x.Actived && x is ActionItem && (x as ActionItem).OperateAble) as ActionItem;
-                if (item != null)
+                if (!item.Actived) ActiveElement(item);
+
+                var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
+                if (completeFeature != null)
                 {
-                    var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
-                    if (completeFeature != null)
-                    {
-                        completeFeature.RegistOnCompleteSafety(target, OnAutoComplete);
-                        completeFeature.AutoExecute(target);
-                    }
-                }
-                else
-                {
-                    Debug.LogError("have no active useful element Name:" + key);
+                    completeFeature.RegistOnCompleteSafety(target, TryComplete);
+                    if (onBeforeAutoExecute != null)
+                        onBeforeAutoExecute.Invoke(completeFeature);
+                    completeFeature.AutoExecute(target);
                 }
             }
+            else
+            {
+                Debug.LogError(index + ":have no active useful element Name:" + key);
+            }
+
         }
 
         public override void OnEndExecute(bool force)
@@ -84,21 +90,16 @@ namespace InteractSystem
             }
         }
 
-        private void OnAutoComplete(CompleteAbleItemFeature arg0)
-        {
-            arg0.RemoveOnComplete(target);
-            TryAutoComplete(currents.Count);
-        }
 
         protected virtual void TryComplete(CompleteAbleItemFeature item)
         {
-            if (target.Statu != ExecuteStatu.Executing) return;//没有执行
-            if (!item.target.OperateAble) return;//目标无法点击
-            if (currents.Count >= itemList.Count) return;//超过需要
+            Debug.Assert (target.Statu == ExecuteStatu.Executing);//没有执行
+            Debug.Assert (item.target.OperateAble ||item.target.HavePlayer(target));//目标无法点击
+            Debug.Assert (currents.Count < itemList.Count);//超过需要
 
             if (itemList[currents.Count] == item.target.Name)
             {
-                Debug.Log("add:" + item.target);
+                if (log) Debug.Log("add:" + item.target);
                 currents.Add(item.target as ActionItem);
                 item.target.RecordPlayer(target);
                 SetInActiveElement(item.target);
@@ -112,6 +113,10 @@ namespace InteractSystem
             else
             {
                 FindOperateAbleItems();
+                if (autoExecute)
+                {
+                    AutoComplete(currents.Count);
+                }
             }
         }
 
@@ -120,10 +125,6 @@ namespace InteractSystem
         {
             base.OnStartExecute(auto);
             FindOperateAbleItems();
-            if (auto)
-            {
-                AutoCompleteItems();
-            }
         }
 
         /// <summary>
@@ -158,15 +159,21 @@ namespace InteractSystem
                 });
             }
         }
+
         /// <summary>
         /// 自动点击目标元素
         /// </summary>
-        protected virtual void AutoCompleteItems()
+        public virtual void AutoCompleteItems()
         {
-            TryAutoComplete(0);
+            if(itemList.Count > 0) AutoComplete(0);
+            else
+            {
+                Debug.Log("empty step!");
+                OnEndExecute(false);
+            }
         }
 
-    
+
         protected override void UnDoActivedElement()
         {
             ForEachElement((item) =>
