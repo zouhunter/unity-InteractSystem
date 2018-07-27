@@ -38,8 +38,6 @@ namespace InteractSystem.Actions
         public event UnityAction onInstallOkEvent;
         public event UnityAction onUnInstallOkEvent;
 
-        [HideInInspector]
-        public UnityEvent onStepActive, onStepComplete, onStepUnDo;
         [SerializeField,Attributes.DefultGameObject("显示对象")]
         private GameObject m_viewObj;
         protected Vector3 startRotation;
@@ -59,7 +57,6 @@ namespace InteractSystem.Actions
         protected bool StraightMove { get { return BindingObj ? BindingObj.straightMove : false; } }
         protected bool IgnoreMiddle { get { return BindingObj ? BindingObj.ignoreMiddle : false; } }
         protected Transform Passby { get { return BindingObj ? BindingObj.passBy : null; } }
-        protected bool tweening;
         protected UnityAction tweenCompleteAction;
         protected Vector3 lastPos;
         protected override void Awake()
@@ -79,7 +76,7 @@ namespace InteractSystem.Actions
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            move.Kill();
+            if(move != null) move.Kill();
             elementCtrl.RemoveElement(this);
         }
         
@@ -137,7 +134,7 @@ namespace InteractSystem.Actions
             List<Vector3> poss;
             List<Vector3> rots;
             CreatePosList(end, endRot, out poss, out rots);
-            tweening = true;
+            IsPlaying = true;
             move.DOPath(transform, poss.ToArray(), animTime, OnTweenComplete);
             move.OnWaypointChange((x) =>
             {
@@ -146,7 +143,7 @@ namespace InteractSystem.Actions
         }
         protected virtual void OnTweenComplete()
         {
-            tweening = false;
+            IsPlaying = false;
             if (tweenCompleteAction != null)
             {
                 tweenCompleteAction.Invoke();
@@ -248,7 +245,6 @@ namespace InteractSystem.Actions
         {
             base.OnSetActive(target);
             actived = true;
-            onStepActive.Invoke();
             gameObject.SetActive(true);
         }
         /// <summary>
@@ -261,8 +257,7 @@ namespace InteractSystem.Actions
                 Debug.Log("StepComplete:" + Name, gameObject);
             }
             actived = false;
-            onStepComplete.Invoke();
-            if (tweening)
+            if (IsPlaying)
             {
                 StopTween();
                 //OnTweenComplete();
@@ -277,9 +272,9 @@ namespace InteractSystem.Actions
             base.UnDoChanges(target);
             if (log)
                 Debug.Log("StepUnDo:" + Name, gameObject);
-
+            transform.eulerAngles = startRotation;
+            transform.position = startPos;
             actived = false;
-            onStepUnDo.Invoke();
             gameObject.SetActive(startactive);
         }
 
@@ -299,8 +294,11 @@ namespace InteractSystem.Actions
             if (onUnInstallOkEvent != null)
                 onUnInstallOkEvent();
 
-            if (IsRuntimeCreated)
+
+
+            if (IsRuntimeCreated) {
                 Destroy(gameObject);
+            }
         }
 
         protected virtual PlaceItem UnBinding()

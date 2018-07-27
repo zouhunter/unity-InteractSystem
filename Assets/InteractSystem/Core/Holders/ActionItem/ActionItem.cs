@@ -63,6 +63,7 @@ namespace InteractSystem
         public UnityEvent onActive, onInActive;
         public static bool log = false;
 
+        #region unity3d Api
         protected virtual void Awake()
         {
             actionItemFeatures = RegistFeatures();
@@ -102,7 +103,9 @@ namespace InteractSystem
         {
             TryExecuteFeatures((feature) => { feature.OnDisable(); });
         }
+        #endregion
 
+        #region 可视部分显示效果
         public virtual void SetVisible(bool visible)
         {
             Body.SetActive(visible);
@@ -140,7 +143,27 @@ namespace InteractSystem
                 }
             }
         }
+        private void InitActionNoticeScripts()
+        {
+            var clampedNotices = new List<Notice.ActionNotice>();
+            foreach (var item in actionNotice)
+            {
+                clampedNotices.Add(Instantiate(item));
+            }
+            if (Config.Instence.actionNotices != null)
+            {
+                foreach (var item in Config.Instence.actionNotices)
+                {
+                    var instence = Instantiate(item);
+                    clampedNotices.Add(instence);
+                }
+            }
+            actionNotice = clampedNotices;
+        }
 
+        #endregion
+
+        #region 使用限定
         public virtual void RecordPlayer(UnityEngine.Object target)
         {
             if (!targets.Contains(target))
@@ -161,7 +184,9 @@ namespace InteractSystem
             { return true; }
             return false;
         }
+        #endregion
 
+        #region 状态激活与取消激活
         public void SetActive(UnityEngine.Object target)
         {
             if(this is Actions.InstallItem && target is Actions.InstallItem) Debug.LogError(target);
@@ -194,7 +219,10 @@ namespace InteractSystem
                 lockList.Remove(target);
             }
 
-            if (lockList.Count == 0 || !OperateAble)
+            //两种条件可以设置元素为激活状态:
+            //1.已经没有目标在使用该元素了
+            //2.元素已经无法操作并且没有在播放
+            if (lockList.Count == 0 || (!OperateAble && !IsPlaying))
             {
                 if (log)
                     Debug.Log("SetInActive:" + gameObject);
@@ -209,16 +237,14 @@ namespace InteractSystem
             ElementController.Instence.SetPriority(subActions);
             TryExecuteFeatures((feature) => { feature.OnSetInActive(target); });
             TryExecuteBindings((binding) => binding.OnInActive(this));
-            if (!OperateAble)
-            {
+            if (!OperateAble){
                 gameObject.SetActive(endactive);
             }
         }
-
         public virtual void UnDoChanges(UnityEngine.Object target)
         {
-            if (log)
-            {
+            IsPlaying = false;
+            if (log){
                 Debug.LogFormat("StepUnDo from {0} :{1}", target, gameObject, gameObject);
             }
 
@@ -233,7 +259,9 @@ namespace InteractSystem
 
             TryExecuteFeatures((feature) => { feature.OnUnDo(target); });
         }
+        #endregion
 
+        #region 同步执行的
         protected virtual void InitBindingScripts()
         {
             var clampedBindings = new List<Binding.ActionItemBinding>();
@@ -252,24 +280,24 @@ namespace InteractSystem
             bindings = clampedBindings;
         }
 
-        private void InitActionNoticeScripts()
+        protected virtual void OnAddActionItemBinding(Binding.ActionItemBinding binding)
         {
-            var clampedNotices = new List<Notice.ActionNotice>();
-            foreach (var item in actionNotice)
-            {
-                clampedNotices.Add(Instantiate(item));
-            }
-            if (Config.Instence.actionNotices != null)
-            {
-                foreach (var item in Config.Instence.actionNotices)
-                {
-                    var instence = Instantiate(item);
-                    clampedNotices.Add(instence);
-                }
-            }
-            actionNotice = clampedNotices;
+            bindings.Add(Instantiate(binding));
         }
 
+        protected void TryExecuteBindings(UnityAction<Binding.ActionItemBinding> bindingAction)
+        {
+            if (bindings != null && bindingAction != null)
+            {
+                bindings.ForEach(binding =>
+                {
+                    bindingAction(binding);
+                });
+            }
+        }
+        #endregion
+
+        #region 属性注册与执行
         public T RetriveFeature<T>() where T : ActionItemFeature
         {
             if (actionItemFeatures == null)
@@ -288,11 +316,6 @@ namespace InteractSystem
             return new List<ActionItemFeature>(Config.Instence.actionItemFeatures);
         }
 
-        protected virtual void OnAddActionItemBinding(Binding.ActionItemBinding binding)
-        {
-            bindings.Add(Instantiate(binding));
-        }
-
         protected void TryExecuteFeatures(UnityAction<ActionItemFeature> featureAction)
         {
             if (actionItemFeatures != null && featureAction != null)
@@ -303,16 +326,6 @@ namespace InteractSystem
                 });
             }
         }
-        protected void TryExecuteBindings(UnityAction<Binding.ActionItemBinding> bindingAction)
-        {
-            if (bindings != null && bindingAction != null)
-            {
-                bindings.ForEach(binding =>
-                {
-                    bindingAction(binding);
-                });
-            }
-        }
-
+        #endregion
     }
 }

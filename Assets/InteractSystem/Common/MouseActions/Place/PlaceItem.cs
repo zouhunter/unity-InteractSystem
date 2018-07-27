@@ -71,17 +71,18 @@ namespace InteractSystem.Actions
         /// </summary>
         /// <param name="elementName"></param>
         /// <returns></returns>
-        public PlaceElement GetUnInstalledObj(string elementName)
+        public PlaceElement GetUnInstalledObj(string elementName,bool attach = true,bool active = true)
         {
             var elements = elementCtrl.GetElements<PlaceElement>(elementName, true);
             if (elements != null)
             {
                 for (int i = 0; i < elements.Count; i++)
                 {
-                    if (elements[i].OperateAble)
+                    var element = elements[i];
+                    if(element.OperateAble && !element.IsPlaying)
                     {
-                        var element = elements[i];
-                        element.RecordPlayer(this);
+                        if(active && !element .Actived) element.SetActive(this);
+                        if (attach) Attach(element);
                         return element;
                     }
                 }
@@ -89,18 +90,8 @@ namespace InteractSystem.Actions
             throw new Exception("配制错误,缺少" + elementName);
         }
 
-        protected virtual void OnInstallComplete()
-        {
-            Debug.LogError("OnInstallComplete" + contentFeature.Element);
-            contentFeature.Element.RecordPlayer(this);
-           contentFeature.Element.SetInActive(this);
-        }
-
-        protected virtual void OnUnInstallComplete()
-        {
-            contentFeature.Element.RemovePlayer(this);
-            contentFeature.Element.UnDoChanges(this);
-        }
+        protected abstract void OnInstallComplete();
+        protected abstract void OnUnInstallComplete();
 
         public virtual void Attach(PlaceElement obj)
         {

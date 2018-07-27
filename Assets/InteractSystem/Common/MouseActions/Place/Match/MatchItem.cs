@@ -59,8 +59,7 @@ namespace InteractSystem.Actions
             base.OnSetInActive(target);
             if (!AlreadyPlaced)
             {
-                PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName);
-                Attach(obj);
+                PlaceElement obj = GetUnInstalledObj(contentFeature.ElementName,true);
                 obj.QuickInstall(this);
                 obj.SetInActive(this);
             }
@@ -80,22 +79,23 @@ namespace InteractSystem.Actions
                 obj.QuickUnInstall();
             }
         }
-
         protected override void OnInstallComplete()
         {
-            base.OnInstallComplete();
-            (contentFeature.Element as PlaceElement).RemovePlayer(this);
-
+            contentFeature.Element.SetInActive(this);
             if (Actived)
             {
                 completeFeature.OnComplete(firstLock);
             }
         }
 
+        protected override void OnUnInstallComplete()
+        {
+            contentFeature.Element.UnDoChanges(this);
+        }
+
         public override void OnAutoExecute(UnityEngine.Object operateNode)
         {
-            var obj = GetUnInstalledObj(contentFeature.ElementName);
-            Attach(obj);
+            var obj = GetUnInstalledObj(contentFeature.ElementName,true);
             if (Config.Instence.quickMoveElement && !ignorePass)
             {
                 if (!completeMoveBack)

@@ -59,14 +59,14 @@ namespace InteractSystem
                         let actionItem = element as ActionItem
                         where actionItem != null
                         where actionItem.Name == key
-                        where actionItem.OperateAble
-                        where actionItem.HavePlayer(target)
+                        where !actionItem.IsPlaying
+                        where actionItem.OperateAble|| actionItem.HavePlayer(target)
                         select actionItem
                         ).FirstOrDefault();
 
             if (item != null)
             {
-                if (!item.Actived) ActiveElement(item);
+                ActiveElement(item);
 
                 var completeFeature = item.RetriveFeature<CompleteAbleItemFeature>();
                 if (completeFeature != null)

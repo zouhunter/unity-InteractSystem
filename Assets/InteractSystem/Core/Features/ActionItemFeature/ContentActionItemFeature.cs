@@ -15,7 +15,6 @@ namespace InteractSystem
         [SerializeField,Attributes.CustomField("接收元素")]
         protected string elementName;
         protected ElementPool<ActionItem> elementPool = new ElementPool<ActionItem>();
-        //protected static List<ActionItem> startedList = new List<ActionItem>();
         protected ActionItem element;
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public System.Type type { get; private set; }
@@ -122,25 +121,16 @@ namespace InteractSystem
         public override void OnSetActive(UnityEngine.Object target)
         {
             base.OnSetActive(target);
-            //if (!startedList.Contains(this.target)){
-            //    startedList.Add(this.target);
-            //}
             UpdateElementPool();
         }
         public override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
-            //if (startedList.Contains(this.target)){
-            //    startedList.Remove(this.target);
-            //}
             InActivedElements();
         }
         public override void OnUnDo(UnityEngine.Object target)
         {
             base.OnUnDo(target);
-            //if (startedList.Contains(this.target)) {
-            //    startedList.Remove(this.target);
-            //}
             UnDoActivedElement();
         }
     }
