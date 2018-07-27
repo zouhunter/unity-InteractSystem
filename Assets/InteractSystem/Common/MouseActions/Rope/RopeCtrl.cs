@@ -14,9 +14,10 @@ namespace InteractSystem.Actions
     /// </summary>
     public class RopeCtrl : PCOperateCtrl<RopeCtrl>,IUpdateAble
     {
-        private RopeItem ropeTarget { get { return ropeSelected == null ? null :  ropeSelected.bindingTarget; } }
+        private RopeItem ropeTarget { get { return ropeSelected == null ? null :  ropeSelected.BindingTarget; } }
         private RopeElement ropeSelected;
         private Collider pickUpedRopeNode;
+        private Collider placePosNode;
         private bool pickDownAble;
         private float elementDistence;
         private Ray ray;
@@ -71,7 +72,7 @@ namespace InteractSystem.Actions
                 var obj = hit.collider.GetComponentInParent<RopeElement>();
                 if (obj != null && obj.Actived)//正在进行操作
                 {
-                    //obj.BindingTarget.PickupCollider(hit.collider);
+                    obj.BindingTarget.PickupCollider(hit.collider);
                     ropeSelected = obj;
                     pickUpedRopeNode = hit.collider;
                     Debug.Log("Select: " + pickUpedRopeNode);
@@ -101,7 +102,7 @@ namespace InteractSystem.Actions
                         if (hits[i].collider.name == pickUpedRopeNode.name && target == ropeTarget)
                         {
                             hited = true;
-                            //ropeTarget = hits[i].collider.GetComponentInParent<RopeObj>();
+                            placePosNode = hits[i].collider;
                             pickDownAble = CanPlaceNode(ropeTarget, ropeSelected, pickUpedRopeNode, out resonwhy);
                         }
                     }
@@ -143,7 +144,7 @@ namespace InteractSystem.Actions
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
             if (pickDownAble)
             {
-                PlaceNode(pickUpedRopeNode);
+                PlaceNode(pickUpedRopeNode, placePosNode);
             }
             else
             {
@@ -178,10 +179,10 @@ namespace InteractSystem.Actions
             return resonwhy == null;
         }
 
-        private void PlaceNode(Collider collider)
+        private void PlaceNode(Collider collider,Collider placePosNode)
         {
             Debug.Log("PlaceNode");
-            ropeTarget.QuickInstallRopeItem(collider);
+            ropeTarget.TryInstallRopeItem(collider, placePosNode);
         }
 
         private void PlaceNodeWrong(RopeItem ropeItem, Collider collider)

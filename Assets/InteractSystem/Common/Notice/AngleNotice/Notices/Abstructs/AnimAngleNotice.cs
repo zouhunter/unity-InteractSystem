@@ -10,7 +10,7 @@ namespace InteractSystem.Notice
         [SerializeField, Range(0.5f, 5f), Attributes.CustomField("动画时间")]
         protected float animTime = 2f;
         protected float animTimer;
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("动画曲线")]
         protected AnimationCurve animCurve;
 
         public override void Update()

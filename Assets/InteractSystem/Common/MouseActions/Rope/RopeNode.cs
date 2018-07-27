@@ -22,7 +22,14 @@ namespace InteractSystem.Actions
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            RopeCtrl.Instence.RegistLock(this);
+            if (auto)
+            {
+                completeFeature.AutoCompleteItems();
+            }
+            else
+            {
+                RopeCtrl.Instence.RegistLock(this);
+            }
         }
         public override void OnUnDoExecute()
         {

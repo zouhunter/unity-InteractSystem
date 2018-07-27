@@ -7,14 +7,11 @@ namespace InteractSystem.Notice
 {
     public class StraightNotice: AnimAngleNotice
     {
-        [SerializeField]
-        protected GameObject anglePrefab;
-     
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("起始点")]
         protected Vector3 startPos;
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("终点")]
         protected Vector3 endPos;
-        [SerializeField]
+        [SerializeField, Attributes.CustomField("旋转速度")]
         protected float rotateSpeed = 2f;
 
         protected override void UpdateAngleState(Coordinate target,GameObject angle,float step)

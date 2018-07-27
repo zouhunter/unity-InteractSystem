@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace InteractSystem.Actions
 {
@@ -13,47 +14,36 @@ namespace InteractSystem.Actions
         private UltimateRope rope;
         [SerializeField]
         private List<Collider> ropeNodeFrom = new List<Collider>();
-
-        private List<Collider> ropeList = new List<Collider>();
+        private List<Collider> ropecolliderListInternal = new List<Collider>();//用于重新生成绳子 
         private List<float> lengthList = new List<float>();
-        public RopeItem bindingTarget { get; set; }
+        public RopeItem BindingTarget { get { if (targets.Count == 0) return null; return targets[0] as RopeItem; } }
         public override bool OperateAble
         {
             get
             {
-                return bindingTarget == null;
+                return BindingTarget == null;
             }
         }
         public bool Used { get; set; }
         public List<Collider> RopeNodeFrom { get { return ropeNodeFrom; } }
-        public bool completeHide { get; set; }
         private List<UnityAction<RopeElement>> onPlaceActions = new List<UnityAction<RopeElement>>();
         public const string ropeItemLayer = "i:ropeItem";
+        private Vector3[] ropeNodeStartPos;
+        private Vector3[] oringalStartPos;
 
-        protected override void Awake()
+        protected override void Start()
         {
-            base.Awake();
+            base.Start();
             RegistNodes();
             RegestRopeList();
-            ElementController.Instence.RegistElement(this);
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-            rope.Regenerate(true);
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            ElementController.Instence.RemoveElement(this);
-        }
         protected override void RegistPickupableEvents()
         {
             pickUpableFeature.RegistOnPickStay(OnPickStay);
             pickUpableFeature.RegistOnSetPosition(OnSetPosition);
         }
+        
         protected void OnPickStay()
         {
             if (onPlaceActions.Count > 0)
@@ -67,25 +57,37 @@ namespace InteractSystem.Actions
             {
                 Debug.LogError("have no onPlace Action!",this);
             }
+
         }
 
         private void RegistNodes()
         {
+            oringalStartPos = new Vector3[ropeNodeFrom.Count];
             for (int i = 0; i < ropeNodeFrom.Count; i++)
             {
                 ropeNodeFrom[i].gameObject.layer = LayerMask.NameToLayer(ropeItemLayer);
+                oringalStartPos[i] = ropeNodeFrom[i].transform.position;
             }
         }
 
         private void RegestRopeList()
         {
-            ropeList.Add(rope.RopeStart.GetComponent<Collider>());
+            ropecolliderListInternal.Add(rope.RopeStart.GetComponent<Collider>());
             for (int i = 0; i < rope.RopeNodes.Count; i++)
             {
-                ropeList.Add(rope.RopeNodes[i].goNode.GetComponent<Collider>());
+                ropecolliderListInternal.Add(rope.RopeNodes[i].goNode.GetComponent<Collider>());
                 lengthList.Add(rope.RopeNodes[i].fLength);
             }
         }
+
+        internal void UnNoticeAll()
+        {
+            for (int i = 0; i < ropeNodeFrom.Count; i++)
+            {
+                UnNotice(ropeNodeFrom[i].transform);
+            }
+        }
+
         protected void OnSetPosition(Vector3 pos)
         {
             transform.position = pos;
@@ -94,20 +96,20 @@ namespace InteractSystem.Actions
         protected override void OnSetActive(UnityEngine.Object target)
         {
             base.OnSetActive(target);
-            if(pickUpableFeature.PickUpAble)
+            if (pickUpableFeature.PickUpAble)
             {
-                OnPlace(true);
+                OnPlaceRopeElement(false);
             }
             else
             {
-                OnPlace(false);
+                OnPlaceRopeElement(true);
             }
         }
 
         public bool TryMoveToPos(Collider collider, Vector3 pos)
         {
             if (rope.RopeNodes.Count == 0) return false;
-            var id = ropeList.IndexOf(collider);
+            var id = ropecolliderListInternal.IndexOf(collider);
             if (id != -1)
             {
                 bool canMove = true;
@@ -115,12 +117,12 @@ namespace InteractSystem.Actions
                 var nextid = id + 1;
                 if (lastid >= 0)
                 {
-                    var lastNode = ropeList[lastid];
+                    var lastNode = ropecolliderListInternal[lastid];
                     canMove &= Vector3.Distance(pos, lastNode.transform.position) < 2 * lengthList[lastid];
                 }
-                if (nextid < ropeList.Count)
+                if (nextid < ropecolliderListInternal.Count)
                 {
-                    var nextNode = ropeList[nextid];
+                    var nextNode = ropecolliderListInternal[nextid];
                     canMove &= Vector3.Distance(pos, nextNode.transform.position) < 2 * lengthList[id];
                 }
                 if (canMove)
@@ -132,45 +134,42 @@ namespace InteractSystem.Actions
             return false;
         }
 
-        internal void OnPlace(bool startState = false)
+        protected void OnPlaceRopeElement(bool defultState = false)
         {
+            ropeNodeStartPos = new Vector3[ropecolliderListInternal.Count];
+            for (int i = 0; i < ropeNodeStartPos.Length; i++)
+            {
+                ropeNodeStartPos[i] = RopeNodeFrom[i].transform.position;
+            }
+
             if (PickUpAble)
             {
-                pickUpableFeature.collider.enabled = startState;
+                pickUpableFeature.collider.enabled = !defultState;
             }
 
             foreach (var item in ropeNodeFrom)
             {
-                item.enabled = !startState;
+                item.enabled = defultState;
             }
         }
 
-        protected override void OnSetInActive(UnityEngine.Object target)
-        {
-            base.OnSetInActive(target);
-            if (completeHide)
-            {
-                rope.gameObject.SetActive(false);
-            }
-
-            if (completeHide)
-            {
-                Invoke("TryRegenerate", 0.1f);
-            }
-
-            OnPlace(false);
-        }
 
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
-            if (completeHide)
-            {
-                rope.gameObject.SetActive(true);
-            }
-            OnPlace(true);
+            ResetStartPos();
         }
-        private void TryRegenerate()
+
+        protected void ResetStartPos()
+        {
+            for (int i = 0; i < ropeNodeFrom.Count; i++)
+            {
+                ropeNodeFrom[i].transform.position = oringalStartPos[i];
+            }
+            rope.Regenerate(false);
+        }
+
+        public void RegenerateRope()
         {
             rope.Regenerate(false);
         }
@@ -186,6 +185,9 @@ namespace InteractSystem.Actions
                 onPlaceActions.Add(action);
             }
         }
+
+       
+
     }
 
 }

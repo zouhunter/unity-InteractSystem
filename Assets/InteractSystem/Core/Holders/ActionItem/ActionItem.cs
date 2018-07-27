@@ -113,12 +113,16 @@ namespace InteractSystem
 
         public virtual void Notice(Transform target)
         {
+            if (target == null) return;
+
             var coodinate = CoodinateUtil.GetCoordinate(target);
             Notice(coodinate);
         }
 
         public virtual void Notice(Coordinate target)
         {
+            if (target == null) return;
+
             if (Config.Instence.actionItemNotice)
             {
                 foreach (var item in actionNotice)
@@ -140,11 +144,14 @@ namespace InteractSystem
         }
         public virtual void UnNotice(Transform target)
         {
-           var coodinate =  CoodinateUtil.GetCoordinate(target);
+            if (target == null) return;
+            var coodinate = CoodinateUtil.GetCoordinate(target);
             UnNotice(coodinate);
         }
         public virtual void UnNotice(Coordinate target)
         {
+            if (target == null) return;
+
             if (Config.Instence.actionItemNotice)
             {
                 foreach (var item in actionNotice)
@@ -199,7 +206,7 @@ namespace InteractSystem
         #region 状态激活与取消激活
         public void SetActive(UnityEngine.Object target)
         {
-            if(this is Actions.InstallItem && target is Actions.InstallItem) Debug.LogError(target);
+            if (this is Actions.InstallItem && target is Actions.InstallItem) Debug.LogError(target);
             if (!lockList.Contains(target))
             {
                 lockList.Add(target);
@@ -247,14 +254,16 @@ namespace InteractSystem
             ElementController.Instence.SetPriority(subActions);
             TryExecuteFeatures((feature) => { feature.OnSetInActive(this); });
             TryExecuteBindings((binding) => binding.OnInActive(this));
-            if (!OperateAble){
+            if (!OperateAble)
+            {
                 gameObject.SetActive(endactive);
             }
         }
         public virtual void UnDoChanges(UnityEngine.Object target)
         {
             IsPlaying = false;
-            if (log){
+            if (log)
+            {
                 Debug.LogFormat("StepUnDo from {0} :{1}", target, gameObject, gameObject);
             }
 
