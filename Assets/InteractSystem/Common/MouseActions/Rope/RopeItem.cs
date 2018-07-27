@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace InteractSystem.Actions
@@ -44,10 +45,6 @@ namespace InteractSystem.Actions
         {
             base.Awake();
             RegistNodes();
-            if (defultRope != null)
-            {
-                defultRope.RecordPlayer(this);
-            }
         }
 
         protected override void Start()
@@ -178,6 +175,7 @@ namespace InteractSystem.Actions
 
                 ropeSelected.transform.position = bestRopePos.transform.position;
                 ropeSelected.transform.rotation = bestRopePos.transform.rotation;
+                ropeSelected.OnPlaceRopeElement();
                 NoticePickupAbleNode();
             }
         }
@@ -211,8 +209,7 @@ namespace InteractSystem.Actions
             }
             else
             {
-                ropeElement.SetActive(this);
-                NoticePickupAbleNode();
+                TryPlaceRope(defultRope);
             }
         }
 
@@ -234,7 +231,9 @@ namespace InteractSystem.Actions
         {
             base.UnDoChanges(target);
             if (contentFeature.Element)
+            {
                 contentFeature.Element.RemovePlayer(this);
+            }
             connected.Clear();
         }
 
@@ -262,7 +261,11 @@ namespace InteractSystem.Actions
 
         private void QuickPlaceRope()
         {
-
+           var rope = contentFeature.supportElements.Where(x =>  x.OperateAble).FirstOrDefault();
+            Debug.Assert(rope != null);
+            rope.SetActive(this);
+            rope.transform.position = transform.position;
+            TryPlaceRope(rope as RopeElement);
         }
 
         #endregion

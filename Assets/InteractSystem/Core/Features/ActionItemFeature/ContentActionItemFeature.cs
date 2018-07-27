@@ -21,7 +21,7 @@ namespace InteractSystem
 
         public ActionItem Element { get { return element; } set { element = value; } }
         public string ElementName { get { return elementName; } }
-
+        public ActionItem[] supportElements { get { return elementPool.ToArray(); } }
         public ContentActionItemFeature(System.Type type)
         {
             this.type = type;

@@ -21,7 +21,7 @@ namespace InteractSystem.Actions
         {
             get
             {
-                return BindingTarget == null;
+                return BindingTarget ==null;
             }
         }
         public bool Used { get; set; }
@@ -30,14 +30,12 @@ namespace InteractSystem.Actions
         public const string ropeItemLayer = "i:ropeItem";
         private Vector3[] ropeNodeStartPos;
         private Vector3[] oringalStartPos;
-
         protected override void Start()
         {
             base.Start();
             RegistNodes();
             RegestRopeList();
         }
-
         protected override void RegistPickupableEvents()
         {
             pickUpableFeature.RegistOnPickStay(OnPickStay);
@@ -93,19 +91,6 @@ namespace InteractSystem.Actions
             transform.position = pos;
         }
 
-        protected override void OnSetActive(UnityEngine.Object target)
-        {
-            base.OnSetActive(target);
-            if (pickUpableFeature.PickUpAble)
-            {
-                OnPlaceRopeElement(false);
-            }
-            else
-            {
-                OnPlaceRopeElement(true);
-            }
-        }
-
         public bool TryMoveToPos(Collider collider, Vector3 pos)
         {
             if (rope.RopeNodes.Count == 0) return false;
@@ -134,7 +119,7 @@ namespace InteractSystem.Actions
             return false;
         }
 
-        protected void OnPlaceRopeElement(bool defultState = false)
+        public void OnPlaceRopeElement()
         {
             ropeNodeStartPos = new Vector3[ropecolliderListInternal.Count];
             for (int i = 0; i < ropeNodeStartPos.Length; i++)
@@ -144,19 +129,28 @@ namespace InteractSystem.Actions
 
             if (PickUpAble)
             {
-                pickUpableFeature.collider.enabled = !defultState;
+                pickUpableFeature.collider.enabled = false;
             }
 
             foreach (var item in ropeNodeFrom)
             {
-                item.enabled = defultState;
+                item.enabled = true;
             }
         }
-
+        protected override void OnSetActive(UnityEngine.Object target)
+        {
+            base.OnSetActive(target);
+            pickUpableFeature.collider.enabled = pickUpableFeature.Interactable;
+            foreach (var item in ropeNodeFrom)
+            {
+                item.enabled = !pickUpableFeature.Interactable;
+            }
+        }
 
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
+            UnNoticeAll();
             ResetStartPos();
         }
 

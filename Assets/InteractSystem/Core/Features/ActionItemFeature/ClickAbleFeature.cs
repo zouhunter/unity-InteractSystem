@@ -32,6 +32,13 @@ namespace InteractSystem
 
         [HideInInspector]
         public UnityEvent onClickEvent;
+        public bool Interactable
+        {
+            get
+            {
+                return interactAble;
+            }
+        }
 
         public override void Awake()
         {

@@ -31,10 +31,10 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
-  - m_name: "\u8FDE\u63A5\u7EF3\u5B50"
+  - m_name: "\u8FDE\u63A5\u7EF3\u5B502"
     m_id: b0828b33-65dd-417e-a57d-74853ed0c2cb
-    m_x: 261
-    m_y: 181
+    m_x: 250
+    m_y: 180
     m_node: {fileID: 114165608691006010}
     m_inputPoints:
     - id: b568ea29-8d2f-44de-a5f3-3d1d7f241c9e
@@ -62,6 +62,37 @@ MonoBehaviour:
         height: 23
       max: 100
       type: actionconnect
+  - m_name: "\u8FDE\u63A5\u7EF3\u5B501"
+    m_id: 87636c3a-11f3-4449-8899-d6bdbd254fde
+    m_x: 250
+    m_y: 110
+    m_node: {fileID: 114862760940373252}
+    m_inputPoints:
+    - id: 812c1ce9-4b8f-4286-aab5-3ff013a49a75
+      label: 
+      parentId: 87636c3a-11f3-4449-8899-d6bdbd254fde
+      isInput: 1
+      buttonRect:
+        serializedVersion: 2
+        x: 0
+        y: 18.5
+        width: 21
+        height: 29
+      max: 1
+      type: actionconnect
+    m_outputPoints:
+    - id: 0ba14afa-4205-4d03-a501-f9aa1a5efbe3
+      label: 0
+      parentId: 87636c3a-11f3-4449-8899-d6bdbd254fde
+      isInput: 0
+      buttonRect:
+        serializedVersion: 2
+        x: 111
+        y: 21.5
+        width: 10
+        height: 23
+      max: 100
+      type: actionconnect
   m_allConnections:
   - m_id: 4f5f5102-f6bc-4853-b775-78c177c57d13
     m_fromNodeId: 86f12f1c-c602-45df-a261-65fd24f1fe38
@@ -70,7 +101,14 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: b568ea29-8d2f-44de-a5f3-3d1d7f241c9e
     m_type: actionconnect
     m_connection: {fileID: 114708028667661230}
-  m_lastModified: 131769228629811933
+  - m_id: 774a5c26-dd3c-469f-8f68-55e462891a15
+    m_fromNodeId: 86f12f1c-c602-45df-a261-65fd24f1fe38
+    m_fromNodeConnectionPointId: 85da1e33-1861-460f-adde-0d217717f597
+    m_toNodeId: 87636c3a-11f3-4449-8899-d6bdbd254fde
+    m_toNodeConnectionPoiontId: 812c1ce9-4b8f-4286-aab5-3ff013a49a75
+    m_type: actionconnect
+    m_connection: {fileID: 114827294776589726}
+  m_lastModified: 131771852690964796
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: installcommand
@@ -87,16 +125,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e54c99516603cd42b6a996a8a73ab55, type: 3}
-  m_Name: "\u8FDE\u63A5\u7EF3\u5B50"
+  m_Name: "\u8FDE\u63A5\u7EF3\u5B502"
   m_EditorClassIdentifier: 
-  _name: "\u8FDE\u63A5\u7EF3\u5B50"
+  _name: "\u8FDE\u63A5\u7EF3\u5B502"
   startHooks: []
   completeHooks: []
   bindings: []
   environments: []
   completeFeature:
     itemList:
-    - ropeItem01
+    - ropeItem02
 --- !u!114 &114509087512272958
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -119,4 +157,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
+--- !u!114 &114827294776589726
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  count: 1
+--- !u!114 &114862760940373252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e54c99516603cd42b6a996a8a73ab55, type: 3}
+  m_Name: "\u8FDE\u63A5\u7EF3\u5B501"
+  m_EditorClassIdentifier: 
+  _name: "\u8FDE\u63A5\u7EF3\u5B501"
+  startHooks: []
+  completeHooks: []
+  bindings: []
+  environments: []
+  completeFeature:
+    itemList:
+    - ropeItem01
