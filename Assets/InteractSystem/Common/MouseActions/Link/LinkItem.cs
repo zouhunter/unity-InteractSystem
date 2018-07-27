@@ -40,25 +40,12 @@ namespace InteractSystem.Actions
             }
         }
         public bool Used { get { return elementCtrl.IsLocked(this); } }
-        public bool Connected { get { return HaveConnected(this); } }
-        public bool CanUse
-        {
-            get
-            {
-                return CalcuteConnected() < ChildNodes.Count;
-            }
-        }
         public bool isMatching { get; internal set; }
-        public bool Visiable
-        {
-            get { return m_viewObj.gameObject.activeSelf && m_viewObj.gameObject.activeInHierarchy; }
-        }
-
         public override bool OperateAble
         {
             get
             {
-                return true;
+                return CalcuteConnected() < ChildNodes.Count;
             }
         }
         //private event UnityAction onConnected;

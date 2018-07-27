@@ -34,8 +34,8 @@ namespace InteractSystem
 
         public static void LoadCoordinatesInfo(Coordinate coordinates, Transform transform)
         {
-            transform.localPosition = coordinates.localPosition;
-            transform.localEulerAngles = coordinates.localEulerAngles;
+            transform.localPosition = coordinates.position;
+            transform.localEulerAngles = coordinates.eulerAngles;
             transform.localScale = coordinates.localScale;
         }
     }

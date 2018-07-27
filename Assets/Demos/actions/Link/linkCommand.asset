@@ -101,8 +101,13 @@ MonoBehaviour:
     portA: 1
     ItemB: 1
     portB: 0
+  - ItemA: 1
+    portA: 1
+    ItemB: 2
+    portB: 0
   collectNodeFeature:
     itemList:
+    - LinkItem
     - LinkItem
     - LinkItem
 --- !u!114 &114271080708060464
@@ -116,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
 --- !u!114 &114509087512272958
 MonoBehaviour:
   m_ObjectHideFlags: 1

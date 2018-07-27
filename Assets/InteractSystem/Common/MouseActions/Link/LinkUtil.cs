@@ -316,27 +316,53 @@ namespace InteractSystem.Actions
                     {
                         var info = node.connectAble[j];
 
-                        var otheritem = (from x in linkItems
-                                         where (x != null && x != pickedUp && x.Name == info.itemName)
-                                         select x).FirstOrDefault();
-
-                        if (otheritem != null)
+                        var otheritems = (from x in linkItems
+                                          where (x != null && x != pickedUp && x.Name == info.itemName)
+                                          where !HaveConnected(pickedUp, x)
+                                          select x);
+                        Debug.Assert(otheritems != null && otheritems.Count() > 0);
+                        foreach (var otheritem in otheritems)
                         {
-                            var otherNode = otheritem.ChildNodes[info.nodeId];
-                            if (otherNode != null && otherNode.ConnectedNode == null)
+                            if (otheritem != null)
                             {
-                                if (log) Debug.Log("在" + otheritem + "的" + info.nodeId + "端口上显示出 + " + pickedUp);
-                                var set = new PreviewSet();
-                                LinkUtil.GetWorldPosFromTarget(otheritem, info.relativePos, info.relativeDir, out set.position, out set.eulerAngle);
-                                linkPorts.Add(set);
+                                var otherNode = otheritem.ChildNodes[info.nodeId];
+                                if (otherNode != null && otherNode.ConnectedNode == null)
+                                {
+                                    if (log) Debug.Log("在" + otheritem + "的" + info.nodeId + "端口上显示出 + " + pickedUp);
+                                    var set = new PreviewSet();
+                                    LinkUtil.GetWorldPosFromTarget(otheritem, info.relativePos, info.relativeDir, out set.position, out set.eulerAngle);
+                                    linkPorts.Add(set);
+                                }
                             }
                         }
+
                     }
                 }
             }
             if (linkPorts.Count > 0)
                 previewCtrl.Notice(pickedUp.Body, linkPorts.ToArray());
         }
+
+        /// <summary>
+        /// 判断两个物体是否已经连接
+        /// </summary>
+        /// <param name="linkItemA"></param>
+        /// <param name="linkItemB"></param>
+        /// <returns></returns>
+        public static bool HaveConnected(LinkItem linkItemA, LinkItem linkItemB)
+        {
+            var connectedPorts = from port in linkItemA.GetLinkedPorts()
+                                 select port.ConnectedNode;
+            foreach (var item in linkItemB.GetLinkedPorts())
+            {
+                if (connectedPorts.Contains(item))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// 清除连接点
         /// </summary>

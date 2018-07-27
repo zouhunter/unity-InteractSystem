@@ -113,6 +113,12 @@ namespace InteractSystem
 
         public virtual void Notice(Transform target)
         {
+            var coodinate = CoodinateUtil.GetCoordinate(target);
+            Notice(coodinate);
+        }
+
+        public virtual void Notice(Coordinate target)
+        {
             if (Config.Instence.actionItemNotice)
             {
                 foreach (var item in actionNotice)
@@ -132,8 +138,12 @@ namespace InteractSystem
                 }
             }
         }
-
         public virtual void UnNotice(Transform target)
+        {
+           var coodinate =  CoodinateUtil.GetCoordinate(target);
+            UnNotice(coodinate);
+        }
+        public virtual void UnNotice(Coordinate target)
         {
             if (Config.Instence.actionItemNotice)
             {

@@ -6,7 +6,7 @@ namespace InteractSystem.Notice
     public abstract class ActionNotice : ScriptableObject
     {
         public virtual void Update() { }
-        public abstract void Notice(Transform target);
-        public abstract void UnNotice(Transform target);
+        public abstract void Notice(Coordinate target);
+        public abstract void UnNotice(Coordinate target);
     }
 }

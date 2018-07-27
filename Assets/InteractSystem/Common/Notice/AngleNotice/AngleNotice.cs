@@ -21,10 +21,10 @@ namespace InteractSystem.Notice
         protected float animTime = 2f;
 
         protected AngleCtroller angleCtrl { get { return AngleCtroller.Instence; } }
-        protected List<Transform> noticed = new List<Transform>();
+        protected List<Coordinate> noticed = new List<Coordinate>();
         protected float animTimer;
 
-        public override void Notice(Transform target)
+        public override void Notice(Coordinate target)
         {
             if (target != null)
             {
@@ -56,19 +56,19 @@ namespace InteractSystem.Notice
             }
         }
 
-        protected virtual void UpdateAngleState(Transform target,GameObject angle)
+        protected virtual void UpdateAngleState(Coordinate target,GameObject angle)
         {
-            var p0 = target.transform.position + startPos;
-            var p1 = target.transform.position + endPos;
+            var p0 = target.position + startPos;
+            var p1 = target.position + endPos;
 
             var pos = Vector3.Lerp(p0, p1, animCurve.Evaluate( animTimer / animTime));
             angle.transform.position = pos;
             angle.transform.Rotate(endPos - startPos, rotateSpeed);
         }
 
-        public override void UnNotice(Transform target)
+        public override void UnNotice(Coordinate target)
         {
-            if (target)
+            if (target != null)
             {
                 angleCtrl.UnNotice(target);
                 if (noticed.Contains(target))

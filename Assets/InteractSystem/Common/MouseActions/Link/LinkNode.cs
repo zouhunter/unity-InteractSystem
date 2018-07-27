@@ -21,7 +21,7 @@ namespace InteractSystem.Actions
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
 
         [SerializeField]
-        protected CollectNodeFeature collectNodeFeature = new GroupCollectNodeFeature(typeof(LinkItem));
+        protected GroupCollectNodeFeature collectNodeFeature = new GroupCollectNodeFeature(typeof(LinkItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
@@ -294,7 +294,15 @@ namespace InteractSystem.Actions
             List<LinkItem> linkItemGroup = new List<LinkItem>();
             foreach (var itemName in collectNodeFeature.itemList)
             {
-                var item = collectNodeFeature.elementPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x as LinkItem) && (x as LinkItem).CanUse);
+                //var item = collectNodeFeature.elementPool.Find(x => x.Name == itemName && !linkItemGroup.Contains(x as LinkItem) && (x as LinkItem).OperateAble);
+                var item = (from supportElement in collectNodeFeature.elementPool
+                        where supportElement.Name == itemName
+                        let linkItem = supportElement as LinkItem
+                        where !linkItemGroup.Contains(linkItem)
+                        where linkItem.OperateAble
+                        select linkItem
+                        ).FirstOrDefault();
+
                 Debug.Assert(item != null, "缺少：" + itemName);
                 linkItemGroup.Add(item as LinkItem);
             }
@@ -308,6 +316,7 @@ namespace InteractSystem.Actions
 
             Vector3 pos;
             Vector3 eular;
+            Debug.Assert(linkInfoB != null);
 
             LinkUtil.GetWorldPosFromTarget(portA.Body, linkInfoB.relativePos, linkInfoB.relativeDir, out pos, out eular);
 

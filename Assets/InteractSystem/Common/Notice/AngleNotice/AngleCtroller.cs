@@ -4,12 +4,13 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace InteractSystem {
+namespace InteractSystem
+{
 
     public class AngleCtroller
     {
         private Queue<GameObject> objectQueue = new Queue<GameObject>();
-        private Dictionary<Transform, GameObject> actived = new Dictionary<Transform, GameObject>();
+        private Dictionary<Coordinate, GameObject> actived = new Dictionary<Coordinate, GameObject>();
         private ActionSystem actionSystem;
         private static AngleCtroller _instence;
         public static AngleCtroller Instence
@@ -23,7 +24,7 @@ namespace InteractSystem {
                 return _instence;
             }
         }
-        public GameObject this[Transform target]
+        public GameObject this[Coordinate target]
         {
             get
             {
@@ -41,7 +42,7 @@ namespace InteractSystem {
         }
 
 
-        public void Notice(Transform target,GameObject angle,bool update = false)
+        public void Notice(Coordinate target, GameObject angle, bool update = false)
         {
             if (!Config.Instence.actionItemNotice) return;
 
@@ -51,12 +52,13 @@ namespace InteractSystem {
             }
             else
             {
-                if(update){
+                if (update)
+                {
                     CopyTranform(actived[target].transform, target);
                 }
             }
         }
-        public void UnNotice(Transform target)
+        public void UnNotice(Coordinate target)
         {
             if (!Config.Instence.actionItemNotice) return;
 
@@ -67,10 +69,10 @@ namespace InteractSystem {
             }
         }
 
-        private GameObject GetAngleInstence(Transform target,GameObject anglePrefab)
+        private GameObject GetAngleInstence(Coordinate target, GameObject anglePrefab)
         {
             GameObject angle = null;
-           
+
             if (objectQueue.Count > 0)
             {
                 angle = objectQueue.Dequeue();
@@ -86,10 +88,10 @@ namespace InteractSystem {
             return angle;
         }
 
-        public static void CopyTranform(Transform obj, Transform target)
+        public static void CopyTranform(Transform obj, Coordinate target)
         {
-            obj.transform.position = target.transform.position;
-            obj.transform.rotation = target.transform.rotation;
+            obj.transform.position = target.position;
+            obj.transform.rotation = Quaternion.Euler(target.eulerAngles);
         }
 
         private void HideAnAngle(GameObject angle)

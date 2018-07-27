@@ -69,7 +69,7 @@ namespace InteractSystem
             });
         }
 
-        protected override void InActivedElements()
+        protected override void CompleteElements()
         {
             ForEachElement((element) => {
                 var activeAble = element as IActiveAble;

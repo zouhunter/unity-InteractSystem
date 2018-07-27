@@ -21,17 +21,30 @@ namespace InteractSystem.Actions
         public override void OnStartExecute(bool auto = false)
         {
             base.OnStartExecute(auto);
-            DragCtrl.Instence.RegistLock(this);
+            if(auto)
+            {
+                completeableFeature.AutoCompleteItems();
+            }
+            else
+            {
+                DragCtrl.Instence.RegistLock(this);
+            }
         }
         public override void OnUnDoExecute()
         {
             base.OnUnDoExecute();
-            DragCtrl.Instence.RemoveLock(this);
+            if(!auto)
+            {
+                DragCtrl.Instence.RemoveLock(this);
+            }
         }
         public override void OnEndExecute(bool force)
         {
             base.OnEndExecute(force);
-            DragCtrl.Instence.RemoveLock(this);
+            if(!auto)
+            {
+                DragCtrl.Instence.RemoveLock(this);
+            }
         }
     }
 

@@ -13,8 +13,8 @@ namespace InteractSystem.Actions
 
         public override void OnCreate(ISupportElement element)
         {
-            element.Body.transform.localPosition = coordinate.localPosition;
-            element.Body.transform.localEulerAngles = coordinate.localEulerAngles;
+            element.Body.transform.localPosition = coordinate.position;
+            element.Body.transform.localEulerAngles = coordinate.eulerAngles;
             element.Body.transform.localScale = coordinate.localScale;
         }
     }

@@ -11,18 +11,16 @@ namespace InteractSystem.Actions
         {
             get
             {
-                return targets == null || targets.Count == 0;
+                return targets.Count == 0;
             }
         }
-
         public Vector3 targetPos { get; private set; }
         public Vector3 startPos { get; private set; }
-
         [SerializeField, Attributes.CustomField("目标点")]
         private Transform targetHolder;
         [SerializeField, Attributes.CustomField("坍缩时间")]
         private float clampTime = 0.2f;
-        [SerializeField,Attributes.CustomField("范围限制")]
+        [SerializeField, Attributes.CustomField("范围限制")]
         private bool clampHard;
         private float autoDragTime { get { return Config.Instence.autoExecuteTime; } }
         private bool auto;
@@ -30,13 +28,19 @@ namespace InteractSystem.Actions
         public ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         public const string layerName = "i:dragitem";
-
+        private Coroutine coroutine;
+        private Vector3 triggerPos;
         protected override void Awake()
         {
             base.Awake();
             auto = false;
         }
 
+        protected override void Start()
+        {
+            base.Start();
+            InitPositions();
+        }
         protected override List<ActionItemFeature> RegistFeatures()
         {
             var features = base.RegistFeatures();
@@ -49,14 +53,11 @@ namespace InteractSystem.Actions
 
             return features;
         }
-        protected override void Start()
+       
+        public void OnAutoExecute(UnityEngine.Object node)
         {
-            base.Start();
-            InitPositions();
-        }
-        public  void OnAutoExecute(UnityEngine.Object node)
-        {
-            coroutineCtrl.StartCoroutine (AutoDrag());
+            Debug.Assert(coroutine == null);
+            coroutine = coroutineCtrl.StartCoroutine(AutoDrag());
         }
 
         IEnumerator AutoDrag()
@@ -67,21 +68,39 @@ namespace InteractSystem.Actions
                 transform.localPosition = Vector3.Lerp(startPos, targetPos, i / autoDragTime);
                 yield return null;
             }
-           completeAbleFeature. OnComplete(firstLock);
+            completeAbleFeature.OnComplete(firstLock);
+        }
+        protected override void OnSetActive(Object target)
+        {
+            base.OnSetActive(target);
+            Notice(CoodinateUtil.GetCoordinate( targetHolder));
         }
         protected override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
-            if (auto){
-                coroutineCtrl.StopCoroutine(AutoDrag());
+            UnNotice(CoodinateUtil.GetCoordinate(targetHolder));
+            if (coroutine != null)
+            {
+                coroutineCtrl.StopCoroutine(coroutine);
+                coroutine = null;
             }
-            transform.localPosition = targetPos;
+
+            if (OperateAble)
+            {
+                transform.position = startPos;
+            }
+            else
+            {
+                transform.localPosition = targetPos;
+            }
         }
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
-            if (auto) {
-                coroutineCtrl.StopCoroutine(AutoDrag());
+            if (coroutine != null)
+            {
+                coroutineCtrl.StopCoroutine(coroutine);
+                coroutine = null;
             }
             transform.localPosition = startPos;
         }
@@ -142,7 +161,7 @@ namespace InteractSystem.Actions
         private void InitPositions()
         {
             startPos = transform.localPosition;
-            targetPos = startPos + transform.InverseTransformPoint( targetHolder.position);
+            targetPos = startPos + transform.InverseTransformPoint(targetHolder.position);
         }
     }
 

@@ -80,7 +80,7 @@ namespace InteractSystem
         }
         public override void OnBeforeEnd(bool force)
         {
-            InActivedElements();
+            CompleteElements();
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace InteractSystem
             }
         }
         protected abstract void UnDoActivedElement();
-        protected abstract void InActivedElements();
+        protected abstract void CompleteElements();
 
     }
 }

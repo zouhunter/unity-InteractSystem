@@ -26,6 +26,8 @@ namespace InteractSystem
         public void OnComplete(UnityEngine.Object context)
         {
             Debug.Assert(context != null);
+            if (context == null) return;
+
             if(!onCompleteActions.ContainsKey(context))
             {
                 Debug.LogError(context);

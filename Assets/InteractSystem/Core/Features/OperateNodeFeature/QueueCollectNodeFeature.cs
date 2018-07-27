@@ -61,7 +61,7 @@ namespace InteractSystem
                         where actionItem != null
                         where actionItem.Name == key
                         where !actionItem.IsPlaying
-                        where actionItem.OperateAble|| actionItem.HavePlayer(target)
+                        where actionItem.OperateAble || actionItem.HavePlayer(target)
                         select actionItem
                         ).FirstOrDefault();
 
@@ -129,8 +129,7 @@ namespace InteractSystem
                 if (log) Debug.Log("regist:" + actionItem);
                 currents.Add(actionItem);
                 actionItem.RecordPlayer(target);
-
-                SetInActiveElement(actionItem);
+                InActiveElements(actionItem.Name);
             }
 
             if (currents.Count >= itemList.Count)
@@ -141,6 +140,7 @@ namespace InteractSystem
             else
             {
                 ActiveElements();
+
                 if (autoExecute)
                 {
                     AutoComplete(currents.Count);
@@ -148,43 +148,80 @@ namespace InteractSystem
             }
         }
 
-        /// <summary>
-        /// 将所能点击的目标设置为激活状态
-        /// </summary>
         protected override void ActiveElements()
         {
             if (itemList.Count > currents.Count)
             {
                 var key = itemList[currents.Count];
+                ActiveElements(key);
+            }
+        }
+        /// <summary>
+        /// 将所能点击的目标设置为激活状态
+        /// </summary>
+        protected void ActiveElements(string key)
+        {
+            var elements = elementPool.FindAll(x => x.Name == key && (x as ActionItem).OperateAble);
 
-                var elements = elementPool.FindAll(x => x.Name == key && (x as ActionItem).OperateAble);
-
-                elements.ForEach(element =>
+            elements.ForEach(element =>
+            {
+                if (element is IActiveAble)
                 {
-                    if (element is IActiveAble)
+                    var activeAble = element as IActiveAble;
+                    if (activeAble.OperateAble && target.Statu == ExecuteStatu.Executing)
                     {
-                        var activeAble = element as IActiveAble;
-                        if (activeAble.OperateAble && target.Statu == ExecuteStatu.Executing)
-                        {
-                            ActiveElement(activeAble);
-                        }
+                        ActiveElement(activeAble);
                     }
+                }
 
+                var feature = (element as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
 
+                if (feature != null)
+                {
+                    feature.RegistOnCompleteSafety(target, TryComplete);
+                }
+                else
+                {
+                    Debug.LogError("element have no completeAble feature:", element as ActionItem);
+                }
+            });
+        }
+
+        /// <summary>
+        /// 将指定的元素设置为非激活状态
+        /// </summary>
+        /// <param name="key"></param>
+        protected void InActiveElements(string key)
+        {
+            var elements = elementPool.FindAll(x => x.Name == key);
+
+            elements.ForEach(element =>
+            {
+                if (element is IActiveAble)
+                {
+                    var activeAble = element as IActiveAble;
+                    if (activeAble.Actived)
+                    {
+                        SetInActiveElement(activeAble);
+                    }
+                }
+
+                if(element is ActionItem)
+                {
                     var feature = (element as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
 
                     if (feature != null)
                     {
-                        feature.RegistOnCompleteSafety(target, TryComplete);
+                        feature.RemoveOnComplete(target);
                     }
                     else
                     {
                         Debug.LogError("element have no completeAble feature:", element as ActionItem);
                     }
-                });
-            }
+                }
+               
+            });
         }
-
         /// <summary>
         /// 自动点击目标元素
         /// </summary>
@@ -213,7 +250,7 @@ namespace InteractSystem
             currents.Clear();
         }
 
-        protected override void InActivedElements()
+        protected override void CompleteElements()
         {
             for (int i = 0; i < itemList.Count; i++)
             {

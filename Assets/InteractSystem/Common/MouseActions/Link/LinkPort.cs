@@ -38,7 +38,6 @@ namespace InteractSystem.Actions
         private Collider m_collider;
         [SerializeField, Range(0.1f, 2), HideInInspector]
         private float _range = 0.5f;
-        [HideInInspector]
         public List<LinkInfo> _connectAble = new List<LinkInfo>();
         public const string layer = "i:linknode";
 
