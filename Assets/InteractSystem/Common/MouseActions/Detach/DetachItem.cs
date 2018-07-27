@@ -57,10 +57,15 @@ namespace InteractSystem.Actions
         {
             coroutineCtrl.DelyExecute(OnDetach, autoCompleteTime);
         }
-
+        protected override void OnSetActive(UnityEngine.Object target)
+        {
+            base.OnSetActive(target);
+            Notice(transform);
+        }
         protected override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
+            UnNotice(transform);
             if (!OperateAble)
             {
                 if(rule) rule.OnDetach(this);

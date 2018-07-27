@@ -8,18 +8,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e085b8988ddb0b4aab0786f7bf437a6, type: 3}
-  m_Name: angleNotice
+  m_Script: {fileID: 11500000, guid: f6945c825d19c904d8fd8c52785e7f70, type: 3}
+  m_Name: bentNotice
   m_EditorClassIdentifier: 
-  anglePrefab: {fileID: 100000, guid: c28fa8d61f81fb742b1180a6d4516625, type: 3}
+  prefab: {fileID: 1789732217608872, guid: 4bb6c0b6aec1dde4ca82f8f729b4b496, type: 2}
+  animTime: 2
   animCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
     - serializedVersion: 2
       time: 1
@@ -30,7 +31,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  startPos: {x: 0, y: 1, z: 0}
-  endPos: {x: 0, y: 2, z: 0}
-  rotateSpeed: 100
-  animTime: 2
+  center: {x: 0, y: 0, z: 0}
+  radius: 1
+  angle: 90

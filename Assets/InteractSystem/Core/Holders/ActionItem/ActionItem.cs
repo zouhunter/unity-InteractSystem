@@ -245,7 +245,7 @@ namespace InteractSystem
         {
             onInActive.Invoke();
             ElementController.Instence.SetPriority(subActions);
-            TryExecuteFeatures((feature) => { feature.OnSetInActive(target); });
+            TryExecuteFeatures((feature) => { feature.OnSetInActive(this); });
             TryExecuteBindings((binding) => binding.OnInActive(this));
             if (!OperateAble){
                 gameObject.SetActive(endactive);
@@ -267,7 +267,7 @@ namespace InteractSystem
                 gameObject.SetActive(startactive);
             }
 
-            TryExecuteFeatures((feature) => { feature.OnUnDo(target); });
+            TryExecuteFeatures((feature) => { feature.OnUnDo(this); });
         }
         #endregion
 

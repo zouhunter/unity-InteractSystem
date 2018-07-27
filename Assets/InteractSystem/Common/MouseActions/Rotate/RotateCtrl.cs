@@ -62,16 +62,15 @@ namespace InteractSystem.Actions
                 if (selectedObj.Actived)
                 {
                     ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-                    Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, selectedObj.transform.position, axis);
+                    Vector3 mousePosition = GeometryUtil.LinePlaneIntersect(ray.origin, ray.direction, selectedObj.StartPos, axis);
                     if (previousMousePosition != Vector3.zero && mousePosition != Vector3.zero)
                     {
-                        var vec1 = previousMousePosition - selectedObj.transform.position;
-                        var vec2 = mousePosition - selectedObj.transform.position;
+                        var vec1 = previousMousePosition - selectedObj.StartPos;
+                        var vec2 = mousePosition - selectedObj.StartPos;
                         float rotateAmount = (Vector3.Angle(Vector3.Cross(vec1, vec2), axis) < 180f ? 1 : -1)
                             * Vector3.Angle(vec1, vec2) * 1;
                         selectedObj.Rotate(rotateAmount);
                     }
-
                     previousMousePosition = mousePosition;
                 }
             }

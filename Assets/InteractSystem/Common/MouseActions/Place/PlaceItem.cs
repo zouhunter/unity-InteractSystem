@@ -53,9 +53,22 @@ namespace InteractSystem.Actions
 
         public abstract void PlaceObject(PlaceElement pickup);
 
+        protected override void OnSetActive(UnityEngine.Object target)
+        {
+            base.OnSetActive(target);
+            Notice(transform);
+        }
+
+        protected override void OnSetInActive(UnityEngine.Object target)
+        {
+            base.OnSetInActive(target);
+            UnNotice(transform);
+        }
+
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
+            UnNotice(transform);
             if (AlreadyPlaced)
             {
                 var detachedObj = Detach();
@@ -63,8 +76,6 @@ namespace InteractSystem.Actions
                 detachedObj.UnDoChanges(this);
             }
         }
-
-     
 
         /// <summary>
         /// 找出一个没有安装的元素

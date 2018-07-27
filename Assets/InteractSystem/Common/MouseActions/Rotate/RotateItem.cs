@@ -10,6 +10,9 @@ namespace InteractSystem.Actions
 {
     public class RotateItem : ActionItem
     {
+        [SerializeField]
+        protected ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+
         [SerializeField, Attributes.CustomField("最小角度（左）")]
         protected float minAngle = -30;
         [SerializeField, Attributes.CustomField("最大角度（右）")]
@@ -23,10 +26,13 @@ namespace InteractSystem.Actions
         [SerializeField, Attributes.CustomField("执行时间（自动状态）")]
         protected float autoCompleteTime = 2f;
 
+        [SerializeField, Attributes.CustomField("移动距离")]//旋转的同时向指定方向移动一定的距离
+        protected float moveDistence;
+
         [SerializeField, Attributes.CustomField("轴向标记")]
         private Transform _directionHolder;
-        private Transform _operater;
-        public Transform Operater { get { return clickAbleFeature.collider.transform; } }
+        [SerializeField, Attributes.CustomField("旋转对象")]
+        private Transform operater;
         public Vector3 Direction { get; private set; }
         public override bool OperateAble
         {
@@ -35,20 +41,20 @@ namespace InteractSystem.Actions
                 return targets.Count == 0;
             }
         }
-
+        public Vector3 StartPos { get { return startPos; } }
         private float currAngle;
+        private Vector3 startPos;
         private Quaternion startRot;
         private FloatComparer comparer;
         protected const float deviation = 1f;
         protected CompleteAbleItemFeature completeFeature = new CompleteAbleItemFeature();
-        [SerializeField]
-        protected ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
+
         public const string layer = "i:rotateitem";
 
         protected override void Start()
         {
             base.Start();
-            InitDirection();
+            InitState();
             comparer = new FloatComparer(deviation);
         }
         protected override List<ActionItemFeature> RegistFeatures()
@@ -66,47 +72,62 @@ namespace InteractSystem.Actions
 
         private IEnumerator AutoRotateTo()
         {
-            var target = Quaternion.Euler(Direction * triggerAngle) * startRot;
-            var start = Operater.rotation;
+            var target = Direction * triggerAngle + startRot.eulerAngles;
+            var start = operater.eulerAngles;
+
             for (float timer = 0; timer < autoCompleteTime; timer += Time.deltaTime)
             {
                 yield return null;
-                Operater.rotation = Quaternion.Lerp(start, target, timer / autoCompleteTime);
+                currAngle = Mathf.Lerp(0, triggerAngle, timer / autoCompleteTime);
+                operater.eulerAngles = Vector3.Lerp(start, target, timer / autoCompleteTime);
+                RefeshPosition();
             }
-            completeFeature.OnComplete(firstLock);
+            if (Actived)
+            {
+                completeFeature.OnComplete(firstLock);
+            }
         }
 
-        private void InitDirection()
+        private void InitState()
         {
-            Direction = (_directionHolder.localPosition).normalized;//右手坐标系?
-            startRot = Operater.rotation;
+            Direction = _directionHolder.forward;//右手坐标系?
+            startRot = operater.rotation;
+            startPos = transform.position;
+            if (operater == null) operater = clickAbleFeature.collider.transform;
         }
 
         protected override void OnSetActive(UnityEngine.Object target)
         {
             base.OnSetActive(target);
-            Operater.rotation = startRot;
+            operater.rotation = startRot;
+            transform.position = startPos;
+            Notice(_directionHolder);
         }
 
 
         protected override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
+            UnNotice(_directionHolder);
             if (completeMoveBack)
             {
                 currAngle = 0;
-                Operater.rotation = startRot;
+                operater.rotation = startRot;
+                transform.position = startPos;
             }
             else
             {
                 currAngle = triggerAngle;
-                Operater.rotation = Quaternion.Euler(Direction * triggerAngle) * startRot;
+                operater.rotation = Quaternion.Euler(Direction * triggerAngle) * startRot;
+                RefeshPosition();
             }
         }
         public override void UnDoChanges(UnityEngine.Object target)
         {
             base.UnDoChanges(target);
-            Operater.rotation = startRot;
+            UnNotice(_directionHolder);
+            operater.rotation = startRot;
+            transform.position = startPos;
             currAngle = 0;
         }
 
@@ -133,11 +154,12 @@ namespace InteractSystem.Actions
             {
                 currAngle = Mathf.Clamp(currAngle, minAngle, maxAngle);
                 var target = Quaternion.Euler(Direction * currAngle) * startRot;
-                var start = Operater.rotation;
+                var start = operater.rotation;
                 for (float timer = 0; timer < 1f; timer += Time.deltaTime)
                 {
                     yield return null;
-                    Operater.rotation = Quaternion.Lerp(start, target, timer);
+                    operater.rotation = Quaternion.Lerp(start, target, timer);
+                    RefeshPosition();
                 }
             }
             if (onComplete != null) onComplete.Invoke();
@@ -154,7 +176,14 @@ namespace InteractSystem.Actions
                     return;
                 }
             }
-            Operater.Rotate(Direction, amount, Space.World);
+            operater.Rotate(Direction, amount, Space.World);
+            RefeshPosition();
+        }
+
+        protected void RefeshPosition()
+        {
+            var distence = (currAngle - 0) / (maxAngle - minAngle) * moveDistence;
+            transform.position = startPos + Direction.normalized * distence;
         }
     }
 }

@@ -317,7 +317,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
-  actionNotice: []
+  actionNotice:
+  - {fileID: 11400000, guid: 207863809b9897e44ae802db9c4df35f, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -383,7 +384,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
-  actionNotice: []
+  actionNotice:
+  - {fileID: 11400000, guid: 207863809b9897e44ae802db9c4df35f, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -494,7 +496,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
-  actionNotice: []
+  actionNotice:
+  - {fileID: 11400000, guid: 207863809b9897e44ae802db9c4df35f, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []
@@ -642,7 +645,8 @@ MonoBehaviour:
   startactive: 1
   endactive: 1
   bindings: []
-  actionNotice: []
+  actionNotice:
+  - {fileID: 11400000, guid: 207863809b9897e44ae802db9c4df35f, type: 2}
   onActive:
     m_PersistentCalls:
       m_Calls: []

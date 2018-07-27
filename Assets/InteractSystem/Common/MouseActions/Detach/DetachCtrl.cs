@@ -41,6 +41,7 @@ namespace InteractSystem.Actions
             if (detachItem)
             {
                 Debug.Log("PickUp:" + arg0);
+                detachItem.UnNotice(detachItem.transform);
             }
         }
     }
