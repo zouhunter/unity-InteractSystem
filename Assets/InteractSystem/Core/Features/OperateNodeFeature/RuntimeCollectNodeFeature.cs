@@ -160,28 +160,16 @@ namespace InteractSystem
                     if (objs == null) return;
                     for (int i = 0; i < objs.Count; i++)
                     {
+                        var activeAble = objs[i] as IActiveAble;
+                        if (activeAble == null) continue;
                         if (log)
                         {
-                            //if (undo)
-                            //{
-                            //    Debug.Log("UnDoElements:" + element + objs[i].Active);
-                            //}
-                            //else
-                            {
-                                Debug.Log("CompleteElements:" + element + objs[i].Actived);
-                            }
+                            Debug.Log("CompleteElements:" + element + activeAble.Actived);
                         }
 
-                        if (objs[i].Actived)
+                        if (activeAble.Actived)
                         {
-                            //if (undo)
-                            //{
-                            //    objs[i].UnDo();
-                            //}
-                            //else
-                            {
-                                objs[i].SetInActive(target);
-                            }
+                            activeAble.SetInActive(target);
                         }
                     }
                 }

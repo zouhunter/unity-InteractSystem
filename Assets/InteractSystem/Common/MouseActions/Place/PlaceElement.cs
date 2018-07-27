@@ -23,7 +23,7 @@ namespace InteractSystem.Actions
         {
             get
             {
-                return BindingObj == null;
+                return BindingObj == null ;
             }
         }
 
@@ -265,7 +265,7 @@ namespace InteractSystem.Actions
             if (tweening)
             {
                 StopTween();
-                OnTweenComplete();
+                //OnTweenComplete();
             }
         }
 

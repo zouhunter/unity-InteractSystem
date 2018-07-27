@@ -15,25 +15,25 @@ namespace InteractSystem
         public virtual void OnDisable() { }
         public virtual void OnDestroy() { }
         protected abstract UnityEngine.Object Target { get; }
-        public event UnityAction<ISupportElement> onActiveElement;
-        public event UnityAction<ISupportElement> onUnDoElement;
-        public event UnityAction<ISupportElement> onInActiveElement;
+        public event UnityAction<IActiveAble> onActiveElement;
+        public event UnityAction<IActiveAble> onUnDoElement;
+        public event UnityAction<IActiveAble> onInActiveElement;
 
-        protected void ActiveElement(ISupportElement element)
+        protected void ActiveElement(IActiveAble element)
         {
             element.SetActive(Target);
             if (onActiveElement != null)
                 onActiveElement.Invoke(element);
         }
 
-        protected void UndoElement(ISupportElement element)
+        protected void UndoElement(IActiveAble element)
         {
             element.UnDoChanges(Target);
             if (onUnDoElement != null)
                 onUnDoElement.Invoke(element);
         }
 
-        protected void SetInActiveElement(ISupportElement element)
+        protected void SetInActiveElement(IActiveAble element)
         {
             element.SetInActive(Target);
             if (onInActiveElement != null)

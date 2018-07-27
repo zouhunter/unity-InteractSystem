@@ -19,7 +19,6 @@ namespace InteractSystem
         public virtual float duration { get { return speed * _duration; } }
         public virtual bool reverse { get { return opposite ? !_reverse:_reverse; } }
         protected event UnityAction onAutoPlayEnd;
-        public bool IsPlaying { get; protected set; }
         [HideInInspector]
         public UnityEvent onPlayComplete;
         [SerializeField, Attributes.CustomField("节点支持")]

@@ -55,7 +55,15 @@ namespace InteractSystem
         {
             Debug.Assert(index < itemList.Count);
             var key = itemList[index];
-            var item = elementPool.Find(x => x.Name == key && (x.OperateAble || x.HavePlayer(target))) as ActionItem;
+            var item = (from element in elementPool
+                        let actionItem = element as ActionItem
+                        where actionItem != null
+                        where actionItem.Name == key
+                        where actionItem.OperateAble
+                        where actionItem.HavePlayer(target)
+                        select actionItem
+                        ).FirstOrDefault();
+
             if (item != null)
             {
                 if (!item.Actived) ActiveElement(item);
@@ -95,20 +103,20 @@ namespace InteractSystem
         {
             if (context != target)
             {
-                if(log) Debug.Log("目标不一至");
+                if (log) Debug.Log("目标不一至");
                 return;
             }
-            if(target.Statu != ExecuteStatu.Executing)
+            if (target.Statu != ExecuteStatu.Executing)
             {
-                if(log) Debug.Log("没有执行");
+                if (log) Debug.Log("没有执行");
                 return;
             }
-            if(!actionItem.OperateAble &&!actionItem.HavePlayer(target))
+            if (!actionItem.OperateAble && !actionItem.HavePlayer(target))
             {
                 if (log) Debug.Log("目标无法操作");
                 return;
             }
-            if(currents.Count >= itemList.Count)
+            if (currents.Count >= itemList.Count)
             {
                 if (log) Debug.Log("超过需要");
                 return;
@@ -117,7 +125,7 @@ namespace InteractSystem
 
             if (itemList[currents.Count] == actionItem.Name)
             {
-                if (log) Debug.Log("add:" + actionItem);
+                if (log) Debug.Log("regist:" + actionItem);
                 currents.Add(actionItem);
                 actionItem.RecordPlayer(target);
 
@@ -152,10 +160,15 @@ namespace InteractSystem
 
                 elements.ForEach(element =>
                 {
-                    if (element.OperateAble && target.Statu == ExecuteStatu.Executing)
+                    if (element is IActiveAble)
                     {
-                        ActiveElement(element);
+                        var activeAble = element as IActiveAble;
+                        if (activeAble.OperateAble && target.Statu == ExecuteStatu.Executing)
+                        {
+                            ActiveElement(activeAble);
+                        }
                     }
+
 
                     var feature = (element as ActionItem).RetriveFeature<CompleteAbleItemFeature>();
 
@@ -176,7 +189,7 @@ namespace InteractSystem
         /// </summary>
         public virtual void AutoCompleteItems()
         {
-            if(itemList.Count > 0) AutoComplete(0);
+            if (itemList.Count > 0) AutoComplete(0);
             else
             {
                 Debug.Log("empty step!");
@@ -188,8 +201,13 @@ namespace InteractSystem
         {
             ForEachElement((item) =>
             {
-                UndoElement(item);
-                item.RemovePlayer(target);
+                var activeAble = item as IActiveAble;
+                var recordAble = item as ILimitUse;
+                UndoElement(activeAble);
+                if (recordAble != null)
+                {
+                    recordAble.RemovePlayer(target);
+                }
             });
             currents.Clear();
         }
@@ -201,8 +219,13 @@ namespace InteractSystem
                 var elementName = itemList[i];
                 var elements = elementPool.FindAll(x => x.Name == elementName);
 
-                foreach (var element in elements) {
-                    SetInActiveElement(element);
+                foreach (var element in elements)
+                {
+                    var activeAble = element as IActiveAble;
+                    if (activeAble != null)
+                    {
+                        SetInActiveElement(activeAble);
+                    }
                 }
 
                 ///锁定元素并结束

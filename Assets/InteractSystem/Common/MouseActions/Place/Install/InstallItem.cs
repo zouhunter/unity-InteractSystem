@@ -87,7 +87,8 @@ namespace InteractSystem.Actions
             base.OnInstallComplete();
             if (Actived)
             {
-               completeFeature.OnComplete(firstLock);
+                Debug.Log(firstLock);
+                completeFeature.OnComplete(firstLock);
             }
             else
             {

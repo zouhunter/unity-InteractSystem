@@ -25,14 +25,17 @@ namespace InteractSystem
 
         public void OnComplete(UnityEngine.Object context)
         {
+            Debug.Assert(context != null);
+            if(!onCompleteActions.ContainsKey(context))
+            {
+                Debug.LogError(context);
+            }
+
             if (context != null && onCompleteActions.ContainsKey(context))
             {
                if(log)
                     Debug.Log(this + " :OnComplete:" + context);
-
-                var action = onCompleteActions[context];
-                onCompleteActions.Remove(context);
-                action.Invoke(context,target);
+                onCompleteActions[context].Invoke(context,target);
             }
             else
             {
@@ -42,8 +45,7 @@ namespace InteractSystem
 
         public void RemoveOnComplete(UnityEngine.Object context)
         {
-            if (onCompleteActions.ContainsKey(context))
-            {
+            if (onCompleteActions.ContainsKey(context)){
                 onCompleteActions.Remove(context);
             }
         }

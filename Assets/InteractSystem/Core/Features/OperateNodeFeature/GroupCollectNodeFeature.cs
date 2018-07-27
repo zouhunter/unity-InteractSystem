@@ -35,11 +35,12 @@ namespace InteractSystem
                         {
                             if (elementPool.Contains(item))
                             {
-                                if (target.Statu == ExecuteStatu.Executing && item.OperateAble)
+                                var activeAble = item as IActiveAble;
+                                if (target.Statu == ExecuteStatu.Executing && activeAble.OperateAble)
                                 {
                                     if (autoActive)
                                     {
-                                        ActiveElement(item);
+                                        ActiveElement(activeAble);
                                     }
                                 }
                             }
@@ -63,14 +64,16 @@ namespace InteractSystem
         protected override void UnDoActivedElement()
         {
             ForEachElement((element)=> {
-                UndoElement(element);
+                var activeAble = element as IActiveAble;
+                UndoElement(activeAble);
             });
         }
 
         protected override void InActivedElements()
         {
             ForEachElement((element) => {
-                SetInActiveElement(element);
+                var activeAble = element as IActiveAble;
+                SetInActiveElement(activeAble);
             });
         }
 

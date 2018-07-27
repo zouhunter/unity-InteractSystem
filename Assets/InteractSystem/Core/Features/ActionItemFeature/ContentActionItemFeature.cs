@@ -15,7 +15,7 @@ namespace InteractSystem
         [SerializeField,Attributes.CustomField("接收元素")]
         protected string elementName;
         protected ElementPool<ActionItem> elementPool = new ElementPool<ActionItem>();
-        protected static List<ActionItem> startedList = new List<ActionItem>();
+        //protected static List<ActionItem> startedList = new List<ActionItem>();
         protected ActionItem element;
         protected ElementController elementCtrl { get { return ElementController.Instence; } }
         public System.Type type { get; private set; }
@@ -73,10 +73,10 @@ namespace InteractSystem
         {
             if (target.Actived  && arg0.OperateAble)
             {
-                arg0.SetActive(target);
+                ActiveElement(arg0);
             }
         }
-        protected void ForEachElement(UnityAction<ISupportElement> onFind)
+        protected void ForEachElement(UnityAction<IActiveAble> onFind)
         {
             var objs = elementPool.FindAll(x => x.Name == elementName);
             Debug.Assert(objs != null, "no element name:" + elementName);
@@ -90,14 +90,14 @@ namespace InteractSystem
         /// </summary>
         protected void UpdateElementPool()
         {
-            var elements = elementCtrl.GetElements<ActionItem>(elementName, false);
+            var elements = elementCtrl.GetElements<ActionItem>(elementName, true);
             if (elements != null)
             {
                 elementPool.ScureAdd(elements.ToArray());
 
                 foreach (var arg0 in elements)
                 {
-                    if (target.Actived &&  arg0.OperateAble)
+                    if (target.Actived && arg0.OperateAble)
                     {
                         ActiveElement(arg0);
                     }
@@ -122,26 +122,25 @@ namespace InteractSystem
         public override void OnSetActive(UnityEngine.Object target)
         {
             base.OnSetActive(target);
-            if (!startedList.Contains(this.target))
-            {
-                startedList.Add(this.target);
-            }
+            //if (!startedList.Contains(this.target)){
+            //    startedList.Add(this.target);
+            //}
             UpdateElementPool();
         }
         public override void OnSetInActive(UnityEngine.Object target)
         {
             base.OnSetInActive(target);
-            if (startedList.Contains(this.target)){
-                startedList.Remove(this.target);
-            }
+            //if (startedList.Contains(this.target)){
+            //    startedList.Remove(this.target);
+            //}
             InActivedElements();
         }
         public override void OnUnDo(UnityEngine.Object target)
         {
             base.OnUnDo(target);
-            if (startedList.Contains(this.target)) {
-                startedList.Remove(this.target);
-            }
+            //if (startedList.Contains(this.target)) {
+            //    startedList.Remove(this.target);
+            //}
             UnDoActivedElement();
         }
     }

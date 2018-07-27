@@ -9,7 +9,7 @@ namespace InteractSystem.Actions
 {
     public class MatchItem : PlaceItem
     {
-        [SerializeField,Attributes.CustomField("结束重置目标元素")]
+        [SerializeField, Attributes.CustomField("结束重置目标元素")]
         protected bool completeMoveBack;
 
         public override void PlaceObject(PlaceElement pickup)
@@ -18,7 +18,7 @@ namespace InteractSystem.Actions
             pickup.QuickInstall(this);
         }
 
-     
+
         public override bool CanPlace(PlaceElement element, out string why)
         {
             var matchAble = true;
@@ -50,7 +50,7 @@ namespace InteractSystem.Actions
             }
             return matchAble;
         }
-        
+
         public bool Matched { get { return contentFeature.Element != null; } }
 
 
@@ -84,10 +84,11 @@ namespace InteractSystem.Actions
         protected override void OnInstallComplete()
         {
             base.OnInstallComplete();
+            (contentFeature.Element as PlaceElement).RemovePlayer(this);
+
             if (Actived)
             {
-                (contentFeature.Element as PlaceElement).RemovePlayer(this);
-                completeFeature. OnComplete(firstLock);
+                completeFeature.OnComplete(firstLock);
             }
         }
 

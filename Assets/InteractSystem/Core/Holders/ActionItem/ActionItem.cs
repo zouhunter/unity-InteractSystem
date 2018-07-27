@@ -8,7 +8,7 @@ using System;
 
 namespace InteractSystem
 {
-    public abstract class ActionItem : MonoBehaviour, ISupportElement
+    public abstract class ActionItem : MonoBehaviour, ISupportElement, IActiveAble, IVisiable, ILimitUse
     {
         [SerializeField, Attributes.DefultName("关键字")]
         protected string _name;
@@ -47,6 +47,7 @@ namespace InteractSystem
         }
         public bool IsRuntimeCreated { get; set; }
         public abstract bool OperateAble { get; }
+        public virtual bool IsPlaying { get; protected set; }
         protected UnityEngine.Object firstLock { get { return lockList.Count > 0 ? lockList[0] : null; } }
         public bool Actived { get { return lockList.Count > 0; } }
         private bool _active;
@@ -163,8 +164,11 @@ namespace InteractSystem
 
         public void SetActive(UnityEngine.Object target)
         {
+            if(this is Actions.InstallItem && target is Actions.InstallItem) Debug.LogError(target);
             if (!lockList.Contains(target))
+            {
                 lockList.Add(target);
+            }
 
             if (lockList.Count == 1)
             {
@@ -196,10 +200,6 @@ namespace InteractSystem
                     Debug.Log("SetInActive:" + gameObject);
 
                 OnSetInActive(target);
-            }
-            else
-            {
-                Debug.LogWarning("can`t inactived:" + this +  target,gameObject);
             }
         }
 

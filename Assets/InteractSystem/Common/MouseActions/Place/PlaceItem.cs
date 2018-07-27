@@ -91,11 +91,14 @@ namespace InteractSystem.Actions
 
         protected virtual void OnInstallComplete()
         {
-            contentFeature.Element.SetInActive(this);
+            Debug.LogError("OnInstallComplete" + contentFeature.Element);
+            contentFeature.Element.RecordPlayer(this);
+           contentFeature.Element.SetInActive(this);
         }
 
         protected virtual void OnUnInstallComplete()
         {
+            contentFeature.Element.RemovePlayer(this);
             contentFeature.Element.UnDoChanges(this);
         }
 

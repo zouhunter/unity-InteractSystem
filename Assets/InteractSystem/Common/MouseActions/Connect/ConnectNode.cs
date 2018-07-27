@@ -67,7 +67,7 @@ namespace InteractSystem.Actions
         }
         
 
-        private void OnUpdateFromPool(ISupportElement arg0)
+        private void OnUpdateFromPool(Actions.ConnectItem arg0)
         {
             if (log)
             {

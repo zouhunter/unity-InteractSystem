@@ -25,17 +25,17 @@ namespace InteractSystem.Actions
             return features;
         }
 
-        private void OnCompleteElement(ISupportElement arg0)
+        private void OnCompleteElement(IActiveAble arg0)
         {
             CompleteSubElements(arg0 as ChargeItem, false);
         }
 
-        private void OnUnDoElement(ISupportElement arg0)
+        private void OnUnDoElement(IActiveAble arg0)
         {
             CompleteSubElements(arg0 as ChargeItem, true);
         }
 
-        private void OnActiveElement(ISupportElement arg0)
+        private void OnActiveElement(IActiveAble arg0)
         {
             ActiveSubElements(arg0 as ChargeItem);
         }

@@ -49,12 +49,18 @@ namespace InteractSystem
 
         protected virtual void OnAddedToPool(ISupportElement arg0)
         {
-            if (target.Statu == ExecuteStatu.Executing && !arg0.Actived && arg0.OperateAble)
+            if(arg0 is IActiveAble)
             {
-                if (autoActive){
-                    ActiveElement(arg0);
+                var activeAble = arg0 as IActiveAble;
+                if (target.Statu == ExecuteStatu.Executing && !activeAble.Actived &&activeAble.OperateAble)
+                {
+                    if (autoActive)
+                    {
+                        ActiveElement(activeAble);
+                    }
                 }
             }
+           
 
             if (onAddToPool != null)
                 onAddToPool.Invoke(arg0);
