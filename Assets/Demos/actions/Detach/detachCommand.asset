@@ -73,7 +73,7 @@ MonoBehaviour:
   m_lastModified: 131733706219687915
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
-  _stepName: 
+  _stepName: detachCommand
   commandBindings: []
   environments: []
   startHooks: []
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 3
+  count: 1
 --- !u!114 &114401601842333208
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -120,3 +120,6 @@ MonoBehaviour:
   completeableFeature:
     itemList:
     - detachItem01
+    - detachItem02
+    - detachItem03
+    - detachItem04

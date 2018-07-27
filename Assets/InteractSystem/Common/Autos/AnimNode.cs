@@ -12,7 +12,6 @@ namespace InteractSystem.Auto
     [CustomNode("Auto/Anim", 5, "InteractSystem")]
     public class AnimNode : Graph.OperaterNode
     {
-
         [SerializeField,Attributes.CustomField("延时播放")]
         private float delyTime = 0f;
         [SerializeField,Attributes.Range(0.1f, 10f), Attributes.CustomField("播放速度")]

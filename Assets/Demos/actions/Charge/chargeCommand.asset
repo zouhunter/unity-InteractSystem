@@ -121,4 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1

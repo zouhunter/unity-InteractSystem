@@ -73,6 +73,7 @@ namespace InteractSystem
         }
 
         protected abstract void ActiveElements();
+
         public override void OnUnDoExecute()
         {
             UnDoActivedElement();

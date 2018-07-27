@@ -27,6 +27,10 @@ namespace InteractSystem.Actions
         public CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         [SerializeField]
         private DetachRule rule;
+        [SerializeField,Range(0.1f,10f),Attributes.CustomField("时间比(自动时)")]
+        protected float speedSpan = 1;
+        protected float autoCompleteTime { get { return Config.Instence.autoExecuteTime/ speedSpan; } }
+        protected CoroutineController coroutineCtrl { get { return CoroutineController.Instence; } }
         public const string layer = "i:detachitem";
 
         protected override void Start()
@@ -51,7 +55,7 @@ namespace InteractSystem.Actions
         }
         public void OnAutoExecute(UnityEngine.Object node)
         {
-            OnDetach();
+            coroutineCtrl.DelyExecute(OnDetach, autoCompleteTime);
         }
 
         protected override void OnSetInActive(UnityEngine.Object target)
@@ -73,8 +77,9 @@ namespace InteractSystem.Actions
 
         internal void OnDetach()
         {
-            if(rule)
+            if (rule){
                 rule.OnDetach(this);
+            }
             completeAbleFeature.OnComplete(firstLock);
         }
   

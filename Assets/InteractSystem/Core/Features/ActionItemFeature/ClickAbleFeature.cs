@@ -30,8 +30,8 @@ namespace InteractSystem
             }
         }
 
-        [SerializeField]
-        protected UnityEvent onClickEvent;
+        [HideInInspector]
+        public UnityEvent onClickEvent;
 
         public override void Awake()
         {

@@ -125,14 +125,21 @@ MonoBehaviour:
       max: 100
       type: actionconnect
   m_allConnections:
-  - m_id: 35560cc2-4813-4f4c-9995-039059b38207
+  - m_id: 53227133-bb8d-4e9c-b2c5-cbbbd1fa6daf
     m_fromNodeId: bcfdc446-93ba-4613-b0a4-4010c5a4c47a
     m_fromNodeConnectionPointId: 8db97908-bd2d-44c4-b4f0-501e1f5f6a0f
-    m_toNodeId: 88b2382f-e4f2-4d7e-96b5-a434fd52788a
-    m_toNodeConnectionPoiontId: 29c789e0-9986-4433-aafa-c0fc532b1b5a
+    m_toNodeId: 39e263f7-295c-40bd-a251-34f8b2f20160
+    m_toNodeConnectionPoiontId: d15c31db-8874-444c-b727-c1bcc26bb82d
     m_type: actionconnect
-    m_connection: {fileID: 114542080837859464}
-  m_lastModified: 131770954106043744
+    m_connection: {fileID: 114486473251719170}
+  - m_id: 640c5dc5-9606-4c96-87f4-c129be089e00
+    m_fromNodeId: bcfdc446-93ba-4613-b0a4-4010c5a4c47a
+    m_fromNodeConnectionPointId: 8db97908-bd2d-44c4-b4f0-501e1f5f6a0f
+    m_toNodeId: 1d8a2814-a3dd-487e-a1f6-abdb978d3a71
+    m_toNodeConnectionPoiontId: 4f99f531-adce-415f-96ce-0ae37ab328a2
+    m_type: actionconnect
+    m_connection: {fileID: 114710017448873756}
+  m_lastModified: 131771582810618523
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: clickCommand1
@@ -195,7 +202,7 @@ MonoBehaviour:
     - click01
     - click01
     - click01
---- !u!114 &114542080837859464
+--- !u!114 &114486473251719170
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -206,7 +213,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
+--- !u!114 &114710017448873756
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
+  m_Name: InteractSystem.Graph.ActionConnection
+  m_EditorClassIdentifier: 
+  count: 1
 --- !u!114 &114844214079372920
 MonoBehaviour:
   m_ObjectHideFlags: 0

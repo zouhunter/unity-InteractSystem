@@ -44,6 +44,10 @@ namespace InteractSystem.Actions
         {
             base.OnStartExecute(auto);
             ChargeCtrl.Instence.RegistLock(this);
+            if(auto)
+            {
+                completeAbleFeature.AutoCompleteItems();
+            }
         }
         public override void OnUnDoExecute()
         {

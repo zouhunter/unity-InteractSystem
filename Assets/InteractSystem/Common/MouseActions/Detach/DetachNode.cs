@@ -8,7 +8,8 @@ namespace InteractSystem.Actions
     [NodeGraph.CustomNode("Operate/Detach", 14, "InteractSystem")]
     public class DetachNode :Graph.OperaterNode
     {
-        public QueueCollectNodeFeature completeableFeature = new QueueCollectNodeFeature(typeof(DetachItem));
+        [SerializeField]
+        protected QueueCollectNodeFeature completeableFeature = new QueueCollectNodeFeature(typeof(DetachItem));
 
         protected override List<OperateNodeFeature> RegistFeatures()
         {
@@ -21,6 +22,9 @@ namespace InteractSystem.Actions
         {
             base.OnStartExecute(auto);
             DetachCtrl.Instence.RegistLock(this);
+            if(auto){
+                completeableFeature.AutoCompleteItems();
+            }
         }
         public override void OnUnDoExecute()
         {

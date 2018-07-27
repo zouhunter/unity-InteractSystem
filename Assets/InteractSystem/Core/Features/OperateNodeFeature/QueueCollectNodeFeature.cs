@@ -19,6 +19,7 @@ namespace InteractSystem
         protected List<ISupportElement> currents = new List<ISupportElement>();
         public QueueCollectNodeFeature(System.Type type) : base(type, false) { }
         public event UnityAction<CompleteAbleItemFeature> onBeforeAutoExecute;
+
         public override void OnEnable()
         {
             base.OnEnable();

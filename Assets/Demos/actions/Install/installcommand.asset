@@ -64,8 +64,8 @@ MonoBehaviour:
       type: actionconnect
   - m_name: "\u5339\u914D"
     m_id: c6dce825-1007-4e40-8554-c6074a97a4f2
-    m_x: 340
-    m_y: 240
+    m_x: 320
+    m_y: 220
     m_node: {fileID: 114899874541265034}
     m_inputPoints:
     - id: 53e907e8-d2b4-4da6-8820-5632d4fea30b

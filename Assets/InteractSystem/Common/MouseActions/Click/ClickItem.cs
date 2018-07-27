@@ -11,13 +11,14 @@ namespace InteractSystem.Actions
     {
         [SerializeField, Attributes.CustomField("节点支持")]
         protected int clickableCount = 1;
-
+        [SerializeField, Range(0.1f, 10f), Attributes.CustomField("时间比(自动时)")]
+        protected float speedSpan = 1;
         [SerializeField]
         private ClickAbleFeature clickAbleFeature = new ClickAbleFeature();
         [SerializeField]
         private CompleteAbleItemFeature completeAbleFeature = new CompleteAbleItemFeature();
         protected CoroutineController coroutineCtrl { get {return CoroutineController.Instence; } }
-        protected float autoCompleteTime { get { return Config.Instence.autoExecuteTime; } }
+        protected float autoCompleteTime { get { return Config.Instence.autoExecuteTime/ speedSpan; } }
         public const string layer = "i:clickitem";
 
         public override bool OperateAble

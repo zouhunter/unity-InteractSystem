@@ -70,7 +70,7 @@ MonoBehaviour:
     m_toNodeConnectionPoiontId: 2a787ea8-9046-4a7d-ba67-d92c2b8f0b60
     m_type: actionconnect
     m_connection: {fileID: 114752997652099804}
-  m_lastModified: 131768294037840183
+  m_lastModified: 131771586502139666
   m_graphDescription: 
   m_controllerType: InteractSystem.Graph.AcionGraphCtrl
   _stepName: dragcommand
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bdf2af5281e50429a9ead4bd27ccd8, type: 3}
   m_Name: InteractSystem.Graph.ActionConnection
   m_EditorClassIdentifier: 
-  copyCount: 0
+  count: 1
 --- !u!114 &114996539430454806
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -133,8 +133,7 @@ namespace InteractSystem.Actions
             {
                 Array.ForEach(collectNodeFeature.finalGroup, item =>
                 {
-                    //解除本脚本对linkItem的锁定
-                    (item as ConnectItem).RemovePlayer(this);
+                    item.UnDoChanges(item);
                     ElementController.Instence.UnLockElement(item, this);
                 });
                 collectNodeFeature.finalGroup = null;
